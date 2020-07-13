@@ -19,3 +19,7 @@
 
 # PsychoPy Builder Demos
 PsychoPyBuilderDemos
+# Pycharm generated files:
+__pycache__
+.idea
+.ipynb_checkpoints
