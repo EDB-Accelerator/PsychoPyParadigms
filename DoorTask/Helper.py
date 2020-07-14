@@ -1,5 +1,13 @@
 from psychopy import core, visual, event
 import time
+import pandas as pd
+
+def tableWrite(Df,Dict):
+    # Move data in Dict into Df.
+    Df = Df.append(pd.Series(dtype=float), ignore_index=True) #Insert Empty Rows
+    for key in Dict:
+        Df[key].loc[len(Df)-1] = Dict[key] # FYI, len(Df)-1: means the last row of pandas dataframe.
+    return Df
 
 def displayVAS(win,text,labels):
     scale = visual.RatingScale(win,
@@ -16,6 +24,27 @@ def displayVAS(win,text,labels):
     endTime = time.time()
     win.flip()
     return scale.getRating(),endTime-startTime
+
+def displayInstruction(win):
+    message = visual.TextStim(win, text="Do you want to see the instruction? (y: Yes, n: No)")
+    message.draw();
+    win.flip();
+    c = ['']
+    # Wait for user types "y" or "n".
+    while(c[0].upper() != "Y" and c[0].upper() != "N"):
+        core.wait(1 / 120)
+        c = event.waitKeys()  # read a character
+
+    # If user types "y", run instruction.
+    if c[0].upper() == "Y":
+        c = ['R']
+        while(c[0].upper() == "R"):
+            core.wait(1 / 120)
+            for i in range(1,17):
+                imgFile = "./instruction/Slide" + str(i) + ".JPG"
+                img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(1200, 800))
+                img1.draw();win.flip();
+                c = event.waitKeys()
 
 def showImage(win,image,opacity,size):
 
