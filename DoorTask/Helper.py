@@ -1,4 +1,5 @@
 from psychopy import core, visual, event
+import time
 
 def displayVAS(win,text,labels):
     scale = visual.RatingScale(win,
@@ -6,13 +7,15 @@ def displayVAS(win,text,labels):
                                scale=None,  # Suppress default
                                low=1, high=30, tickHeight=0, markerStart=15, precision=1)  # markerstart=50
     myItem = visual.TextStim(win, text=text, height=.12, units='norm',wrapWidth=2)
-    # Show scale
+    # Show scale and measure the elapsed wall-clock time.
+    startTime = time.time()
     while scale.noResponse:
         scale.draw()
         myItem.draw()
         win.flip()
+    endTime = time.time()
     win.flip()
-    return scale.getRating()
+    return scale.getRating(),endTime-startTime
 
 def showImage(win,image,opacity,size):
 

@@ -1,19 +1,16 @@
-# !/usr/bin/env python
-# -*- coding: utf-8 -*-
-# There is little experiment if the participant cannot give any input.
-# Here we changed assignment 2 a bit so that it waits for a keys, rather
-# than waiting 5 s. Note that we need to import the event module from
-# PsychoPy to make this work.
 import glob
 import re
 import random
+import pandas as pd
 from psychopy import core, visual, event, sound
 from Helper import fadeInOutImage, displayText, showImage, overlapImage, displayVAS
 
 # Declare primary task parameters.
 params = {
 # Declare stimulus and response parameters
+    'expName' : "Doors_AA_v7", # The name of the experiment
     'nTrials': 15,            # number of trials in this session
+    'subjectID' : 23986,      # Subject ID
     'stimDur': 1,             # time when stimulus is presented (in seconds)
     'ISI': 2,                 # time between when one stimulus disappears and the next appears (in seconds)
     'tStartup': 2,            # pause time before starting first stimulus
@@ -44,17 +41,54 @@ fadeInOutImage(win,"./img/nimh.png",0.5,(600,600))
 img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=(1200,800),opacity=1) #
 img1.draw();win.flip();event.waitKeys()
 
-# Open outFile (Write Mode)
-f = open(params['outFile'], "w")
+# ======================== #
+# Dataframe Initialization #
+# ======================== #
+Header = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
+          "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
+          "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
+          "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
+
+Df = pd.DataFrame(columns=Header)
+Dict = {}
+Dict["ExperimentName"] = 1234;Dict["Subject"] = "Jimmy"
+
+def tableWrite(Df,Dict):
+    # Move data in Dict into Df.
+    Df = Df.append(pd.Series(dtype=float), ignore_index=True) #Insert Empty Rows
+    for key in Dict:
+        Df[key].loc[len(Df)-1] = Dict[key] # FYI, len(Df)-1: means the last row of pandas dataframe.
+    return Df,Dict
 
 # ====================== #
 # ======== VAS ========= #
 # ====================== #
-scoreAnxious = displayVAS(win,"How anxious do you feel right now?",['Not anxious', 'Very anxious'])
-scoreFeel = displayVAS(win,"How much do you feel like taking part in the task?",['Not at all', 'Very much'])
-scoreTired = displayVAS(win,"How tired are you right now?",['Not at all tired', 'Very tired'])
-scoreMood = displayVAS(win,"Think about your mood right now. How would you describe it?",
+# Common Dictionary initialization (common entries for all data)
+Dict = {}
+Dict["ExperimentName"] = params['expName']
+Dict["Subject"] = params['subjectID']
+
+# VAS (Anxiety)
+Dict["VAS_type"] = "Anxiety"
+Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,"How anxious do you feel right now?",['Not anxious', 'Very anxious'])
+Df,Dict = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
+
+# VAS (Avoidance)
+Dict["VAS_type"] = "Avoidance"
+Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,"How much do you feel like taking part in the task?",
+                                               ['Not at all', 'Very much'])
+Df,Dict = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
+
+# VAS (Tired)
+Dict["VAS_type"] = "Tired"
+Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,"How tired are you right now?",['Not at all tired', 'Very tired'])
+Df,Dict = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
+
+# VAS (Mood)
+Dict["VAS_type"] = "Mood"
+Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,"Think about your mood right now. How would you describe it?",
                        ['Worst mood ever', 'Best mood ever'])
+Df,Dict = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
 
 # ====================== #
 # ===== Instruction ==== #
@@ -165,4 +199,7 @@ else:
     displayText(win, "Please try again! Thank you!\n")
     event.waitKeys()
 
+f = open(params['outFile'], "w")
+f.write(Header + "\n")
+f.close()
 win.close()
