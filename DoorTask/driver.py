@@ -110,14 +110,12 @@ Df = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
 # ====================== #
 # ===== Practice ======= #
 # ====================== #
-
-
 # Get the DOOR image file list.
 totalCoin = 0
 imgList = glob.glob("./img/doors/*.jpg")
 iterNum = params['nTrials']
 for i in range(iterNum):
-    Dict = {};
+    Dict = {}
     Dict["ExperimentName"] = params['expName']
     Dict["Subject"] = params['subjectID']
     Dict["Session"] = 1
@@ -160,7 +158,7 @@ for i in range(iterNum):
         img1.draw();win.flip();event.waitKeys()
         displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
         event.waitKeys()
-        continue
+        # continue
     else:
         Dict["Door_opened"] = "opened"
         if random.random() < 0.5:
@@ -194,8 +192,8 @@ for i in range(iterNum):
             sound1.stop()
             totalCoin += int(r)
             displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
-            Dict["Total_coins"] = totalCoin
             event.waitKeys()
+    Dict["Total_coins"] = totalCoin
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
 displayText(win, "Your total coin is " + str(totalCoin))
@@ -208,7 +206,7 @@ else:
     event.waitKeys()
 
 # Write the output file.
-f = open(params['outFile'], "w")
-f.write(Header + "\n")
-f.close()
+Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+
+# Close the psychopy window.
 win.close()
