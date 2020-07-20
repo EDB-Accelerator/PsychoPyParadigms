@@ -34,6 +34,9 @@ params = {
     'screenColor':(128,128,128) # in rgb255 space: (r,g,b) all between 0 and 255
 }
 
+c = event.waitKeys()
+buttons = mouse.getPressed()
+
 ## Setup Section.
 win = visual.Window(params['screenSize'], monitor="testMonitor")
 

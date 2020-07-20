@@ -103,8 +103,6 @@ def VASplay(Df, win, params, SectionName):
                                                        ['Worst mood ever', 'Best mood ever'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
     return tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-    # return Df
-
 
 def InstructionPlay(Df, win, params):
     Dict = {
@@ -250,7 +248,6 @@ def DoorGamePlay(Df, win, params, imgList, iterNum, SectionName):
     else:
         displayText(win, "Please try again! Thank you!\n")
         event.waitKeys()
-
     return Df
 
 
@@ -300,18 +297,6 @@ def displayInstruction(win):
                 img1.draw();
                 win.flip();
                 c = event.waitKeys()
-
-
-
-
-# def showImage(win, image, opacity, size):
-#     if size == None:
-#         img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, )
-#     else:
-#         img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size)
-#
-#     img.draw()
-#     win.flip()
 
 def fadeInOutImage(win, image, duration, size):
     for i in range(60):
