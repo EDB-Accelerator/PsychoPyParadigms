@@ -116,6 +116,7 @@ def InstructionPlay(Df, win, params):
         "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
     }
 
+    # Display Instruction
     displayInstruction(win)
 
     # Log the dict result on pandas dataFrame.
@@ -241,7 +242,10 @@ def DoorGamePlay(Df, win, params, imgList, iterNum, SectionName):
     displayText(win, "Your total coin is " + str(totalCoin))
     event.waitKeys()
     if totalCoin > 10:
-        showImage(win, "./img/happy_ending.jpg", 1, (1200, 800))
+        # showImage(win, "./img/happy_ending.jpg", 1, (1200, 800))
+        img = visual.ImageStim(win=win, image="./img/happy_ending.jpg", units="pix", opacity=1,
+                               size=(1200, 800))
+        img.draw();win.flip()
         event.waitKeys()
     else:
         displayText(win, "Please try again! Thank you!\n")
@@ -298,49 +302,30 @@ def displayInstruction(win):
                 c = event.waitKeys()
 
 
-def showImage(win, image, opacity, size):
-    if size == None:
-        img1 = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, )
-    else:
-        img2 = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size,
-                                )
-
-    img1.draw()
-    img2.draw()
-    win.flip()
 
 
-def showImage(win, image, opacity, size):
-    if size == None:
-        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, )
-    else:
-        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size,
-                               )
-
-    img.draw()
-    win.flip()
-
-
-def overlapImage(win, image, opacity, size):
-    if size == None:
-        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, overlaps=True)
-    else:
-        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size, overlaps=True
-                               )
-
-    img.draw()
-    win.flip()
-
+# def showImage(win, image, opacity, size):
+#     if size == None:
+#         img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, )
+#     else:
+#         img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size)
+#
+#     img.draw()
+#     win.flip()
 
 def fadeInOutImage(win, image, duration, size):
     for i in range(60):
         opacity = 1 / 60 * (i + 1)
-        showImage(win, image, opacity, size)
+        # showImage(win, image, opacity, size)
+        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size)
+        img.draw();win.flip()
         core.wait(duration / 60)
 
     for i in range(60):
         opacity = 1 - 1 / 60 * (i + 1)
-        showImage(win, image, opacity, size)
+        # showImage(win, image, opacity, size)
+        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size)
+        img.draw();win.flip()
         core.wait(duration / 60)
 
 
