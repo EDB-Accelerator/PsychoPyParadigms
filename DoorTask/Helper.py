@@ -1,20 +1,270 @@
-from psychopy import core, visual, event
+from psychopy import core, visual, event, sound
+import random, re, datetime
 import time
 import pandas as pd
 
-def tableWrite(Df,Dict):
-    # Move data in Dict into Df.
-    Df = Df.append(pd.Series(dtype=float), ignore_index=True) #Insert Empty Rows
-    for key in Dict:
-        Df[key].loc[len(Df)-1] = Dict[key] # FYI, len(Df)-1: means the last row of pandas dataframe.
+def Questionplay(Df, win, params, SectionName):
+    Dict = {'ExperimentName': params['expName'],
+            "Subject": params['subjectID'],
+            "Session": params['Session'],
+            "Version": params['Version'],
+            "Section": SectionName,
+            "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
+
+    # Question (Won)
+    Dict["Q_type"] = "Won"
+    startTime = time.time()
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "How many coins do you think you won?",
+                                                       ['Won very few', 'Won very many'])
+    Dict["Q_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # Question (Lost)
+    Dict["Q_type"] = "Lost"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "How many coins do you think you lost?",
+                                                       ['Lost very few', 'Lost very many'])
+    Dict["Q_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # Question (Monster)
+    Dict["Q_type"] = "Monster"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "How often did you see the monster when the door opened?",
+                                                       ['Never', 'All the time'])
+    Dict["Q_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # Question (Coins)
+    Dict["Q_type"] = "Coins"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win,"How often did you win coins when the door opened?",
+                                                       ['Never', 'All the time'])
+    Dict["Q_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # Question (Performance)
+    Dict["Q_type"] = "Performance"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win,"How do you feel about how well you’ve done so far?",
+                                                       ['Sad', 'I did badly', 'Happy', 'I did great'])
+    Dict["Q_RT"] = (time.time() - startTime) * 1000
+
+    # Log the dict result on pandas dataFrame.
+    Df = tableWrite(Df, Dict)
+
     return Df
 
-def displayVAS(win,text,labels):
+
+def VASplay(Df, win, params, SectionName):
+    Dict = {'ExperimentName': params['expName'],
+            "Subject": params['subjectID'],
+            "Session": params['Session'],
+            "Version": params['Version'],
+            "Section": SectionName,
+            "VAS_type": "Anxiety",
+            "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
+
+    # VAS (Anxiety)
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How anxious do you feel right now?",
+                                                       ['Not anxious', 'Very anxious'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # VAS (Avoidance)
+    Dict["VAS_type"] = "Avoidance"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How much do you feel like taking part in the task?",
+                                                       ['Not at all', 'Very much'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # VAS (Tired)
+    Dict["VAS_type"] = "Tired"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How tired are you right now?",
+                                                       ['Not at all tired', 'Very tired'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # VAS (Mood)
+    Dict["VAS_type"] = "Mood"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,
+                                                       "Think about your mood right now. How would you describe it?",
+                                                       ['Worst mood ever', 'Best mood ever'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    return tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+    # return Df
+
+
+def InstructionPlay(Df, win, params):
+    Dict = {
+        "ExperimentName": params['expName'],
+        "Subject": params['subjectID'],
+        "Session": params["Session"],
+        "Version": params["Version"],
+        "Section": "Instructions",
+        "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
+    }
+
+    displayInstruction(win)
+
+    # Log the dict result on pandas dataFrame.
+    return tableWrite(Df, Dict)
+
+def DoorGamePlay(Df, win, params, imgList, iterNum, SectionName):
+    totalCoin = 0
+    for i in range(iterNum):
+        Dict = {
+            "ExperimentName" : params['expName'],
+            "Subject" : params['subjectID'],
+            "Session" : params["Session"],
+            "Version" : params["Version"],
+            "Section" : SectionName,
+            "SessionStartDateTime" : datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+        }
+
+        # Pick up random image.
+        randN = random.randint(0, len(imgList) - 1)
+        imgFile = imgList[randN]
+        imgFile.split('/')[-1]
+        p, r = re.findall(r'\d+', imgFile.split('/')[-1])
+        Dict["Punishment_magnitude"] = p
+        Dict["Reward_magnitude"] = r
+
+        # Display the image.
+        c = ['']
+        level = Dict["Distance_start"] = params["DistanceStart"]
+        width = params["screenSize"][0] * (1 - level / 110)
+        height = params["screenSize"][1] * (1 - level / 110)
+        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+        img1.draw();
+        win.flip();
+        event.waitKeys()
+
+        startTime = time.time()
+        Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
+        while (c[0] != "return"):
+            # If waittime is longer than 10 sec, exit this loop.
+            Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
+            if Dict["DoorAction_RT"] / 1000 > params['DistanceLockWaitTime']:
+                continue
+            core.wait(1 / 60)
+            c = event.waitKeys()  # read a character
+            if c[0] == "up" and level < 100:
+                level += 1
+            elif c[0] == "down" and level > 0:
+                level -= 1
+            Dict["Distance_max"] = max(Dict["Distance_max"], level)
+            Dict["Distance_min"] = min(Dict["Distance_min"], level)
+
+            width = params["screenSize"][0] * (1 - level / 110)
+            height = params["screenSize"][1] * (1 - level / 110)
+            img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+            img1.draw();
+            win.flip()
+
+        if c[0] == "return":
+            Dict["Distance_lock"] = 1
+        else:
+            Dict["Distance_lock"] = 0
+        Dict["DistanceFromDoor_SubTrial"] = level
+
+        # Door Anticipation time
+        Dict["Door_anticipation_time"] = random.uniform(0, 2) * 1000
+        time.sleep(Dict["Door_anticipation_time"] / 1000)
+
+        if random.random() < level * 0.01:
+            Dict["Door_opened"] = "closed"
+            img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
+            img1.draw();
+            win.flip();
+            event.waitKeys()
+            displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
+            event.waitKeys()
+            # continue
+        else:
+            Dict["Door_opened"] = "opened"
+            if random.random() < 0.5:
+                Dict["Door_outcome"] = "punishment"
+                awardImg = "./img/outcomes/" + p + "_punishment.jpg"
+                width = 200 * (1 - level / 110)
+                height = 400 * (1 - level / 110)
+                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
+                                        size=(width, height))
+                message = visual.TextStim(win, text="-" + p, wrapWidth=2)
+                message.pos = (0, 50)
+                img1.draw();
+                img2.draw();
+                message.draw();
+                win.flip()
+                sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
+                sound1.play()
+                event.waitKeys()
+                sound1.stop()
+                totalCoin -= int(p)
+                displayText(win, "Lose your totalCoin: " + str(p) + "!!\n\n Total totalCoin: " + str(totalCoin))
+            else:
+                Dict["Door_outcome"] = "reward"
+                awardImg = "./img/outcomes/" + r + "_reward.jpg"
+                width = 200 * (1 - level / 110)
+                height = 400 * (1 - level / 110)
+                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
+                                        size=(width, height))
+                message = visual.TextStim(win, text="+" + r, wrapWidth=2)
+                message.pos = (0, 50)
+                img1.draw();
+                img2.draw();
+                message.draw();
+                win.flip()
+                sound1 = sound.Sound("./img/sounds/reward_sound.wav")
+                sound1.play()
+                event.waitKeys()
+                sound1.stop()
+                totalCoin += int(r)
+                displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
+        startTime = time.time()
+        event.waitKeys()
+        Dict["ITI_duration"] = (time.time() - startTime) * 1000
+        Dict["Total_coins"] = totalCoin
+        Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    displayText(win, "Your total coin is " + str(totalCoin))
+    event.waitKeys()
+    if totalCoin > 10:
+        showImage(win, "./img/happy_ending.jpg", 1, (1200, 800))
+        event.waitKeys()
+    else:
+        displayText(win, "Please try again! Thank you!\n")
+        event.waitKeys()
+
+    return Df
+
+
+def tableWrite(Df, Dict):
+    # Move data in Dict into Df.
+    Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
+    for key in Dict:
+        Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
+    return Df
+
+
+def displayVAS(win, text, labels):
     scale = visual.RatingScale(win,
                                labels=labels,  # End points
                                scale=None,  # Suppress default
-                               low=1, high=30, tickHeight=0, markerStart=15, precision=1)  # markerstart=50
-    myItem = visual.TextStim(win, text=text, height=.12, units='norm',wrapWidth=2)
+                               low=0, high=100, tickHeight=0, markerStart=50, precision=1)  # markerstart=50
+    myItem = visual.TextStim(win, text=text, height=.12, units='norm', wrapWidth=2)
+
     # Show scale and measure the elapsed wall-clock time.
     startTime = time.time()
     while scale.noResponse:
@@ -23,7 +273,7 @@ def displayVAS(win,text,labels):
         win.flip()
     endTime = time.time()
     win.flip()
-    return scale.getRating(),endTime-startTime
+    return scale.getRating(), endTime - startTime
 
 def displayInstruction(win):
     message = visual.TextStim(win, text="Do you want to see the instruction? (y: Yes, n: No)")
@@ -31,67 +281,70 @@ def displayInstruction(win):
     win.flip();
     c = ['']
     # Wait for user types "y" or "n".
-    while(c[0].upper() != "Y" and c[0].upper() != "N"):
+    while (c[0].upper() != "Y" and c[0].upper() != "N"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
 
     # If user types "y", run instruction.
     if c[0].upper() == "Y":
         c = ['R']
-        while(c[0].upper() == "R"):
+        while (c[0].upper() == "R"):
             core.wait(1 / 120)
-            for i in range(1,17):
+            for i in range(1, 17):
                 imgFile = "./instruction/Slide" + str(i) + ".JPG"
                 img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(1200, 800))
-                img1.draw();win.flip();
+                img1.draw();
+                win.flip();
                 c = event.waitKeys()
 
-def showImage(win,image,opacity,size):
 
-    if size==None:
-        img1 = visual.ImageStim(win=win,image=image,units="pix",opacity=opacity,)
+def showImage(win, image, opacity, size):
+    if size == None:
+        img1 = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, )
     else:
-        img2 = visual.ImageStim(win=win,image=image,units="pix",opacity=opacity,size=size,
-        )
+        img2 = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size,
+                                )
 
     img1.draw()
     img2.draw()
     win.flip()
 
-def showImage(win,image,opacity,size):
 
-    if size==None:
-        img = visual.ImageStim(win=win,image=image,units="pix",opacity=opacity,)
+def showImage(win, image, opacity, size):
+    if size == None:
+        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, )
     else:
-        img = visual.ImageStim(win=win,image=image,units="pix",opacity=opacity,size=size,
-        )
+        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size,
+                               )
 
     img.draw()
     win.flip()
 
-def overlapImage(win,image,opacity,size):
 
-    if size==None:
-        img = visual.ImageStim(win=win,image=image,units="pix",opacity=opacity,overlaps=True)
+def overlapImage(win, image, opacity, size):
+    if size == None:
+        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, overlaps=True)
     else:
-        img = visual.ImageStim(win=win,image=image,units="pix",opacity=opacity,size=size,overlaps=True
-        )
+        img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size, overlaps=True
+                               )
 
     img.draw()
     win.flip()
 
-def fadeInOutImage(win,image,duration,size):
+
+def fadeInOutImage(win, image, duration, size):
     for i in range(60):
-        opacity = 1 / 60 * (i+1)
-        showImage(win,image, opacity,size)
-        core.wait(duration/60)
+        opacity = 1 / 60 * (i + 1)
+        showImage(win, image, opacity, size)
+        core.wait(duration / 60)
 
     for i in range(60):
-        opacity = 1 - 1 / 60 * (i+1)
-        showImage(win,image, opacity,size)
-        core.wait(duration/60)
+        opacity = 1 - 1 / 60 * (i + 1)
+        showImage(win, image, opacity, size)
+        core.wait(duration / 60)
 
-def displayText(win,textString):
-    message = visual.TextStim(win, text=textString, wrapWidth=2)
+
+def displayText(win, textString):
+    message = visual.TextStim(win, text=textString)
     message.draw()
     win.flip()

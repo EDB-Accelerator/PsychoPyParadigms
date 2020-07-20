@@ -2,7 +2,7 @@ import glob,re,random,time
 import pandas as pd
 from psychopy import core, visual, event, sound
 from psychopy.hardware import joystick
-from Helper import fadeInOutImage, displayText, showImage, overlapImage, displayVAS, displayInstruction,tableWrite
+from Helper import fadeInOutImage, Questionplay,DoorGamePlay,VASplay,InstructionPlay
 import datetime
 
 # Declare primary task parameters.
@@ -13,6 +13,8 @@ params = {
     'subjectID' : 23986,      # Subject ID
     'DistanceStart' : 50,
     'DistanceLockWaitTime' : 10, # Distance lock wait time.
+    'Session' : 1,
+    'Version' : 1,
     'winSize': 1,             # time when stimulus is presented (in seconds)
     'ISI': 2,                 # time between when one stimulus disappears and the next appears (in seconds)
     'tStartup': 2,            # pause time before starting first stimulus
@@ -50,7 +52,7 @@ img1.draw();win.flip();event.waitKeys()
 Header = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
           "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
           "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
-          "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_totalCoin","VAS_RT","Q_type","Q_totalCoin","Q_RT"]
+          "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
 
 Df = pd.DataFrame(columns=Header)
 Dict = {}
@@ -59,176 +61,44 @@ Dict["ExperimentName"] = 1234;Dict["Subject"] = "Jimmy"
 # ====================== #
 # ======== VAS ========= #
 # ====================== #
-# Common Dictionary initialization (common entries for all VAS)
-Dict = {}
-Dict["ExperimentName"] = params['expName']
-Dict["Subject"] = params['subjectID']
-Dict["Session"] = 1
-Dict["Version"] = 1
-Dict["Section"] = "VAS1"
+Df = VASplay(Df,win,params,"VAS1")
 
-# VAS (Anxiety)
-Dict["VAS_type"] = "Anxiety"
-Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-startTime = time.time()
-Dict["VAS_totalCoin"], Dict["VAS_RT"] = displayVAS(win,"How anxious do you feel right now?",
-                                                   ['Not anxious', 'Very anxious'])
-Dict["VAS_RT"] = (time.time() - startTime) * 1000
-Df = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
-
-# VAS (Avoidance)
-Dict["VAS_type"] = "Avoidance"
-Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-startTime = time.time()
-Dict["VAS_totalCoin"], Dict["VAS_RT"] = displayVAS(win,"How much do you feel like taking part in the task?",
-                                               ['Not at all', 'Very much'])
-Dict["VAS_RT"] = (time.time() - startTime) * 1000
-Df = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
-
-# VAS (Tired)
-Dict["VAS_type"] = "Tired"
-Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-startTime = time.time()
-Dict["VAS_totalCoin"], Dict["VAS_RT"] = displayVAS(win,"How tired are you right now?",['Not at all tired', 'Very tired'])
-Dict["VAS_RT"] = (time.time() - startTime) * 1000
-Df = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
-
-# VAS (Mood)
-Dict["VAS_type"] = "Mood"
-Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-startTime = time.time()
-Dict["VAS_totalCoin"], Dict["VAS_RT"] = displayVAS(win,"Think about your mood right now. How would you describe it?",
-                       ['Worst mood ever', 'Best mood ever'])
-Dict["VAS_RT"] = (time.time() - startTime) * 1000
-Df = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
-Dict = {};
-Dict["ExperimentName"] = params['expName']
-Dict["Subject"] = params['subjectID']
-Dict["Session"] = 1
-Dict["Version"] = 1
-Dict["Section"] = "Instructions"
-Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-displayInstruction(win)
-Df = tableWrite(Df,Dict) # Log the dict result on pandas dataFrame.
+InstructionPlay(Df,win,params)
 
 # ====================== #
 # ===== Practice ======= #
 # ====================== #
 # Get the DOOR image file list.
-totalCoin = 0
 imgList = glob.glob("./img/doors/*.jpg")
-iterNum = params['nTrials']
-for i in range(iterNum):
-    Dict = {}
-    Dict["ExperimentName"] = params['expName']
-    Dict["Subject"] = params['subjectID']
-    Dict["Session"] = 1
-    Dict["Version"] = 1
-    Dict["Section"] = "Practice"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    # Pick up random image.
-    randN = random.randint(0,len(imgList)-1)
-    imgFile = imgList[randN]
-    imgFile.split('/')[-1]
-    p,r = re.findall(r'\d+', imgFile.split('/')[-1])
-    Dict["Punishment_magnitude"] = p
-    Dict["Reward_magnitude"] = r
+Df = DoorGamePlay(Df,win,params,imgList,1,"Practice")
 
-    # Display the image.
-    c = ['']
-    level = Dict["Distance_start"] = params["DistanceStart"]
-    width = params["screenSize"][0] * (1 - level/110)
-    height = params["screenSize"][1] * (1 - level/110)
-    img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width,height))
-    img1.draw();win.flip();event.waitKeys()
+# ====================== #
+# ===== TaskRun1 ======= #
+# ====================== #
+Df = DoorGamePlay(Df,win,params,imgList,2,"TaskRun1")
 
-    startTime = time.time()
-    Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
-    while(c[0]!="return"):
-        # If waittime is longer than 10 sec, exit this loop.
-        Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
-        if Dict["DoorAction_RT"] / 1000 > params['DistanceLockWaitTime']:
-            continue
-        core.wait(1 / 60)
-        c = event.waitKeys()  # read a character
-        if c[0] == "up" and level < 100:
-            level += 1
-        elif c[0] == "down" and level > 0:
-            level -= 1
-        Dict["Distance_max"] = max(Dict["Distance_max"],level)
-        Dict["Distance_min"] = min(Dict["Distance_min"],level)
+# ====================== #
+# ======== VAS2 ========= #
+# ====================== #
+Df = VASplay(Df,win,params,"VAS2")
 
-        width = params["screenSize"][0] * (1 - level / 110)
-        height = params["screenSize"][1] * (1 - level / 110)
-        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-        img1.draw();win.flip()
+# ====================== #
+# ===== TaskRun2 ======= #
+# ====================== #
+Df = DoorGamePlay(Df,win,params,imgList,3,"TaskRun2")
 
-    if c[0] == "return":
-        Dict["Distance_lock"] = 1
-    else:
-        Dict["Distance_lock"] = 0
-    Dict["DistanceFromDoor_SubTrial"] = level
+# ====================== #
+# ======== VAS3 ========= #
+# ====================== #
+Df = VASplay(Df,win,params,"VAS3")
 
-    # Door Anticipation time
-    Dict["Door_anticipation_time"] = random.uniform(0, 2) * 1000
-    time.sleep(Dict["Door_anticipation_time"] / 1000)
-
-    if random.random() < level * 0.01:
-        Dict["Door_opened"] = "closed"
-        img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
-        img1.draw();win.flip();event.waitKeys()
-        displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
-        event.waitKeys()
-        # continue
-    else:
-        Dict["Door_opened"] = "opened"
-        if random.random() < 0.5:
-            Dict["Door_outcome"] = "punishment"
-            awardImg = "./img/outcomes/" + p + "_punishment.jpg"
-            width = 200 * (1 - level / 110)
-            height = 400 * (1 - level / 110)
-            img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1,pos=[0,-10],size=(width,height))
-            message = visual.TextStim(win, text="-"+p, wrapWidth=2)
-            message.pos = (0,50)
-            img1.draw();img2.draw();message.draw();win.flip()
-            sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
-            sound1.play()
-            event.waitKeys()
-            sound1.stop()
-            totalCoin -= int(p)
-            displayText(win, "Lose your totalCoin: " + str(p) + "!!\n\n Total totalCoin: " + str(totalCoin))
-        else:
-            Dict["Door_outcome"] = "reward"
-            awardImg = "./img/outcomes/" + r + "_reward.jpg"
-            width = 200 * (1 - level / 110)
-            height = 400 * (1 - level / 110)
-            img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1,pos=[0,-10],size=(width,height))
-            message = visual.TextStim(win, text="+"+r, wrapWidth=2)
-            message.pos = (0,50)
-            img1.draw();img2.draw();message.draw();win.flip()
-            sound1 = sound.Sound("./img/sounds/reward_sound.wav")
-            sound1.play()
-            event.waitKeys()
-            sound1.stop()
-            totalCoin += int(r)
-            displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
-    startTime = time.time()
-    event.waitKeys()
-    Dict["ITI_duration"] = (time.time() - startTime) * 1000
-    Dict["Total_coins"] = totalCoin
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-displayText(win, "Your total coin is " + str(totalCoin))
-event.waitKeys()
-if totalCoin > 10:
-    showImage(win, "./img/happy_ending.jpg", 1, (1200,800))
-    event.waitKeys()
-else:
-    displayText(win, "Please try again! Thank you!\n")
-    event.waitKeys()
+# ====================== #
+# ======== Question ========= #
+# ====================== #
+Df = Questionplay(Df, win, params, "Question")
 
 # Write the output file.
 Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
