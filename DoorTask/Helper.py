@@ -1,7 +1,15 @@
-from psychopy import core, visual, event, sound
-import random, re, datetime
+from psychopy import core, visual, event, sound,gui
+import random, re, datetime,glob
 import time
 import pandas as pd
+
+def userInputPlay():
+    userInput = gui.Dlg(title="DOORS Task Information")
+    userInput.addField('ExperimentName:',"Doors_AA_v8.py")
+    userInput.addField('Subject Number:',23986)
+    userInput.addField('Session:',1)
+    userInput.addField('Version:',1)
+    return userInput.show()
 
 def Questionplay(Df, win, params, SectionName):
     Dict = {'ExperimentName': params['expName'],
@@ -120,8 +128,10 @@ def InstructionPlay(Df, win, params):
     # Log the dict result on pandas dataFrame.
     return tableWrite(Df, Dict)
 
-def DoorGamePlay(Df, win, params, imgList, iterNum, SectionName):
+def DoorGamePlay(Df, win, params, iterNum, SectionName):
+    imgList = imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
     totalCoin = 0
+
     for i in range(iterNum):
         Dict = {
             "ExperimentName" : params['expName'],
