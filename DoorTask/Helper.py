@@ -3,6 +3,7 @@ import random, re, datetime,glob
 import time
 import pandas as pd
 
+# Function for getting user inputs.
 def userInputPlay():
     userInput = gui.Dlg(title="DOORS Task Information")
     userInput.addField('ExperimentName:',"Doors_AA_v8.py")
@@ -15,6 +16,7 @@ def userInputPlay():
 
     return userInput.show()
 
+# Question Session Module.
 def Questionplay(Df, win, params, SectionName):
     Dict = {'ExperimentName': params['expName'],
             "Subject": params['subjectID'],
@@ -71,7 +73,7 @@ def Questionplay(Df, win, params, SectionName):
 
     return Df
 
-
+# VAS Session Module.
 def VASplay(Df, win, params, SectionName):
     Dict = {'ExperimentName': params['expName'],
             "Subject": params['subjectID'],
@@ -116,6 +118,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
     return tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
+# Instruction Session Module.
 def InstructionPlay(Df, win, params):
     Dict = {
         "ExperimentName": params['expName'],
@@ -132,8 +135,9 @@ def InstructionPlay(Df, win, params):
     # Log the dict result on pandas dataFrame.
     return tableWrite(Df, Dict)
 
+# Door Game Session Module.
 def DoorGamePlay(Df, win, params, iterNum, SectionName):
-    imgList = imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
+    imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
     totalCoin = 0
 
     for i in range(iterNum):
@@ -247,17 +251,15 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
 
     displayText(win, "Your total coin is " + str(totalCoin))
     event.waitKeys()
-    if totalCoin > 10:
-        # showImage(win, "./img/happy_ending.jpg", 1, (1200, 800))
+    if totalCoin > params['totalRewardThreshold']:
         img = visual.ImageStim(win=win, image="./img/happy_ending.jpg", units="pix", opacity=1,
-                               size=(1200, 800))
+                               size=params['screenSize'])
         img.draw();win.flip()
         event.waitKeys()
     else:
         displayText(win, "Please try again! Thank you!\n")
         event.waitKeys()
     return Df
-
 
 def tableWrite(Df, Dict):
     # Move data in Dict into Df.

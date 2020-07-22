@@ -12,13 +12,14 @@ params = {
     'subjectID' : userInputBank[1],      # Subject ID
     'DistanceStart' : 50,
     'DistanceLockWaitTime' : 10, # Distance lock wait time.
-    'Session' : userInputBank[2],
-    'Version' : userInputBank[3],
-    'numPractice' : userInputBank[4],
-    'numTaskRun1': userInputBank[5],
-    'numTaskRun2': userInputBank[6],
+    'Session' : userInputBank[2], # Session ID
+    'Version' : userInputBank[3], # Version
+    'numPractice' : userInputBank[4], # The number of Trials in Practice.
+    'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
+    'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
     'imageDir': './img/doors/',    # directory containing DOOR image stimluli
     'imageSuffix': '*.jpg',   # DOOR image extension.
+    'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
 # declare output file location
     'outFolder': './output', # the location of output file.
 # declare display parameters
@@ -59,7 +60,7 @@ Df = VASplay(Df,win,params,"VAS1")
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
-InstructionPlay(Df,win,params)
+Df = InstructionPlay(Df,win,params)
 
 # ====================== #
 # ===== Practice ======= #
