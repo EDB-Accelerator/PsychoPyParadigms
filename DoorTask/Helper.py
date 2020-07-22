@@ -9,6 +9,10 @@ def userInputPlay():
     userInput.addField('Subject Number:',23986)
     userInput.addField('Session:',1)
     userInput.addField('Version:',1)
+    userInput.addField('# of Practice Trials:', 5)
+    userInput.addField('# of TaskRun1:', 98)
+    userInput.addField('# of TaskRun2:', 98)
+
     return userInput.show()
 
 def Questionplay(Df, win, params, SectionName):
@@ -59,7 +63,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
     Dict["Q_score"], Dict["Q_RT"] = displayVAS(win,"How do you feel about how well you’ve done so far?",
-                                                       ['Sad', 'I did badly', 'Happy', 'I did great'])
+                                               ["I didn't do well","I did very well"])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
 
     # Log the dict result on pandas dataFrame.
@@ -212,10 +216,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                                         size=(width, height))
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
-                img1.draw();
-                img2.draw();
-                message.draw();
-                win.flip()
+                img1.draw();img2.draw();message.draw();win.flip()
                 sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
                 sound1.play()
                 event.waitKeys()
@@ -231,10 +232,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                                         size=(width, height))
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
-                img1.draw();
-                img2.draw();
-                message.draw();
-                win.flip()
+                img1.draw();img2.draw();message.draw();win.flip()
                 sound1 = sound.Sound("./img/sounds/reward_sound.wav")
                 sound1.play()
                 event.waitKeys()
@@ -273,7 +271,7 @@ def displayVAS(win, text, labels):
     scale = visual.RatingScale(win,
                                labels=labels,  # End points
                                scale=None,  # Suppress default
-                               low=0, high=100, tickHeight=0, markerStart=50, precision=1)  # markerstart=50
+                               low=0, high=100, tickHeight=0, markerStart=50, precision=1, size = 2,textSize = 0.3)  # markerstart=50
     myItem = visual.TextStim(win, text=text, height=.12, units='norm', wrapWidth=2)
 
     # Show scale and measure the elapsed wall-clock time.
