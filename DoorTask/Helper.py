@@ -2,8 +2,9 @@ from psychopy import core, visual, event, sound,gui
 import random, re, datetime,glob
 import time
 import pandas as pd
+import numpy as np
 
-# Function for getting user inputs.
+# Function to get user inputs.
 def userInputPlay():
     userInput = gui.Dlg(title="DOORS Task Information")
     userInput.addField('ExperimentName:',"Doors_AA_v8.py")
@@ -13,7 +14,6 @@ def userInputPlay():
     userInput.addField('# of Practice Trials:', 5)
     userInput.addField('# of TaskRun1:', 98)
     userInput.addField('# of TaskRun2:', 98)
-
     return userInput.show()
 
 # Question Session Module.
@@ -137,6 +137,7 @@ def InstructionPlay(Df, win, params):
 
 # Door Game Session Module.
 def DoorGamePlay(Df, win, params, iterNum, SectionName):
+    doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv')).to_numpy())
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
     totalCoin = 0
 
@@ -164,19 +165,27 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         width = params["screenSize"][0] * (1 - level / 110)
         height = params["screenSize"][1] * (1 - level / 110)
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-        img1.draw();
-        win.flip();
-        event.waitKeys()
+        img1.draw();win.flip();
 
         startTime = time.time()
         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
         while (c[0] != "return"):
-            # If waittime is longer than 10 sec, exit this loop.
+
+            # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
-            if Dict["DoorAction_RT"] / 1000 > params['DistanceLockWaitTime']:
-                continue
+            # print(Dict["DoorAction_RT"])
+            if Dict["DoorAction_RT"] > params['DistanceLockWaitTime'] * 1000:
+                c[0] = "timeisUp"
+                break
             core.wait(1 / 60)
-            c = event.waitKeys()  # read a character
+            c = event.waitKeys(maxWait=0.1)  # read a character
+            if c == None:
+                c = ['']
+                continue
+
+            if c[0] != "up" and c[0] != "down":
+                continue
+
             if c[0] == "up" and level < 100:
                 level += 1
             elif c[0] == "down" and level > 0:
@@ -187,8 +196,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
             width = params["screenSize"][0] * (1 - level / 110)
             height = params["screenSize"][1] * (1 - level / 110)
             img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-            img1.draw();
-            win.flip()
+            img1.draw();win.flip()
 
         if c[0] == "return":
             Dict["Distance_lock"] = 1
@@ -200,12 +208,11 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         Dict["Door_anticipation_time"] = random.uniform(0, 2) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
-        if random.random() < level * 0.01:
+        # if random.random() < level * 0.01:
+        if random.random() * 100 < doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
-            img1.draw();
-            win.flip();
-            event.waitKeys()
+            img1.draw();win.flip();event.waitKeys()
             displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
             event.waitKeys()
             # continue
@@ -304,21 +311,18 @@ def displayInstruction(win):
             for i in range(1, 17):
                 imgFile = "./instruction/Slide" + str(i) + ".JPG"
                 img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(1200, 800))
-                img1.draw();
-                win.flip();
+                img1.draw();win.flip();
                 c = event.waitKeys()
 
 def fadeInOutImage(win, image, duration, size):
     for i in range(60):
         opacity = 1 / 60 * (i + 1)
-        # showImage(win, image, opacity, size)
         img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size)
         img.draw();win.flip()
         core.wait(duration / 60)
 
     for i in range(60):
         opacity = 1 - 1 / 60 * (i + 1)
-        # showImage(win, image, opacity, size)
         img = visual.ImageStim(win=win, image=image, units="pix", opacity=opacity, size=size)
         img.draw();win.flip()
         core.wait(duration / 60)

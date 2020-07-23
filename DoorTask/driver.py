@@ -48,9 +48,6 @@ Header = ["ExperimentName","SessionStartDateTime","Subject","Session","Version",
           "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
 
 Df = pd.DataFrame(columns=Header)
-# Dict = {}
-# Dict["ExperimentName"] = 1234
-# Dict["Subject"] = "Jimmy"
 
 # ====================== #
 # ======== VAS ========= #
