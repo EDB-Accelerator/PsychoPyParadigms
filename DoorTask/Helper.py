@@ -1,6 +1,5 @@
 from psychopy import core, visual, event, sound,gui
-import random, re, datetime,glob
-import time
+import random, re, datetime, glob, time
 import pandas as pd
 import numpy as np
 
@@ -15,6 +14,89 @@ def userInputPlay():
     userInput.addField('# of TaskRun1:', 98)
     userInput.addField('# of TaskRun2:', 98)
     return userInput.show()
+
+# Instruction Session Module.
+def InstructionPlay(Df, win, params):
+    Dict = {
+        "ExperimentName": params['expName'],
+        "Subject": params['subjectID'],
+        "Session": params["Session"],
+        "Version": params["Version"],
+        "Section": "Instructions",
+        "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
+    }
+
+    # Display Instruction
+    message = visual.TextStim(win, text="Do you want to see the instruction? (y: Yes, n: No)")
+    message.draw();
+    win.flip();
+    c = ['']
+    # Wait for user types "y" or "n".
+    while (c[0].upper() != "Y" and c[0].upper() != "N"):
+        core.wait(1 / 120)
+        c = event.waitKeys()  # read a character
+
+    # If user types "y", run instruction.
+    if c[0].upper() == "Y":
+        c = ['R']
+        while (c[0].upper() == "R"):
+            core.wait(1 / 120)
+            for i in range(1, 17):
+                imgFile = "./instruction/Slide" + str(i) + ".JPG"
+                img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(1200, 800))
+                img1.draw();
+                win.flip();
+                c = event.waitKeys()
+
+    # Log the dict result on pandas dataFrame.
+    return tableWrite(Df, Dict)
+
+
+# VAS Session Module.
+def VASplay(Df, win, params, SectionName):
+    # VAS Initialization.
+    Dict = {'ExperimentName': params['expName'],
+            "Subject": params['subjectID'],
+            "Session": params['Session'],
+            "Version": params['Version'],
+            "Section": SectionName,
+            "VAS_type": "Anxiety",
+            "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
+
+    # VAS (Anxiety)
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How anxious do you feel right now?",
+                                                       ['Not anxious', 'Very anxious'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # VAS (Avoidance)
+    Dict["VAS_type"] = "Avoidance"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How much do you feel like taking part in the task?",
+                                                       ['Not at all', 'Very much'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # VAS (Tired)
+    Dict["VAS_type"] = "Tired"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How tired are you right now?",
+                                                       ['Not at all tired', 'Very tired'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # VAS (Mood)
+    Dict["VAS_type"] = "Mood"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,
+                                                       "Think about your mood right now. How would you describe it?",
+                                                       ['Worst mood ever', 'Best mood ever'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+    return tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
 # Question Session Module.
 def Questionplay(Df, win, params, SectionName):
@@ -73,67 +155,6 @@ def Questionplay(Df, win, params, SectionName):
 
     return Df
 
-# VAS Session Module.
-def VASplay(Df, win, params, SectionName):
-    Dict = {'ExperimentName': params['expName'],
-            "Subject": params['subjectID'],
-            "Session": params['Session'],
-            "Version": params['Version'],
-            "Section": SectionName,
-            "VAS_type": "Anxiety",
-            "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
-
-    # VAS (Anxiety)
-    startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How anxious do you feel right now?",
-                                                       ['Not anxious', 'Very anxious'])
-    Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # VAS (Avoidance)
-    Dict["VAS_type"] = "Avoidance"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How much do you feel like taking part in the task?",
-                                                       ['Not at all', 'Very much'])
-    Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # VAS (Tired)
-    Dict["VAS_type"] = "Tired"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How tired are you right now?",
-                                                       ['Not at all tired', 'Very tired'])
-    Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # VAS (Mood)
-    Dict["VAS_type"] = "Mood"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,
-                                                       "Think about your mood right now. How would you describe it?",
-                                                       ['Worst mood ever', 'Best mood ever'])
-    Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    return tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-# Instruction Session Module.
-def InstructionPlay(Df, win, params):
-    Dict = {
-        "ExperimentName": params['expName'],
-        "Subject": params['subjectID'],
-        "Session": params["Session"],
-        "Version": params["Version"],
-        "Section": "Instructions",
-        "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
-    }
-
-    # Display Instruction
-    displayInstruction(win)
-
-    # Log the dict result on pandas dataFrame.
-    return tableWrite(Df, Dict)
 
 # Door Game Session Module.
 def DoorGamePlay(Df, win, params, iterNum, SectionName):
@@ -212,9 +233,9 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         if random.random() * 100 < doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
-            img1.draw();win.flip();event.waitKeys()
+            img1.draw();win.flip();event.waitKeys(maxWait=3)
             displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
-            event.waitKeys()
+            event.waitKeys(maxWait=3)
             # continue
         else:
             Dict["Door_opened"] = "opened"
@@ -230,7 +251,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                 img1.draw();img2.draw();message.draw();win.flip()
                 sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
                 sound1.play()
-                event.waitKeys()
+                event.waitKeys(maxWait=3)
                 sound1.stop()
                 totalCoin -= int(p)
                 displayText(win, "Lose your totalCoin: " + str(p) + "!!\n\n Total totalCoin: " + str(totalCoin))
@@ -246,26 +267,26 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                 img1.draw();img2.draw();message.draw();win.flip()
                 sound1 = sound.Sound("./img/sounds/reward_sound.wav")
                 sound1.play()
-                event.waitKeys()
+                event.waitKeys(maxWait=3)
                 sound1.stop()
                 totalCoin += int(r)
                 displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
         startTime = time.time()
-        event.waitKeys()
+        event.waitKeys(maxWait=3)
         Dict["ITI_duration"] = (time.time() - startTime) * 1000
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
     displayText(win, "Your total coin is " + str(totalCoin))
-    event.waitKeys()
+    event.waitKeys(maxWait=3)
     if totalCoin > params['totalRewardThreshold']:
         img = visual.ImageStim(win=win, image="./img/happy_ending.jpg", units="pix", opacity=1,
                                size=params['screenSize'])
         img.draw();win.flip()
-        event.waitKeys()
+        event.waitKeys(maxWait=3)
     else:
         displayText(win, "Please try again! Thank you!\n")
-        event.waitKeys()
+        event.waitKeys(maxWait=3)
     return Df
 
 def tableWrite(Df, Dict):

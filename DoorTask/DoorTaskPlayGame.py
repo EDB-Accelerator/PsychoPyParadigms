@@ -1,3 +1,16 @@
+# Python3-based package
+"""
+DoorTaskPlayGame.py
+
+DoorTask Game Main Driver File.
+
+Created on Fri July 24 15:04:19 2020
+
+@author: Kyunghun Lee
+- Created July/24/20 by KL
+"""
+
+import datetime
 import pandas as pd
 from psychopy import visual, event
 from Helper import fadeInOutImage, Questionplay,DoorGamePlay,VASplay,InstructionPlay,userInputPlay
@@ -31,7 +44,7 @@ params = {
 win = visual.Window(params['screenSize'], monitor="testMonitor")
 
 # Display NIMH logo.
-fadeInOutImage(win,"./img/nimh.png",0.5,(600,600))
+# fadeInOutImage(win,"./img/nimh.png",0.5,(300,300))
 
 # ====================== #
 # ==== Title Screen ==== #
@@ -92,7 +105,8 @@ Df = Questionplay(Df, win, params, "Question")
 
 # Write the output file.
 outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Session']) + '.csv'
+          str(params['Version']) + '_' +  datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+
 Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
 
 # Close the psychopy window.
