@@ -163,6 +163,7 @@ def Questionplay(Df, win, params, SectionName):
 
 # Door Game Session Module.
 def DoorGamePlay(Df, win, params, iterNum, SectionName):
+    # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv')).to_numpy())
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
     totalCoin = 0
