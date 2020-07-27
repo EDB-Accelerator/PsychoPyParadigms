@@ -39,9 +39,8 @@ params = {
     'screenSize' : (1200,800),
 }
 
-
 ## Setup Section.
-win = visual.Window(params['screenSize'], monitor="testMonitor")
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black")
 
 # Display NIMH logo.
 # fadeInOutImage(win,"./img/nimh.png",0.5,(300,300))

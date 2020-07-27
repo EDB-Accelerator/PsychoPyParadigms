@@ -63,6 +63,11 @@ def VASplay(Df, win, params, SectionName):
             "VAS_type": "Anxiety",
             "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
 
+    # VAS Start Screen
+    message = visual.TextStim(win, text="Before we continue, please answer a few questions.")
+    message.draw();win.flip()
+    event.waitKeys(maxWait=3)
+
     # VAS (Anxiety)
     startTime = time.time()
     Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How anxious do you feel right now?",
@@ -226,7 +231,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         Dict["DistanceFromDoor_SubTrial"] = level
 
         # Door Anticipation time
-        Dict["Door_anticipation_time"] = random.uniform(0, 2) * 1000
+        Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
         # if random.random() < level * 0.01:
@@ -254,7 +259,8 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                 event.waitKeys(maxWait=3)
                 sound1.stop()
                 totalCoin -= int(p)
-                displayText(win, "Lose your totalCoin: " + str(p) + "!!\n\n Total totalCoin: " + str(totalCoin))
+                # displayText(win, "Lose your totalCoin: " + str(p) + "!!\n\n Total totalCoin: " + str(totalCoin))
+                displayText(win, "-" + str(p))
             else:
                 Dict["Door_outcome"] = "reward"
                 awardImg = "./img/outcomes/" + r + "_reward.jpg"
@@ -270,23 +276,28 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                 event.waitKeys(maxWait=3)
                 sound1.stop()
                 totalCoin += int(r)
-                displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
-        startTime = time.time()
-        event.waitKeys(maxWait=3)
-        Dict["ITI_duration"] = (time.time() - startTime) * 1000
+                # displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
+                displayText(win, "+" + str(r))
+        # startTime = time.time()
+        # event.waitKeys(maxWait=3)
+        # Dict["ITI_duration"] = (time.time() - startTime) * 1000
+        # ITI duration
+        Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
+        time.sleep(Dict["ITI_duration"] / 1000)
+
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
-    displayText(win, "Your total coin is " + str(totalCoin))
-    event.waitKeys(maxWait=3)
-    if totalCoin > params['totalRewardThreshold']:
-        img = visual.ImageStim(win=win, image="./img/happy_ending.jpg", units="pix", opacity=1,
-                               size=params['screenSize'])
-        img.draw();win.flip()
-        event.waitKeys(maxWait=3)
-    else:
-        displayText(win, "Please try again! Thank you!\n")
-        event.waitKeys(maxWait=3)
+    # displayText(win, "Your total coin is " + str(totalCoin))
+    # event.waitKeys(maxWait=3)
+    # if totalCoin > params['totalRewardThreshold']:
+    #     img = visual.ImageStim(win=win, image="./img/happy_ending.jpg", units="pix", opacity=1,
+    #                            size=params['screenSize'])
+    #     img.draw();win.flip()
+    #     event.waitKeys(maxWait=3)
+    # else:
+    #     displayText(win, "Please try again! Thank you!\n")
+    #     event.waitKeys(maxWait=3)
     return Df
 
 def tableWrite(Df, Dict):
@@ -301,7 +312,8 @@ def displayVAS(win, text, labels):
     scale = visual.RatingScale(win,
                                labels=labels,  # End points
                                scale=None,  # Suppress default
-                               low=0, high=100, tickHeight=0, markerStart=50, precision=1, size = 2,textSize = 0.3)  # markerstart=50
+                               low=0, high=100, tickHeight=0, markerStart=50, precision=1, size = 2,textSize = 0.6,
+                               acceptText='Continue', showValue=False, showAccept=True)  # markerstart=50
     myItem = visual.TextStim(win, text=text, height=.12, units='norm', wrapWidth=2)
 
     # Show scale and measure the elapsed wall-clock time.
