@@ -13,8 +13,9 @@ Created on Fri July 24 15:04:19 2020
 import datetime
 import pandas as pd
 from psychopy import visual, event
-from Helper import fadeInOutImage, Questionplay,DoorGamePlay,VASplay,InstructionPlay,userInputPlay
-
+from Helper import fadeInOutImage, Questionplay,DoorGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput
+from psychopy.hardware import joystick
+import pygame
 # Receive User Input
 userInputBank = userInputPlay()
 
@@ -30,6 +31,7 @@ params = {
     'numPractice' : userInputBank[4], # The number of Trials in Practice.
     'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
+    'JoyStickSupport' : userInputBank[7], # Check if joystick option is checked or not.
     'imageDir': './img/doors/',    # directory containing DOOR image stimluli
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
@@ -40,7 +42,7 @@ params = {
 }
 
 ## Setup Section.
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black")
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 # Display NIMH logo.
 # fadeInOutImage(win,"./img/nimh.png",0.5,(300,300))
@@ -49,7 +51,8 @@ win = visual.Window(params['screenSize'], monitor="testMonitor",color="black")
 # ==== Title Screen ==== #
 # ====================== #
 img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
-img1.draw();win.flip();event.waitKeys()
+img1.draw();win.flip();
+waitUserInput(img1,win,params)
 
 # ======================== #
 # Dataframe Initialization #
