@@ -193,6 +193,9 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
 
     if params['JoyStickSupport'] == False:
         return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
+    # Start Section Display
+    message = visual.TextStim(win, text="Now [" + SectionName + "] Section is started.")
+    waitUserInput(message, win, params)
 
     # Read Door Open Chance file provided by Rany.
     # doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv')).to_numpy())
@@ -273,10 +276,10 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
-        if random.random() * 100 < doorOpenChanceMap[level]:
+        if random.random() < doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
-            img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
-            img1.draw();win.flip();event.waitKeys(maxWait=3)
+            # img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
+            # img1.draw();win.flip();event.waitKeys(maxWait=3)
             # displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
             displayText(win, "Door Closed")
             # event.waitKeys(maxWait=3)
@@ -341,6 +344,10 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
 
 # Door Game Session Module.
 def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
+
+    message = visual.TextStim(win, text="[" + SectionName + "] Section is started.")
+    waitUserInput(message, win, params)
+
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
@@ -414,10 +421,10 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
         # if random.random() < level * 0.01:
-        if random.random() * 100 < doorOpenChanceMap[level]:
+        if random.random()  < doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
-            img1.draw();win.flip();event.waitKeys(maxWait=3)
+            # img1.draw();win.flip();event.waitKeys(maxWait=3)
             # displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
             displayText(win, "Door Closed")
             # event.waitKeys(maxWait=3)
