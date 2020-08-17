@@ -32,7 +32,7 @@ params = {
     'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : userInputBank[7], # Check if joystick option is checked or not.
-    'imageDir': './img/doors/',    # directory containing DOOR image stimluli
+    'imageDir': './img/doors_v1',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
 # declare output file location
@@ -40,6 +40,9 @@ params = {
 # declare display parameters
     'screenSize' : (1200,800),
 }
+
+if userInputBank[3]!= 1:
+    params['imageDir'] = './img/doors_v2'
 
 ## Setup Section.
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')

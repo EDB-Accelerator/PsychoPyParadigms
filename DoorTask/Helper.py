@@ -13,7 +13,7 @@ def waitUserInput(img,win,params):
         nJoys = joystick.getNumJoysticks()  # to check if we have any
         if nJoys == 0:
             print("There is no available Joystick.")
-            exit()
+            exit(1)
         joy = joystick.Joystick(0)  # id must be <= nJoys - 1
         startTime = time.time()
 
