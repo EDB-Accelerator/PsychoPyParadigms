@@ -3,6 +3,8 @@ import random, re, datetime, glob, time, platform
 import pandas as pd
 import numpy as np
 from psychopy.hardware import joystick
+import pygame
+from sys import exit
 
 # Function to wait for any user input.
 def waitUserInput(img,win,params):
@@ -13,14 +15,17 @@ def waitUserInput(img,win,params):
         nJoys = joystick.getNumJoysticks()  # to check if we have any
         if nJoys == 0:
             print("There is no available Joystick.")
-            exit(1)
+            exit()
         joy = joystick.Joystick(0)  # id must be <= nJoys - 1
         startTime = time.time()
 
-        while True:  # while presenting stimuli
+        count = 0
+        pygame.joystick.init()
+        while count < 3:  # while presenting stimuli
             if sum(joy.getAllButtons())!=0:
-                break
-            if (time.time() - startTime) > 5:
+                # break
+                count += 1
+            if (time.time() - startTime) > 100:
                 break
             img.draw();win.flip()
         img.draw();win.flip()
@@ -186,8 +191,11 @@ def Questionplay(Df, win, params, SectionName):
     # Log the dict result on pandas dataFrame.
     Df = tableWrite(Df, Dict)
 
-    return Df
+    # Ending Screen
+    img1 = visual.ImageStim(win=win, image="./instruction/end_slide.jpg", units="pix", opacity=1, size=(1200, 800))
+    waitUserInput(img1, win, params)
 
+    return Df
 
 # Door Game Session Module.
 def DoorGamePlay(Df, win, params, iterNum, SectionName):
@@ -195,13 +203,23 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
     if params['JoyStickSupport'] == False:
         return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
     # Start Section Display
-    message = visual.TextStim(win, text="Now [" + SectionName + "] Section is started.")
-    waitUserInput(message, win, params)
+    # if SectionName == "Practice":
+    #     img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(1200, 800))
+    #     waitUserInput(img1, win, params)
+    if SectionName == "TaskRun1":
+        img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(1200, 800))
+        waitUserInput(img1, win, params)
+
+    # message = visual.TextStim(win, text="Now [" + SectionName + "] Section is started.")
+    ################################################KL is working.
+    # message = visual.TextStim(win, text="Clink the button to continue.")
+    # waitUserInput(message, win, params)
 
     # Read Door Open Chance file provided by Rany.
     # doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv')).to_numpy())
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
+
     totalCoin = 0
 
     # Joystick Initialization
@@ -250,38 +268,65 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         Dict["Distance_lock"] = 0
         MaxTime = params['DistanceLockWaitTime'] * 1000
 
-
         # Initial screen
         width = params["screenSize"][0] * (1 - level / 110)
         height = params["screenSize"][1] * (1 - level / 110)
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
         win.flip()
-        while True:  # while presenting stimuli
+        count = 0
+        pygame.joystick.init()
+        while count < 3:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
             if Dict["DoorAction_RT"] > MaxTime:
                 c[0] = "timeisUp"
                 break
             if (sum(joy.getAllButtons()) != 0):
-                Dict["Distance_lock"] = 1
-                break
+                count += 1
+                if count >= 2:
+                    Dict["Distance_lock"] = 1
+                    break
 
             joyUserInput = joy.getY()
             if joyUserInput != 1 and joyUserInput != -1:
                 img1.draw();win.flip()
                 continue
 
-            if joyUserInput == 1 and level > 0:
-                level -= 1
-            elif joyUserInput == -1 and level < 100:
+            if joyUserInput > 0.2 and joyUserInput < 0.5 and level < 100:
                 level += 1
+                width -= params["screenSize"][0] * (1 / 110)
+                height -= params["screenSize"][1] * (1/ 110)
+            if joyUserInput >= 0.5 and joyUserInput < 1 and level < 100:
+                level += 3
+                level = min(100, level)
+                width -= 3*params["screenSize"][0] * (1 / 110)
+                height -= 3*params["screenSize"][1] * (1/ 110)
+            elif joyUserInput == 1 and level < 100:
+                level += 6
+                level = min(100,level)
+                width -= 6*params["screenSize"][0] * (1 / 110)
+                height -= 6*params["screenSize"][1] * (1/ 110)
+            elif joyUserInput == -1 and level > 0:
+                level -= 6
+                level = max(0,level)
+                width += 6*params["screenSize"][0] * (1 / 110)
+                height += 6*params["screenSize"][1] * (1/ 110)
+            elif joyUserInput < -0.2 and joyUserInput > -0.5 and level > 0:
+                level -= 1
+                width += params["screenSize"][0] * (1 / 110)
+                height += params["screenSize"][1] * (1/ 110)
+            elif joyUserInput <= -0.5 and joyUserInput > -1 and level > 0:
+                level -= 3
+                level = max(0, level)
+                width += 3*params["screenSize"][0] * (1 / 110)
+                height += 3*params["screenSize"][1] * (1/ 110)
 
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
-            width = params["screenSize"][0] * (1 - level / 110)
-            height = params["screenSize"][1] * (1 - level / 110)
+            # width = params["screenSize"][0] * (1 - level / 110)
+            # height = params["screenSize"][1] * (1 - level / 110)
             # img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
             img1.size = (width, height)
             img1.draw();win.flip()
@@ -346,17 +391,145 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
-    # displayText(win, "Your total coin is " + str(totalCoin))
-    # event.waitKeys(maxWait=3)
-    # if totalCoin > params['totalRewardThreshold']:
-    #     img = visual.ImageStim(win=win, image="./img/happy_ending.jpg", units="pix", opacity=1,
-    #                            size=params['screenSize'])
-    #     img.draw();win.flip()
-    #     event.waitKeys(maxWait=3)
-    # else:
-    #     displayText(win, "Please try again! Thank you!\n")
-    #     event.waitKeys(maxWait=3)
+    if SectionName != "Practice":
+        textString = "Let's rest for a bit.\n\n"
+        textString = textString + "You have " + str(totalCoin) + " coins.\n\n"
+        textString = textString + "Click when you are ready to keep playing."
+
+        message = visual.TextStim(win, text=textString)
+        waitUserInput(message, win, params)
+
+    # Start Section Display
+
     return Df
+
+# Door Game Session Module.
+def PracticeGamePlay(Df, win, params, iterNum, SectionName):
+
+    if params['JoyStickSupport'] == False:
+        return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
+    # Start Section Display
+    img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(1200, 800))
+    waitUserInput(img1, win, params)
+
+    # Read Door Open Chance file provided by Rany.
+    imgList = glob.glob("./img/practice/*_door.jpg")
+
+    # Joystick Initialization
+    joystick.backend = 'pyglet'  # must match the Window
+    nJoys = joystick.getNumJoysticks()  # to check if we have any
+    if nJoys == 0:
+        print("There is no available Joystick.")
+        exit()
+    joy = joystick.Joystick(0)  # id must be <= nJoys - 1
+    for i in range(iterNum):
+        Dict = {
+            "ExperimentName" : params['expName'],
+            "Subject" : params['subjectID'],
+            "Session" : params["Session"],
+            "Version" : params["Version"],
+            "Section" : SectionName,
+            "SessionStartDateTime" : datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+        }
+
+        # Pick up random image.
+        randN = random.randint(0, len(imgList) - 1)
+        imgFile = imgList[randN]
+
+        # Display the image.
+        c = ['']
+        level = Dict["Distance_start"] = params["DistanceStart"]
+        width = params["screenSize"][0] * (1 - level / 110)
+        height = params["screenSize"][1] * (1 - level / 110)
+        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+        img1.draw();win.flip();
+
+        startTime = time.time()
+        Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
+        Dict["Distance_lock"] = 0
+        MaxTime = params['DistanceLockWaitTime'] * 1000
+
+        # Initial screen
+        width = params["screenSize"][0] * (1 - level / 110)
+        height = params["screenSize"][1] * (1 - level / 110)
+        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+        img1.draw();
+        win.flip()
+        count = 0
+        pygame.joystick.init()
+        while count < 3:  # while presenting stimuli
+            # If waiting time is longer than 10 sec, exit this loop.
+            Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
+            if Dict["DoorAction_RT"] > MaxTime:
+                c[0] = "timeisUp"
+                break
+            if (sum(joy.getAllButtons()) != 0):
+                count += 1
+                if count >= 2:
+                    Dict["Distance_lock"] = 1
+                    break
+
+            joyUserInput = joy.getY()
+            if joyUserInput != 1 and joyUserInput != -1:
+                img1.draw();win.flip()
+                continue
+
+            if joyUserInput > 0.2 and joyUserInput < 0.5 and level < 100:
+                level += 1
+                width -= params["screenSize"][0] * (1 / 110)
+                height -= params["screenSize"][1] * (1/ 110)
+            if joyUserInput >= 0.5 and joyUserInput < 1 and level < 100:
+                level += 3
+                level = min(100, level)
+                width -= 3*params["screenSize"][0] * (1 / 110)
+                height -= 3*params["screenSize"][1] * (1/ 110)
+            elif joyUserInput == 1 and level < 100:
+                level += 6
+                level = min(100,level)
+                width -= 6*params["screenSize"][0] * (1 / 110)
+                height -= 6*params["screenSize"][1] * (1/ 110)
+            elif joyUserInput == -1 and level > 0:
+                level -= 6
+                level = max(0,level)
+                width += 6*params["screenSize"][0] * (1 / 110)
+                height += 6*params["screenSize"][1] * (1/ 110)
+            elif joyUserInput < -0.2 and joyUserInput > -0.5 and level > 0:
+                level -= 1
+                width += params["screenSize"][0] * (1 / 110)
+                height += params["screenSize"][1] * (1/ 110)
+            elif joyUserInput <= -0.5 and joyUserInput > -1 and level > 0:
+                level -= 3
+                level = max(0, level)
+                width += 3*params["screenSize"][0] * (1 / 110)
+                height += 3*params["screenSize"][1] * (1/ 110)
+
+            Dict["Distance_max"] = max(Dict["Distance_max"], level)
+            Dict["Distance_min"] = min(Dict["Distance_min"], level)
+
+            # width = params["screenSize"][0] * (1 - level / 110)
+            # height = params["screenSize"][1] * (1 - level / 110)
+            # img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+            img1.size = (width, height)
+            img1.draw();win.flip()
+
+        Dict["DistanceFromDoor_SubTrial"] = level
+
+        # Door Anticipation time
+        Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
+        time.sleep(Dict["Door_anticipation_time"] / 1000)
+
+        awardImg = "./img/practice/practice_outcome.jpg"
+        width = 200 * (1 - level / 110)
+        height = 400 * (1 - level / 110)
+        img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
+                                size=(width, height))
+        waitUserInput(img2, win, params)
+        Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
+        time.sleep(Dict["ITI_duration"] / 1000)
+        Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    return Df
+
 
 # Door Game Session Module.
 def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):

@@ -13,14 +13,7 @@ Created on Fri July 24 15:04:19 2020
 import datetime
 import pandas as pd
 from psychopy import visual, event
-from Helper import fadeInOutImage, Questionplay,DoorGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput
-from psychopy.hardware import joystick
-import pygame
-from PIL import Image
-import numpy as np
-import cv2
-
-
+from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput
 
 # Receive User Input
 userInputBank = userInputPlay()
@@ -63,14 +56,6 @@ img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params[
 img1.draw();win.flip();
 waitUserInput(img1,win,params)
 
-img1.size=(100,100)
-
-img1 = visual.GratingStim(win=win,tex="./img/title.jpg",units="pix",size=params['screenSize'])
-# img1 =  visual.ImageStim(win=win,image=imgtest,units="pix",colorSpace='rgb',size=params['screenSize'])
-img1.draw();win.flip();
-img1.size += (100,100)
-waitUserInput(img1,win,params)
-
 # ======================== #
 # Dataframe Initialization #
 # ======================== #
@@ -95,7 +80,7 @@ Df = InstructionPlay(Df,win,params)
 # ===== Practice ======= #
 # ====================== #
 # Get the DOOR image file list.
-Df = DoorGamePlay(Df,win,params,params['numPractice'],"Practice")
+Df = PracticeGamePlay(Df,win,params,params['numPractice'],"Practice")
 
 # ====================== #
 # ===== TaskRun1 ======= #
@@ -127,6 +112,7 @@ outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(param
           str(params['Version']) + '_' +  datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
 
 Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
+
 
 # Close the psychopy window.
 win.close()
