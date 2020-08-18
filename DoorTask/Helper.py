@@ -1,5 +1,5 @@
 from psychopy import core, visual, event, sound,gui
-import random, re, datetime, glob, time
+import random, re, datetime, glob, time, platform
 import pandas as pd
 import numpy as np
 from psychopy.hardware import joystick
@@ -226,8 +226,14 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         # Pick up random image.
         randN = random.randint(0, len(imgList) - 1)
         imgFile = imgList[randN]
-        imgFile.split('/')[-1]
-        p, r = re.findall(r'\d+', imgFile.split('/')[-1])
+        # print(imgFile)
+        # print(imgFile.split('/')[-1])
+
+        if platform.system() =='Windows':
+            p, r = re.findall(r'\d+', imgFile.split('\\')[-1])
+        else:
+            p, r = re.findall(r'\d+', imgFile.split('/')[-1])
+
         Dict["Punishment_magnitude"] = p
         Dict["Reward_magnitude"] = r
 
@@ -243,6 +249,14 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
         Dict["Distance_lock"] = 0
         MaxTime = params['DistanceLockWaitTime'] * 1000
+
+
+        # Initial screen
+        width = params["screenSize"][0] * (1 - level / 110)
+        height = params["screenSize"][1] * (1 - level / 110)
+        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+        img1.draw();
+        win.flip()
         while True:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -268,7 +282,8 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
 
             width = params["screenSize"][0] * (1 - level / 110)
             height = params["screenSize"][1] * (1 - level / 110)
-            img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+            # img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+            img1.size = (width, height)
             img1.draw();win.flip()
 
         Dict["DistanceFromDoor_SubTrial"] = level

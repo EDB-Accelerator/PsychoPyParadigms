@@ -16,6 +16,12 @@ from psychopy import visual, event
 from Helper import fadeInOutImage, Questionplay,DoorGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput
 from psychopy.hardware import joystick
 import pygame
+from PIL import Image
+import numpy as np
+import cv2
+
+
+
 # Receive User Input
 userInputBank = userInputPlay()
 
@@ -32,7 +38,7 @@ params = {
     'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : userInputBank[7], # Check if joystick option is checked or not.
-    'imageDir': './img/doors_v1',    # directory containing DOOR image stimluli (default value)
+    'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
 # declare output file location
@@ -42,7 +48,7 @@ params = {
 }
 
 if userInputBank[3]!= 1:
-    params['imageDir'] = './img/doors_v2'
+    params['imageDir'] = './img/doors2/'
 
 ## Setup Section.
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
@@ -55,6 +61,14 @@ win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",wi
 # ====================== #
 img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
 img1.draw();win.flip();
+waitUserInput(img1,win,params)
+
+img1.size=(100,100)
+
+img1 = visual.GratingStim(win=win,tex="./img/title.jpg",units="pix",size=params['screenSize'])
+# img1 =  visual.ImageStim(win=win,image=imgtest,units="pix",colorSpace='rgb',size=params['screenSize'])
+img1.draw();win.flip();
+img1.size += (100,100)
 waitUserInput(img1,win,params)
 
 # ======================== #
