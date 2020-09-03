@@ -18,9 +18,6 @@ from psychopy import parallel
 # Receive User Input
 userInputBank = userInputPlay()
 
-# port = parallel.ParallelPort(address=params['portAddress'])
-#     port.setData(0) # initialize to all zeros
-
 # Declare primary task parameters.
 params = {
 # Declare stimulus and response parameters
@@ -34,7 +31,8 @@ params = {
     'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : userInputBank[7], # Check if joystick option is checked or not.
-    'portAddress': int(userInputBank[8], 16), # Port Address
+    'triggerSupport': userInputBank[8],  # Check if joystick option is checked or not.
+    'portAddress': int(userInputBank[9], 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
@@ -48,6 +46,12 @@ if userInputBank[3]!= 1:
 
 ## Setup Section.
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+
+# Trigger Initialization
+port = 0
+if params['triggerSupport']:
+    port = parallel.ParallelPort(address=params['portAddress'])
+    port.setData(0) # initialize to all zeros
 
 # Display NIMH logo.
 # fadeInOutImage(win,"./img/nimh.png",0.5,(300,300))
@@ -83,12 +87,12 @@ Df = InstructionPlay(Df,win,params)
 # ===== Practice ======= #
 # ====================== #
 # Get the DOOR image file list.
-Df = PracticeGamePlay(Df,win,params,params['numPractice'],"Practice")
+Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,"Practice")
 
 # ====================== #
 # ===== TaskRun1 ======= #
 # ====================== #
-Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],"TaskRun1")
+Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,"TaskRun1")
 
 # ====================== #
 # ======== VAS2 ========= #
@@ -98,7 +102,7 @@ Df = VASplay(Df,win,params,"VAS2")
 # ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
-Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],"TaskRun2")
+Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
 
 # ====================== #
 # ======== VAS3 ========= #

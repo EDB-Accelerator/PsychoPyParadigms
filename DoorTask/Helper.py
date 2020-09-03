@@ -6,6 +6,11 @@ from psychopy.hardware import joystick
 import pygame
 from sys import exit
 
+def triggerGo(port,params,r,p,e):
+    if params['triggerSupport']:
+        s = (e - 1) * 7 ** 2 + (p - 1) * 7 + (r - 1)
+        port.setData(s)
+
 # Function to wait for any user input.
 def waitUserInput(img,win,params):
     if params['JoyStickSupport'] == False:
@@ -37,12 +42,12 @@ def userInputPlay():
     userInput.addField('Subject Number:',23986)
     userInput.addField('Session:',1)
     # userInput.addField('Version:',1)
-    userInput.addField('Session:', 1)
     userInput.addField('Version:', choices=[1, 2])
     userInput.addField('# of Practice Trials:', 5)
     userInput.addField('# of TaskRun1:', 98)
     userInput.addField('# of TaskRun2:', 98)
     userInput.addField('Joystick Support:', True)
+    userInput.addField('Trigger Support:', True)
     userInput.addField('Port Address', "0xE050")
     return userInput.show()
 
@@ -200,25 +205,15 @@ def Questionplay(Df, win, params, SectionName):
     return Df
 
 # Door Game Session Module.
-def DoorGamePlay(Df, win, params, iterNum, SectionName):
+def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
 
     if params['JoyStickSupport'] == False:
         return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
-    # Start Section Display
-    # if SectionName == "Practice":
-    #     img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(1200, 800))
-    #     waitUserInput(img1, win, params)
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(1200, 800))
         waitUserInput(img1, win, params)
 
-    # message = visual.TextStim(win, text="Now [" + SectionName + "] Section is started.")
-    ################################################KL is working.
-    # message = visual.TextStim(win, text="Clink the button to continue.")
-    # waitUserInput(message, win, params)
-
     # Read Door Open Chance file provided by Rany.
-    # doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv')).to_numpy())
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
 
@@ -246,8 +241,6 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         # Pick up random image.
         randN = random.randint(0, len(imgList) - 1)
         imgFile = imgList[randN]
-        # print(imgFile)
-        # print(imgFile.split('/')[-1])
 
         if platform.system() =='Windows':
             p, r = re.findall(r'\d+', imgFile.split('\\')[-1])
@@ -265,6 +258,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();win.flip();
 
+
         startTime = time.time()
         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
         Dict["Distance_lock"] = 0
@@ -276,6 +270,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
         win.flip()
+        triggerGo(port, params, r, p, 1) # Trigger: Door onset (conflict)
         count = 0
         pygame.joystick.init()
         while count < 3:  # while presenting stimuli
@@ -333,6 +328,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
             img1.size = (width, height)
             img1.draw();win.flip()
 
+        triggerGo(port, params, r, p, 2) # Trigger: Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
 
         # Door Anticipation time
@@ -341,13 +337,9 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
 
         if random.random() < doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
-            # img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
-            # img1.draw();win.flip();event.waitKeys(maxWait=3)
-            # displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
-            # displayText(win, "Door Closed")
             img1.draw();win.flip()
+            triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
             event.waitKeys(maxWait=3)
-            # continue
         else:
             Dict["Door_opened"] = "opened"
             if random.random() < 0.5:
@@ -360,12 +352,12 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
+                triggerGo(port, params, r, p, 4)  #Door outcome: punishment
                 sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
                 sound1.play()
                 event.waitKeys(maxWait=3)
                 sound1.stop()
                 totalCoin -= int(p)
-                # displayText(win, "Lose your totalCoin: " + str(p) + "!!\n\n Total totalCoin: " + str(totalCoin))
                 displayText(win, "-" + str(p))
             else:
                 Dict["Door_outcome"] = "reward"
@@ -377,6 +369,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
+                triggerGo(port, params, r, p, 3)  # Door outcome: reward
                 sound1 = sound.Sound("./img/sounds/reward_sound.wav")
                 sound1.play()
                 event.waitKeys(maxWait=3)
@@ -384,9 +377,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
                 totalCoin += int(r)
                 # displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
                 displayText(win, "+" + str(r))
-        # startTime = time.time()
-        # event.waitKeys(maxWait=3)
-        # Dict["ITI_duration"] = (time.time() - startTime) * 1000
+
         # ITI duration
         Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
         time.sleep(Dict["ITI_duration"] / 1000)
@@ -407,7 +398,7 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
     return Df
 
 # Door Game Session Module.
-def PracticeGamePlay(Df, win, params, iterNum, SectionName):
+def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
 
     if params['JoyStickSupport'] == False:
         return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
@@ -457,6 +448,7 @@ def PracticeGamePlay(Df, win, params, iterNum, SectionName):
         height = params["screenSize"][1] * (1 - level / 110)
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
+        triggerGo(port, params, 0, 0, 1)  # Door onset (conflict)
         win.flip()
         count = 0
         pygame.joystick.init()
@@ -515,6 +507,7 @@ def PracticeGamePlay(Df, win, params, iterNum, SectionName):
             img1.size = (width, height)
             img1.draw();win.flip()
 
+        triggerGo(port, params, 0, 0, 2)  # Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
 
         # Door Anticipation time
