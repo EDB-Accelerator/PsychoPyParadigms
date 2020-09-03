@@ -37,11 +37,13 @@ def userInputPlay():
     userInput.addField('Subject Number:',23986)
     userInput.addField('Session:',1)
     # userInput.addField('Version:',1)
+    userInput.addField('Session:', 1)
     userInput.addField('Version:', choices=[1, 2])
     userInput.addField('# of Practice Trials:', 5)
     userInput.addField('# of TaskRun1:', 98)
     userInput.addField('# of TaskRun2:', 98)
     userInput.addField('Joystick Support:', True)
+    userInput.addField('Port Address', "0xE050")
     return userInput.show()
 
 # Instruction Session Module.
@@ -342,15 +344,16 @@ def DoorGamePlay(Df, win, params, iterNum, SectionName):
             # img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
             # img1.draw();win.flip();event.waitKeys(maxWait=3)
             # displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
-            displayText(win, "Door Closed")
-            # event.waitKeys(maxWait=3)
+            # displayText(win, "Door Closed")
+            img1.draw();win.flip()
+            event.waitKeys(maxWait=3)
             # continue
         else:
             Dict["Door_opened"] = "opened"
             if random.random() < 0.5:
                 Dict["Door_outcome"] = "punishment"
                 awardImg = "./img/outcomes/" + p + "_punishment.jpg"
-                width = 200 * (1 - level / 110)
+                width = 300 * (1 - level / 110)
                 height = 400 * (1 - level / 110)
                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
                                         size=(width, height))
@@ -612,11 +615,12 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
         # if random.random() < level * 0.01:
         if random.random()  < doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
-            img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
+            # img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
             # img1.draw();win.flip();event.waitKeys(maxWait=3)
             # displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
-            displayText(win, "Door Closed")
-            # event.waitKeys(maxWait=3)
+            # displayText(win, "Door Closed")
+            img1.draw();win.flip()
+            event.waitKeys(maxWait=3)
             # continue
         else:
             Dict["Door_opened"] = "opened"
@@ -654,9 +658,6 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
                 totalCoin += int(r)
                 # displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
                 displayText(win, "+" + str(r))
-        # startTime = time.time()
-        # event.waitKeys(maxWait=3)
-        # Dict["ITI_duration"] = (time.time() - startTime) * 1000
         # ITI duration
         Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
         time.sleep(Dict["ITI_duration"] / 1000)
@@ -664,16 +665,6 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
-    # displayText(win, "Your total coin is " + str(totalCoin))
-    # event.waitKeys(maxWait=3)
-    # if totalCoin > params['totalRewardThreshold']:
-    #     img = visual.ImageStim(win=win, image="./img/happy_ending.jpg", units="pix", opacity=1,
-    #                            size=params['screenSize'])
-    #     img.draw();win.flip()
-    #     event.waitKeys(maxWait=3)
-    # else:
-    #     displayText(win, "Please try again! Thank you!\n")
-    #     event.waitKeys(maxWait=3)
     return Df
 
 def tableWrite(Df, Dict):
@@ -689,7 +680,7 @@ def displayVAS(win, text, labels):
                                labels=labels,  # End points
                                scale=None,  # Suppress default
                                low=0, high=100, tickHeight=0, markerStart=50, precision=1, size = 2,textSize = 0.6,
-                               acceptText='Continue', showValue=False, showAccept=True)  # markerstart=50
+                               acceptText='Continue', showValue=False, showAccept=True,markerColor="Yellow")  # markerstart=50
     myItem = visual.TextStim(win, text=text, height=.12, units='norm', wrapWidth=2)
 
     # Show scale and measure the elapsed wall-clock time.

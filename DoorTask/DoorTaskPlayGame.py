@@ -14,9 +14,12 @@ import datetime
 import pandas as pd
 from psychopy import visual, event
 from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput
-
+from psychopy import parallel
 # Receive User Input
 userInputBank = userInputPlay()
+
+# port = parallel.ParallelPort(address=params['portAddress'])
+#     port.setData(0) # initialize to all zeros
 
 # Declare primary task parameters.
 params = {
@@ -31,6 +34,7 @@ params = {
     'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : userInputBank[7], # Check if joystick option is checked or not.
+    'portAddress': int(userInputBank[8], 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
@@ -39,7 +43,6 @@ params = {
 # declare display parameters
     'screenSize' : (1200,800),
 }
-
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
 
@@ -112,7 +115,6 @@ outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(param
           str(params['Version']) + '_' +  datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
 
 Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
-
 
 # Close the psychopy window.
 win.close()
