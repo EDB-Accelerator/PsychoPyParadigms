@@ -5,10 +5,12 @@ import numpy as np
 from psychopy.hardware import joystick
 import pygame
 from sys import exit
+from psychopy import parallel
 
 def triggerGo(port,params,r,p,e):
     if params['triggerSupport']:
-        s = (e - 1) * 7 ** 2 + (p - 1) * 7 + (r - 1)
+        s = (e - 1) * 7 ** 2 + (int(p) - 1) * 7 + (int(r) - 1)
+        # port = parallel.ParallelPort(address=params['portAddress'])
         port.setData(s)
 
 # Function to wait for any user input.
