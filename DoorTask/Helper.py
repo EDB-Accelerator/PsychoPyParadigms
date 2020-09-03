@@ -290,7 +290,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 img1.draw();win.flip()
                 continue
 
-            if joyUserInput > 0.2 and joyUserInput < 0.5 and level < 100:
+            if joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
                 level += 1
                 width -= params["screenSize"][0] * (1 / 110)
                 height -= params["screenSize"][1] * (1/ 110)
@@ -309,7 +309,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 level = max(0,level)
                 width += 6*params["screenSize"][0] * (1 / 110)
                 height += 6*params["screenSize"][1] * (1/ 110)
-            elif joyUserInput < -0.2 and joyUserInput > -0.5 and level > 0:
+            elif joyUserInput < 0 and joyUserInput > -0.5 and level > 0:
                 level -= 1
                 width += params["screenSize"][0] * (1 / 110)
                 height += params["screenSize"][1] * (1/ 110)
@@ -339,7 +339,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             Dict["Door_opened"] = "closed"
             img1.draw();win.flip()
             triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
-            event.waitKeys(maxWait=3)
+            event.waitKeys(maxWait=2)
         else:
             Dict["Door_opened"] = "opened"
             if random.random() < 0.5:
@@ -355,7 +355,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 triggerGo(port, params, r, p, 4)  #Door outcome: punishment
                 sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
                 sound1.play()
-                event.waitKeys(maxWait=3)
+                event.waitKeys(maxWait=2)
                 sound1.stop()
                 totalCoin -= int(p)
                 displayText(win, "-" + str(p))
@@ -368,17 +368,20 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                                         size=(width, height))
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
-                img1.draw();img2.draw();message.draw();win.flip()
+                # img1.draw();img2.draw();message.draw();win.flip()
+                img1.draw();img2.draw();win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
                 sound1 = sound.Sound("./img/sounds/reward_sound.wav")
                 sound1.play()
-                event.waitKeys(maxWait=3)
+                event.waitKeys(maxWait=2)
                 sound1.stop()
                 totalCoin += int(r)
-                # displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
-                displayText(win, "+" + str(r))
 
         # ITI duration
+        width = params["screenSize"][0]
+        height = params["screenSize"][1]
+        img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
+        img1.draw();win.flip();
         Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
         time.sleep(Dict["ITI_duration"] / 1000)
 
@@ -448,7 +451,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         height = params["screenSize"][1] * (1 - level / 110)
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
-        triggerGo(port, params, 0, 0, 1)  # Door onset (conflict)
+        triggerGo(port, params, 1, 1, 1)  # Door onset (conflict)
         win.flip()
         count = 0
         pygame.joystick.init()
@@ -469,7 +472,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 img1.draw();win.flip()
                 continue
 
-            if joyUserInput > 0.2 and joyUserInput < 0.5 and level < 100:
+            if joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
                 level += 1
                 width -= params["screenSize"][0] * (1 / 110)
                 height -= params["screenSize"][1] * (1/ 110)
@@ -488,7 +491,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 level = max(0,level)
                 width += 6*params["screenSize"][0] * (1 / 110)
                 height += 6*params["screenSize"][1] * (1/ 110)
-            elif joyUserInput < -0.2 and joyUserInput > -0.5 and level > 0:
+            elif joyUserInput < 0 and joyUserInput > -0.5 and level > 0:
                 level -= 1
                 width += params["screenSize"][0] * (1 / 110)
                 height += params["screenSize"][1] * (1/ 110)
@@ -501,13 +504,10 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
-            # width = params["screenSize"][0] * (1 - level / 110)
-            # height = params["screenSize"][1] * (1 - level / 110)
-            # img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
             img1.size = (width, height)
             img1.draw();win.flip()
 
-        triggerGo(port, params, 0, 0, 2)  # Joystick lock (start anticipation)
+        triggerGo(port, params, 1, 1, 2)  # Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
 
         # Door Anticipation time
@@ -519,9 +519,21 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         height = 400 * (1 - level / 110)
         img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
                                 size=(width, height))
-        waitUserInput(img2, win, params)
+        # waitUserInput(img2, win, params)
+        img1.draw();img2.draw();win.flip()
+        event.waitKeys(maxWait=2)
+
+        # Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
+        # time.sleep(Dict["ITI_duration"] / 1000)
+
+        # ITI duration
+        width = params["screenSize"][0]
+        height = params["screenSize"][1]
+        img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
+        img1.draw();win.flip();
         Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
         time.sleep(Dict["ITI_duration"] / 1000)
+
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
     return Df
