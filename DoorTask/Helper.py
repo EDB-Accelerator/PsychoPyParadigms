@@ -457,6 +457,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         win.flip()
         count = 0
         pygame.joystick.init()
+        preInput = joy.getY()
         while count < 3:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -474,16 +475,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 img1.draw();win.flip()
                 continue
 
-            if joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
-                level += 1
-                width -= params["screenSize"][0] * (1 / 110)
-                height -= params["screenSize"][1] * (1/ 110)
-            if joyUserInput >= 0.5 and joyUserInput < 1 and level < 100:
-                level += 3
-                level = min(100, level)
-                width -= 3*params["screenSize"][0] * (1 / 110)
-                height -= 3*params["screenSize"][1] * (1/ 110)
-            elif joyUserInput == 1 and level < 100:
+            if joyUserInput == 1 and level < 100:
                 level += 6
                 level = min(100,level)
                 width -= 6*params["screenSize"][0] * (1 / 110)
@@ -493,16 +485,27 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 level = max(0,level)
                 width += 6*params["screenSize"][0] * (1 / 110)
                 height += 6*params["screenSize"][1] * (1/ 110)
-            elif joyUserInput < 0 and joyUserInput > -0.5 and level > 0:
+            # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
+            elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
+                level += 1
+                width -= params["screenSize"][0] * (1 / 110)
+                height -= params["screenSize"][1] * (1/ 110)
+            elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
+                level += 3
+                level = min(100, level)
+                width -= 3*params["screenSize"][0] * (1 / 110)
+                height -= 3*params["screenSize"][1] * (1/ 110)
+            elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
                 level -= 1
                 width += params["screenSize"][0] * (1 / 110)
                 height += params["screenSize"][1] * (1/ 110)
-            elif joyUserInput <= -0.5 and joyUserInput > -1 and level > 0:
+            elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
                 level -= 3
                 level = max(0, level)
                 width += 3*params["screenSize"][0] * (1 / 110)
                 height += 3*params["screenSize"][1] * (1/ 110)
 
+            preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
