@@ -65,7 +65,7 @@ def InstructionPlay(Df, win, params):
     }
 
     # Display Instruction
-    message = visual.TextStim(win, text="Do you want to see the instruction? (y: Yes, n: No)")
+    message = visual.TextStim(win, text="Do you want to see the instruction?\n\n(y: Yes, n: No)")
     message.draw();
     win.flip();
     c = ['']
@@ -105,7 +105,7 @@ def VASplay(Df, win, params, SectionName):
             "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
 
     # VAS Start Screen
-    message = visual.TextStim(win, text="Before we continue, please answer a few questions.")
+    message = visual.TextStim(win, text="Before we continue, please answer a few questions.",height=.12, units='norm', wrapWidth=3)
     message.draw();win.flip()
     waitUserInput(message, win, params)
     # event.waitKeys(maxWait=3)
@@ -140,7 +140,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
     Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,
-                                                       "Think about your mood right now. How would you describe it?",
+                                                       "Think about your mood right now. \nHow would you describe it?",
                                                        ['Worst mood ever', 'Best mood ever'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
     return tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -476,12 +476,12 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 continue
 
             if joyUserInput == 1 and level < 100:
-                level += 6
+                level += 4
                 level = min(100,level)
                 width -= 6*params["screenSize"][0] * (1 / 110)
                 height -= 6*params["screenSize"][1] * (1/ 110)
             elif joyUserInput == -1 and level > 0:
-                level -= 6
+                level -= 4
                 level = max(0,level)
                 width += 6*params["screenSize"][0] * (1 / 110)
                 height += 6*params["screenSize"][1] * (1/ 110)
@@ -491,7 +491,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 width -= params["screenSize"][0] * (1 / 110)
                 height -= params["screenSize"][1] * (1/ 110)
             elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
-                level += 3
+                level += 2
                 level = min(100, level)
                 width -= 3*params["screenSize"][0] * (1 / 110)
                 height -= 3*params["screenSize"][1] * (1/ 110)
@@ -500,7 +500,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 width += params["screenSize"][0] * (1 / 110)
                 height += params["screenSize"][1] * (1/ 110)
             elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
-                level -= 3
+                level -= 2
                 level = max(0, level)
                 width += 3*params["screenSize"][0] * (1 / 110)
                 height += 3*params["screenSize"][1] * (1/ 110)
@@ -689,9 +689,10 @@ def displayVAS(win, text, labels):
     scale = visual.RatingScale(win,
                                labels=labels,  # End points
                                scale=None,  # Suppress default
-                               low=0, high=100, tickHeight=0, markerStart=50, precision=1, size = 2,textSize = 0.6,
+                               # markerStart=50,
+                               low=0, high=100, tickHeight=0, precision=1, size = 2,textSize = 0.6,
                                acceptText='Continue', showValue=False, showAccept=True,markerColor="Yellow")  # markerstart=50
-    myItem = visual.TextStim(win, text=text, height=.12, units='norm', wrapWidth=2)
+    myItem = visual.TextStim(win, text=text, height=.12, units='norm',pos=[0,0.3], wrapWidth=2)
 
     # Show scale and measure the elapsed wall-clock time.
     startTime = time.time()
@@ -704,7 +705,7 @@ def displayVAS(win, text, labels):
     return scale.getRating(), endTime - startTime
 
 def displayInstruction(win):
-    message = visual.TextStim(win, text="Do you want to see the instruction? (y: Yes, n: No)")
+    message = visual.TextStim(win, text="Do you want to see the instruction? \n(y: Yes, n: No)",height=.12, units='norm', wrapWidth=3)
     message.draw();
     win.flip();
     c = ['']
