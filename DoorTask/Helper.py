@@ -13,6 +13,21 @@ def triggerGo(port,params,r,p,e):
         # port = parallel.ParallelPort(address=params['portAddress'])
         port.setData(s)
 
+def waitAnyKeys():
+    # Wait for user types a space key.
+    core.wait(1 / 120)
+    c = ['']
+    while (c[0] == ''):
+        core.wait(1 / 120)
+        c = event.waitKeys()  # read a character
+
+def waitUserSpace():
+    # Wait for user types a space key.
+    c = ['']
+    while (c[0] != 'space'):
+        core.wait(1 / 120)
+        c = event.waitKeys()  # read a character
+
 # Function to wait for any user input.
 def waitUserInput(img,win,params):
     if params['JoyStickSupport'] == False:
@@ -78,7 +93,7 @@ def InstructionPlay(Df, win, params):
     if c[0].upper() == "Y":
         c = ['R']
         while (c[0].upper() == "R"):
-            core.wait(1 / 120)
+            # core.wait(1 / 120)
             for i in range(1, 17):
                 imgFile = "./instruction/Slide" + str(i) + ".JPG"
                 img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(1200, 800))
@@ -87,11 +102,10 @@ def InstructionPlay(Df, win, params):
                 if i == 16:
                     c = event.waitKeys()
                 else:
-                    waitUserInput(img1, win, params)
+                    waitUserSpace()
 
     # Log the dict result on pandas dataFrame.
     return tableWrite(Df, Dict)
-
 
 # VAS Session Module.
 def VASplay(Df, win, params, SectionName):
@@ -105,9 +119,10 @@ def VASplay(Df, win, params, SectionName):
             "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
 
     # VAS Start Screen
-    message = visual.TextStim(win, text="Before we continue, please answer a few questions.",height=.12, units='norm', wrapWidth=3)
+    message = visual.TextStim(win, text="Before we continue, please answer a few questions. \n\n Press the spacebar to continue.",units='norm', wrapWidth=3)
     message.draw();win.flip()
-    waitUserInput(message, win, params)
+    # waitUserInput(message, win, params)
+    waitUserSpace()
     # event.waitKeys(maxWait=3)
 
     # VAS (Anxiety)
@@ -395,7 +410,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         textString = textString + "You have " + str(totalCoin) + " coins.\n\n"
         textString = textString + "Click when you are ready to keep playing."
 
-        message = visual.TextStim(win, text=textString)
+        message = visual.TextStim(win, text=textString, units='norm',wrapWidth=2)
         waitUserInput(message, win, params)
 
     # Start Section Display
@@ -409,6 +424,8 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
     # Start Section Display
     img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(1200, 800))
+    # text1 = visual.TextStim(win, text="Press Any Buttons on Joystick to Continue", height=.12, units='norm', pos=[0, -0.3], wrapWidth=2)
+    # text1.draw
     waitUserInput(img1, win, params)
 
     # Read Door Open Chance file provided by Rany.

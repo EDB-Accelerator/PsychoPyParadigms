@@ -8,13 +8,16 @@ Created on Fri July 24 15:04:19 2020
 
 @author: Kyunghun Lee
 - Created July/24/20 by KL
+- Updated 09/3/2020 Tue by KL (Trigger)
+- Updated 09/15/2020 Tue by KL (Major Updates)
 """
 
 import datetime
 import pandas as pd
-from psychopy import visual, event
-from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput
+from psychopy import visual,core,event
+from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput, waitUserSpace,waitAnyKeys
 from psychopy import parallel
+
 # Receive User Input
 userInputBank = userInputPlay()
 
@@ -61,7 +64,8 @@ if params['triggerSupport']:
 # ====================== #
 img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
 img1.draw();win.flip();
-waitUserInput(img1,win,params)
+# waitUserInput(img1,win,params)
+waitAnyKeys()
 
 # ======================== #
 # Dataframe Initialization #
