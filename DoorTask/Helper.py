@@ -79,6 +79,9 @@ def InstructionPlay(Df, win, params):
         "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
     }
 
+    width = params["screenSize"][0]
+    height = params["screenSize"][1]
+
     # Display Instruction
     message = visual.TextStim(win, text="Do you want to see the instruction?\n\n(y: Yes, n: No)")
     message.draw();
@@ -96,7 +99,7 @@ def InstructionPlay(Df, win, params):
             # core.wait(1 / 120)
             for i in range(1, 17):
                 imgFile = "./instruction/Slide" + str(i) + ".JPG"
-                img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(1200, 800))
+                img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
                 img1.draw();
                 win.flip();
                 if i == 16:
@@ -169,6 +172,9 @@ def Questionplay(Df, win, params, SectionName):
             "Section": SectionName,
             "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
 
+    width = params["screenSize"][0]
+    height = params["screenSize"][1]
+
     # Question (Won)
     Dict["Q_type"] = "Won"
     startTime = time.time()
@@ -216,18 +222,24 @@ def Questionplay(Df, win, params, SectionName):
     Df = tableWrite(Df, Dict)
 
     # Ending Screen
-    img1 = visual.ImageStim(win=win, image="./instruction/end_slide.jpg", units="pix", opacity=1, size=(1200, 800))
-    waitUserInput(img1, win, params)
+    img1 = visual.ImageStim(win=win, image="./instruction/end_slide.jpg", units="pix", opacity=1, size=(width, height))
+    # waitUserInput(img1, win, params)
+    img1.draw();
+    win.flip()
+    waitUserSpace()
 
     return Df
 
 # Door Game Session Module.
 def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
 
+    width = params["screenSize"][0]
+    height = params["screenSize"][1]
+
     if params['JoyStickSupport'] == False:
         return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
     if SectionName == "TaskRun1":
-        img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(1200, 800))
+        img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(width, height))
         waitUserInput(img1, win, params)
 
     # Read Door Open Chance file provided by Rany.
@@ -290,6 +302,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         triggerGo(port, params, r, p, 1) # Trigger: Door onset (conflict)
         count = 0
         pygame.joystick.init()
+        preInput =  joy.getY()
         while count < 3:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -307,35 +320,36 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 img1.draw();win.flip()
                 continue
 
-            if joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
+            if joyUserInput == 1 and level < 100:
+                level += 4
+                level = min(100,level)
+                width -= 4*params["screenSize"][0] * (1 / 110)
+                height -= 4*params["screenSize"][1] * (1/ 110)
+            elif joyUserInput == -1 and level > 0:
+                level -= 4
+                level = max(0,level)
+                width += 4*params["screenSize"][0] * (1 / 110)
+                height += 4*params["screenSize"][1] * (1/ 110)
+            # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
+            elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
                 level += 1
                 width -= params["screenSize"][0] * (1 / 110)
                 height -= params["screenSize"][1] * (1/ 110)
-            if joyUserInput >= 0.5 and joyUserInput < 1 and level < 100:
-                level += 3
+            elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
+                level += 2
                 level = min(100, level)
-                width -= 3*params["screenSize"][0] * (1 / 110)
-                height -= 3*params["screenSize"][1] * (1/ 110)
-            elif joyUserInput == 1 and level < 100:
-                level += 6
-                level = min(100,level)
-                width -= 6*params["screenSize"][0] * (1 / 110)
-                height -= 6*params["screenSize"][1] * (1/ 110)
-            elif joyUserInput == -1 and level > 0:
-                level -= 6
-                level = max(0,level)
-                width += 6*params["screenSize"][0] * (1 / 110)
-                height += 6*params["screenSize"][1] * (1/ 110)
-            elif joyUserInput < 0 and joyUserInput > -0.5 and level > 0:
+                width -= 2*params["screenSize"][0] * (1 / 110)
+                height -= 2*params["screenSize"][1] * (1/ 110)
+            elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
                 level -= 1
                 width += params["screenSize"][0] * (1 / 110)
                 height += params["screenSize"][1] * (1/ 110)
-            elif joyUserInput <= -0.5 and joyUserInput > -1 and level > 0:
-                level -= 3
+            elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
+                level -= 2
                 level = max(0, level)
-                width += 3*params["screenSize"][0] * (1 / 110)
-                height += 3*params["screenSize"][1] * (1/ 110)
-
+                width += 2*params["screenSize"][0] * (1 / 110)
+                height += 2*params["screenSize"][1] * (1/ 110)
+            preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
@@ -422,8 +436,11 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
 
     if params['JoyStickSupport'] == False:
         return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
+
+    width = params["screenSize"][0]
+    height = params["screenSize"][1]
     # Start Section Display
-    img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(1200, 800))
+    img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(width, height))
     # text1 = visual.TextStim(win, text="Press Any Buttons on Joystick to Continue", height=.12, units='norm', pos=[0, -0.3], wrapWidth=2)
     # text1.draw
     waitUserInput(img1, win, params)
@@ -495,13 +512,13 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             if joyUserInput == 1 and level < 100:
                 level += 4
                 level = min(100,level)
-                width -= 6*params["screenSize"][0] * (1 / 110)
-                height -= 6*params["screenSize"][1] * (1/ 110)
+                width -= 4*params["screenSize"][0] * (1 / 110)
+                height -= 4*params["screenSize"][1] * (1/ 110)
             elif joyUserInput == -1 and level > 0:
                 level -= 4
                 level = max(0,level)
-                width += 6*params["screenSize"][0] * (1 / 110)
-                height += 6*params["screenSize"][1] * (1/ 110)
+                width += 4*params["screenSize"][0] * (1 / 110)
+                height += 4*params["screenSize"][1] * (1/ 110)
             # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
             elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
                 level += 1
@@ -510,8 +527,8 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
                 level += 2
                 level = min(100, level)
-                width -= 3*params["screenSize"][0] * (1 / 110)
-                height -= 3*params["screenSize"][1] * (1/ 110)
+                width -= 2*params["screenSize"][0] * (1 / 110)
+                height -= 2*params["screenSize"][1] * (1/ 110)
             elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
                 level -= 1
                 width += params["screenSize"][0] * (1 / 110)
@@ -519,8 +536,8 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
                 level -= 2
                 level = max(0, level)
-                width += 3*params["screenSize"][0] * (1 / 110)
-                height += 3*params["screenSize"][1] * (1/ 110)
+                width += 2*params["screenSize"][0] * (1 / 110)
+                height += 2*params["screenSize"][1] * (1/ 110)
 
             preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
@@ -721,11 +738,15 @@ def displayVAS(win, text, labels):
     win.flip()
     return scale.getRating(), endTime - startTime
 
-def displayInstruction(win):
+def displayInstruction(win,params):
     message = visual.TextStim(win, text="Do you want to see the instruction? \n(y: Yes, n: No)",height=.12, units='norm', wrapWidth=3)
     message.draw();
     win.flip();
     c = ['']
+
+    width = params["screenSize"][0]
+    height = params["screenSize"][1]
+
     # Wait for user types "y" or "n".
     while (c[0].upper() != "Y" and c[0].upper() != "N"):
         core.wait(1 / 120)
@@ -738,7 +759,7 @@ def displayInstruction(win):
             core.wait(1 / 120)
             for i in range(1, 17):
                 imgFile = "./instruction/Slide" + str(i) + ".JPG"
-                img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(1200, 800))
+                img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
                 img1.draw();win.flip();
                 c = event.waitKeys()
 

@@ -42,13 +42,17 @@ params = {
 # declare output file location
     'outFolder': './output', # the location of output file.
 # declare display parameters
-    'screenSize' : (1200,800),
+#     'screenSize' : (1200,800),
 }
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
 
 ## Setup Section.
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+win = visual.Window(monitor="testMonitor",color="black",winType='pyglet')
+
+# Detect Screen size.
+params['screenSize'] = (win.monitor.getSizePix()[0],win.monitor.getSizePix()[1])
 
 # Trigger Initialization
 port = 0
@@ -63,6 +67,7 @@ if params['triggerSupport']:
 # ==== Title Screen ==== #
 # ====================== #
 img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
+win.mouseVisible = False
 img1.draw();win.flip();
 # waitUserInput(img1,win,params)
 waitAnyKeys()
@@ -80,8 +85,9 @@ Df = pd.DataFrame(columns=Header)
 # ====================== #
 # ======== VAS ========= #
 # ====================== #
+win.mouseVisible = True
 Df = VASplay(Df,win,params,"VAS1")
-
+win.mouseVisible = False
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
@@ -101,8 +107,9 @@ Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,"TaskRun1")
 # ====================== #
 # ======== VAS2 ========= #
 # ====================== #
+win.mouseVisible = True
 Df = VASplay(Df,win,params,"VAS2")
-
+win.mouseVisible = False
 # ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
@@ -111,8 +118,9 @@ Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
 # ====================== #
 # ======== VAS3 ========= #
 # ====================== #
+win.mouseVisible = True
 Df = VASplay(Df,win,params,"VAS3")
-
+win.mouseVisible = False
 # ====================== #
 # ======== Question ========= #
 # ====================== #
