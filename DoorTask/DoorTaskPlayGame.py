@@ -43,6 +43,7 @@ params = {
     'outFolder': './output', # the location of output file.
 # declare display parameters
 #     'screenSize' : (1200,800),
+    'subTrialCounter': 0,
 }
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'

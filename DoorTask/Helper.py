@@ -231,6 +231,7 @@ def Questionplay(Df, win, params, SectionName):
     return Df
 
 # Door Game Session Module.
+
 def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
 
     width = params["screenSize"][0]
@@ -257,19 +258,26 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
     joy = joystick.Joystick(0)  # id must be <= nJoys - 1
     # if sum(joy.getAllButtons()) != 0:
     #     break
+
+    # Shuffle image. # https://pynative.com/python-random-shuffle/
+
     for i in range(iterNum):
+        params['subTrialCounter'] += 1
         Dict = {
             "ExperimentName" : params['expName'],
             "Subject" : params['subjectID'],
             "Session" : params["Session"],
             "Version" : params["Version"],
             "Section" : SectionName,
+            "Subtrial" : params['subTrialCounter'],
             "SessionStartDateTime" : datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
         }
 
         # Pick up random image.
-        randN = random.randint(0, len(imgList) - 1)
-        imgFile = imgList[randN]
+        # randN = random.randint(0, len(imgList) - 1)
+        if i % 49 == 0:
+            random.shuffle(imgList)
+        imgFile = imgList[i % 49]
 
         if platform.system() =='Windows':
             p, r = re.findall(r'\d+', imgFile.split('\\')[-1])
@@ -286,7 +294,6 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         height = params["screenSize"][1] * (1 - level / 110)
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();win.flip();
-
 
         startTime = time.time()
         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
@@ -418,14 +425,14 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    if SectionName != "Practice":
-        textString = "Let's rest for a bit.\n\n"
-        textString = textString + "You have " + str(totalCoin) + " coins.\n\n"
-        textString = textString + "Click when you are ready to keep playing."
-
-        message = visual.TextStim(win, text=textString, units='norm',wrapWidth=2)
-        waitUserInput(message, win, params)
+    #
+    # if SectionName != "Practice":
+    #     textString = "Let's rest for a bit.\n\n"
+    #     textString = textString + "You have " + str(totalCoin) + " coins.\n\n"
+    #     textString = textString + "Click when you are ready to keep playing."
+    #
+    #     message = visual.TextStim(win, text=textString, units='norm',wrapWidth=2)
+    #     waitUserInput(message, win, params)
 
     # Start Section Display
 
