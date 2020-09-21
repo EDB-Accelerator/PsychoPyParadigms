@@ -33,27 +33,24 @@ params = {
     'numPractice' : userInputBank[4], # The number of Trials in Practice.
     'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
-    'JoyStickSupport' : userInputBank[7], # Check if joystick option is checked or not.
-    'triggerSupport': userInputBank[8],  # Check if joystick option is checked or not.
-    'portAddress': int(userInputBank[9], 16), # Port Address
+    'JoyStickSupport' : True, # Check if joystick option is checked or not.
+    'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
+    'portAddress': int(userInputBank[8], 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
 # declare output file location
     'outFolder': './output', # the location of output file.
 # declare display parameters
-#     'screenSize' : (1200,800),
+    'screenSize' : (userInputBank[9],userInputBank[10]),
     'subTrialCounter': 0,
 }
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
 
 ## Setup Section.
-# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-win = visual.Window(monitor="testMonitor",color="black",winType='pyglet')
-
-# Detect Screen size.
-params['screenSize'] = (win.monitor.getSizePix()[0],win.monitor.getSizePix()[1])
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+# win = visual.Window(monitor="testMonitor",color="black",winType='pyglet')
 
 # Trigger Initialization
 port = 0

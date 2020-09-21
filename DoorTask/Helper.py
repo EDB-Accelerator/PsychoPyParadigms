@@ -63,9 +63,12 @@ def userInputPlay():
     userInput.addField('# of Practice Trials:', 5)
     userInput.addField('# of TaskRun1:', 98)
     userInput.addField('# of TaskRun2:', 98)
-    userInput.addField('Joystick Support:', True)
+    # userInput.addField('Joystick Support:', True)
     userInput.addField('Trigger Support:', True)
     userInput.addField('Port Address', "0xE050")
+    userInput.addField('Screen Size (W)', 1920)
+    userInput.addField('Screen Size (H)', 1080)
+
     return userInput.show()
 
 # Instruction Session Module.
@@ -79,11 +82,11 @@ def InstructionPlay(Df, win, params):
         "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
     }
 
-    width = params["screenSize"][0]
+    width = params["screenSize"][1] * 1.294
     height = params["screenSize"][1]
 
     # Display Instruction
-    message = visual.TextStim(win, text="Do you want to see the instruction?\n\n(y: Yes, n: No)")
+    message = visual.TextStim(win, text="Do you want to see the instruction?\n\n(y: Yes, n: No)",units='norm', wrapWidth=3)
     message.draw();
     win.flip();
     c = ['']
@@ -383,10 +386,12 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             if random.random() < 0.5:
                 Dict["Door_outcome"] = "punishment"
                 awardImg = "./img/outcomes/" + p + "_punishment.jpg"
-                width = 300 * (1 - level / 110)
-                height = 400 * (1 - level / 110)
-                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
-                                        size=(width, height))
+                # width = params["screenSize"][1] *0.3 * (1 - level / 110)
+                # height = params["screenSize"][0] *0.4 * (1 - level / 110)
+                # img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
+                #                         size=(width, height))
+                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
+                                        size=(width * 0.235, height * 0.464))
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
@@ -400,10 +405,12 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             else:
                 Dict["Door_outcome"] = "reward"
                 awardImg = "./img/outcomes/" + r + "_reward.jpg"
-                width = 200 * (1 - level / 110)
-                height = 400 * (1 - level / 110)
-                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
-                                        size=(width, height))
+                # width = params["screenSize"][1] *0.3  * (1 - level / 110)
+                # height = params["screenSize"][0] *0.4 * (1 - level / 110)
+                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
+                                        size=(width * 0.235, height * 0.464))
+                # img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
+                #                         size=(width, height))
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
                 # img1.draw();img2.draw();message.draw();win.flip()
@@ -561,10 +568,10 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
         awardImg = "./img/practice/practice_outcome.jpg"
-        width = 200 * (1 - level / 110)
-        height = 400 * (1 - level / 110)
-        img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
-                                size=(width, height))
+        # width = params["screenSize"][0] * 0.265 * (1 - level / 110)
+        # height = params["screenSize"][1] * 0.5 * (1 - level / 110)
+        img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
+                                size=(width* 0.235, height* 0.464))
         # waitUserInput(img2, win, params)
         img1.draw();img2.draw();win.flip()
         event.waitKeys(maxWait=2)
@@ -744,31 +751,6 @@ def displayVAS(win, text, labels):
     endTime = time.time()
     win.flip()
     return scale.getRating(), endTime - startTime
-
-def displayInstruction(win,params):
-    message = visual.TextStim(win, text="Do you want to see the instruction? \n(y: Yes, n: No)",height=.12, units='norm', wrapWidth=3)
-    message.draw();
-    win.flip();
-    c = ['']
-
-    width = params["screenSize"][0]
-    height = params["screenSize"][1]
-
-    # Wait for user types "y" or "n".
-    while (c[0].upper() != "Y" and c[0].upper() != "N"):
-        core.wait(1 / 120)
-        c = event.waitKeys()  # read a character
-
-    # If user types "y", run instruction.
-    if c[0].upper() == "Y":
-        c = ['R']
-        while (c[0].upper() == "R"):
-            core.wait(1 / 120)
-            for i in range(1, 17):
-                imgFile = "./instruction/Slide" + str(i) + ".JPG"
-                img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-                img1.draw();win.flip();
-                c = event.waitKeys()
 
 def fadeInOutImage(win, image, duration, size):
     for i in range(60):
