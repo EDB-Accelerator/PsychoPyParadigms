@@ -43,6 +43,7 @@ params = {
     'outFolder': './output', # the location of output file.
 # declare display parameters
     'screenSize' : (userInputBank[9],userInputBank[10]),
+    'volume' : userInputBank[11],
     'subTrialCounter': 0,
 }
 if userInputBank[3]!= 1:

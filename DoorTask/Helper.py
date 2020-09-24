@@ -68,6 +68,7 @@ def userInputPlay():
     userInput.addField('Port Address', "0xE050")
     userInput.addField('Screen Size (W)', 1920)
     userInput.addField('Screen Size (H)', 1080)
+    userInput.addField('Volume', 0.8)
 
     return userInput.show()
 
@@ -326,20 +327,20 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                     break
 
             joyUserInput = joy.getY()
-            if joyUserInput != 1 and joyUserInput != -1:
-                img1.draw();win.flip()
-                continue
+            # if joyUserInput != 1 and joyUserInput != -1:
+            #     img1.draw();win.flip()
+            #     continue
 
             if joyUserInput == 1 and level < 100:
-                level += 4
+                level += 3
                 level = min(100,level)
-                width -= 4*params["screenSize"][0] * (1 / 110)
-                height -= 4*params["screenSize"][1] * (1/ 110)
+                width -= 3*params["screenSize"][0] * (1 / 110)
+                height -= 3*params["screenSize"][1] * (1/ 110)
             elif joyUserInput == -1 and level > 0:
-                level -= 4
+                level -= 3
                 level = max(0,level)
-                width += 4*params["screenSize"][0] * (1 / 110)
-                height += 4*params["screenSize"][1] * (1/ 110)
+                width += 3*params["screenSize"][0] * (1 / 110)
+                height += 3*params["screenSize"][1] * (1/ 110)
             # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
             elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
                 level += 1
@@ -363,9 +364,6 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
-            # width = params["screenSize"][0] * (1 - level / 110)
-            # height = params["screenSize"][1] * (1 - level / 110)
-            # img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
             img1.size = (width, height)
             img1.draw();win.flip()
 
@@ -386,17 +384,13 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             if random.random() < 0.5:
                 Dict["Door_outcome"] = "punishment"
                 awardImg = "./img/outcomes/" + p + "_punishment.jpg"
-                # width = params["screenSize"][1] *0.3 * (1 - level / 110)
-                # height = params["screenSize"][0] *0.4 * (1 - level / 110)
-                # img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
-                #                         size=(width, height))
                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                         size=(width * 0.235, height * 0.464))
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
                 triggerGo(port, params, r, p, 4)  #Door outcome: punishment
-                sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
+                sound1 = sound.Sound("./img/sounds/punishment_sound.wav",volume=params['volume'])
                 sound1.play()
                 event.waitKeys(maxWait=2)
                 sound1.stop()
@@ -405,18 +399,13 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             else:
                 Dict["Door_outcome"] = "reward"
                 awardImg = "./img/outcomes/" + r + "_reward.jpg"
-                # width = params["screenSize"][1] *0.3  * (1 - level / 110)
-                # height = params["screenSize"][0] *0.4 * (1 - level / 110)
                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                         size=(width * 0.235, height * 0.464))
-                # img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
-                #                         size=(width, height))
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
-                # img1.draw();img2.draw();message.draw();win.flip()
                 img1.draw();img2.draw();win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
-                sound1 = sound.Sound("./img/sounds/reward_sound.wav")
+                sound1 = sound.Sound("./img/sounds/reward_sound.wav",volume=params['volume'])
                 sound1.play()
                 event.waitKeys(maxWait=2)
                 sound1.stop()
@@ -432,16 +421,6 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-    #
-    # if SectionName != "Practice":
-    #     textString = "Let's rest for a bit.\n\n"
-    #     textString = textString + "You have " + str(totalCoin) + " coins.\n\n"
-    #     textString = textString + "Click when you are ready to keep playing."
-    #
-    #     message = visual.TextStim(win, text=textString, units='norm',wrapWidth=2)
-    #     waitUserInput(message, win, params)
-
-    # Start Section Display
 
     return Df
 
@@ -519,20 +498,20 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                     break
 
             joyUserInput = joy.getY()
-            if joyUserInput != 1 and joyUserInput != -1:
-                img1.draw();win.flip()
-                continue
+            # if joyUserInput != 1 and joyUserInput != -1:
+            #     img1.draw();win.flip()
+            #     continue
 
             if joyUserInput == 1 and level < 100:
-                level += 4
+                level += 3
                 level = min(100,level)
-                width -= 4*params["screenSize"][0] * (1 / 110)
-                height -= 4*params["screenSize"][1] * (1/ 110)
+                width -= 3*params["screenSize"][0] * (1 / 110)
+                height -= 3*params["screenSize"][1] * (1/ 110)
             elif joyUserInput == -1 and level > 0:
-                level -= 4
+                level -= 3
                 level = max(0,level)
-                width += 4*params["screenSize"][0] * (1 / 110)
-                height += 4*params["screenSize"][1] * (1/ 110)
+                width += 3*params["screenSize"][0] * (1 / 110)
+                height += 3*params["screenSize"][1] * (1/ 110)
             # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
             elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
                 level += 1
@@ -692,7 +671,7 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
-                sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
+                sound1 = sound.Sound("./img/sounds/punishment_sound.wav",volume=params['volume'])
                 sound1.play()
                 event.waitKeys(maxWait=3)
                 sound1.stop()
@@ -709,7 +688,7 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
-                sound1 = sound.Sound("./img/sounds/reward_sound.wav")
+                sound1 = sound.Sound("./img/sounds/reward_sound.wav",volume=params['volume'])
                 sound1.play()
                 event.waitKeys(maxWait=3)
                 sound1.stop()
