@@ -15,7 +15,7 @@ Created on Fri July 24 15:04:19 2020
 import datetime
 import pandas as pd
 from psychopy import visual,core,event
-from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput, waitUserSpace,waitAnyKeys
+from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput, waitUserSpace,waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
 
 # Receive User Input
@@ -91,6 +91,25 @@ win.mouseVisible = False
 # ===== Instruction ==== #
 # ====================== #
 Df = InstructionPlay(Df,win,params)
+
+# ========================================== #
+# ==== Screen Resolution Initialization ==== #
+# ========================================== #
+
+ResolutionIntialization(params,size_diff=1/65)
+# width_bank = []
+# height_bank = []
+# width0 = params["screenSize"][0]
+# height0 = params["screenSize"][1]
+# size_diff = 1/100
+# for level in range(0,101):
+#     width = width0 * (0.0909 + level * size_diff)
+#     height = height0 * (0.0909 + level * size_diff)
+#     width_bank.append(width)
+#     height_bank.append(height)
+# params['width_bank'] = width_bank
+# params['height_bank'] = height_bank
+
 
 # ====================== #
 # ===== Practice ======= #

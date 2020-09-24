@@ -7,6 +7,20 @@ import pygame
 from sys import exit
 from psychopy import parallel
 
+def ResolutionIntialization(params,size_diff):
+    width_bank = []
+    height_bank = []
+    width0 = params["screenSize"][0]
+    height0 = params["screenSize"][1]
+    # size_diff = 1/100
+    for level in range(0,101):
+        width = width0 * (0.0909 + level * size_diff)
+        height = height0 * (0.0909 + level * size_diff)
+        width_bank.append(width)
+        height_bank.append(height)
+    params['width_bank'] = width_bank
+    params['height_bank'] = height_bank
+
 def triggerGo(port,params,r,p,e):
     if params['triggerSupport']:
         s = (e - 1) * 7 ** 2 + (int(p) - 1) * 7 + (int(r) - 1)
@@ -44,7 +58,10 @@ def waitUserInput(img,win,params):
         count = 0
         pygame.joystick.init()
         while count < 3:  # while presenting stimuli
-            if sum(joy.getAllButtons())!=0:
+            # joy.getButton(0)
+            # if sum(joy.getAllButtons())!=0:
+            if joy.getButton(0)!=0:
+                # print(joy.getAllButtons)
                 # break
                 count += 1
             if (time.time() - startTime) > 100:
@@ -294,8 +311,10 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         # Display the image.
         c = ['']
         level = Dict["Distance_start"] = params["DistanceStart"]
-        width = params["screenSize"][0] * (1 - level / 110)
-        height = params["screenSize"][1] * (1 - level / 110)
+        # width = params["screenSize"][0] * (1 - level / 110)
+        # height = params["screenSize"][1] * (1 - level / 110)
+        width = params['width_bank'][level]
+        height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();win.flip();
 
@@ -305,8 +324,10 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         MaxTime = params['DistanceLockWaitTime'] * 1000
 
         # Initial screen
-        width = params["screenSize"][0] * (1 - level / 110)
-        height = params["screenSize"][1] * (1 - level / 110)
+        # width = params["screenSize"][0] * (1 - level / 110)
+        # height = params["screenSize"][1] * (1 - level / 110)
+        width = params['width_bank'][level]
+        height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
         win.flip()
@@ -320,7 +341,8 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             if Dict["DoorAction_RT"] > MaxTime:
                 c[0] = "timeisUp"
                 break
-            if (sum(joy.getAllButtons()) != 0):
+            # if (sum(joy.getAllButtons()) != 0):
+            if joy.getButton(0)!=0:
                 count += 1
                 if count >= 2:
                     Dict["Distance_lock"] = 1
@@ -334,36 +356,40 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             if joyUserInput == 1 and level < 100:
                 level += 3
                 level = min(100,level)
-                width -= 3*params["screenSize"][0] * (1 / 110)
-                height -= 3*params["screenSize"][1] * (1/ 110)
+                # width -= 3*params["screenSize"][0] * (1 / 110)
+                # height -= 3*params["screenSize"][1] * (1/ 110)
             elif joyUserInput == -1 and level > 0:
                 level -= 3
                 level = max(0,level)
-                width += 3*params["screenSize"][0] * (1 / 110)
-                height += 3*params["screenSize"][1] * (1/ 110)
+                # width += 3*params["screenSize"][0] * (1 / 110)
+                # height += 3*params["screenSize"][1] * (1/ 110)
             elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
             # elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
                 level += 1
-                width -= params["screenSize"][0] * (1 / 110)
-                height -= params["screenSize"][1] * (1/ 110)
+                level = min(100, level)
+                # width -= params["screenSize"][0] * (1 / 110)
+                # height -= params["screenSize"][1] * (1/ 110)
             elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
             # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
                 level += 2
                 level = min(100, level)
-                width -= 2*params["screenSize"][0] * (1 / 110)
-                height -= 2*params["screenSize"][1] * (1/ 110)
+                # width -= 2*params["screenSize"][0] * (1 / 110)
+                # height -= 2*params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
             elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
                 level -= 1
-                width += params["screenSize"][0] * (1 / 110)
-                height += params["screenSize"][1] * (1/ 110)
+                level = max(0, level)
+                # width += params["screenSize"][0] * (1 / 110)
+                # height += params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
             elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
                 level -= 2
                 level = max(0, level)
-                width += 2*params["screenSize"][0] * (1 / 110)
-                height += 2*params["screenSize"][1] * (1/ 110)
-            preInput = joyUserInput
+                # width += 2*params["screenSize"][0] * (1 / 110)
+                # height += 2*params["screenSize"][1] * (1/ 110)
+            width = params['width_bank'][level]
+            height = params['height_bank'][level]
+            # preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
@@ -435,6 +461,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
+
     # Start Section Display
     img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(width, height))
     # text1 = visual.TextStim(win, text="Press Any Buttons on Joystick to Continue", height=.12, units='norm', pos=[0, -0.3], wrapWidth=2)
@@ -468,8 +495,11 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         # Display the image.
         c = ['']
         level = Dict["Distance_start"] = params["DistanceStart"]
-        width = params["screenSize"][0] * (1 - level / 110)
-        height = params["screenSize"][1] * (1 - level / 110)
+        # width = params["screenSize"][0] * (1 - level / 110)
+        # height = params["screenSize"][1] * (1 - level / 110)
+        width = params['width_bank'][level]
+        height = params['height_bank'][level]
+
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();win.flip();
 
@@ -479,8 +509,8 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         MaxTime = params['DistanceLockWaitTime'] * 1000
 
         # Initial screen
-        width = params["screenSize"][0] * (1 - level / 110)
-        height = params["screenSize"][1] * (1 - level / 110)
+        width = params['width_bank'][level]
+        height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
         triggerGo(port, params, 1, 1, 1)  # Door onset (conflict)
@@ -494,7 +524,8 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             if Dict["DoorAction_RT"] > MaxTime:
                 c[0] = "timeisUp"
                 break
-            if (sum(joy.getAllButtons()) != 0):
+            # if (sum(joy.getAllButtons()) != 0):
+            if joy.getButton(0)!=0:
                 count += 1
                 if count >= 2:
                     Dict["Distance_lock"] = 1
@@ -508,38 +539,42 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             if joyUserInput == 1 and level < 100:
                 level += 3
                 level = min(100,level)
-                width -= 3*params["screenSize"][0] * (1 / 110)
-                height -= 3*params["screenSize"][1] * (1/ 110)
+                # width = params['width_bank'][level]
+                # height = params['height_bank'][level]
             elif joyUserInput == -1 and level > 0:
                 level -= 3
                 level = max(0,level)
-                width += 3*params["screenSize"][0] * (1 / 110)
-                height += 3*params["screenSize"][1] * (1/ 110)
+                # width = params['width_bank'][level]
+                # height = params['height_bank'][level]
             # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
             # elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
             elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
                 level += 1
-                width -= params["screenSize"][0] * (1 / 110)
-                height -= params["screenSize"][1] * (1/ 110)
+                level = min(100, level)
+                # width -= params["screenSize"][0] * (1 / 110)
+                # height -= params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
             elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
                 level += 2
                 level = min(100, level)
-                width -= 2*params["screenSize"][0] * (1 / 110)
-                height -= 2*params["screenSize"][1] * (1/ 110)
+                # width -= 2*params["screenSize"][0] * (1 / 110)
+                # height -= 2*params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
             elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
                 level -= 1
-                width += params["screenSize"][0] * (1 / 110)
-                height += params["screenSize"][1] * (1/ 110)
+                level = max(0, level)
+                # width += params["screenSize"][0] * (1 / 110)
+                # height += params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
             elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
                 level -= 2
                 level = max(0, level)
-                width += 2*params["screenSize"][0] * (1 / 110)
-                height += 2*params["screenSize"][1] * (1/ 110)
+                # width += 2*params["screenSize"][0] * (1 / 110)
+                # height += 2*params["screenSize"][1] * (1/ 110)
+            width = params['width_bank'][level]
+            height = params['height_bank'][level]
 
-            preInput = joyUserInput
+            # preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
