@@ -17,10 +17,12 @@ import pandas as pd
 from psychopy import visual,core,event
 from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput, waitUserSpace,waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
-
+import os
+from psychopy import prefs
+# os.chdir("C:\Users\nimhuser\Desktop\DoorTask_9_24")
 # Receive User Input
 userInputBank = userInputPlay()
-
+prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 # Declare primary task parameters.
 params = {
 # Declare stimulus and response parameters
