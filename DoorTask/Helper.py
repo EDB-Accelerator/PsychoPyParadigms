@@ -341,21 +341,24 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 level = max(0,level)
                 width += 3*params["screenSize"][0] * (1 / 110)
                 height += 3*params["screenSize"][1] * (1/ 110)
-            # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
-            elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
+            elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
+            # elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
                 level += 1
                 width -= params["screenSize"][0] * (1 / 110)
                 height -= params["screenSize"][1] * (1/ 110)
-            elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
+            elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
+            # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
                 level += 2
                 level = min(100, level)
                 width -= 2*params["screenSize"][0] * (1 / 110)
                 height -= 2*params["screenSize"][1] * (1/ 110)
-            elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
+            # elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
+            elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
                 level -= 1
                 width += params["screenSize"][0] * (1 / 110)
                 height += params["screenSize"][1] * (1/ 110)
-            elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
+            # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
+            elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
                 level -= 2
                 level = max(0, level)
                 width += 2*params["screenSize"][0] * (1 / 110)
@@ -513,20 +516,24 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 width += 3*params["screenSize"][0] * (1 / 110)
                 height += 3*params["screenSize"][1] * (1/ 110)
             # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
-            elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
+            # elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
+            elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
                 level += 1
                 width -= params["screenSize"][0] * (1 / 110)
                 height -= params["screenSize"][1] * (1/ 110)
-            elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
+            # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
+            elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
                 level += 2
                 level = min(100, level)
                 width -= 2*params["screenSize"][0] * (1 / 110)
                 height -= 2*params["screenSize"][1] * (1/ 110)
-            elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
+            # elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
+            elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
                 level -= 1
                 width += params["screenSize"][0] * (1 / 110)
                 height += params["screenSize"][1] * (1/ 110)
-            elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
+            # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
+            elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
                 level -= 2
                 level = max(0, level)
                 width += 2*params["screenSize"][0] * (1 / 110)
