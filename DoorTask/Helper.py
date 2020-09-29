@@ -56,6 +56,7 @@ def waitUserInput(img,win,params):
         startTime = time.time()
 
         count = 0
+        pygame.joystick.quit()
         pygame.joystick.init()
         while count < 3:  # while presenting stimuli
             # joy.getButton(0)
@@ -333,6 +334,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         win.flip()
         triggerGo(port, params, r, p, 1) # Trigger: Door onset (conflict)
         count = 0
+        pygame.joystick.quit()
         pygame.joystick.init()
         preInput =  joy.getY()
         while count < 3:  # while presenting stimuli
@@ -354,12 +356,12 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             #     continue
 
             if joyUserInput == 1 and level < 100:
-                level += 3
+                level += 2
                 level = min(100,level)
                 # width -= 3*params["screenSize"][0] * (1 / 110)
                 # height -= 3*params["screenSize"][1] * (1/ 110)
             elif joyUserInput == -1 and level > 0:
-                level -= 3
+                level -= 2
                 level = max(0,level)
                 # width += 3*params["screenSize"][0] * (1 / 110)
                 # height += 3*params["screenSize"][1] * (1/ 110)
@@ -371,7 +373,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 # height -= params["screenSize"][1] * (1/ 110)
             elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
             # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
-                level += 2
+                level += 1
                 level = min(100, level)
                 # width -= 2*params["screenSize"][0] * (1 / 110)
                 # height -= 2*params["screenSize"][1] * (1/ 110)
@@ -383,7 +385,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 # height += params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
             elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
-                level -= 2
+                level -= 1
                 level = max(0, level)
                 # width += 2*params["screenSize"][0] * (1 / 110)
                 # height += 2*params["screenSize"][1] * (1/ 110)
@@ -403,7 +405,9 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
-        if random.random() < doorOpenChanceMap[level]:
+        print("level" + str(level))
+        print("prob:" + str(doorOpenChanceMap[level]))
+        if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1.draw();win.flip()
             triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
@@ -419,7 +423,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
                 triggerGo(port, params, r, p, 4)  #Door outcome: punishment
-                sound1 = sound.Sound("./img/sounds/punishment_sound.aif",volume=params['volume'])
+                sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
                 sound1.play()
                 event.waitKeys(maxWait=2)
                 sound1.stop()
@@ -434,7 +438,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 message.pos = (0, 50)
                 img1.draw();img2.draw();win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
-                sound1 = sound.Sound("./img/sounds/reward_sound.aif",volume=params['volume'])
+                sound1 = sound.Sound("./img/sounds/reward_sound.wav")
                 sound1.play()
                 event.waitKeys(maxWait=2)
                 sound1.stop()
@@ -516,6 +520,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         triggerGo(port, params, 1, 1, 1)  # Door onset (conflict)
         win.flip()
         count = 0
+        pygame.joystick.quit()
         pygame.joystick.init()
         preInput = joy.getY()
         while count < 3:  # while presenting stimuli
@@ -537,12 +542,12 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             #     continue
 
             if joyUserInput == 1 and level < 100:
-                level += 3
+                level += 2
                 level = min(100,level)
                 # width = params['width_bank'][level]
                 # height = params['height_bank'][level]
             elif joyUserInput == -1 and level > 0:
-                level -= 3
+                level -= 2
                 level = max(0,level)
                 # width = params['width_bank'][level]
                 # height = params['height_bank'][level]
@@ -555,7 +560,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 # height -= params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
             elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
-                level += 2
+                level += 1
                 level = min(100, level)
                 # width -= 2*params["screenSize"][0] * (1 / 110)
                 # height -= 2*params["screenSize"][1] * (1/ 110)
@@ -567,7 +572,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 # height += params["screenSize"][1] * (1/ 110)
             # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
             elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
-                level -= 2
+                level -= 1
                 level = max(0, level)
                 # width += 2*params["screenSize"][0] * (1 / 110)
                 # height += 2*params["screenSize"][1] * (1/ 110)
@@ -713,7 +718,7 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
-                sound1 = sound.Sound("./img/sounds/punishment_sound.aif",volume=params['volume'])
+                sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
                 sound1.play()
                 event.waitKeys(maxWait=3)
                 sound1.stop()
@@ -730,7 +735,7 @@ def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
-                sound1 = sound.Sound("./img/sounds/reward_sound.aif",volume=params['volume'])
+                sound1 = sound.Sound("./img/sounds/reward_sound.wav")
                 sound1.play()
                 event.waitKeys(maxWait=3)
                 sound1.stop()
