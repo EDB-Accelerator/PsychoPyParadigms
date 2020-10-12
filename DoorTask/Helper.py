@@ -397,6 +397,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
 
             img1.size = (width, height)
             img1.draw();win.flip()
+            # print("level" + str(level))
 
         triggerGo(port, params, r, p, 2) # Trigger: Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
@@ -405,8 +406,8 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
-        print("level" + str(level))
-        print("prob:" + str(doorOpenChanceMap[level]))
+        # print("level" + str(level))
+        # print("prob:" + str(doorOpenChanceMap[level]))
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1.draw();win.flip()
