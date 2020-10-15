@@ -46,6 +46,7 @@ params = {
 # declare display parameters
     'screenSize' : (userInputBank[9],userInputBank[10]),
     'volume' : userInputBank[11],
+    'resolutionMode' : userInputBank[12],
     'subTrialCounter': 0,
 }
 if userInputBank[3]!= 1:
@@ -92,6 +93,8 @@ win.mouseVisible = False
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
+win.close()
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 Df = InstructionPlay(Df,win,params)
 
 # ========================================== #
@@ -99,24 +102,13 @@ Df = InstructionPlay(Df,win,params)
 # ========================================== #
 
 ResolutionIntialization(params,size_diff=1/65)
-# width_bank = []
-# height_bank = []
-# width0 = params["screenSize"][0]
-# height0 = params["screenSize"][1]
-# size_diff = 1/100
-# for level in range(0,101):
-#     width = width0 * (0.0909 + level * size_diff)
-#     height = height0 * (0.0909 + level * size_diff)
-#     width_bank.append(width)
-#     height_bank.append(height)
-# params['width_bank'] = width_bank
-# params['height_bank'] = height_bank
-
 
 # ====================== #
 # ===== Practice ======= #
 # ====================== #
 # Get the DOOR image file list.
+win.close()
+win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
 Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,"Practice")
 
 # ====================== #
@@ -128,17 +120,32 @@ Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,"TaskRun1")
 # ======== VAS2 ========= #
 # ====================== #
 win.mouseVisible = True
+win.close()
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 Df = VASplay(Df,win,params,"VAS2")
 win.mouseVisible = False
+
+# ====================== #
+# ======== Text Slide ========= #
+# ====================== #
+message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# message.draw();
+waitUserInput(message, win, params,'pyglet')
+win.flip();
+
 # ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
+win.close()
+win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
 Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
 
 # ====================== #
 # ======== VAS3 ========= #
 # ====================== #
 win.mouseVisible = True
+win.close()
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 Df = VASplay(Df,win,params,"VAS3")
 win.mouseVisible = False
 # ====================== #
