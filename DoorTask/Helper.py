@@ -7,6 +7,16 @@ import pygame
 from sys import exit
 from psychopy import parallel
 import math
+from psychopy import prefs
+
+def shutdown_key():
+    core.quit()
+
+def get_keypress():
+    keys = event.getKeys()
+    if keys == ['q'] or keys == ['Q'] or keys == ['Esc']:
+        print('Q pressed. Forced Exit.')
+        core.quit()
 
 def ResolutionIntialization(params,size_diff):
     width_bank = []
@@ -24,10 +34,10 @@ def ResolutionIntialization(params,size_diff):
             height_bank.append(height)
     else:
         for level in range(0,101):
-            width = width0 * (0.3 + math.sqrt(level) * size_diff*6)
-            height = height0 * (0.3 + math.sqrt(level) * size_diff*6)
-            # width = width0 * (0.0909 + (100-level) * size_diff)
-            # height = height0 * (0.0909 + (100-level) * size_diff)
+            # width = width0 * (0.3 + math.sqrt(level) * size_diff*6)
+            # height = height0 * (0.3 + math.sqrt(level) * size_diff*6)
+            width = width0 * (0.1 + pow(level,1.7) * size_diff*0.05)
+            height = height0 * (0.1 + pow(level,1.7) * size_diff*0.05)
             width_bank.append(width)
             height_bank.append(height)
     params['width_bank'] = width_bank
@@ -46,6 +56,10 @@ def waitAnyKeys():
     while (c[0] == ''):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
+
+        if c[0] == 'Esc':
+            win.close()
+            core.quit()
 
 def waitUserSpace():
     # Wait for user types a space key.
@@ -102,7 +116,7 @@ def userInputPlay():
     userInput.addField('Screen Size (W)', 1024)
     userInput.addField('Screen Size (H)', 780)
     userInput.addField('Volume', 0.8)
-    userInput.addField('Resolution Mode (Check: SQRT, Uncheck: Linear)', True)
+    userInput.addField('Resolution Mode (Check: Square, Uncheck: Linear)', True)
 
     return userInput.show()
 
@@ -129,6 +143,7 @@ def InstructionPlay(Df, win, params):
     while (c[0].upper() != "Y" and c[0].upper() != "N"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
+        get_keypress()
 
     # If user types "y", run instruction.
     if c[0].upper() == "Y":
@@ -429,6 +444,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             img1.size = (width, height)
             img1.draw();win.flip()
             # print("level:" + str(level))
+            get_keypress()
 
         triggerGo(port, params, r, p, 2) # Trigger: Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
@@ -583,6 +599,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             elif joyUserInput > 0.1 and level > 0:
                 level -= 1
                 level = max(0,level)
+            get_keypress()
                 # width = params['width_bank'][level]
                 # height = params['height_bank'][level]
             # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
@@ -815,6 +832,7 @@ def displayVAS(win, text, labels):
         scale.draw()
         myItem.draw()
         win.flip()
+        get_keypress()
     endTime = time.time()
     win.flip()
     return scale.getRating(), endTime - startTime

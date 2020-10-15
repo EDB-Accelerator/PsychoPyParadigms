@@ -19,9 +19,17 @@ from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VA
 from psychopy import parallel
 import os
 from psychopy import prefs
+
+def shutdown_key():
+    core.quit()
+
+# event.globalKeys.clear()
+# event.globalKeys.add(key='q', func=os._exit)
+
 # os.chdir("C:\Users\nimhuser\Desktop\DoorTask_9_24")
 # Receive User Input
 userInputBank = userInputPlay()
+# prefs.general['shutdownKey'] = 'q'
 prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 # Declare primary task parameters.
 params = {
@@ -109,6 +117,7 @@ ResolutionIntialization(params,size_diff=1/65)
 # Get the DOOR image file list.
 win.close()
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
+win.mouseVisible = False
 Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,"Practice")
 
 # ====================== #
@@ -130,6 +139,7 @@ win.mouseVisible = False
 # ====================== #
 message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
 # message.draw();
+win.mouseVisible = False
 waitUserInput(message, win, params,'pyglet')
 win.flip();
 
@@ -138,13 +148,14 @@ win.flip();
 # ====================== #
 win.close()
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
+win.mouseVisible = False
 Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
 
 # ====================== #
 # ======== VAS3 ========= #
 # ====================== #
-win.mouseVisible = True
 win.close()
+win.mouseVisible = True
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 Df = VASplay(Df,win,params,"VAS3")
 win.mouseVisible = False
