@@ -15,7 +15,8 @@ Created on Fri July 24 15:04:19 2020
 import datetime
 import pandas as pd
 from psychopy import visual,core,event
-from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,InstructionPlay,userInputPlay,waitUserInput, waitUserSpace,waitAnyKeys,ResolutionIntialization
+from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay
+from Helper import InstructionPlay,userInputPlay,waitUserInput, waitUserSpace,waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
 import os
 from psychopy import prefs
@@ -23,14 +24,12 @@ from psychopy import prefs
 def shutdown_key():
     core.quit()
 
-# event.globalKeys.clear()
-# event.globalKeys.add(key='q', func=os._exit)
-
-# os.chdir("C:\Users\nimhuser\Desktop\DoorTask_9_24")
-# Receive User Input
+# Receive User input from User input window.
 userInputBank = userInputPlay()
-# prefs.general['shutdownKey'] = 'q'
+
+# Audio library configuration.
 prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
+
 # Declare primary task parameters.
 params = {
 # Declare stimulus and response parameters

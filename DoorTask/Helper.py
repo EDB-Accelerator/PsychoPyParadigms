@@ -5,9 +5,6 @@ import numpy as np
 from psychopy.hardware import joystick
 import pygame
 from sys import exit
-from psychopy import parallel
-import math
-from psychopy import prefs
 
 def shutdown_key():
     core.quit()
@@ -242,6 +239,15 @@ def Questionplay(Df, win, params, SectionName):
     startTime = time.time()
     Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "How many coins do you think you lost?",
                                                        ['Lost very few', 'Lost very many'])
+    Dict["Q_RT"] = (time.time() - startTime) * 1000
+    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+    # Question (Monster versus Coin)
+    Dict["Q_type"] = "Before"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "Before the door opened, what did you think you would see?",
+                                                       ['Monster', 'Coins'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
@@ -673,141 +679,6 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
     return Df
-
-
-# # Door Game Session Module.
-# def DoorGamePlay_keyboard(Df, win, params, iterNum, SectionName):
-#
-#     message = visual.TextStim(win, text="[" + SectionName + "] Section is started.")
-#     waitUserInput(message, win, params)
-#
-#     # Read Door Open Chance file provided by Rany.
-#     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
-#     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
-#     totalCoin = 0
-#
-#     for i in range(iterNum):
-#         Dict = {
-#             "ExperimentName" : params['expName'],
-#             "Subject" : params['subjectID'],
-#             "Session" : params["Session"],
-#             "Version" : params["Version"],
-#             "Section" : SectionName,
-#             "SessionStartDateTime" : datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-#         }
-#
-#         # Pick up random image.
-#         randN = random.randint(0, len(imgList) - 1)
-#         imgFile = imgList[randN]
-#         imgFile.split('/')[-1]
-#         p, r = re.findall(r'\d+', imgFile.split('/')[-1])
-#         Dict["Punishment_magnitude"] = p
-#         Dict["Reward_magnitude"] = r
-#
-#         # Display the image.
-#         c = ['']
-#         level = Dict["Distance_start"] = params["DistanceStart"]
-#         width = params["screenSize"][0] * (1 - level / 110)
-#         height = params["screenSize"][1] * (1 - level / 110)
-#         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-#         img1.draw();win.flip();
-#
-#         startTime = time.time()
-#         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
-#         while (c[0] != "return"):
-#
-#             # If waiting time is longer than 10 sec, exit this loop.
-#             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
-#             # print(Dict["DoorAction_RT"])
-#             if Dict["DoorAction_RT"] > params['DistanceLockWaitTime'] * 1000:
-#                 c[0] = "timeisUp"
-#                 break
-#             core.wait(1 / 60)
-#             c = event.waitKeys(maxWait=0.1)  # read a character
-#             if c == None:
-#                 c = ['']
-#                 continue
-#
-#             if c[0] != "up" and c[0] != "down":
-#                 continue
-#
-#             if c[0] == "up" and level < 100:
-#                 level += 1
-#             elif c[0] == "down" and level > 0:
-#                 level -= 1
-#             Dict["Distance_max"] = max(Dict["Distance_max"], level)
-#             Dict["Distance_min"] = min(Dict["Distance_min"], level)
-#
-#             width = params["screenSize"][0] * (1 - level / 110)
-#             height = params["screenSize"][1] * (1 - level / 110)
-#             img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-#             img1.draw();win.flip()
-#             print("level :", str(level))
-#
-#         if c[0] == "return":
-#             Dict["Distance_lock"] = 1
-#         else:
-#             Dict["Distance_lock"] = 0
-#         Dict["DistanceFromDoor_SubTrial"] = level
-#
-#         # Door Anticipation time
-#         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
-#         time.sleep(Dict["Door_anticipation_time"] / 1000)
-#
-#         # if random.random() < level * 0.01:
-#         if random.random()  < doorOpenChanceMap[level]:
-#             Dict["Door_opened"] = "closed"
-#             # img1 = visual.ImageStim(win=win, image="./img/door_100.jpg", units="pix", opacity=1)
-#             # img1.draw();win.flip();event.waitKeys(maxWait=3)
-#             # displayText(win, "Door Closed\n\n Total totalCoin: " + str(totalCoin))
-#             # displayText(win, "Door Closed")
-#             img1.draw();win.flip()
-#             event.waitKeys(maxWait=3)
-#             # continue
-#         else:
-#             Dict["Door_opened"] = "opened"
-#             if random.random() < 0.5:
-#                 Dict["Door_outcome"] = "punishment"
-#                 awardImg = "./img/outcomes/" + p + "_punishment.jpg"
-#                 width = 200 * (1 - level / 110)
-#                 height = 400 * (1 - level / 110)
-#                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
-#                                         size=(width, height))
-#                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
-#                 message.pos = (0, 50)
-#                 img1.draw();img2.draw();message.draw();win.flip()
-#                 sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
-#                 sound1.play()
-#                 event.waitKeys(maxWait=3)
-#                 sound1.stop()
-#                 totalCoin -= int(p)
-#                 # displayText(win, "Lose your totalCoin: " + str(p) + "!!\n\n Total totalCoin: " + str(totalCoin))
-#                 displayText(win, "-" + str(p))
-#             else:
-#                 Dict["Door_outcome"] = "reward"
-#                 awardImg = "./img/outcomes/" + r + "_reward.jpg"
-#                 width = 200 * (1 - level / 110)
-#                 height = 400 * (1 - level / 110)
-#                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -10],
-#                                         size=(width, height))
-#                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
-#                 message.pos = (0, 50)
-#                 img1.draw();img2.draw();message.draw();win.flip()
-#                 sound1 = sound.Sound("./img/sounds/reward_sound.wav")
-#                 sound1.play()
-#                 event.waitKeys(maxWait=3)
-#                 sound1.stop()
-#                 totalCoin += int(r)
-#                 # displayText(win, "Earn your coin: " + str(r) + "!!\n\n Total Coin: " + str(totalCoin))
-#                 displayText(win, "+" + str(r))
-#         # ITI duration
-#         Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
-#         time.sleep(Dict["ITI_duration"] / 1000)
-#
-#         Dict["Total_coins"] = totalCoin
-#         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-#
-#     return Df
 
 def tableWrite(Df, Dict):
     # Move data in Dict into Df.
