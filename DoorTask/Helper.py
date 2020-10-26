@@ -9,9 +9,16 @@ from sys import exit
 def shutdown_key():
     core.quit()
 
-def get_keypress():
+def get_keypress(Df,params):
     keys = event.getKeys()
     if keys == ['q'] or keys == ['Q'] or keys == ['Esc']:
+        # Write the output file.
+        outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+                  str(params['Version']) + '_' + datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+
+        print(outFile)
+        Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
+
         print('Q pressed. Forced Exit.')
         core.quit()
 
@@ -25,14 +32,10 @@ def ResolutionIntialization(params,size_diff):
         for level in range(0,101):
             width = width0 * (0.0909 + level * size_diff)
             height = height0 * (0.0909 + level * size_diff)
-            # width = width0 * (0.0909 + (100-level) * size_diff)
-            # height = height0 * (0.0909 + (100-level) * size_diff)
             width_bank.append(width)
             height_bank.append(height)
     else:
         for level in range(0,101):
-            # width = width0 * (0.3 + math.sqrt(level) * size_diff*6)
-            # height = height0 * (0.3 + math.sqrt(level) * size_diff*6)
             width = width0 * (0.1 + pow(level,1.7) * size_diff*0.05)
             height = height0 * (0.1 + pow(level,1.7) * size_diff*0.05)
             width_bank.append(width)
@@ -43,7 +46,6 @@ def ResolutionIntialization(params,size_diff):
 def triggerGo(port,params,r,p,e):
     if params['triggerSupport']:
         s = (e - 1) * 7 ** 2 + (int(p) - 1) * 7 + (int(r) - 1)
-        # port = parallel.ParallelPort(address=params['portAddress'])
         port.setData(s)
 
 def waitAnyKeys():
@@ -53,17 +55,26 @@ def waitAnyKeys():
     while (c[0] == ''):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
-
-        if c[0] == 'Esc':
-            win.close()
+        if c == ['q'] or c == ['Q'] or c == ['Esc']:
+            print('Q pressed. Forced Exit.')
             core.quit()
 
-def waitUserSpace():
+def waitUserSpace(Df,params):
     # Wait for user types a space key.
     c = ['']
     while (c[0] != 'space'):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
+
+        if c == ['q'] or c == ['Q'] or c == ['Esc']:
+            # Write the output file.
+            outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+                      str(params['Version']) + '_' + datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+
+            Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
+
+            print('Q pressed. Forced Exit.')
+            core.quit()
 
 # Function to wait for any user input.
 def waitUserInput(img,win,params,mode):
@@ -140,7 +151,7 @@ def InstructionPlay(Df, win, params):
     while (c[0].upper() != "Y" and c[0].upper() != "N"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
-        get_keypress()
+        get_keypress(Df,params)
 
     # If user types "y", run instruction.
     if c[0].upper() == "Y":
@@ -155,7 +166,7 @@ def InstructionPlay(Df, win, params):
                 if i == 16:
                     c = event.waitKeys()
                 else:
-                    waitUserSpace()
+                    waitUserSpace(Df,params)
 
     # Log the dict result on pandas dataFrame.
     return tableWrite(Df, Dict)
@@ -175,12 +186,12 @@ def VASplay(Df, win, params, SectionName):
     message = visual.TextStim(win, text="Before we continue, please answer a few questions. \n\n Press the spacebar to continue.",units='norm', wrapWidth=3)
     message.draw();win.flip()
     # waitUserInput(message, win, params)
-    waitUserSpace()
+    waitUserSpace(Df,params)
     # event.waitKeys(maxWait=3)
 
     # VAS (Anxiety)
     startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How anxious do you feel right now?",
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win, "How anxious do you feel right now?",
                                                        ['Not anxious', 'Very anxious'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -189,7 +200,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["VAS_type"] = "Avoidance"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How much do you feel like taking part in the task?",
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win, "How much do you feel like taking part in the task?",
                                                        ['Not at all', 'Very much'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -198,7 +209,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["VAS_type"] = "Tired"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win, "How tired are you right now?",
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win, "How tired are you right now?",
                                                        ['Not at all tired', 'Very tired'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -207,7 +218,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["VAS_type"] = "Mood"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(win,
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win,
                                                        "Think about your mood right now. \nHow would you describe it?",
                                                        ['Worst mood ever', 'Best mood ever'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
@@ -228,7 +239,7 @@ def Questionplay(Df, win, params, SectionName):
     # Question (Won)
     Dict["Q_type"] = "Won"
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "How many coins do you think you won?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you won?",
                                                        ['Won very few', 'Won very many'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -237,7 +248,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["Q_type"] = "Lost"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "How many coins do you think you lost?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you lost?",
                                                        ['Lost very few', 'Lost very many'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -246,7 +257,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["Q_type"] = "Before"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "Before the door opened, what did you think you would see?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before the door opened, what did you think you would see?",
                                                        ['Monster', 'Coins'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -255,7 +266,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["Q_type"] = "Monster"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win, "How often did you see the monster when the door opened?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How often did you see the monster when the door opened?",
                                                        ['Never', 'All the time'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -264,7 +275,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["Q_type"] = "Coins"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win,"How often did you win coins when the door opened?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win,"How often did you win coins when the door opened?",
                                                        ['Never', 'All the time'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -273,7 +284,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["Q_type"] = "Performance"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(win,"How do you feel about how well you’ve done so far?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win,"How do you feel about how well you’ve done so far?",
                                                ["I didn't do well","I did very well"])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
 
@@ -285,7 +296,7 @@ def Questionplay(Df, win, params, SectionName):
     # waitUserInput(img1, win, params)
     img1.draw();
     win.flip()
-    waitUserSpace()
+    waitUserSpace(Df,params)
 
     return Df
 
@@ -388,59 +399,14 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                     break
 
             joyUserInput = joy.getY()
-            # if joyUserInput != 1 and joyUserInput != -1:
-            #     img1.draw();win.flip()
-            #     continue
 
-            # if joyUserInput == 1 and level < 100:
             if joyUserInput < -0.1 and level < 100:
                 level += 1
                 level = min(100,level)
-                # width = params['width_bank'][level]
-                # height = params['height_bank'][level]
-            # elif joyUserInput == -1 and level > 0:
             elif joyUserInput > 0.1 and level > 0:
                 level -= 1
                 level = max(0,level)
-            # if joyUserInput == -1 and level > 0:
-            #     level += 2
-            #     level = min(100,level)
-            #     # width -= 3*params["screenSize"][0] * (1 / 110)
-            #     # height -= 3*params["screenSize"][1] * (1/ 110)
-            # # elif joyUserInput == -1 and level > 0:
-            # elif joyUserInput == 1 and level < 100:
-            #     level -= 2
-            #     level = max(0,level)
-            #     # width += 3*params["screenSize"][0] * (1 / 110)
-            #     # height += 3*params["screenSize"][1] * (1/ 110)
-            # # elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
-            # elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
-            #     # elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
-            #     level += 1
-            #     level = min(100, level)
-            #     # width -= params["screenSize"][0] * (1 / 110)
-            #     # height -= params["screenSize"][1] * (1/ 110)
-            # # elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
-            # elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
-            # # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
-            #     level += 1
-            #     level = min(100, level)
-            #     # width -= 2*params["screenSize"][0] * (1 / 110)
-            #     # height -= 2*params["screenSize"][1] * (1/ 110)
-            # # elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
-            # # elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
-            # elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
-            #     level -= 1
-            #     level = max(0, level)
-            #     # width += params["screenSize"][0] * (1 / 110)
-            #     # height += params["screenSize"][1] * (1/ 110)
-            # # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
-            # # elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
-            # elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
-            #     level -= 1
-            #     level = max(0, level)
-            #     # width += 2*params["screenSize"][0] * (1 / 110)
-            #     # height += 2*params["screenSize"][1] * (1/ 110)
+
             width = params['width_bank'][level]
             height = params['height_bank'][level]
             # preInput = joyUserInput
@@ -450,7 +416,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
             img1.size = (width, height)
             img1.draw();win.flip()
             # print("level:" + str(level))
-            get_keypress()
+            get_keypress(Df,params)
 
         triggerGo(port, params, r, p, 2) # Trigger: Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
@@ -591,52 +557,14 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                     break
 
             joyUserInput = joy.getY()
-            # if joyUserInput != 1 and joyUserInput != -1:
-            #     img1.draw();win.flip()
-            #     continue
 
-            # if joyUserInput == 1 and level < 100:
             if joyUserInput < -0.1 and level < 100:
                 level += 1
                 level = min(100,level)
-                # width = params['width_bank'][level]
-                # height = params['height_bank'][level]
-            # elif joyUserInput == -1 and level > 0:
             elif joyUserInput > 0.1 and level > 0:
                 level -= 1
                 level = max(0,level)
-            get_keypress()
-                # width = params['width_bank'][level]
-                # height = params['height_bank'][level]
-            # elif joyUserInput > 0 and joyUserInput < 0.5 and level < 100:
-            # elif preInput - joyUserInput > 0 and preInput - joyUserInput < 0.5 and level < 100:
-            # elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
-            # elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
-            #     level += 1
-            #     level = min(100, level)
-            #     # width -= params["screenSize"][0] * (1 / 110)
-            #     # height -= params["screenSize"][1] * (1/ 110)
-            # # elif preInput - joyUserInput >= 0.5 and preInput - joyUserInput < 1 and level < 100:
-            # # elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
-            # elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
-            #     level += 1
-            #     level = min(100, level)
-            #     # width -= 2*params["screenSize"][0] * (1 / 110)
-            #     # height -= 2*params["screenSize"][1] * (1/ 110)
-            # # elif preInput - joyUserInput < 0 and preInput - joyUserInput > -0.5 and level > 0:
-            # # elif joyUserInput < -0.1 and joyUserInput > -0.5 and level > 0:
-            # elif joyUserInput > 0.1 and joyUserInput < 0.5 and level < 100:
-            #     level -= 1
-            #     level = max(0, level)
-            #     # width += params["screenSize"][0] * (1 / 110)
-            #     # height += params["screenSize"][1] * (1/ 110)
-            # # elif preInput - joyUserInput <= -0.5 and preInput - joyUserInput > -1 and level > 0:
-            # # elif joyUserInput < -0.5 and joyUserInput > -1 and level > 0:
-            # elif joyUserInput > 0.5 and joyUserInput < 1 and level < 100:
-            #     level -= 1
-            #     level = max(0, level)
-                # width += 2*params["screenSize"][0] * (1 / 110)
-                # height += 2*params["screenSize"][1] * (1/ 110)
+            get_keypress(Df,params)
             width = params['width_bank'][level]
             height = params['height_bank'][level]
 
@@ -688,7 +616,7 @@ def tableWrite(Df, Dict):
     return Df
 
 
-def displayVAS(win, text, labels):
+def displayVAS(Df,params,win, text, labels):
     scale = visual.RatingScale(win,
                                labels=labels,  # End points
                                scale=None,  # Suppress default
@@ -703,7 +631,7 @@ def displayVAS(win, text, labels):
         scale.draw()
         myItem.draw()
         win.flip()
-        get_keypress()
+        get_keypress(Df,params)
     endTime = time.time()
     win.flip()
     return scale.getRating(), endTime - startTime

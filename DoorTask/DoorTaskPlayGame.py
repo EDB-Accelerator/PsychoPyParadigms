@@ -10,13 +10,14 @@ Created on Fri July 24 15:04:19 2020
 - Created July/24/20 by KL
 - Updated 09/3/2020 Tue by KL (Trigger)
 - Updated 09/15/2020 Tue by KL (Major Updates)
+- Save result when exit 10/26/2020 Mon by KL
 """
 
 import datetime
 import pandas as pd
 from psychopy import visual,core,event
 from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay
-from Helper import InstructionPlay,userInputPlay,waitUserInput, waitUserSpace,waitAnyKeys,ResolutionIntialization
+from Helper import InstructionPlay,userInputPlay,waitUserInput, waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
 import os
 from psychopy import prefs
