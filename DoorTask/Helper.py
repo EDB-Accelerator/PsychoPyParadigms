@@ -77,7 +77,7 @@ def waitUserSpace(Df,params):
             core.quit()
 
 # Function to wait for any user input.
-def waitUserInput(img,win,params,mode):
+def waitUserInput(Df,img,win,params,mode):
     # if params['JoyStickSupport'] == False:
     #     event.waitKeys(maxWait=3)
     # else:
@@ -105,6 +105,8 @@ def waitUserInput(img,win,params,mode):
         if (time.time() - startTime) > 100:
             break
         img.draw();win.flip()
+
+    get_keypress(Df, params)
     img.draw();win.flip()
 
 # Function to get user inputs.
@@ -185,7 +187,7 @@ def VASplay(Df, win, params, SectionName):
     # VAS Start Screen
     message = visual.TextStim(win, text="Before we continue, please answer a few questions. \n\n Press the spacebar to continue.",units='norm', wrapWidth=3)
     message.draw();win.flip()
-    # waitUserInput(message, win, params)
+    # waitUserInput(Df,message, win, params)
     waitUserSpace(Df,params)
     # event.waitKeys(maxWait=3)
 
@@ -257,7 +259,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["Q_type"] = "Before"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before the door opened, what did you think you would see?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before a door would open, which one did you think you would be more likely to see?",
                                                        ['Monster', 'Coins'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
@@ -293,7 +295,7 @@ def Questionplay(Df, win, params, SectionName):
 
     # Ending Screen
     img1 = visual.ImageStim(win=win, image="./instruction/end_slide.jpg", units="pix", opacity=1, size=(width, height))
-    # waitUserInput(img1, win, params)
+    # waitUserInput(Df,img1, win, params)
     img1.draw();
     win.flip()
     waitUserSpace(Df,params)
@@ -311,7 +313,7 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
     #     return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(width, height))
-        waitUserInput(img1, win, params,'glfw')
+        waitUserInput(Df,img1, win, params,'glfw')
 
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
@@ -490,7 +492,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
     img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(width, height))
     # text1 = visual.TextStim(win, text="Press Any Buttons on Joystick to Continue", height=.12, units='norm', pos=[0, -0.3], wrapWidth=2)
     # text1.draw
-    waitUserInput(img1, win, params,'glfw')
+    waitUserInput(Df,img1, win, params,'glfw')
 
     # Read Door Open Chance file provided by Rany.
     imgList = glob.glob("./img/practice/*_door.jpg")
@@ -589,7 +591,7 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         # height = params["screenSize"][1] * 0.5 * (1 - level / 110)
         img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                 size=(width* 0.235, height* 0.464))
-        # waitUserInput(img2, win, params)
+        # waitUserInput(Df,img2, win, params)
         img1.draw();img2.draw();win.flip()
         event.waitKeys(maxWait=2)
 

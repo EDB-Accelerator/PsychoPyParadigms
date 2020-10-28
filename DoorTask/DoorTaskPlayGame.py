@@ -16,7 +16,7 @@ Created on Fri July 24 15:04:19 2020
 import datetime
 import pandas as pd
 from psychopy import visual,core,event
-from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay
+from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,waitUserSpace
 from Helper import InstructionPlay,userInputPlay,waitUserInput, waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
 import os
@@ -79,7 +79,7 @@ if params['triggerSupport']:
 img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
 win.mouseVisible = False
 img1.draw();win.flip();
-# waitUserInput(img1,win,params)
+# waitUserInput(Df,img1,win,params)
 waitAnyKeys()
 
 # ======================== #
@@ -131,16 +131,20 @@ Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,"TaskRun1")
 win.mouseVisible = True
 win.close()
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+message = visual.TextStim(win, text="Let’s take a quick break and do some ratings.", units='norm', wrapWidth=3)
+message.draw();win.flip();
+waitUserSpace(Df,params)
 Df = VASplay(Df,win,params,"VAS2")
 win.mouseVisible = False
 
 # ====================== #
 # ======== Text Slide ========= #
 # ====================== #
-message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
 # message.draw();
 win.mouseVisible = False
-waitUserInput(message, win, params,'pyglet')
+img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
 
 # ====================== #
