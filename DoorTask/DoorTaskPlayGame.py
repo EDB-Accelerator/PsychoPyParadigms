@@ -34,27 +34,27 @@ prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 # Declare primary task parameters.
 params = {
 # Declare stimulus and response parameters
-    'expName' : userInputBank[0], # The name of the experiment
-    'subjectID' : userInputBank[1],      # Subject ID
+    'expName' : "Doors_AA_v8.py", # The name of the experiment
+    'subjectID' : userInputBank[0],      # Subject ID
     'DistanceStart' : 50,
     'DistanceLockWaitTime' : 10, # Distance lock wait time.
-    'Session' : userInputBank[2], # Session ID
-    'Version' : userInputBank[3], # Version
-    'numPractice' : userInputBank[4], # The number of Trials in Practice.
-    'numTaskRun1': userInputBank[5],  # The number of Trials in TaskRun1.
-    'numTaskRun2': userInputBank[6],  # The number of Trials in TaskRun2.
+    'Session' : userInputBank[1], # Session ID
+    'Version' : userInputBank[2], # Version
+    'numPractice' : userInputBank[3], # The number of Trials in Practice.
+    'numTaskRun1': userInputBank[4],  # The number of Trials in TaskRun1.
+    'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : True, # Check if joystick option is checked or not.
-    'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
-    'portAddress': int(userInputBank[8], 16), # Port Address
+    'triggerSupport': False,  # Check if joystick option is checked or not.
+    'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
 # declare output file location
     'outFolder': './output', # the location of output file.
 # declare display parameters
-    'screenSize' : (userInputBank[9],userInputBank[10]),
-    'volume' : userInputBank[11],
-    'resolutionMode' : userInputBank[12],
+    'screenSize' : (1024,780),
+    'volume' : 0.8,
+    'resolutionMode' : True,
     'subTrialCounter': 0,
 }
 if userInputBank[3]!= 1:

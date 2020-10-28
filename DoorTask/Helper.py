@@ -112,7 +112,7 @@ def waitUserInput(Df,img,win,params,mode):
 # Function to get user inputs.
 def userInputPlay():
     userInput = gui.Dlg(title="DOORS Task Information")
-    userInput.addField('ExperimentName:',"Doors_AA_v8.py")
+    # userInput.addField('ExperimentName:',"Doors_AA_v8.py")
     userInput.addField('Subject Number:',23986)
     userInput.addField('Session:',1)
     # userInput.addField('Version:',1)
@@ -121,14 +121,34 @@ def userInputPlay():
     userInput.addField('# of TaskRun1:', 98)
     userInput.addField('# of TaskRun2:', 98)
     # userInput.addField('Joystick Support:', True)
-    userInput.addField('Trigger Support:', True)
-    userInput.addField('Port Address', "0xE050")
-    userInput.addField('Screen Size (W)', 1024)
-    userInput.addField('Screen Size (H)', 780)
-    userInput.addField('Volume', 0.8)
-    userInput.addField('Resolution Mode (Check: Square, Uncheck: Linear)', True)
+    # userInput.addField('Trigger Support:', True)
+    # userInput.addField('Port Address', "0xE050")
+    # userInput.addField('Screen Size (W)', 1024)
+    # userInput.addField('Screen Size (H)', 780)
+    # userInput.addField('Volume', 0.8)
+    # userInput.addField('Resolution Mode (Check: Square, Uncheck: Linear)', True)
 
     return userInput.show()
+
+# def userInputPlay():
+#     userInput = gui.Dlg(title="DOORS Task Information")
+#     userInput.addField('ExperimentName:',"Doors_AA_v8.py")
+#     userInput.addField('Subject Number:',23986)
+#     userInput.addField('Session:',1)
+#     # userInput.addField('Version:',1)
+#     userInput.addField('Version:', choices=[1, 2])
+#     userInput.addField('# of Practice Trials:', 5)
+#     userInput.addField('# of TaskRun1:', 98)
+#     userInput.addField('# of TaskRun2:', 98)
+#     # userInput.addField('Joystick Support:', True)
+#     userInput.addField('Trigger Support:', True)
+#     userInput.addField('Port Address', "0xE050")
+#     userInput.addField('Screen Size (W)', 1024)
+#     userInput.addField('Screen Size (H)', 780)
+#     userInput.addField('Volume', 0.8)
+#     userInput.addField('Resolution Mode (Check: Square, Uncheck: Linear)', True)
+#
+#     return userInput.show()
 
 # Instruction Session Module.
 def InstructionPlay(Df, win, params):
