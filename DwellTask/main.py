@@ -52,7 +52,7 @@ random.shuffle(RunList)
 # BlockList = [glob('./img/Anger-Neutral/*'),glob('./img/Disgust-Neutral/*')]
 # DataFrame (Recording) Intialization.
 Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Run","Block","TrialCount","Section",
-          "Image Displayed","Button Pressed","Button Response Time"]
+          "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]
 HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
 df = pd.DataFrame(columns=Header)
 dfRaw = pd.DataFrame(columns=HeaderRaw)
@@ -71,6 +71,7 @@ for run in RunList:
         for trial in range(params['numTrial']):
             params["TrialCount"] = trial
             img = ImgList[trial]
+
             # Fixation cross section
             df,dfRaw = DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
             df,dfRaw = DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)

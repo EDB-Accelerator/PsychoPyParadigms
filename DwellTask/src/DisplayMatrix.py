@@ -18,8 +18,9 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Section"] = "DisplayMatrix"
     dict["Image Displayed"] = img
-    dict["Button Pressed"] = "Nothing"
-    dict["Button Response Time"] = "Nothing"
+    dict["Button Pressed"] = ""
+    dict["Button Correct/Incorrect"] = ""
+    dict["Button Response Time"] = ""
     dictRaw["Event"] = str(img) + " shown (start)"
     dfRaw = tableWriteRaw(dfRaw, dictRaw)
 

@@ -12,8 +12,9 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
     fCP = [0,0] # position (for brevity)
     boldOption = ['Horizontal','Vertical']
     dict["Section"] = "DisplayFixationCross"
-    dict["Button Pressed"] = "Nothing"
-    dict["Button Response Time"] = "Nothing"
+    dict["Button Pressed"] = "Not answered"
+    dict["Button Correct/Incorrect"] = ""
+    dict["Button Response Time"] = ""
 
     # Get the random seed:
     randN = random.randint(0,1)
@@ -54,9 +55,8 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
             dfRaw = tableWriteRaw(dfRaw, dictRaw)
             dict["Button Pressed"] = keys[0]
             dict["Button Response Time"] = endTime - startTime
+            dict["Button Correct/Incorrect"] = "Correct" if randN+1 == int(keys[0]) else "Incorrect"
             break
-        dict["Button Pressed"] = "Nothing"
-        dict["Button Response Time"] = "Nothing"
         core.wait(1 / 300)
     while (endTime - startTime < 1):
         endTime = time.time()

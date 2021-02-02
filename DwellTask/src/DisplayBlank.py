@@ -18,8 +18,9 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Section"] = "DisplayBlank"
     dict["Image Displayed"] = "Blank for " + str(blankDuration) + " sec"
-    dict["Button Pressed"] = "Nothing"
-    dict["Button Response Time"] = "Nothing"
+    dict["Button Pressed"] = ""
+    dict["Button Correct/Incorrect"] = ""
+    dict["Button Response Time"] = ""
     dictRaw["Event"] = dict["Image Displayed"] + "shown (start)"
     dfRaw = tableWriteRaw(dfRaw, dictRaw)
 
