@@ -4,7 +4,7 @@ import datetime
 def tableWriteRaw(Df, Dict):
     # Move data in Dict into Df.
     Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
-    Dict["TimeStamp"] = str(datetime.datetime.now())
+    Dict["TimeStamp"] =datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     for key in Dict:
         Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
     return Df

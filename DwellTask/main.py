@@ -19,9 +19,11 @@ from glob import glob
 # Import defined functions
 sys.path.insert(1, './src')
 from UserInputPlay import UserInputPlay
+from DictInitialize import DictInitialize
 from DisplayFixationCross import DisplayFixationCross
 from DisplayMatrix import DisplayMatrix
-from DictInitialize import DictInitialize
+from DisplayBlank import DisplayBlank
+
 pd.set_option('display.max_columns', None)
 # Receive User input from Window.
 UserInputBank = UserInputPlay()
@@ -72,14 +74,15 @@ for run in RunList:
             # Fixation cross section
             df,dfRaw = DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
             df,dfRaw = DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
+            df,dfRaw = DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
 
+outFile = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+outFileRaw = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
 
+df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
+dfRaw.to_csv(outFileRaw, sep=',', encoding='utf-8', index=False)
 
-# for run in range(1,params['RunNum']+1):
-#     print(run)
-#
-# for block in range(1,params['BlockNum']+1):
-#     print(block)
-#
-# for trial in range(1,params['numTrial1']+1):
-#     print(trial)
+# Close the psychopy window.
+win.close()

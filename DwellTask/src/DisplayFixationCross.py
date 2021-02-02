@@ -44,7 +44,7 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
     # Show scale and measure the elapsed wall-clock time.
     keys = []
     startTime = endTime = time.time()
-    dict["Section Start Time"] = str(datetime.datetime.now())
+    dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     core.wait(0.15)
     while (endTime - startTime < 1):
         keys = event.getKeys()
@@ -65,6 +65,6 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
     dictRaw["Event"] = bold + " shown (end)"
     dfRaw = tableWriteRaw(dfRaw,dictRaw)
     dict["Image Displayed"] = bold
-    dict["Section End Time"] = str(datetime.datetime.now())
+    dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     return tableWrite(df,params,dict),dfRaw
 

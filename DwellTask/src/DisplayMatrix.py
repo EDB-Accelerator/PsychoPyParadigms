@@ -15,18 +15,19 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     win.flip()
 
     # Record status
-    dict["Section Start Time"] = dictRaw["TimeStamp"] = str(datetime.datetime.now())
+    dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Section"] = "DisplayMatrix"
     dict["Image Displayed"] = img
     dict["Button Pressed"] = "Nothing"
     dict["Button Response Time"] = "Nothing"
     dictRaw["Event"] = str(img) + " shown (start)"
+    dfRaw = tableWriteRaw(dfRaw, dictRaw)
 
     # Wait for 6 seconds
     core.wait(6)
 
     # Record status
-    dict["Section End Time"] = dictRaw["TimeStamp"] = str(datetime.datetime.now())
+    dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dictRaw["Event"] = str(img) + " shown (end)"
     dfRaw = tableWriteRaw(dfRaw, dictRaw)
 
