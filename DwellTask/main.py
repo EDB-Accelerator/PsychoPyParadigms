@@ -58,7 +58,7 @@ params = {
     'Session' : UserInputBank[1], # Session ID
     'BlockNum' : 3,
     'RunNum' : 2,
-    'screenSize' : (1024,780),
+    'screenSize' : (900,900),
     'numTrial': UserInputBank[2],  # The number of Trials.
     # "TrialCount" : 1,
 }
@@ -68,6 +68,9 @@ dict,dictRaw = DictInitialize(params)
 
 # Open Window.
 win = visual.Window(params['screenSize'],monitor="testMonitor",color="white",winType='pyglet')
+
+# Disable mouse cursor.
+win.mouseVisible = False
 
 # Make image list and Shuffle.
 RunList = glob('./img/*')

@@ -23,10 +23,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+"""
+DisplayFixationCross.py
+
+DwellTask Psychopy3 Sub function.
+
+This function is for writing Table.
+
+Created on Wed Feb  3 13:49:20 EST 2021
+
+@author: Kyunghun Lee
+- Created on Wed Feb  3 13:34:46 EST 2021 by KL
+"""
+
 import pandas as pd
 import datetime
 
-def tableWriteRaw(Df, Dict):
+def TableWriteRaw(Df, Dict):
 
     # Move data in Dict into Df.
     Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
@@ -35,7 +48,7 @@ def tableWriteRaw(Df, Dict):
         Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
     return Df
 
-def tableWrite(df,params,dict):
+def TableWrite(df,params,dict):
 
     # Move data in Dict into Df.
     df = df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows

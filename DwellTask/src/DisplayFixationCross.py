@@ -23,22 +23,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-# DicInitialize.py
-# DwellTask Psychopy3 Sub function.
-#
-# This function is for initializing a dictionary instance.
-#
-# Created on Thu Jan 28 15:20:30 EST 2021
-#
-# @author: Kyunghun Lee
-# - Created on Thu Jan 28 15:20:30 EST 2021 by KL
+"""
+DisplayFixationCross.py
+
+DwellTask Psychopy3 Sub function.
+
+This function is for displaying Fixation Cross.
+
+Created on Wed Feb  3 13:33:38 EST 2021
+
+@author: Kyunghun Lee
+- Created on Wed Feb  3 13:33:38 EST 2021 by KL
+"""
 
 from psychopy import visual,event,core
 import time,random,datetime,sys
 
 # Import defined functions
 sys.path.insert(1, './src')
-from tableWrite import tableWrite,tableWriteRaw
+from TableWrite import TableWrite,TableWriteRaw
 
 def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
 
@@ -75,7 +78,7 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
     # Flip Window (display FixationCross image)
     win.flip()
     dictRaw["Event"] = bold + " shown (start)"
-    dfRaw = tableWriteRaw(dfRaw,dictRaw)
+    dfRaw = TableWriteRaw(dfRaw,dictRaw)
 
     # Show scale and measure the elapsed wall-clock time.
     keys = []
@@ -87,7 +90,7 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
         endTime = time.time()
         if keys == ['1'] or keys == ['2']:
             dictRaw["Event"] = keys[0] + " pressed"
-            dfRaw = tableWriteRaw(dfRaw, dictRaw)
+            dfRaw = TableWriteRaw(dfRaw, dictRaw)
             dict["Button Pressed"] = keys[0]
             dict["Button Response Time"] = endTime - startTime
             dict["Button Correct/Incorrect"] = "Correct" if randN+1 == int(keys[0]) else "Incorrect"
@@ -98,8 +101,8 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
         core.wait(1 / 300)
 
     dictRaw["Event"] = bold + " shown (end)"
-    dfRaw = tableWriteRaw(dfRaw,dictRaw)
+    dfRaw = TableWriteRaw(dfRaw,dictRaw)
     dict["Image Displayed"] = bold
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    return tableWrite(df,params,dict),dfRaw
+    return TableWrite(df,params,dict),dfRaw
 

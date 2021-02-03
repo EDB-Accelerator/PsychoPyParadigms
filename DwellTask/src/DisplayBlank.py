@@ -24,16 +24,16 @@ SOFTWARE.
 """
 
 """
-DicInitialize.py
+DisplayBlank.py
 
 DwellTask Psychopy3 Sub function.
 
-This function is for initializing a dictionary instance.
+This function is for displaying blank part.
 
-Created on Tue Feb  2 16:38:19 EST 2021
+Created on Wed Feb  3 13:32:56 EST 2021
 
 @author: Kyunghun Lee
-- Created on Tue Feb  2 16:38:19 EST 2021 by KL
+- Created on Wed Feb  3 13:32:56 EST 2021 by KL
 """
 
 from psychopy import core
@@ -41,7 +41,7 @@ import random,datetime,sys
 
 # Import defined functions
 sys.path.insert(1, './src')
-from tableWrite import tableWrite,tableWriteRaw
+from TableWrite import TableWrite,TableWriteRaw
 
 def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
 
@@ -56,7 +56,7 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
     dict["Button Correct/Incorrect"] = ""
     dict["Button Response Time"] = ""
     dictRaw["Event"] = dict["Image Displayed"] + "shown (start)"
-    dfRaw = tableWriteRaw(dfRaw, dictRaw)
+    dfRaw = TableWriteRaw(dfRaw, dictRaw)
 
     # fixation = visual.ShapeStim(win, lineColor='#000000', lineWidth=0, vertices=(
     #     (0,0), (0,1)), units='height', closeShape=False,
@@ -68,6 +68,6 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
     # Record status
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dictRaw["Event"] = dict["Image Displayed"] + " shown (end)"
-    dfRaw = tableWriteRaw(dfRaw, dictRaw)
+    dfRaw = TableWriteRaw(dfRaw, dictRaw)
 
-    return tableWrite(df,params,dict),dfRaw
+    return TableWrite(df,params,dict),dfRaw

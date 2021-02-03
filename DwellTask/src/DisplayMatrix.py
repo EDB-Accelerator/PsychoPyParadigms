@@ -23,12 +23,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+"""
+DisplayFixationCross.py
+
+DwellTask Psychopy3 Sub function.
+
+This function is for displaying Matrix.
+
+Created on Wed Feb  3 13:34:46 EST 2021
+
+@author: Kyunghun Lee
+- Created on Wed Feb  3 13:34:46 EST 2021 by KL
+"""
+
 from psychopy import visual,core
 import datetime,sys
 
 # Import defined functions
 sys.path.insert(1, './src')
-from tableWrite import tableWrite,tableWriteRaw
+from TableWrite import TableWrite,TableWriteRaw
 
 def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=params['screenSize'])
@@ -43,7 +56,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     dict["Button Correct/Incorrect"] = ""
     dict["Button Response Time"] = ""
     dictRaw["Event"] = str(img) + " shown (start)"
-    dfRaw = tableWriteRaw(dfRaw, dictRaw)
+    dfRaw = TableWriteRaw(dfRaw, dictRaw)
 
     # Wait for 6 seconds
     core.wait(6)
@@ -51,6 +64,6 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     # Record status
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dictRaw["Event"] = str(img) + " shown (end)"
-    dfRaw = tableWriteRaw(dfRaw, dictRaw)
+    dfRaw = TableWriteRaw(dfRaw, dictRaw)
 
-    return tableWrite(df,params,dict),dfRaw
+    return TableWrite(df,params,dict),dfRaw
