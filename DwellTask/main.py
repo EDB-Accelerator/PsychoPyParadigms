@@ -34,13 +34,13 @@ Created on Thu Jan 28 15:20:30 EST 2021
 - Created on Thu Jan 28 15:20:30 EST 2021 by KL
 """
 
-# Import all necessary standard python library
-import datetime,os,sys,time,random
+# Import standard python libraries
+import datetime,sys,random
 import pandas as pd
-from psychopy import visual,core,event,parallel,prefs,gui
+from psychopy import visual
 from glob import glob
 
-# Import defined functions
+# Import developer-defined functions
 sys.path.insert(1, './src')
 from UserInputPlay import UserInputPlay
 from DictInitialize import DictInitialize
@@ -48,19 +48,35 @@ from DisplayFixationCross import DisplayFixationCross
 from DisplayMatrix import DisplayMatrix
 from DisplayBlank import DisplayBlank
 
+# Pandas configuration (debugging options)
 pd.set_option('display.max_columns', None)
+
 # Receive User input from Window.
 UserInputBank = UserInputPlay()
+
+# Decide the name of output files.
+outFile = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+outFileRaw = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
+
+# Output Summary Header Initialization
+Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Run","Block","TrialCount","Section",
+          "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]
+# Output Raw Header Initialization
+HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
+
 # Declare primary task parameters.
 params = {
     'expName' : 'DwellTask', # The name of the experiment
     'subjectID' : UserInputBank[0],      # Subject ID
     'Session' : UserInputBank[1], # Session ID
-    'BlockNum' : 3,
-    'RunNum' : 2,
-    'screenSize' : (900,900),
+    'BlockNum' : 3, # The number of blocks
+    'RunNum' : 2, # The number of Runs
+    'screenSize' : (900,900), # The resolution of Psychopy Window
     'numTrial': UserInputBank[2],  # The number of Trials.
-    # "TrialCount" : 1,
+    'outFile' : outFile,
+    'outFileRaw' : outFileRaw,
 }
 
 # Instance result initialization
@@ -76,13 +92,13 @@ win.mouseVisible = False
 RunList = glob('./img/*')
 random.shuffle(RunList)
 
-# BlockList = [glob('./img/Anger-Neutral/*'),glob('./img/Disgust-Neutral/*')]
-# DataFrame (Recording) Intialization.
-Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Run","Block","TrialCount","Section",
-          "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]
-HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
+# Construct pandas dataframe structure.
 df = pd.DataFrame(columns=Header)
 dfRaw = pd.DataFrame(columns=HeaderRaw)
+
+# Make Empty output files.
+open(params['outFile'], 'a').close()
+open(params['outFileRaw'], 'a').close()
 
 for run in RunList:
     params["Run"] = run.split('/')[-1]
@@ -104,13 +120,8 @@ for run in RunList:
             df,dfRaw = DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
             df,dfRaw = DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
 
-outFile = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
-outFileRaw = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
-
-df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
-dfRaw.to_csv(outFileRaw, sep=',', encoding='utf-8', index=False)
+# df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
+# dfRaw.to_csv(outFileRaw, sep=',', encoding='utf-8', index=False)
 
 # Close the psychopy window.
 win.close()
