@@ -41,7 +41,9 @@ import time,random,datetime,sys
 
 # Import defined functions
 sys.path.insert(1, './src')
-from TableWrite import TableWrite,TableWriteRaw
+# from TableWrite import TableWrite,TableWriteRaw
+from DictWrite import DictWrite,DictWriteRaw
+from GetKeyPress import GetKeyPress
 
 def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
 
@@ -78,19 +80,19 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
     # Flip Window (display FixationCross image)
     win.flip()
     dictRaw["Event"] = bold + " shown (start)"
-    dfRaw = TableWriteRaw(dfRaw,dictRaw)
+    DictWriteRaw(dfRaw,dictRaw,params)
 
     # Show scale and measure the elapsed wall-clock time.
-    keys = []
     startTime = endTime = time.time()
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     core.wait(0.15)
     while (endTime - startTime < 1):
-        keys = event.getKeys()
+        # keys = event.getKeys()
+        keys = GetKeyPress()
         endTime = time.time()
         if keys == ['1'] or keys == ['2']:
             dictRaw["Event"] = keys[0] + " pressed"
-            dfRaw = TableWriteRaw(dfRaw, dictRaw)
+            DictWriteRaw(dfRaw, dictRaw, params)
             dict["Button Pressed"] = keys[0]
             dict["Button Response Time"] = endTime - startTime
             dict["Button Correct/Incorrect"] = "Correct" if randN+1 == int(keys[0]) else "Incorrect"
@@ -101,8 +103,7 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
         core.wait(1 / 300)
 
     dictRaw["Event"] = bold + " shown (end)"
-    dfRaw = TableWriteRaw(dfRaw,dictRaw)
+    DictWriteRaw(dfRaw, dictRaw, params)
     dict["Image Displayed"] = bold
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    return TableWrite(df,params,dict),dfRaw
-
+    DictWrite(df, params, dict)

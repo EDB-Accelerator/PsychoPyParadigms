@@ -37,11 +37,12 @@ Created on Wed Feb  3 13:34:46 EST 2021
 """
 
 from psychopy import visual,core
-import datetime,sys
+import datetime,sys,time
+from GetKeyPress import GetKeyPress
 
 # Import defined functions
 sys.path.insert(1, './src')
-from TableWrite import TableWrite,TableWriteRaw
+from DictWrite import DictWrite,DictWriteRaw
 
 def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=params['screenSize'])
@@ -56,14 +57,18 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     dict["Button Correct/Incorrect"] = ""
     dict["Button Response Time"] = ""
     dictRaw["Event"] = str(img) + " shown (start)"
-    dfRaw = TableWriteRaw(dfRaw, dictRaw)
+    # dfRaw = TableWriteRaw(dfRaw, dictRaw)
+    DictWriteRaw(dfRaw, dictRaw, params)
 
     # Wait for 6 seconds
-    core.wait(6)
+    # core.wait(6)
+    startTime = time.time()
+    while (time.time() - startTime < 6):
+        GetKeyPress()
+        core.wait(1 / 300)
 
     # Record status
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dictRaw["Event"] = str(img) + " shown (end)"
-    dfRaw = TableWriteRaw(dfRaw, dictRaw)
-
-    return TableWrite(df,params,dict),dfRaw
+    DictWriteRaw(dfRaw, dictRaw, params)
+    DictWrite(df, params, dict)

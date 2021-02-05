@@ -38,22 +38,18 @@ Created on Wed Feb  3 13:49:20 EST 2021
 import pandas as pd
 import datetime
 
-def TableWriteRaw(Df, Dict):
-
+def DictWriteRaw(dfRaw,dictRaw,params):
     # Move data in Dict into Df.
-    Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
-    Dict["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4] # Record Timestamp.
-    for key in Dict:
-        Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
-    return Df
+    dictRaw["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4] # Record Timestamp.
+    dfRaw = dfRaw.append(dictRaw, ignore_index=True)
+    dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
+    # dfRaw = dfRaw[:-1] # Drop the last row.
 
-def TableWrite(df,params,dict):
-
+def DictWrite(df,params,dict):
     # Move data in Dict into Df.
-    df = df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
     dict["Run"] = params["Run"]
     dict["Block"] = params["Block"]
     dict["TrialCount"] = params["TrialCount"]
-    for key in dict:
-        df[key].loc[len(df) - 1] = dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
-    return df
+    df = df.append(dict,ignore_index=True)
+    df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
+    # df = df[:-1] # Drop the last row.

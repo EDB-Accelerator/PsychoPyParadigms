@@ -37,7 +37,7 @@ Created on Thu Jan 28 15:20:30 EST 2021
 # Import standard python libraries
 import datetime,sys,random
 import pandas as pd
-from psychopy import visual
+from psychopy import visual,prefs
 from glob import glob
 
 # Import developer-defined functions
@@ -48,21 +48,19 @@ from DisplayFixationCross import DisplayFixationCross
 from DisplayMatrix import DisplayMatrix
 from DisplayBlank import DisplayBlank
 
+# Audio library configuration.
+prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
+
 # Pandas configuration (debugging options)
 pd.set_option('display.max_columns', None)
 
 # Receive User input from Window.
 UserInputBank = UserInputPlay()
 
-# Decide the name of output files.
-outFile = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
-outFileRaw = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
-
 # Output Summary Header Initialization
 Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Run","Block","TrialCount","Section",
           "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]
+
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
 
@@ -75,9 +73,13 @@ params = {
     'RunNum' : 2, # The number of Runs
     'screenSize' : (900,900), # The resolution of Psychopy Window
     'numTrial': UserInputBank[2],  # The number of Trials.
-    'outFile' : outFile,
-    'outFileRaw' : outFileRaw,
 }
+
+# Decide the name of output files.
+params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
 
 # Instance result initialization
 dict,dictRaw = DictInitialize(params)
@@ -97,31 +99,31 @@ df = pd.DataFrame(columns=Header)
 dfRaw = pd.DataFrame(columns=HeaderRaw)
 
 # Make Empty output files.
-open(params['outFile'], 'a').close()
-open(params['outFileRaw'], 'a').close()
+df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
+# run = RunList[0]
 for run in RunList:
     params["Run"] = run.split('/')[-1]
     # Get Block list and Shuffle.
     BlockList = glob(run + '/*')
     random.shuffle(BlockList)
 
+# block = BlockList[0]
     for block in BlockList:
         params["Block"] = block.split('/')[-1]
         # Get Image list of each block and Shuffle.
         ImgList = glob(block + '/*.jpeg')
         random.shuffle(ImgList)
+        # trial = 0
         for trial in range(params['numTrial']):
             params["TrialCount"] = trial
             img = ImgList[trial]
 
             # Fixation cross section
-            df,dfRaw = DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
-            df,dfRaw = DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
-            df,dfRaw = DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
-
-# df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
-# dfRaw.to_csv(outFileRaw, sep=',', encoding='utf-8', index=False)
+            DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
+            DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
+            DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
 
 # Close the psychopy window.
 win.close()

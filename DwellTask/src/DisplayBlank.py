@@ -38,13 +38,16 @@ Created on Wed Feb  3 13:32:56 EST 2021
 
 from psychopy import core
 import random,datetime,sys
+import time
 
 # Import defined functions
 sys.path.insert(1, './src')
-from TableWrite import TableWrite,TableWriteRaw
+from DictWrite import DictWrite,DictWriteRaw
+from GetKeyPress import GetKeyPress
 
 def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
 
+    # Select BlankTime duration randomly.
     blankTime = [0,2,4]
     blankDuration = random.choice(blankTime)
 
@@ -56,18 +59,17 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
     dict["Button Correct/Incorrect"] = ""
     dict["Button Response Time"] = ""
     dictRaw["Event"] = dict["Image Displayed"] + "shown (start)"
-    dfRaw = TableWriteRaw(dfRaw, dictRaw)
+    DictWriteRaw(dfRaw, dictRaw, params)
 
-    # fixation = visual.ShapeStim(win, lineColor='#000000', lineWidth=0, vertices=(
-    #     (0,0), (0,1)), units='height', closeShape=False,
-    #                              name='fixCross');
-    # fixation.draw()
     win.flip()
-    core.wait(blankDuration)
+    # core.wait(blankDuration)
+    startTime = time.time()
+    while (time.time() - startTime < blankDuration):
+        GetKeyPress()
+        core.wait(1 / 300)
 
     # Record status
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dictRaw["Event"] = dict["Image Displayed"] + " shown (end)"
-    dfRaw = TableWriteRaw(dfRaw, dictRaw)
-
-    return TableWrite(df,params,dict),dfRaw
+    DictWriteRaw(dfRaw, dictRaw, params)
+    DictWrite(df, params, dict)
