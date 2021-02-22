@@ -26,20 +26,20 @@ SOFTWARE.
 """
 DicInitialize.py
 
-DwellTask Psychopy3 Sub function.
+MemoryParadigm Psychopy3 Sub function.
 
 This function is for initializing a dictionary instance.
 
-Created on Tue Feb  2 16:37:55 EST 2021
+Created on Thu Feb 18 17:43:35 EST 202
 
 @author: Kyunghun Lee
-- Created on Tue Feb  2 16:37:55 EST 2021 by KL
+- Created on Thu Feb 18 17:43:35 EST 202 by KL
 """
 
 def DictInitialize(params):
 
     dict = {'expName' : params['expName'],
-            "subjectID": params['subjectID'],
+            "SubjectID": params['SubjectID'],
             "Session": params['Session'],
     }
     dictRaw = dict.copy()

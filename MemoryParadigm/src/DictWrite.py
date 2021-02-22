@@ -35,11 +35,14 @@ Created on Wed Feb  3 13:49:20 EST 2021
 @author: Kyunghun Lee
 - Created on Wed Feb  3 13:34:46 EST 2021 by KL
 """
-import pandas as pd
 import datetime
 
-def DictWriteRaw(dfRaw,dictRaw,params):
+# Header = ["SubjectID","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
+          # "Image Displayed #1","Image Displayed #2"]
+# HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
+def DictWriteRaw(dfRaw,dictRaw,params,event):
     # Move data in Dict into Df.
+    dictRaw["Event"] = event
     dictRaw["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4] # Record Timestamp.
     dfRaw = dfRaw.append(dictRaw, ignore_index=True)
     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
@@ -47,9 +50,7 @@ def DictWriteRaw(dfRaw,dictRaw,params):
 
 def DictWrite(df,params,dict):
     # Move data in Dict into Df.
-    dict["Run"] = params["Run"]
-    dict["Block"] = params["Block"]
-    dict["TrialCount"] = params["TrialCount"]
+    dict["ImageCount"] = params["ImageCount"]
     df = df.append(dict,ignore_index=True)
     df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
     # df = df[:-1] # Drop the last row.
