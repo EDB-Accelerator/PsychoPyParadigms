@@ -37,8 +37,8 @@ Created on Wed Feb  3 13:49:20 EST 2021
 """
 import datetime
 
-# Header = ["SubjectID","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
-          # "Image Displayed #1","Image Displayed #2"]
+Header = ["SubjectID","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
+          "Image Displayed #1","Image Displayed #2"]
 # HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
 def DictWriteRaw(dfRaw,dictRaw,params,event):
     # Move data in Dict into Df.
@@ -51,6 +51,9 @@ def DictWriteRaw(dfRaw,dictRaw,params,event):
 def DictWrite(df,params,dict):
     # Move data in Dict into Df.
     dict["ImageCount"] = params["ImageCount"]
+    for key in Header:
+        if key not in dict.keys():
+            dict[key] = ""
     df = df.append(dict,ignore_index=True)
     df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
     # df = df[:-1] # Drop the last row.

@@ -64,11 +64,11 @@ def PlayStudy(df,dfRaw,params,dict,dictRaw,win):
             DictWriteRaw(dfRaw, dictRaw, params, imgFile1 +" and " +imgFile2 + " displayed. (start)")
 
             img1 = visual.ImageStim(win=win, image=imgFile1, units="pix", opacity=1,
-                                    size=(params['screenSize'][0] / 3, params['screenSize'][1] / 3),
-                                    pos=[-150, 50])
+                                    size=(250, 250),
+                                    pos=[-128, 50])
             img2 = visual.ImageStim(win=win, image=imgFile2, units="pix", opacity=1,
-                                    size=(params['screenSize'][0] / 3, params['screenSize'][1] / 3),
-                                    pos=[150, 50])
+                                    size=(250, 250),
+                                    pos=[128, 50])
             txt1.draw();img1.draw();img2.draw();
             win.flip()
             core.wait(5)
