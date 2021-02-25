@@ -39,7 +39,8 @@ Created on Thu Feb 18 08:11:29 EST 2021
 from psychopy import visual,core
 import time,datetime
 from psychopy.event import Mouse
-from DictWrite import DictWrite,DictWriteRaw
+from DictWrite import DictWriteRaw,SectionStart,SectionEnd
+from ButtonDraw import ButtonDraw
 
 # Output Summary Header Initialization
 # Header = ["SubjectID","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
@@ -50,15 +51,15 @@ from DictWrite import DictWrite,DictWriteRaw
 
 def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
     # Initialization
-    dict["Section"] = "Instruction"
-    startTime = time.time()
-    dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    dict["Image Displayed #1"] = "./img/example1.jpg"
-    dict["Image Displayed #2"] = "./img/example2.jpg"
+    # dict["Section"] = "Instruction"
+    # startTime = time.time()
+    # dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
 
-    my_mouse = Mouse()
 
     # Starting Screen
+    dict["Image Displayed #1"] = "./img/example1.jpg"
+    dict["Image Displayed #2"] = "./img/example2.jpg"
+    SectionStart(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 1)")
     txt1 = visual.TextStim(win, text="Image Pairs Test", height=40, bold=True,
                            units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
     img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
@@ -67,139 +68,48 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
     img2 = visual.ImageStim(win=win, image=dict["Image Displayed #2"], units="pix", opacity=1,
                             size=(250, 250),
                             pos=[128, 50])
-    imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
-                                 size=(360, 60),
-                                 pos=[0, -180])
-    txtButton = visual.TextStim(win, text="Click here for instructions", height=30, bold=True,
-                                units='pix', pos=[0, -180], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
-                                opacity=1)
-
-    txt1.draw();imgButton.draw();txtButton.draw();img1.draw();img2.draw()
-    win.flip()
-    DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Image Pairs Test Instruction)")
-
-    clicked = False
-    while not clicked:
-        if imgButton.contains(my_mouse):
-            imgButton.image = "./img/button/click2.png"
-            txt1.draw();
-            imgButton.draw();
-            txtButton.draw();
-            img1.draw();
-            img2.draw()
-            win.flip()
-            if my_mouse.getPressed()[0] == 1:
-                clicked = True
-                DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-        else:
-            imgButton.image = "./img/button/click1.png"
-            txt1.draw();
-            imgButton.draw();
-            txtButton.draw();
-            img1.draw();
-            img2.draw()
-            win.flip()
-        core.wait(1 / 300)
+    stims = [txt1,img1,img2]
+    ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, [""], [0,-180], "Click here for instructions")
+    SectionEnd(df,dfRaw,params,dict,dictRaw,fType +" Instruction (Screen 1)")
 
     # Second Screen
-    DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Actual Instruction Screen)")
+    dict["Image Displayed #1"] = "./img/example1.jpg"
+    dict["Image Displayed #2"] = "./img/example2.jpg"
+    SectionStart(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 2)")
     txt1 = visual.TextStim(win, text="Instructions:", height=30, bold=True,
                            units='pix', pos=[-70, 250], wrapWidth=2, color=(-1, -1, -1), colorSpace='rgb')
-    img1 = visual.ImageStim(win=win, image="./img/example1.jpg", units="pix", opacity=1,
+    img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
                             size=(250, 250),
                             pos=[-128, 50])
-    img2 = visual.ImageStim(win=win, image="./img/example2.jpg", units="pix", opacity=1,
+    img2 = visual.ImageStim(win=win, image=dict["Image Displayed #2"], units="pix", opacity=1,
                             size=(250, 250),
                             pos=[128, 50])
-
-
-    txt1.draw();img1.draw();img2.draw();imgButton.draw();txtButton.draw()
+    stims = [txt1, img1, img2]
+    txts = []
     if fType == 'Study':
-        txt2 = visual.TextStim(win, text="You will see 24 image pairs, like above.",
-                               height=27,
-                               units='pix', pos=[0, -140], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        txt3 = visual.TextStim(win, text="Learn which images go together.",
-                               height=27,
-                               units='pix', pos=[0, -170], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        txt4 = visual.TextStim(win, text="Later you will be tested on that!",
-                               height=27,
-                               units='pix', pos=[0, -200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
-                                     size=(360, 60),
-                                     pos=[0, -300])
-        txtButton = visual.TextStim(win, text="Click here to continue", height=30, bold=True,
-                                    units='pix', pos=[0, -300], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
-                                    opacity=1)
-
-    elif fType == 'Test':
-        DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Actual Instruction Screen)")
-        txt2 = visual.TextStim(win, text="Let's test your memory for the images",
-                               height=27,
-                               units='pix', pos=[0, -140], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        txt3 = visual.TextStim(win, text="you learned a few minutes ago.",
-                               height=27,
-                               units='pix', pos=[0, -170], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
-                                     size=(360, 60),
-                                     pos=[0, -250])
-        txtButton = visual.TextStim(win, text="Click here to continue", height=30, bold=True,
-                                    units='pix', pos=[0, -250], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
-                                    opacity=1)
-
-    txt2.draw()
-    txt3.draw()
-    if fType == 'Study':
-        txt4.draw()
-
-    win.flip()
-    my_mouse = Mouse()
-    clicked = False
-    while not clicked:
-        if imgButton.contains(my_mouse):
-            imgButton.image = "./img/button/click2.png"
-            txt1.draw()
-            txt2.draw()
-            txt3.draw()
-            if fType == 'Study':
-                txt4.draw()
-            imgButton.draw()
-            txtButton.draw()
-            img1.draw()
-            img2.draw()
-            win.flip()
-            if my_mouse.getPressed()[0] == 1:
-                DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-                clicked = True
-        else:
-            imgButton.image = "./img/button/click1.png"
-            txt1.draw()
-            txt2.draw()
-            txt3.draw()
-            if fType == 'Study':
-                txt4.draw()
-            imgButton.draw()
-            txtButton.draw()
-            img1.draw()
-            img2.draw()
-            win.flip()
-        core.wait(1 / 300)
-
-    clicked = False
-    while not clicked:
-        if my_mouse.getPressed():
-            clicked = True
+        txts.append("You will see 24 image pairs, like above.")
+        txts.append("Learn which images go together.")
+        txts.append("Later you will be tested on that!")
+    else:
+        # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Actual Instruction Screen)")
+        txts.append("Let's test your memory for the images")
+        txts.append("you learned a few minutes ago.")
+    ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -100], "Click here for instructions")
+    SectionEnd(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 2)")
 
 # Last screen (only test case)
     if fType == "Test":
+        dict["Image Displayed #1"] = "./img/example1.jpg"
+        SectionStart(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 3)")
         DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Third screen)")
         txt1 = visual.TextStim(win, text="Instructions:", height=30, bold=True,
                                units='pix', pos=[-70, 250], wrapWidth=2, color=(-1, -1, -1), colorSpace='rgb')
-        # lines are ok; use closeShape=False
+
         edgeLength = 250 * 0.7
         Vert = [[(-1*edgeLength, -1*edgeLength), (-1*edgeLength, edgeLength),
                       (edgeLength, edgeLength), (edgeLength, -1*edgeLength)]]
         shape1 = visual.ShapeStim(win, vertices=Vert, units='pix',fillColor='red', lineWidth=0, size=.75, pos=[0, 50])
-        img1 = visual.ImageStim(win=win, image="./img/example1.jpg", units="pix", opacity=1,
+        img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
                                 size=(250, 250),
                                 pos=[0, 50])
 
@@ -212,48 +122,7 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
         txt4 = visual.TextStim(win, text="(hint: it's a bridge!)",
                                height=27,
                                units='pix', pos=[0, -200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
-                                     size=(360, 60),
-                                     pos=[0, -300])
-        txtButton = visual.TextStim(win, text="Click here to continue", height=30, bold=True,
-                                    units='pix', pos=[0, -300], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
-                                    opacity=1)
-        txt1.draw();
-        txt2.draw()
-        txt3.draw()
-        txt4.draw()
-        shape1.draw()
-        img1.draw()
-        win.flip()
-
-        my_mouse = Mouse()
-        clicked = False
-        while not clicked:
-            if imgButton.contains(my_mouse):
-                imgButton.image = "./img/button/click2.png"
-                txt1.draw();txt2.draw();txt3.draw();txt4.draw()
-                imgButton.draw();txtButton.draw()
-                shape1.draw();img1.draw()
-                win.flip()
-                if my_mouse.getPressed()[0] == 1:
-                    DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-                    clicked = True
-            else:
-                imgButton.image = "./img/button/click1.png"
-                txt1.draw();txt2.draw();txt3.draw();txt4.draw()
-                imgButton.draw();txtButton.draw()
-                shape1.draw();img1.draw()
-                win.flip()
-            core.wait(1 / 300)
-
-        clicked = False
-        while not clicked:
-            if my_mouse.getPressed():
-                clicked = True
-
-    # Record the result.
-    dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    dict["Section Time"] = time.time() - startTime
-    params["ImageCount"] = ""
-    DictWriteRaw(dfRaw, dictRaw, params,"Instruction End")
-    DictWrite(df, params, dict)
+        stims = [txt1,shape1,img1,txt2,txt3,txt4]
+        txts = [""]
+        ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -200], "Click here to continue")
+        SectionEnd(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 3)")

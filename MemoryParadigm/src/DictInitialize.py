@@ -41,6 +41,7 @@ def DictInitialize(params):
     dict = {'expName' : params['expName'],
             "SubjectID": params['SubjectID'],
             "Session": params['Session'],
+            "Section": "",
     }
     dictRaw = dict.copy()
 

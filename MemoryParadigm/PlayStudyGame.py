@@ -58,8 +58,10 @@ pd.set_option('display.max_columns', None)
 UserInputBank = UserInputPlay()
 
 # Output Summary Header Initialization
-Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
-          "Image Displayed #1","Image Displayed #2"]
+Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time",
+          "Response Time","Image Group","Image Count",
+          "Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4","Image Displayed #5",
+          "Image Displayed #6"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","SubjectID","Session","Event"]

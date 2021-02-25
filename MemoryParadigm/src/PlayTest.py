@@ -40,6 +40,7 @@ from psychopy import visual,core
 import time,datetime
 from psychopy.event import Mouse
 from DictWrite import DictWrite,DictWriteRaw
+from ButtonDraw import ButtonDraw
 
 def PlayTest(df,dfRaw,params,dict,dictRaw,win):
     # Practice Section
@@ -66,50 +67,6 @@ def PlayTest(df,dfRaw,params,dict,dictRaw,win):
         DrawImage(df, dfRaw, params, dict, dictRaw, win, imgGroup[i%8], imgOrder, i+1, 1);
         core.wait(0.5)
 
-def ButtonDraw(df, dfRaw, params, dict, dictRaw,win,stims,txts,position,buttonMessage):
-    txtStims = []
-    for i in range(len(txts)):
-        txtStims.append(visual.TextStim(win, text=txts[i], height=30, bold=True,units='pix', pos=[position[0], position[1]-60*i], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb'))
-        # txtStims[i].draw()
-    imgButton = visual.ImageStim(win, image="./img/button/click1.png", units="pix", opacity=1,size=(360, 60),pos=[position[0], (txtStims[-1].pos)[1]-60])
-    txtButton = visual.TextStim(win, text=buttonMessage, height=30, bold=True,
-                                units='pix', pos=[position[0], (txtStims[-1].pos)[1]-60], wrapWidth=1000, color=(-1, -1, -1),
-                                colorSpace='rgb',opacity=1)
-    # imgButton.draw();
-    # txtButton.draw();
-    # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Play again")
-    my_mouse = Mouse()
-    clicked = False
-    while (not clicked):
-        if imgButton.contains(my_mouse):
-            imgButton.image = "./img/button/click2.png"
-            # txt1.draw();
-            # txt2.draw()
-            for i in range(len(txtStims)):
-                txtStims[i].draw()
-            imgButton.draw();
-            txtButton.draw();
-            for stim in stims:
-                stim.draw()
-            win.flip()
-            if my_mouse.getPressed()[0] == 1:
-                clicked = True
-                # DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-        else:
-            imgButton.image = "./img/button/click1.png"
-            # txt1.draw();
-            # txt2.draw()
-            for i in range(len(txtStims)):
-                txtStims[i].draw()
-            imgButton.draw();
-            txtButton.draw();
-            # img1.draw();
-            # img2.draw()
-            for stim in stims:
-                stim.draw()
-            win.flip()
-        core.wait(1 / 300)
-    core.wait(1 / 300)
 
 def DrawImage(df,dfRaw,params,dict,dictRaw,win,imgGroup,imgOrder,playType,answer):
 
@@ -184,7 +141,6 @@ def DrawImage(df,dfRaw,params,dict,dictRaw,win,imgGroup,imgOrder,playType,answer
 
 
 def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
-    my_mouse = Mouse()
     if playType == "Practice":
 
         # Starting Screen
@@ -211,36 +167,3 @@ def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
         stims = [txt1, txt2, img1]
         txts = [""]
         ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -200], "Click here to retry")
-
-        # txt1.draw();txt2.draw()
-        # imgButton.draw();
-        # txtButton.draw();
-        # img1.draw();
-        # img2.draw()
-        # win.flip()
-        # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Play again")
-        #
-        # clicked = False
-        # while (not clicked):
-        #     if imgButton.contains(my_mouse):
-        #         imgButton.image = "./img/button/click2.png"
-        #         txt1.draw();txt2.draw()
-        #         imgButton.draw();
-        #         txtButton.draw();
-        #         img1.draw();
-        #         img2.draw()
-        #         win.flip()
-        #         if my_mouse.getPressed()[0] == 1:
-        #             clicked = True
-        #             DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-        #     else:
-        #         imgButton.image = "./img/button/click1.png"
-        #         txt1.draw();txt2.draw()
-        #         imgButton.draw();
-        #         txtButton.draw();
-        #         img1.draw();
-        #         img2.draw()
-        #         win.flip()
-        #     core.wait(1 / 300)
-        # clicked = False
-        # core.wait(1 / 300)

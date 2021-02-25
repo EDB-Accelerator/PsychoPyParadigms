@@ -57,7 +57,8 @@ pd.set_option('display.max_columns', None)
 UserInputBank = UserInputPlay()
 
 # Output Summary Header Initialization
-Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
+Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time",
+          "Response Time","Image Group","Image Count",
           "Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4","Image Displayed #5",
           "Image Displayed #6"]
 
@@ -93,6 +94,7 @@ df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
 # Play Instruction.
+DictWrite(df,params,dict)
 PlayInstruction(df,dfRaw,params,dict,dictRaw,win,"Test")
 
 # Play Study portion of the game.
