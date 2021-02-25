@@ -30,7 +30,7 @@ donutVert = [[(-.2,-.2),(-.2,.2),(.2,.2),(.2,-.2)],[(-.15,-.15),(-.15,.15),(.15,
 donut = ShapeStim(win, vertices=donutVert, fillColor='orange', lineWidth=0, size=.75, pos=(-.2, -.25))
 
 # `donut` has a true hole, using two loops of vertices:
-donutVert = [[(-.3,-.1),(-.3,.1),(.3,.1),(.3,-.1)]]
+donutVert = [[(-.3,-.3),(-.3,.3),(.3,.3),(.3,-.3)]]
 donut = ShapeStim(win, vertices=donutVert, fillColor='yellow', lineWidth=0, size=.75, pos=(-.2, -.25))
 
 # lines are ok; use closeShape=False

@@ -24,22 +24,20 @@ SOFTWARE.
 """
 
 """
-PlayStudyGame.py
+PlayTestGame.py
 
-MemoryParadigm Psychopy3 Study Driver File.
+MemoryParadigm Psychopy3 Test Driver File.
 
-Created on Tue Feb 16 15:26:22 EST 2021
+Created on Mon Feb 22 12:49:15 EST 2021
 
 @author: Kyunghun Lee
-- Created on Tue Feb 16 15:26:22 EST 2021 by KL
+- Created on Tue Mon Feb 22 12:49:15 EST 2021 by KL
 """
 
 # Import standard python libraries
 import datetime,sys
 import pandas as pd
-from psychopy import visual,prefs,core
-from psychopy.visual import Window
-from psychopy.event import Mouse
+from psychopy import visual,prefs
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -47,6 +45,7 @@ from UserInputPlay import UserInputPlay
 from DictInitialize import DictInitialize
 from PlayInstruction import PlayInstruction
 from PlayStudy import PlayStudy
+from PlayTest import PlayTest
 
 # Audio library configuration.
 prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
@@ -59,7 +58,8 @@ UserInputBank = UserInputPlay()
 
 # Output Summary Header Initialization
 Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
-          "Image Displayed #1","Image Displayed #2"]
+          "Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4","Image Displayed #5",
+          "Image Displayed #6"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","SubjectID","Session","Event"]
@@ -73,9 +73,9 @@ params = {
 }
 
 # Decide the name of output files.
-params['outFile'] = "./result/study_" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
+params['outFile'] = "./result/test_" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
           datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
-params['outFileRaw'] = "./result/study" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
+params['outFileRaw'] = "./result/test_" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
           datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
 
 # Instance result initialization
@@ -93,10 +93,10 @@ df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
 # Play Instruction.
-PlayInstruction(df,dfRaw,params,dict,dictRaw,win,'Study')
+PlayInstruction(df,dfRaw,params,dict,dictRaw,win,"Test")
 
 # Play Study portion of the game.
-PlayStudy(df,dfRaw,params,dict,dictRaw,win)
+PlayTest(df,dfRaw,params,dict,dictRaw,win)
 
 # Close the psychopy window.
 win.close()
