@@ -43,16 +43,16 @@ from DictWrite import DictWrite,DictWriteRaw
 
 def PlayTest(df,dfRaw,params,dict,dictRaw,win):
 
+    # Practice Section
     dict["Section"] = "Practice Section"
+    DrawImage(df, dfRaw, params, dict, dictRaw, win,"example",[1,2,3,4,5,6],"Practice",1)
 
-    dict["Image Displayed #1"] = "./img/example1.jpg"
-    dict["Image Displayed #2"] = "./img/example2.jpg"
-    dict["Image Displayed #3"] = "./img/example3.jpg"
-    dict["Image Displayed #4"] = "./img/example4.jpg"
-    dict["Image Displayed #5"] = "./img/example5.jpg"
-    dict["Image Displayed #6"] = "./img/example6.jpg"
-    DrawImage(df, dfRaw, params, dict, dictRaw, win, "Practice",1)
-    win.flip()
+    # Test
+    dict["Section"] = "Test section"
+    count = 0
+    DrawImage(df, dfRaw, params, dict, dictRaw, win,"barn",[1,6,7,4,5,8],count,1);count+=1
+    DrawImage(df, dfRaw, params, dict, dictRaw, win,"lobby",[1,7,8,5,6,4],count, 1);count+=1
+
 
     # DictWriteRaw(dfRaw, dictRaw, params, "Image Displayed")
     # DictWriteRaw(dfRaw, dictRaw, params, "Practice shown")
@@ -98,7 +98,7 @@ def PlayTest(df,dfRaw,params,dict,dictRaw,win):
     #
     # DictWriteRaw(dfRaw, dictRaw, params, "Test Section Ended.")
 
-def ButtonDraw(win,stims,txts,position,buttonMessage):
+def ButtonDraw(df, dfRaw, params, dict, dictRaw,win,stims,txts,position,buttonMessage):
     txtStims = []
     for i in range(len(txts)):
         txtStims.append(visual.TextStim(win, text=txts[i], height=30, bold=True,units='pix', pos=[position[0], position[1]-60*i], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb'))
@@ -143,9 +143,15 @@ def ButtonDraw(win,stims,txts,position,buttonMessage):
         core.wait(1 / 300)
     core.wait(1 / 300)
 
-def DrawImage(df,dfRaw,params,dict,dictRaw,win,playType,answer):
+def DrawImage(df,dfRaw,params,dict,dictRaw,win,imgGroup,imgOrder,playType,answer):
+
+    if playType != "Practice":
+        playType = str(playType) + " of 24"
+
+    for i in range(len(imgOrder)):
+        dict["Image Displayed #" + str(i+1)] = "./img/" + imgGroup + str(imgOrder[i]) + ".jpg"
     txt1 = visual.TextStim(win, text=playType, height=30, bold=True,
-                           units='pix', pos=[-70, 300], wrapWidth=2, color=(-1, -1, -1), colorSpace='rgb')
+                           units='pix', pos=[0,300], wrapWidth=100, color=(-1, -1, -1), colorSpace='rgb')
     txt1.draw()
     imgs = []
     XList = [-265,0,265]
@@ -181,6 +187,7 @@ def DrawImage(df,dfRaw,params,dict,dictRaw,win,playType,answer):
                         DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
                     continue
             shape1.draw()
+            txt1.draw()
             for i in range(6):
                 imgs[i].draw()
             win.flip()
@@ -188,16 +195,24 @@ def DrawImage(df,dfRaw,params,dict,dictRaw,win,playType,answer):
         if playType == "Practice":
             if clicked == False or userAnswer != answer:
                 userAnswer = 0
-                clicked = False
                 PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType)
                 core.wait(1 / 300)
             else:
+                stims = []
                 txts = []
                 txts.append("Excellent!")
                 txts.append("You will be asked to recall all 24 pairs.")
                 txts.append("Let's start!")
-
-                ButtonDraw(win, [], txts, [0, 50], "Click here to continue")
+                ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, 150],"Click here to continue")
+        else:
+            if clicked == False:
+                userAnswer = 0
+                PlayAgainWarning(df, dfRaw, params, dict, dictRaw, win, playType)
+                core.wait(1 / 300)
+            else:
+                # condition: Answered.
+                break
+    win.flip()
 
 
 def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
@@ -206,7 +221,6 @@ def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
 
         # Starting Screen
         txts = []
-        stims = []
         txt1 = visual.TextStim(win, text="The image pair you learned was:", height=30, bold=True,
                                units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
         img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
@@ -216,17 +230,19 @@ def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
                                 size=(250, 250),
                                 pos=[128, 50])
         stims = [txt1,img1,img2]
-        # txt2 = visual.TextStim(win, text="You should click the image on the right.", height=30, bold=True,
-        #                        units='pix', pos=[0, -140], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
         txts.append("You should click the image on the right.")
-        ButtonDraw(win,stims,txts,[0, -150],"Click here for instructions")
-
-        # imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
-        #                              size=(360, 60),
-        #                              pos=[0, -200])
-        # txtButton = visual.TextStim(win, text="Click here for instructions", height=30, bold=True,
-        #                             units='pix', pos=[0, -200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
-        #                             opacity=1)
+        ButtonDraw(df, dfRaw, params, dict, dictRaw,win,stims,txts,[0, -150],"Click here for instructions")
+    else:
+        txt1 = visual.TextStim(win, text="You are taking too long to respond.", height=30, bold=True,
+                               units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
+        txt2 = visual.TextStim(win, text="You should click the image that goes with this.", height=30, bold=True,
+                               units='pix', pos=[0, 140], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
+        img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
+                                size=(250, 250),
+                                pos=[0, -40])
+        stims = [txt1, txt2, img1]
+        txts = [""]
+        ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -200], "Click here to retry")
 
         # txt1.draw();txt2.draw()
         # imgButton.draw();
@@ -261,63 +277,63 @@ def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
         # clicked = False
         # core.wait(1 / 300)
 
-def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
-    my_mouse = Mouse()
-    if playType == "Practice":
-
-        # Starting Screen
-        stims = []
-        txts = []
-        txt1 = visual.TextStim(win, text="The image pair you learned was:", height=30, bold=True,
-                               units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
-                                size=(250, 250),
-                                pos=[-128, 50])
-        img2 = visual.ImageStim(win=win, image=dict["Image Displayed #2"], units="pix", opacity=1,
-                                size=(250, 250),
-                                pos=[128, 50])
-        # txt2 = visual.TextStim(win, text="You should click the image on the right.", height=30, bold=True,
-        #                        units='pix', pos=[0, -140], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        # imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
-        #                              size=(360, 60),
-        #                              pos=[0, -200])
-        # txtButton = visual.TextStim(win, text="Click here for instructions", height=30, bold=True,
-        #                             units='pix', pos=[0, -200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
-        #                             opacity=1)
-        stims = [txt1,img1,img2]
-        txts.append("You should click the image on the right.")
-        ButtonDraw(win, stims, txts, [0, -150], "Click here for instructions")
-
-        # txt1.draw();txt2.draw()
-        # imgButton.draw();
-        # txtButton.draw();
-        # img1.draw();
-        # img2.draw()
-        # win.flip()
-        # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Play again")
-        #
-        # clicked = False
-        # while (not clicked):
-        #     if imgButton.contains(my_mouse):
-        #         imgButton.image = "./img/button/click2.png"
-        #         txt1.draw();txt2.draw()
-        #         imgButton.draw();
-        #         txtButton.draw();
-        #         img1.draw();
-        #         img2.draw()
-        #         win.flip()
-        #         if my_mouse.getPressed()[0] == 1:
-        #             clicked = True
-        #             DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-        #     else:
-        #         imgButton.image = "./img/button/click1.png"
-        #         txt1.draw();txt2.draw()
-        #         imgButton.draw();
-        #         txtButton.draw();
-        #         img1.draw();
-        #         img2.draw()
-        #         win.flip()
-        #     core.wait(1 / 300)
-        # clicked = False
-        # core.wait(1 / 300)
-
+# def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
+#     my_mouse = Mouse()
+#     if playType == "Practice":
+#
+#         # Starting Screen
+#         stims = []
+#         txts = []
+#         txt1 = visual.TextStim(win, text="The image pair you learned was:", height=30, bold=True,
+#                                units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
+#         img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
+#                                 size=(250, 250),
+#                                 pos=[-128, 50])
+#         img2 = visual.ImageStim(win=win, image=dict["Image Displayed #2"], units="pix", opacity=1,
+#                                 size=(250, 250),
+#                                 pos=[128, 50])
+#         # txt2 = visual.TextStim(win, text="You should click the image on the right.", height=30, bold=True,
+#         #                        units='pix', pos=[0, -140], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
+#         # imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
+#         #                              size=(360, 60),
+#         #                              pos=[0, -200])
+#         # txtButton = visual.TextStim(win, text="Click here for instructions", height=30, bold=True,
+#         #                             units='pix', pos=[0, -200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
+#         #                             opacity=1)
+#         stims = [txt1,img1,img2]
+#         txts.append("You should click the image on the right.")
+#         ButtonDraw(df, dfRaw, params, dict, dictRaw,win, stims, txts, [0, -150], "Click here for instructions")
+#
+#         # txt1.draw();txt2.draw()
+#         # imgButton.draw();
+#         # txtButton.draw();
+#         # img1.draw();
+#         # img2.draw()
+#         # win.flip()
+#         # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Play again")
+#         #
+#         # clicked = False
+#         # while (not clicked):
+#         #     if imgButton.contains(my_mouse):
+#         #         imgButton.image = "./img/button/click2.png"
+#         #         txt1.draw();txt2.draw()
+#         #         imgButton.draw();
+#         #         txtButton.draw();
+#         #         img1.draw();
+#         #         img2.draw()
+#         #         win.flip()
+#         #         if my_mouse.getPressed()[0] == 1:
+#         #             clicked = True
+#         #             DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
+#         #     else:
+#         #         imgButton.image = "./img/button/click1.png"
+#         #         txt1.draw();txt2.draw()
+#         #         imgButton.draw();
+#         #         txtButton.draw();
+#         #         img1.draw();
+#         #         img2.draw()
+#         #         win.flip()
+#         #     core.wait(1 / 300)
+#         # clicked = False
+#         # core.wait(1 / 300)
+#
