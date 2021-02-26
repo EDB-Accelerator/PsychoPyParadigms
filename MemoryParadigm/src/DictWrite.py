@@ -38,14 +38,17 @@ Created on Wed Feb  3 13:49:20 EST 2021
 import datetime,time,re
 
 Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","Image Group","Image Count",
+          "Response Time","User Answer","User Answer Correctness", "Image Group","Image Count",
           "Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4","Image Displayed #5",
           "Image Displayed #6"]
+entryList = ["Image Displayed #1", "Image Displayed #2", "Image Displayed #3", "Image Displayed #4",
+             "Image Displayed #5", "Image Displayed #6"]
 # HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
 def DictWriteRaw(dfRaw,dictRaw,params,event):
     # Move data in Dict into Df.
     dictRaw["Event"] = event
-    dictRaw["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4] # Record Timestamp.
+    # dictRaw["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Yyyyy-MM-dd HH:mm:ss_%H:%M:%S.%f")[:-4] # Record Timestamp.
+    dictRaw["TimeStamp"] = time.strftime('%m-%d-%Y %H:%M:%S')
     dfRaw = dfRaw.append(dictRaw, ignore_index=True)
     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
     # dfRaw = dfRaw[:-1] # Drop the last row.
@@ -56,35 +59,51 @@ def SectionStart(df,dfRaw,params,dict,dictRaw,sectionName):
         dict["Image Count"] = 0
     else:
         dict["Image Count"] += 1
-    dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    # dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Section Start Time"] = time.strftime('%m-%d-%Y %H:%M:%S')
     params["StartTime"] = time.time()
-    DictWriteRaw(dfRaw, dictRaw, params, sectionName + "started")
+    DictWriteRaw(dfRaw, dictRaw, params, sectionName + " "+str(dict["Image Count"]) + " started")
 
-def ResponseRecord(params,dict):
+def ResponseRecord(params,dict,userAnswer,Answer):
     dict["Response Time"] = time.time() - params["StartTime"]
+    dict["User Answer"] = userAnswer
+    if userAnswer != "" and userAnswer != "Continue Clicked":
+        dict["User Answer Correctness"] = "Correct" if userAnswer == Answer else "Incorrect"
+
 
 def SectionEnd(df,dfRaw,params,dict,dictRaw,sectionName):
-    dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    # dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Section End Time"] = time.strftime('%m-%d-%Y %H:%M:%S')
     dict["Section Time"] = time.time() - params["StartTime"]
     if "Response Time" not in dict:
         dict["Response Time"] = ""
 
     # Extract Image Group Name from Image file
-    dict["Image Group"] = re.findall('([a-zA-Z ]*)\d*.*', dict["Image Displayed #1"].split('/')[-1])[0]
+    if "Image Displayed #1" in dict:
+        dict["Image Group"] = re.findall('([a-zA-Z ]*)\d*.*', dict["Image Displayed #1"].split('/')[-1])[0]
+
+    # for entry in entryList:
+    #     if entry in dict:
+    #         dict[entry] = (dict[entry]).split("./img/")[-1].split(".jpg")[0]
 
     # Move data in Dict into Df.
     for key in Header:
         if key not in dict.keys():
             dict[key] = ""
+
     df = df.append(dict,ignore_index=True)
     df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
     del dict["Response Time"]
 
-    entryList = ["Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4",
-                 "Image Displayed #5","Image Displayed #6"]
+    params["Image Displayed #1"] = dict["Image Displayed #1"]
     for entry in entryList:
         if entry in dict:
             del dict[entry]
+    if "Image Group" in dict:
+        del dict["Image Group"]
+    if "User Answer" or "User Answer Correctness":
+        del dict["User Answer"]
+        del dict["User Answer Correctness"]
 
     # Section Ended.
-    DictWriteRaw(dfRaw, dictRaw, params, sectionName + "ended")
+    DictWriteRaw(dfRaw, dictRaw, params, sectionName+ " "+str(dict["Image Count"]) + " ended")

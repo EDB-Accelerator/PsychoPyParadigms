@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 """
-ButtonDraw.py
+DrawButton.py
 
 MemoryParadigm Task Psychopy3 Sub function.
 
@@ -39,16 +39,18 @@ from psychopy import visual,core
 from DictWrite import DictWriteRaw,ResponseRecord
 from psychopy.event import Mouse
 
-def ButtonDraw(df, dfRaw, params, dict, dictRaw,win,stims,txts,position,buttonMessage):
+def DrawButton(df, dfRaw, params, dict, dictRaw,win,stims,txts,position,buttonMessage):
     txtStims = []
     for i in range(len(txts)):
-        txtStims.append(visual.TextStim(win, text=txts[i], height=30, bold=True,units='pix', pos=[position[0], position[1]-60*i], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb'))
-        # txtStims[i].draw()
-    imgButton = visual.ImageStim(win, image="./img/button/click1.png", units="pix", opacity=1,size=(360, 60),pos=[position[0], (txtStims[-1].pos)[1]-60])
+        txtStims.append(visual.TextStim(win, text=txts[i], height=30, bold=True,units='pix',
+                                        pos=[position[0], position[1]-60*i], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb'))
+
+    imgButton = visual.ImageStim(win, image="./img/button/click1.png", units="pix", opacity=1,size=(360, 60),
+                                 pos=[position[0], (txtStims[-1].pos)[1]-60])
     txtButton = visual.TextStim(win, text=buttonMessage, height=30, bold=True,
                                 units='pix', pos=[position[0], (txtStims[-1].pos)[1]-60], wrapWidth=1000, color=(-1, -1, -1),
                                 colorSpace='rgb',opacity=1)
-    # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Play again")
+
     my_mouse = Mouse()
     clicked = False
     while (not clicked):
@@ -64,7 +66,7 @@ def ButtonDraw(df, dfRaw, params, dict, dictRaw,win,stims,txts,position,buttonMe
             if my_mouse.getPressed()[0] == 1:
                 clicked = True
                 DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-                ResponseRecord(params, dict)
+                ResponseRecord(params, dict,"Continue Clicked","")
         else:
             imgButton.image = "./img/button/click1.png"
             for i in range(len(txtStims)):

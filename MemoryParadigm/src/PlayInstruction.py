@@ -40,7 +40,7 @@ from psychopy import visual,core
 import time,datetime
 from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
-from ButtonDraw import ButtonDraw
+from DrawButton import DrawButton
 
 # Output Summary Header Initialization
 # Header = ["SubjectID","Session","Section","Section Start Time","Section End Time","Section Time","ImageCount",
@@ -69,7 +69,7 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
                             size=(250, 250),
                             pos=[128, 50])
     stims = [txt1,img1,img2]
-    ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, [""], [0,-180], "Click here for instructions")
+    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, [""], [0,-180], "Click here for instructions")
     SectionEnd(df,dfRaw,params,dict,dictRaw,fType +" Instruction (Screen 1)")
 
     # Second Screen
@@ -94,7 +94,7 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
         # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Actual Instruction Screen)")
         txts.append("Let's test your memory for the images")
         txts.append("you learned a few minutes ago.")
-    ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -100], "Click here for instructions")
+    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -100], "Click here for instructions")
     SectionEnd(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 2)")
 
 # Last screen (only test case)
@@ -124,5 +124,5 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
                                units='pix', pos=[0, -200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
         stims = [txt1,shape1,img1,txt2,txt3,txt4]
         txts = [""]
-        ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -200], "Click here to continue")
+        DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -200], "Click here to continue")
         SectionEnd(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 3)")

@@ -39,16 +39,18 @@ Created on Tue Feb 23 15:59:05 EST 2021
 from psychopy import visual,core
 import time,datetime
 from psychopy.event import Mouse
-from DictWrite import DictWrite,DictWriteRaw
-from ButtonDraw import ButtonDraw
+from DictWrite import SectionStart,SectionEnd,DictWriteRaw
+from DrawButton import DrawButton
+from DrawImage import DrawImageTest,DrawImagePractice
 
 def PlayTest(df,dfRaw,params,dict,dictRaw,win):
     # Practice Section
-    dict["Section"] = "Practice Section"
-    DrawImage(df, dfRaw, params, dict, dictRaw, win,"example",[1,2,3,4,5,6],"Practice",1)
+    # dict["Section"] = "Practice"
+    DrawImagePractice(df, dfRaw, params, dict, dictRaw, win,"example",[1,2,3,4,5,6],"Practice",1)
+    # SectionEnd(df, dfRaw, params, dict, dictRaw, "Practice")
 
     # Test
-    dict["Section"] = "Test section"
+    dict["Section"] = "Test"
     imgGroup = ['barn', 'lobby', 'bath', 'temple', 'playground', 'entry', 'field', 'underwater']
     imgOrders = [
         [1, 6, 7, 4, 5, 8],
@@ -64,106 +66,9 @@ def PlayTest(df,dfRaw,params,dict,dictRaw,win):
         imgOrder = imgOrders[i%8]
         if i>=8:
             imgOrder[0] += 1
-        DrawImage(df, dfRaw, params, dict, dictRaw, win, imgGroup[i%8], imgOrder, i+1, 1);
+        DrawImageTest(df, dfRaw, params, dict, dictRaw, win, imgGroup[i%8], imgOrder, i+1, 1);
         core.wait(0.5)
 
 
-def DrawImage(df,dfRaw,params,dict,dictRaw,win,imgGroup,imgOrder,playType,answer):
-
-    if playType != "Practice":
-        playType = str(playType) + " of 24"
-
-    for i in range(len(imgOrder)):
-        dict["Image Displayed #" + str(i+1)] = "./img/" + imgGroup + str(imgOrder[i]) + ".jpg"
-    txt1 = visual.TextStim(win, text=playType, height=30, bold=True,
-                           units='pix', pos=[0,300], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-    txt1.draw()
-    imgs = []
-    XList = [-265,0,265]
-    # Image configurations.
-    for i in range(6):
-        imgs.append(visual.ImageStim(win=win, image=dict["Image Displayed #" + str(i+1)],
-                            units="pix", opacity=1,
-                            size=(250, 250),
-                            pos=[XList[i%3], 135- 270*(i//3)]))
-
-    # Draw Redblock at image #0.
-    edgeLength = 250 * 0.7
-    Vert = [[(-1 * edgeLength, -1 * edgeLength), (-1 * edgeLength, edgeLength),
-             (edgeLength, edgeLength), (edgeLength, -1 * edgeLength)]]
-    shape1 = visual.ShapeStim(win, vertices=Vert, units='pix', fillColor='red', lineWidth=0, size=.75, pos=imgs[0].pos)
-    shape2 = visual.ShapeStim(win, vertices=Vert, units='pix', fillColor='red', lineWidth=0, size=.75, pos=imgs[0].pos)
-    shape1.draw()
-
-    userAnswer = 0
-    while (userAnswer != answer):
-        my_mouse = Mouse()
-        clicked = False
-        startTime = endTime = time.time()
-        while (not clicked) and endTime-startTime < 10:
-            endTime = time.time()
-            for i in range(1,6):
-                if imgs[i].contains(my_mouse):
-                    shape2.pos = imgs[i].pos
-                    shape2.draw()
-                    if my_mouse.getPressed()[0] == 1:
-                        userAnswer = i
-                        clicked = True
-                        DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-                    continue
-            shape1.draw()
-            txt1.draw()
-            for i in range(6):
-                imgs[i].draw()
-            win.flip()
-            core.wait(1 / 300)
-        if playType == "Practice":
-            if clicked == False or userAnswer != answer:
-                userAnswer = 0
-                PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType)
-                core.wait(1 / 300)
-            else:
-                stims = []
-                txts = []
-                txts.append("Excellent!")
-                txts.append("You will be asked to recall all 24 pairs.")
-                txts.append("Let's start!")
-                ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, 150],"Click here to continue")
-        else:
-            if clicked == False:
-                userAnswer = 0
-                PlayAgainWarning(df, dfRaw, params, dict, dictRaw, win, playType)
-                core.wait(1 / 300)
-            else:
-                # condition: Answered.
-                break
-    win.flip()
 
 
-def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
-    if playType == "Practice":
-
-        # Starting Screen
-        txts = []
-        txt1 = visual.TextStim(win, text="The image pair you learned was:", height=30, bold=True,
-                               units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
-                                size=(250, 250),
-                                pos=[-128, 50])
-        img2 = visual.ImageStim(win=win, image=dict["Image Displayed #2"], units="pix", opacity=1,
-                                size=(250, 250),
-                                pos=[128, 50])
-        stims = [txt1,img1,img2]
-        txts.append("You should click the image on the right.")
-        ButtonDraw(df, dfRaw, params, dict, dictRaw,win,stims,txts,[0, -150],"Click here for instructions")
-    else:
-        txt1 = visual.TextStim(win, text="You are taking too long to respond.", height=30, bold=True,
-                               units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        txt2 = visual.TextStim(win, text="You should click the image that goes with this.", height=30, bold=True,
-                               units='pix', pos=[0, 140], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
-                                size=(250, 250),
-                                pos=[0, -40])
-        stims = [txt1, txt2, img1]
-        txts = [""]
-        ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -200], "Click here to retry")

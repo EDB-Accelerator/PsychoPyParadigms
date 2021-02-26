@@ -39,11 +39,9 @@ Created on Thu Feb 18 14:28:39 EST 2021
 from psychopy import visual,core
 import time,datetime
 from DictWrite import SectionStart,SectionEnd,DictWriteRaw
-from ButtonDraw import ButtonDraw
+from DrawButton import DrawButton
 
 def PlayStudy(df,dfRaw,params,dict,dictRaw,win):
-
-    # dict["Section"] = "Study Section"
 
     imgGroup = ['barn', 'lobby', 'bath', 'temple', 'playground', 'entry', 'field', 'underwater']
     count = 1
@@ -55,34 +53,25 @@ def PlayStudy(df,dfRaw,params,dict,dictRaw,win):
             txt1.draw();
             win.flip()
             core.wait(1.5)
-            imgFile1 = "./img/" + imgGroup[j] + str(i) + ".jpg"
-            imgFile2 = "./img/" + imgGroup[j] + str(i + 3) + ".jpg"
 
-            # Record
-            dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-            startTime = time.time()
-            DictWriteRaw(dfRaw, dictRaw, params, imgFile1 +" and " +imgFile2 + " displayed. (start)")
+            dict["Image Displayed #1"] =  "./img/" + imgGroup[j] + str(i) + ".jpg"
+            dict["Image Displayed #2"] = "./img/" + imgGroup[j] + str(i + 3) + ".jpg"
+            SectionStart(df, dfRaw, params, dict, dictRaw, "Study")
 
-            img1 = visual.ImageStim(win=win, image=imgFile1, units="pix", opacity=1,
+            img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
                                     size=(250, 250),
                                     pos=[-128, 50])
-            img2 = visual.ImageStim(win=win, image=imgFile2, units="pix", opacity=1,
+            img2 = visual.ImageStim(win=win, image=dict["Image Displayed #2"], units="pix", opacity=1,
                                     size=(250, 250),
                                     pos=[128, 50])
             txt1.draw();img1.draw();img2.draw();
             win.flip()
             core.wait(5)
-
-            dict["Image Displayed #1"] = imgFile1
-            dict["Image Displayed #2"] = imgFile2
-            dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-            dict["Section Time"] = time.time() - startTime
-            params["ImageCount"] = count
-            DictWriteRaw(dfRaw, dictRaw, params, imgFile1 +" and " +imgFile2 + " displayed. (end)")
-            DictWrite(df, params, dict)
+            SectionEnd(df, dfRaw, params, dict, dictRaw, "Study")
             count += 1
 
     # Second Screen
+    SectionStart(df, dfRaw, params, dict, dictRaw, "Instruction (last screen)")
     txt1 = visual.TextStim(win, text="You will be tested",
                            height=27,
                            units='pix', pos=[0, 60], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
@@ -93,46 +82,5 @@ def PlayStudy(df,dfRaw,params,dict,dictRaw,win):
                            height=27,
                            units='pix', pos=[0, 0], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
     stims = [txt1,txt2,txt3]
-    ButtonDraw(df, dfRaw, params, dict, dictRaw, win, stims, [""], [0, -200], "Click here to continue")
-
-    # imgButton = visual.ImageStim(win=win, image="./img/button/click1.png", units="pix", opacity=1,
-    #                              size=(360, 60),
-    #                              pos=[0, -100])
-    # txtButton = visual.TextStim(win, text="Click here to continue", height=30, bold=True,
-    #                             units='pix', pos=[0, -100], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb',
-    #                             opacity=1)
-    #
-    # # Last Screen
-    # my_mouse = Mouse()
-    # txt1.draw()
-    # txt2.draw()
-    # txt3.draw()
-    # imgButton.draw()
-    # txtButton.draw()
-    # win.flip()
-    # DictWriteRaw(dfRaw, dictRaw, params, "Last screen (at Study Section) displayed.")
-    #
-    # clicked = False
-    # while not clicked:
-    #     if imgButton.contains(my_mouse):
-    #         imgButton.image = "./img/button/click2.png"
-    #         txt1.draw()
-    #         txt2.draw()
-    #         txt3.draw()
-    #         imgButton.draw()
-    #         txtButton.draw()
-    #         win.flip()
-    #         if my_mouse.getPressed()[0] == 1:
-    #             clicked = True
-    #             DictWriteRaw(dfRaw, dictRaw, params, "Mouse clicked")
-    #     else:
-    #         imgButton.image = "./img/button/click1.png"
-    #         txt1.draw()
-    #         txt2.draw()
-    #         txt3.draw()
-    #         imgButton.draw()
-    #         txtButton.draw()
-    #         win.flip()
-    #     core.wait(1 / 300)
-    #
-    # DictWriteRaw(dfRaw, dictRaw, params, "Study Section Ended.")
+    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, [""], [0, -200], "Click here to continue")
+    SectionEnd(df, dfRaw, params, dict, dictRaw, "Instruction (last screen)")
