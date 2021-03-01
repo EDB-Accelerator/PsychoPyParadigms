@@ -30,4 +30,6 @@ def UserInputPlay():
     userInput = gui.Dlg(title="Memory Paradigm Session Information")
     userInput.addField('Subject ID:',)
     userInput.addField('Session:',1)
+    userInput.addField('Study Section',True)
+    userInput.addField('Test Section', True)
     return userInput.show()

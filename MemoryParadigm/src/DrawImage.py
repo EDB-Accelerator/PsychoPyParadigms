@@ -9,14 +9,17 @@ XList = [-265,0,265]
 
 def DrawImagePractice(df,dfRaw,params,dict,dictRaw,win,imgGroup,imgOrder,playType,answer):
 
-    playType = "Practice"
     for i in range(len(imgOrder)):
         dict["Image Displayed #" + str(i+1)] = "./img/" + imgGroup + str(imgOrder[i]) + ".jpg"
+    print(imgOrder)
+    print(dict)
 
     txt1 = visual.TextStim(win, text="Practice", height=30, bold=True,
                            units='pix', pos=[0,300], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
     txt1.draw()
     imgs = []
+
+    print(dict)
 
     # Image configurations.
     for i in range(6):
@@ -40,6 +43,13 @@ def DrawImagePractice(df,dfRaw,params,dict,dictRaw,win,imgGroup,imgOrder,playTyp
         startTime = endTime = time.time()
 
         practiceCount = 0
+        for i in range(len(imgOrder)):
+            dict["Image Displayed #" + str(i + 1)] = "./img/" + imgGroup + str(imgOrder[i]) + ".jpg"
+        for i in range(6):
+            imgs.append(visual.ImageStim(win=win, image=dict["Image Displayed #" + str(i + 1)],
+                                         units="pix", opacity=1,
+                                         size=(250, 250),
+                                         pos=[XList[i % 3], 135 - 270 * (i // 3)]))
         SectionStart(df, dfRaw, params, dict, dictRaw, "Practice try#" + str(practiceCount))
 
         while (not clicked) and endTime-startTime < 10:
@@ -150,10 +160,10 @@ def PlayAgainWarning(df,dfRaw,params,dict,dictRaw,win,playType):
         txts = []
         txt1 = visual.TextStim(win, text="The image pair you learned was:", height=30, bold=True,
                                units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
-        img1 = visual.ImageStim(win=win, image=dict["Image Displayed #1"], units="pix", opacity=1,
+        img1 = visual.ImageStim(win=win, image="./img/example1.jpg", units="pix", opacity=1,
                                 size=(250, 250),
                                 pos=[-128, 50])
-        img2 = visual.ImageStim(win=win, image=dict["Image Displayed #2"], units="pix", opacity=1,
+        img2 = visual.ImageStim(win=win, image="./img/example2.jpg", units="pix", opacity=1,
                                 size=(250, 250),
                                 pos=[128, 50])
         stims = [txt1,img1,img2]
