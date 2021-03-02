@@ -24,14 +24,14 @@ SOFTWARE.
 """
 
 """
-PlayTestGame.py
+PlayStudyGame.py
 
-MemoryParadigm Psychopy3 Test Driver File.
+MemoryParadigm Psychopy3 Study Driver File.
 
-Created on Mon Feb 22 12:49:15 EST 2021
+Created on Mon Mar  1 11:09:45 EST 2021
 
 @author: Kyunghun Lee
-- Created on Tue Mon Feb 22 12:49:15 EST 2021 by KL
+- Created on Mon Mar  1 11:09:45 EST 2021 by KL
 """
 
 # Import standard python libraries
@@ -70,14 +70,16 @@ params = {
     'expName' : 'MemoryParadigm', # The name of the experiment
     'SubjectID' : UserInputBank[0],      # Subject ID
     'Session' : UserInputBank[1], # Session ID
+    'StudySection' : UserInputBank[2],
+    'TestSection': UserInputBank[3],
     'screenSize' : (1100,800), # The resolution of Psychopy Window
 }
 
 # Decide the name of output files.
-params['outFile'] = "./result/test_" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
-params['outFileRaw'] = "./result/test_" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
+params['outFile'] = "./result/" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
+          "_" + datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
+          "_" + datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
 
 # Instance result initialization
 dict,dictRaw = DictInitialize(params)
@@ -93,12 +95,19 @@ dfRaw = pd.DataFrame(columns=HeaderRaw)
 df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
-# Play Instruction.
-# DictWrite(df,params,dict)
-PlayInstruction(df,dfRaw,params,dict,dictRaw,win,"Test")
+if params['StudySection']:
+    # Play Instruction (Study).
+    PlayInstruction(df,dfRaw,params,dict,dictRaw,win,'Study')
 
-# Play Study portion of the game.
-PlayTest(df,dfRaw,params,dict,dictRaw,win)
+    # Play Study portion of the game.
+    PlayStudy(df,dfRaw,params,dict,dictRaw,win)
+
+if params['TestSection']:
+    # Play Instruction (Test)
+    PlayInstruction(df,dfRaw,params,dict,dictRaw,win,"Test")
+
+    # Play Study portion of the game.
+    PlayTest(df,dfRaw,params,dict,dictRaw,win)
 
 # Close the psychopy window.
 win.close()

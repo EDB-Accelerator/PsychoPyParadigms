@@ -59,7 +59,7 @@ UserInputBank = UserInputPlay()
 
 # Output Summary Header Initialization
 Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","Image Group","Image Count",
+          "Response Time","User Answer","User Answer Correctness", "Image Group","Image Count",
           "Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4","Image Displayed #5",
           "Image Displayed #6"]
 
