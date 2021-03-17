@@ -19,7 +19,6 @@ from psychopy import visual,core,event
 from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,waitUserSpace
 from Helper import InstructionPlay,userInputPlay,waitUserInput, waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
-import os
 from psychopy import prefs
 
 def shutdown_key():
@@ -44,7 +43,7 @@ params = {
     'numTaskRun1': userInputBank[4],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : True, # Check if joystick option is checked or not.
-    'triggerSupport': False,  # Check if joystick option is checked or not.
+    'triggerSupport': userInputBank[6],  # Check if joystick option is checked or not.
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.

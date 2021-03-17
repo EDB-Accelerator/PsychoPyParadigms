@@ -121,7 +121,7 @@ def userInputPlay():
     userInput.addField('# of TaskRun1:', 98)
     userInput.addField('# of TaskRun2:', 98)
     # userInput.addField('Joystick Support:', True)
-    # userInput.addField('Trigger Support:', True)
+    userInput.addField('Trigger Support:', True)
     # userInput.addField('Port Address', "0xE050")
     # userInput.addField('Screen Size (W)', 1024)
     # userInput.addField('Screen Size (H)', 780)
@@ -447,8 +447,6 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
-        # print("level" + str(level))
-        # print("prob:" + str(doorOpenChanceMap[level]))
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1.draw();win.flip()
