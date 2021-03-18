@@ -126,7 +126,7 @@ Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,"Practice")
 Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,"TaskRun1")
 
 # ====================== #
-# ======== VAS mid ========= #
+# ======== VAS 1 ========= #
 # ====================== #
 win.mouseVisible = True
 win.close()
@@ -134,7 +134,7 @@ win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",wi
 message = visual.TextStim(win, text="Let’s take a quick break and do some ratings.", units='norm', wrapWidth=3)
 message.draw();win.flip();
 waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS mid")
+Df = VASplay(Df,win,params,"VAS 1")
 win.mouseVisible = False
 
 # ====================== #
@@ -156,12 +156,12 @@ win.mouseVisible = False
 Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
 
 # ====================== #
-# ======== VAS post ========= #
+# ======== VAS mid ========= #
 # ====================== #
 win.close()
 win.mouseVisible = True
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-Df = VASplay(Df,win,params,"VAS post")
+Df = VASplay(Df,win,params,"VAS mid")
 win.mouseVisible = False
 
 ####
@@ -176,7 +176,7 @@ waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
 
 # ====================== #
-# ===== TaskRun2 ======= #
+# ===== TaskRun3 ======= #
 # ====================== #
 win.close()
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
