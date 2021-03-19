@@ -280,7 +280,7 @@ def Questionplay(Df, win, params, SectionName):
     Dict["Q_type"] = "Before"
     Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before a door would open, which one did you think you would be more likely to see?",
+    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before the door opened, what did you think you would see?",
                                                        ['Monster', 'Coins'])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
