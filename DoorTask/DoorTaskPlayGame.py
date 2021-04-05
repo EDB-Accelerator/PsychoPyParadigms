@@ -68,6 +68,9 @@ win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",wi
 # Trigger Initialization
 port = 0
 
+# platform="darwin"
+
+
 if platform == "darwin":
     params['triggerSupport'] = False
 if params['triggerSupport']:

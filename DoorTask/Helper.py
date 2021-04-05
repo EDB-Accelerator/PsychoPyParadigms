@@ -325,6 +325,11 @@ def Questionplay(Df, win, params, SectionName):
 
 # Door Game Session Module.
 
+
+# Df,win,params,params['numTaskRun1'],port,"TaskRun1"
+# SectionName = "TaskRun1"
+# iterNum = params['numTaskRun1']
+
 def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
 
     width = params["screenSize"][0]
