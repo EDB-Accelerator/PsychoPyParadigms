@@ -20,6 +20,7 @@ from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VA
 from Helper import InstructionPlay,userInputPlay,waitUserInput, waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
 from psychopy import prefs
+from sys import platform
 
 def shutdown_key():
     core.quit()
@@ -44,7 +45,7 @@ params = {
     'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
     'numTaskRun3': userInputBank[6],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : True, # Check if joystick option is checked or not.
-    'triggerSupport': userInputBank[6],  # Check if joystick option is checked or not.
+    'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
@@ -66,6 +67,9 @@ win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",wi
 
 # Trigger Initialization
 port = 0
+
+if platform == "darwin":
+    params['triggerSupport'] = False
 if params['triggerSupport']:
     port = parallel.ParallelPort(address=params['portAddress'])
     port.setData(0) # initialize to all zeros
@@ -101,8 +105,11 @@ win.mouseVisible = False
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
-win.close()
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+
+
+if platform != "darwin":
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 Df = InstructionPlay(Df,win,params)
 
 # ========================================== #
@@ -115,8 +122,9 @@ ResolutionIntialization(params,size_diff=1/65)
 # ===== Practice ======= #
 # ====================== #
 # Get the DOOR image file list.
-win.close()
-win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
+if platform != "darwin":
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
 win.mouseVisible = False
 Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,"Practice")
 
@@ -129,8 +137,9 @@ Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,"TaskRun1")
 # ======== VAS 1 ========= #
 # ====================== #
 win.mouseVisible = True
-win.close()
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
+if platform != "darwin":
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
 message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
@@ -150,8 +159,9 @@ win.flip();
 # ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
-win.close()
-win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
+if platform != "darwin":
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
 # win.mouseVisible = False
 Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
 
@@ -159,8 +169,9 @@ Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
 # ======== VAS mid ========= #
 # ====================== #
 win.mouseVisible = True
-win.close()
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
+if platform != "darwin":
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
 message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
@@ -181,8 +192,9 @@ win.flip();
 # ====================== #
 # ===== TaskRun3 ======= #
 # ====================== #
-win.close()
-win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
+if platform != "darwin":
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
 # win.mouseVisible = False
 Df = DoorGamePlay(Df,win,params,params['numTaskRun3'],port,"TaskRun3")
 
@@ -190,8 +202,9 @@ Df = DoorGamePlay(Df,win,params,params['numTaskRun3'],port,"TaskRun3")
 # ======== VAS post ========= #
 # ====================== #
 win.mouseVisible = True
-win.close()
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
+if platform != "darwin":
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
 message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
