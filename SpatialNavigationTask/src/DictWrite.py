@@ -38,7 +38,7 @@ Created on Wed Feb  3 13:49:20 EST 2021
 import datetime,time,re
 
 Header = ["SubjectID","expName","Session","Language","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","User Answer","User Answer Correctness"]
+          "Response Time","User Answer","Right Answer","User Answer Correctness","Image Shown"]
 def DictWriteRaw(dfRaw,dictRaw,params,event):
     # Move data in Dict into Df.
     dictRaw["Event"] = event
@@ -54,6 +54,7 @@ def SectionStart(df,dfRaw,params,dict,dictRaw,sectionName):
 def ResponseRecord(params,dict,userAnswer,Answer):
     dict["Response Time"] = time.time() - params["StartTime"]
     dict["User Answer"] = userAnswer
+    dict["Right Answer"] = Answer
     if userAnswer != "" and userAnswer != "Continue Clicked" and "Language selected" not in userAnswer:
         dict["User Answer Correctness"] = "Correct" if userAnswer == Answer else "Incorrect"
 

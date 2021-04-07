@@ -40,23 +40,31 @@ from psychopy import visual,core
 from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord
 
-def SelectLanguage(df,dfRaw,params,dict,dictRaw,win):
+def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img):
     # Initialization
-    dict["Section"] = "Select Language"
-
+    dict["Section"] = "Landmark recognition:" + img
+    dict["User Answer"] = ""
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
-    txt1 = visual.TextStim(win, text="Please select language.", height=40, bold=True,
-                           units='pix', pos=[0, 200], wrapWidth=1000, color=(-1, -1, -1), colorSpace='rgb')
+    img = visual.ImageStim(win=win, image=img, units="pix", opacity=1,
+                            size=(250, 250),
+                            pos=[0, 150])
 
-    img1 = visual.TextStim(win, text="English", height=30, bold=True,
+    opt1 = visual.TextStim(win, text="Yes", height=30, bold=True,
                     units='pix', pos=[-150,-50], wrapWidth=1000,
                     color=(-1, -1, -1),
                     colorSpace='rgb', opacity=1)
-    img2 = visual.TextStim(win, text="Dutch", height=30, bold=True,
+    opt2 = visual.TextStim(win, text="No", height=30, bold=True,
                     units='pix', pos=[150,-50], wrapWidth=1000,
                     color=(-1, -1, -1),
                     colorSpace='rgb', opacity=1)
+
+    position = [0,-200]
+    imgButton = visual.ImageStim(win, image="./img/button/click1.png", units="pix", opacity=1,size=(360, 60),
+                                 pos=position)
+    txtButton = visual.TextStim(win, text="Continue", height=30, bold=True,
+                                units='pix', pos=position, wrapWidth=1000, color=(-1, -1, -1),
+                                colorSpace='rgb',opacity=1)
 
     edgeLength = 100 * 0.74
     Vert = [[(-1 * edgeLength, -0.7 * edgeLength), (-1 * edgeLength, 0.7 * edgeLength),
@@ -75,36 +83,47 @@ def SelectLanguage(df,dfRaw,params,dict,dictRaw,win):
     my_mouse = Mouse()
     clicked = False
     while (not clicked):
-        if img1.contains(my_mouse):
-            shape1.fillColor = 'blue'
+        if (opt1.contains(my_mouse) or dict["User Answer"] == "Yes") and dict["User Answer"] != "No":
+            shape1.fillColor = 'yellow'
+            shape3.fillColor = 'white'
         else:
             shape1.fillColor = 'white'
 
-        if img2.contains(my_mouse):
-            shape3.fillColor = 'blue'
+        if (opt2.contains(my_mouse) or dict["User Answer"] == "No") and dict["User Answer"] != "Yes":
+            shape3.fillColor = 'yellow'
+            shape1.fillColor = 'white'
         else:
             shape3.fillColor = 'white'
+
+        if dict["User Answer"] == "Yes" or dict["User Answer"] == "No":
+            imgButton.image = "./img/button/click2.png"
 
         shape2.draw()
         shape1.draw()
         shape4.draw()
         shape3.draw()
-        txt1.draw()
-        img1.draw()
-        img2.draw()
+        imgButton.draw()
+        txtButton.draw()
+        img.draw()
+        opt1.draw()
+        opt2.draw()
         win.flip()
         if my_mouse.getPressed()[0] == 1:
-            if img1.contains(my_mouse) or img2.contains(my_mouse):
+            if (dict["User Answer"] == "Yes" or dict["User Answer"] == "No") and imgButton.contains(my_mouse):
+                DictWriteRaw(dfRaw, dictRaw, params, "User Answered:" + dict["User Answer"])
+                ResponseRecord(params, dict, dict["User Answer"], "Yes")
                 clicked = True
 
-                if img1.contains(my_mouse):
-                    dict["Language"] = "English"
-                elif img2.contains(my_mouse):
-                    dict["Language"] = "Dutch"
-                DictWriteRaw(dfRaw, dictRaw, params, "Language selected:" + dict["Language"])
-                ResponseRecord(params, dict,"Language selected:" + dict["Language"],"")
+            if opt1.contains(my_mouse) or opt2.contains(my_mouse):
+                if opt1.contains(my_mouse):
+                    dict["User Answer"] = "Yes"
+                elif opt2.contains(my_mouse):
+                    dict["User Answer"] = "No"
+
+                my_mouse.getPressed()[0] = 0
+
         # core.wait(1 / 300)
-    core.wait(1 / 300)
+    # core.wait(1 / 300)
 
     SectionEnd(df, dfRaw, params, dict, dictRaw, dict["Section"])
 

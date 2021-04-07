@@ -46,6 +46,8 @@ from DictInitialize import DictInitialize
 from SelectLanguage import SelectLanguage
 from PlayInstruction import PlayInstruction
 from PlayVideo import PlayVideo
+from PlaySubTask1 import PlaySubTask1
+from SelectTwoOption import SelectTwoOption
 import os
 
 # Make empty output directory if there is not.
@@ -60,7 +62,7 @@ UserInputBank = UserInputPlay()
 
 # Output Summary Header Initialization
 Header = ["SubjectID","expName","Session","Language","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","User Answer","User Answer Correctness"]
+          "Response Time","User Answer","Right Answer","User Answer Correctness","Image Shown"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","SubjectID","Session","Event"]
@@ -102,8 +104,12 @@ PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
 # Play Video
 PlayVideo(df,dfRaw,params,dict,dictRaw,win)
 
-# Play Instruction
-PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
+# Play Subtask1
+PlaySubTask1(df,dfRaw,params,dict,dictRaw,win)
+
+#
+# img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"
+# SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img)
 
 # Close the psychopy window.
-win.close()
+# win.close()

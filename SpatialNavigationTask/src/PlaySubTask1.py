@@ -37,19 +37,31 @@ Created on Thu Feb 18 08:11:29 EST 2021
 from psychopy import visual,core
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
-import os
-import platform
 
-def PlayVideo(df,dfRaw,params,dict,dictRaw,win):
+
+def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win):
     # Initialization
-    dict["Section"] = "Video Play"
+    dict["Section"] = "Subtask 1 Introduction"
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
 
-    if platform.system() == 'Windows':
-        os.system('runvideo.bat')
-    # elif platform.system() == 'Drawin':
-        # os.system('/Applications/VLC.app/Contents/MacOS/VLC --fullscreen "./video/version1.mp4" vlc://quit')
+    stims = []
+    txts = []
+    if dict["Language"] == "English":
+        txts.append("You will see several objects. For every object, indicate "
+                    "whether you saw this object in the video. The green button means you saw it, "
+                    "the red button means you did not see it. Click ‘continue’ to go to the next question. ")
+    else:
+        txts.append("Je ziet een aantal voorwerpen. Geef voor ieder voorwerp aan of je dit hebt gezien in de video. "
+                    "De groene knop voor wel gezien, de rode knop voor niet gezien. Druk op verder om naar de volgende "
+                    "vraag te gaan.")
+
+    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0,150], "Continue")
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
+
+
+    img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"
+    SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img)
+
