@@ -36,9 +36,11 @@ Created on Thu Feb 18 08:11:29 EST 2021
 
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
-from SelectTwoOption import SelectTwoOption
+from SelectLocation import SelectLocation
+import random
 
-def PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,randomVersion):
+def PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,version):
+
     # Initialization
     dict["Section"] = "Subtask 2 Introduction"
 
@@ -53,22 +55,24 @@ def PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,randomVersion):
                     "pointing in the right direction.")
     else:
         txts.append("Je ziet steeds een voorwerp uit de video. Waar bevindt het witte ruimteschip "
-                    "(eindpunt van de route) zich wanneer je bij het voorwerp bent? Kies het plaatje "
-                    "met de pijl die de juiste kant op wijst.")
+                    "(eindpunt van de route) zich wanneer je bij het voorwerp bent? Kies het plaatje met de pijl die "
+                    "de juiste kant op wijst.")
 
     DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0,150], "Continue")
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
 
-    if randomVersion == 1:
-        imgList = [1,3,5,7]
-
+    imgList = [1,2,3,4,5,6,7,8]
+    if version == 1:
+        answerList = ["", "C", "B", "D", "B", "D", "C", "D", "B"]
     else:
-        imgList = [2,4,6,8]
+        answerList = ["", "B", "C", "D", "A", "B", "C", "D", "A"]
+
+    # Shuffle image and select 4 images.
+    random.shuffle(imgList)
+    imgList = imgList[:4]
 
     for i in range(len(imgList)):
-        imgFile = "./img/LandmarkRecognition/B-LM_" + str(imgList[i]) + ".png"
-        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile,["▶","⇨⇨"],40,"⇦")
-
-    # img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"
-
+        imgFile = "./img/Version"+str(version)+"/Task/AllocentricLocation/Q" + str(imgList[i]) + "_LM.png"
+        mapFile = "./img/Version"+str(version)+"/Task/AllocentricLocation/Q" + str(imgList[i]) + ".png"
+        SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,answerList[imgList[i]])

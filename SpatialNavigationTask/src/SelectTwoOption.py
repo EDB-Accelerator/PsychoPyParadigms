@@ -43,7 +43,7 @@ from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord
 def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOptionSize,rightAnswer):
 
     # Initialization
-    dict["Section"] = "Landmark recognition:" + img
+    dict["Section"] = "Image shown: " + img
     dict["User Answer"] = ""
 
     # Starting Screen
@@ -85,19 +85,19 @@ def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOpti
     my_mouse = Mouse()
     clicked = False
     while (not clicked):
-        if (opt1.contains(my_mouse) or dict["User Answer"] == "True") and dict["User Answer"] != "False":
+        if (opt1.contains(my_mouse) or dict["User Answer"] == answerOption[0]) and dict["User Answer"] != answerOption[1]:
             shape1.fillColor = 'yellow'
             shape3.fillColor = 'white'
         else:
             shape1.fillColor = 'white'
 
-        if (opt2.contains(my_mouse) or dict["User Answer"] == "False") and dict["User Answer"] != "True":
+        if (opt2.contains(my_mouse) or dict["User Answer"] == answerOption[1]) and dict["User Answer"] != answerOption[0]:
             shape3.fillColor = 'yellow'
             shape1.fillColor = 'white'
         else:
             shape3.fillColor = 'white'
 
-        if dict["User Answer"] == "True" or dict["User Answer"] == "False":
+        if dict["User Answer"] == answerOption[0] or dict["User Answer"] == answerOption[1]:
             imgButton.image = "./img/button/click2.png"
 
         shape2.draw()
@@ -111,16 +111,16 @@ def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOpti
         opt2.draw()
         win.flip()
         if my_mouse.getPressed()[0] == 1:
-            if (dict["User Answer"] == "True" or dict["User Answer"] == "False") and imgButton.contains(my_mouse):
+            if (dict["User Answer"] == answerOption[0] or dict["User Answer"] == answerOption[1]) and imgButton.contains(my_mouse):
                 DictWriteRaw(dfRaw, dictRaw, params, "User Answered:" + dict["User Answer"])
                 ResponseRecord(params, dict, dict["User Answer"], rightAnswer)
                 clicked = True
 
             if opt1.contains(my_mouse) or opt2.contains(my_mouse):
                 if opt1.contains(my_mouse):
-                    dict["User Answer"] = "True"
+                    dict["User Answer"] = answerOption[0]
                 elif opt2.contains(my_mouse):
-                    dict["User Answer"] = "False"
+                    dict["User Answer"] = answerOption[1]
 
                 my_mouse.getPressed()[0] = 0
 

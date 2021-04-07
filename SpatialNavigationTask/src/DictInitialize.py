@@ -40,6 +40,8 @@ def DictInitialize(params):
 
     dict = {'expName' : params['expName'],
             "SubjectID": params['SubjectID'],
+            "Age": params['Age'],
+            "Gender": params['Gender'],
             "Session": params['Session'],
             "Section": "",
     }

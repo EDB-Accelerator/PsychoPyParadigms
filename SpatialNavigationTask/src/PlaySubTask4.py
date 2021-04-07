@@ -68,8 +68,10 @@ def PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,version):
     else:
         answerList = ["", "Right", "Left", "Left", "Right", "Left", "Left", "Right", "Right"]
 
+    # Shuffle image and select 4 images.
     random.shuffle(imgList)
+    imgList = imgList[:4]
 
-    for i in range(4):
+    for i in range(len(imgList)):
         imgFile = "./img/Version"+str(version)+"/Task/PathRoute/Q" + str(imgList[i]) + ".png"
         SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile,["Left","Right"],30,answerList[imgList[i]])
