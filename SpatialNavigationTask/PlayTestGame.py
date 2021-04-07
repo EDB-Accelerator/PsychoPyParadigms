@@ -102,5 +102,8 @@ PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
 # Play Video
 PlayVideo(df,dfRaw,params,dict,dictRaw,win)
 
+# Play Instruction
+PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
+
 # Close the psychopy window.
 win.close()
