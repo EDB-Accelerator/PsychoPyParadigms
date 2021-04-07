@@ -39,86 +39,88 @@ Created on Thu Feb 18 08:11:29 EST 2021
 from psychopy import visual
 from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord
+import glob
+import random
 
-def SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,rightAnswer):
+def SelectEgocenticLocation(df,dfRaw,params,dict,dictRaw,win,imgFolder):
 
     # Initialization
-    dict["Section"] = "Images shown:" + imgFile
+    dict["Section"] = "Image Folder Shown:" + imgFolder
     dict["User Answer"] = ""
-
-    edgeLength = 40 * 0.74
-    Vert1 = [[(-1 * edgeLength, -1 * edgeLength), (-1 * edgeLength, 1 * edgeLength),
-              (edgeLength, 1 * edgeLength), (edgeLength, -1 * edgeLength)]]
-
-    edgeLength = 40 * 0.76
-    Vert2 = [[(-1 * edgeLength, -1 * edgeLength), (-1 * edgeLength, 1 * edgeLength),
-             (edgeLength, 1 * edgeLength), (edgeLength, -1 * edgeLength)]]
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
 
     # Starting Screen
     if dict["Language"] == "English":
-        txt1 = visual.TextStim(win, text="Where on the map did you see this object?", height=20, bold=True,
+        txt1 = visual.TextStim(win, text="In which of the following images is the arrow pointing exactly towards "
+                                         "the white spaceship (endpoint of the route)? ", height=20, bold=True,
                            units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
     else:
-        txt1 = visual.TextStim(win, text="Waar op de landkaart ben je dit object tegengekomen?", height=20, bold=True,
+        txt1 = visual.TextStim(win, text="In welke van de onderstaande afbeeldingen wijst de pijl precies naar het "
+                                         "witte ruimteschip (eindpunt van de route)?", height=20, bold=True,
                            units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
 
 
-    img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1,
-                            size=(200, 200),
-                            pos=[0, 200])
-    img2 = visual.ImageStim(win=win, image=mapFile, units="pix", opacity=1,
-                            size=(300, 300),
-                            pos=[0, -100])
-    opts = []
-    shapes1 = []
-    shapes2 = []
-    answerOption = ["A","B","C","D"]
-    for i in range(len(answerOption)):
-        opt = visual.TextStim(win, text=answerOption[i], height=30, bold=True,
-                        units='pix', pos=[-150+ i*100,-280], wrapWidth=1000,
-                        color=(-1, -1, -1),
-                        colorSpace='rgb', opacity=1)
+    # Find image file paths.
+    imgFiles = glob.glob(imgFolder+ "*.png")
+    for i in range(len(imgFiles)):
+        if "_0" in imgFiles[i] or "-0" in imgFiles[i]:
+            rightFile = imgFiles[i]
+            break
 
-        shape1 = visual.ShapeStim(win, vertices=Vert1, units='pix', fillColor='white', lineWidth=0, size=.75,
-                                   pos=[-150+ i*100,-280])
-        shape2 = visual.ShapeStim(win, vertices=Vert2, units='pix', fillColor='black', lineWidth=0, size=.75,
-                                   pos=[-150+ i*100,-280])
+    # Shuffle image file list.
+    random.shuffle(imgFiles)
+    rightAnswer = imgFiles.index(rightFile)
 
-        opts.append(opt)
-        shapes1.append(shape1)
-        shapes2.append(shape2)
+    # Image configurations.
+    edgeLength = 250 * 0.7
+    Vert = [[(-1 * edgeLength, -1 * edgeLength), (-1 * edgeLength, edgeLength),
+             (edgeLength, edgeLength), (edgeLength, -1 * edgeLength)]]
 
-    position = [0,-350]
+    imgs = []
+    shapes = []
+    for i in range(6):
+        imgs.append(visual.ImageStim(win=win, image=imgFiles[i],
+                            units="pix", opacity=1,
+                            size=(250, 250),
+                            pos=[-300+300*(i%3), 160-280*(i//3)]))
+    # Draw Redblock at image #0.
+        shapes.append(visual.ShapeStim(win, vertices=Vert, units='pix', fillColor='white', lineWidth=0, size=.75,
+                                  pos=imgs[i].pos))
+        shapes[i].draw()
+        imgs[i].draw()
+    txt1.draw()
+
+    # Continue Button
+    position = [0,-300]
     imgButton = visual.ImageStim(win, image="./img/button/click1.png", units="pix", opacity=1,size=(360, 60),
                                  pos=position)
     txtButton = visual.TextStim(win, text="Continue", height=30, bold=True,
                                 units='pix', pos=position, wrapWidth=1000, color=(-1, -1, -1),
                                 colorSpace='rgb',opacity=1)
+    imgButton.draw()
+    txtButton.draw()
+    win.flip()
 
     my_mouse = Mouse()
     clicked = False
     while (not clicked):
-        for i in range(len(opts)):
-            if dict["User Answer"] == answerOption[i]:
-                shapes1[i].fillColor = 'yellow'
+        for i in range(6):
+            if dict["User Answer"] == str(i):
+                shapes[i].fillColor = 'red'
             else:
-                shapes1[i].fillColor = 'white'
+                shapes[i].fillColor = 'white'
 
         if dict["User Answer"] != "":
             imgButton.image = "./img/button/click2.png"
 
-        for i in range(len(opts)):
-            shapes2[i].draw()
-            shapes1[i].draw()
-            opts[i].draw()
+        for i in range(6):
+            shapes[i].draw()
+            imgs[i].draw()
         imgButton.draw()
         txtButton.draw()
         txt1.draw()
-        img1.draw()
-        img2.draw()
         win.flip()
         if my_mouse.getPressed()[0] == 1:
             if dict["User Answer"] != "" and imgButton.contains(my_mouse):
@@ -126,11 +128,10 @@ def SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,rightAnswer)
                 ResponseRecord(params, dict, dict["User Answer"], rightAnswer)
                 clicked = True
 
-            for i in range(len(opts)):
-                if opts[i].contains(my_mouse):
-                    dict["User Answer"] = answerOption[i]
+            for i in range(6):
+                if imgs[i].contains(my_mouse):
+                    dict["User Answer"] = str(i)
             my_mouse.getPressed()[0] = 0
 
     SectionEnd(df, dfRaw, params, dict, dictRaw, dict["Section"])
-
 

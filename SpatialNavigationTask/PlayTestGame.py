@@ -48,6 +48,7 @@ from PlayInstruction import PlayInstruction
 from PlayVideo import PlayVideo
 from PlaySubTask1 import PlaySubTask1
 from PlaySubTask2 import PlaySubTask2
+from PlaySubTask3 import PlaySubTask3
 from PlaySubTask4 import PlaySubTask4
 from SelectTwoOption import SelectTwoOption
 import os,random
@@ -126,8 +127,12 @@ SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 # # Play Subtask4
 # PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
-# Play Subtask2
+# Play Subtask3
 PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+
+
+# Play Subtask3
+PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 
 #

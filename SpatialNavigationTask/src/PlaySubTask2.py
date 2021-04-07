@@ -36,7 +36,7 @@ Created on Thu Feb 18 08:11:29 EST 2021
 
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
-from SelectLocation import SelectLocation
+from SelectEgocenticLocation import SelectEgocenticLocation
 import random
 
 def PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,version):
@@ -63,16 +63,11 @@ def PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,version):
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
 
     imgList = [1,2,3,4,5,6,7,8]
-    if version == 1:
-        answerList = ["", "C", "B", "D", "B", "D", "C", "D", "B"]
-    else:
-        answerList = ["", "B", "C", "D", "A", "B", "C", "D", "A"]
 
     # Shuffle image and select 4 images.
     random.shuffle(imgList)
     imgList = imgList[:4]
 
     for i in range(len(imgList)):
-        imgFile = "./img/Version"+str(version)+"/Task/AllocentricLocation/Q" + str(imgList[i]) + "_LM.png"
-        mapFile = "./img/Version"+str(version)+"/Task/AllocentricLocation/Q" + str(imgList[i]) + ".png"
-        SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,answerList[imgList[i]])
+        imgFolder = "./img/Version"+str(version)+"/Task/EgocentricLocation/Q" + str(imgList[i]) + "/"
+        SelectEgocenticLocation(df,dfRaw,params,dict,dictRaw,win,imgFolder)

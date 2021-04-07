@@ -34,16 +34,15 @@ Created on Thu Feb 18 08:11:29 EST 2021
 - Created on Thu Feb 18 08:11:29 EST 2021 by KL
 """
 
-from psychopy import visual,core
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
-from SelectTwoOption import SelectTwoOption
-import glob
+from SelectLocation import SelectLocation
+import random
 
+def PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,version):
 
-def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,randomVersion):
     # Initialization
-    dict["Section"] = "Subtask 1 Introduction"
+    dict["Section"] = "Subtask 3 Introduction"
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
@@ -51,27 +50,27 @@ def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,randomVersion):
     stims = []
     txts = []
     if dict["Language"] == "English":
-        txts.append("You will see several objects. For every object, indicate "
-                    "whether you saw this object in the video. The green button means you saw it, "
-                    "the red button means you did not see it. Click ‘continue’ to go to the next question. ")
+        txts.append("You will see an object from the video and a map of the environment. "
+                    "Indicate on the map where you saw this object. Pick one of the four possible locations. ")
     else:
-        txts.append("Je ziet een aantal voorwerpen. Geef voor ieder voorwerp aan of je dit hebt gezien in de video. "
-                    "De groene knop voor wel gezien, de rode knop voor niet gezien. Druk op verder om naar de volgende "
-                    "vraag te gaan.")
+        txts.append("Je ziet een voorwerp uit de video en een plattegrond van de omgeving. Geef op de plattegrond "
+                    "aan waar je dit voorwerp bent tegengekomen. Kies een van de vier mogelijke locaties.")
 
     DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0,150], "Continue")
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
 
-    if randomVersion == 1:
-        imgList = [1,3,5,7]
-
+    imgList = [1,2,3,4,5,6,7,8]
+    if version == 1:
+        answerList = ["", "C", "B", "D", "B", "D", "C", "D", "B"]
     else:
-        imgList = [2,4,6,8]
+        answerList = ["", "B", "C", "D", "A", "B", "C", "D", "A"]
+
+    # Shuffle image and select 4 images.
+    random.shuffle(imgList)
+    imgList = imgList[:4]
 
     for i in range(len(imgList)):
-        imgFile = "./img/LandmarkRecognition/B-LM_" + str(imgList[i]) + ".png"
-        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile)
-
-    # img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"
-
+        imgFile = "./img/Version"+str(version)+"/Task/AllocentricLocation/Q" + str(imgList[i]) + "_LM.png"
+        mapFile = "./img/Version"+str(version)+"/Task/AllocentricLocation/Q" + str(imgList[i]) + ".png"
+        SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,answerList[imgList[i]])
