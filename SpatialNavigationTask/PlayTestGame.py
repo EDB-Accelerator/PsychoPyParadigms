@@ -47,6 +47,7 @@ from SelectLanguage import SelectLanguage
 from PlayInstruction import PlayInstruction
 from PlayVideo import PlayVideo
 from PlaySubTask1 import PlaySubTask1
+from PlaySubTask2 import PlaySubTask2
 from PlaySubTask4 import PlaySubTask4
 from SelectTwoOption import SelectTwoOption
 import os,random
@@ -109,21 +110,24 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 # Select Language.
 SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 
-# Play Instruction
-PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
+# # Play Instruction
+# PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
+#
+# # Play Video
+# PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+#
+# # Play Subtask1
+# PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+#
+# # Determine task order in random order
+# TaskOrder = [2, 3, 4, 5]
+# random.shuffle(TaskOrder)
+#
+# # Play Subtask4
+# PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
-# Play Video
-PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-
-# Play Subtask1
-PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-
-# Determine task order in random order
-TaskOrder = [2, 3, 4, 5]
-random.shuffle(TaskOrder)
-
-# Play Subtask4
-PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+# Play Subtask2
+PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 
 #

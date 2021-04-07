@@ -46,13 +46,13 @@ def SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,rightAnswer)
     dict["Section"] = "Images shown:" + imgFile
     dict["User Answer"] = ""
 
-    edgeLength = 100 * 0.74
-    Vert1 = [[(-1 * edgeLength, -0.7 * edgeLength), (-1 * edgeLength, 0.7 * edgeLength),
-              (edgeLength, 0.7 * edgeLength), (edgeLength, -0.7 * edgeLength)]]
+    edgeLength = 40 * 0.74
+    Vert1 = [[(-1 * edgeLength, -1 * edgeLength), (-1 * edgeLength, 1 * edgeLength),
+              (edgeLength, 1 * edgeLength), (edgeLength, -1 * edgeLength)]]
 
-    edgeLength = 100 * 0.76
-    Vert2 = [[(-1 * edgeLength, -0.7 * edgeLength), (-1 * edgeLength, 0.7 * edgeLength),
-             (edgeLength, 0.7 * edgeLength), (edgeLength, -0.7 * edgeLength)]]
+    edgeLength = 40 * 0.76
+    Vert2 = [[(-1 * edgeLength, -1 * edgeLength), (-1 * edgeLength, 1 * edgeLength),
+             (edgeLength, 1 * edgeLength), (edgeLength, -1 * edgeLength)]]
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
@@ -61,39 +61,39 @@ def SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,rightAnswer)
     if dict["Language"] == "English":
         txt1 = visual.TextStim(win, text="In which of the following images is the arrow pointing exactly towards the "
                                          "white spaceship \n (endpoint of the route)? ", height=20, bold=True,
-                           units='pix', pos=[0, 400], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
+                           units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
     else:
         txt1 = visual.TextStim(win, text="In welke van de onderstaande afbeeldingen wijst de pijl precies naar het "
                                          "witte ruimteschip \n (eindpunt van de route)?", height=20, bold=True,
-                           units='pix', pos=[0, 400], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
+                           units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
 
 
     img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1,
                             size=(200, 200),
-                            pos=[0, 250])
+                            pos=[0, 200])
     img2 = visual.ImageStim(win=win, image=mapFile, units="pix", opacity=1,
-                            size=(350, 350),
-                            pos=[0, -50])
+                            size=(300, 300),
+                            pos=[0, -100])
     opts = []
     shapes1 = []
     shapes2 = []
     answerOption = ["A","B","C","D"]
     for i in range(len(answerOption)):
         opt = visual.TextStim(win, text=answerOption[i], height=30, bold=True,
-                        units='pix', pos=[-250+ i*100,-200], wrapWidth=1000,
+                        units='pix', pos=[-150+ i*100,-280], wrapWidth=1000,
                         color=(-1, -1, -1),
                         colorSpace='rgb', opacity=1)
 
         shape1 = visual.ShapeStim(win, vertices=Vert1, units='pix', fillColor='white', lineWidth=0, size=.75,
-                                   pos=[-250,-100 + i*50])
-        shape2 = visual.ShapeStim(win, vertices=Vert2, units='pix', fillColor='white', lineWidth=0, size=.75,
-                                   pos=[-250,-100 + i*50])
+                                   pos=[-150+ i*100,-280])
+        shape2 = visual.ShapeStim(win, vertices=Vert2, units='pix', fillColor='black', lineWidth=0, size=.75,
+                                   pos=[-150+ i*100,-280])
 
         opts.append(opt)
         shapes1.append(shape1)
         shapes2.append(shape2)
 
-    position = [0,-450]
+    position = [0,-350]
     imgButton = visual.ImageStim(win, image="./img/button/click1.png", units="pix", opacity=1,size=(360, 60),
                                  pos=position)
     txtButton = visual.TextStim(win, text="Continue", height=30, bold=True,
@@ -113,9 +113,9 @@ def SelectLocation(df,dfRaw,params,dict,dictRaw,win,imgFile,mapFile,rightAnswer)
             imgButton.image = "./img/button/click2.png"
 
         for i in range(len(opts)):
-            opts[i].draw()
-            shapes1[i].draw()
             shapes2[i].draw()
+            shapes1[i].draw()
+            opts[i].draw()
         imgButton.draw()
         txtButton.draw()
         txt1.draw()
