@@ -37,8 +37,8 @@ Created on Wed Feb  3 13:49:20 EST 2021
 """
 import datetime,time,re
 
-Header = ["SubjectID","expName","Session","Language","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","User Answer","Right Answer","User Answer Correctness","Image Shown"]
+Header = ["SubjectID","Age","Gender","expName","Session","Version","Language","Section","Section Start Time","Section End Time","Section Time",
+          "Response Time","User Answer","Right Answer","User Answer Correctness"]
 def DictWriteRaw(dfRaw,dictRaw,params,event):
     # Move data in Dict into Df.
     dictRaw["Event"] = event

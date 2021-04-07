@@ -34,16 +34,15 @@ Created on Thu Feb 18 08:11:29 EST 2021
 - Created on Thu Feb 18 08:11:29 EST 2021 by KL
 """
 
-from DictWrite import SectionStart,SectionEnd
+from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
 from SelectTwoOption import SelectTwoOption
-import glob
 import random
 
+def PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,version):
 
-def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,version):
     # Initialization
-    dict["Section"] = "Subtask 1 Introduction"
+    dict["Section"] = "Subtask 4 Introduction"
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
@@ -51,42 +50,26 @@ def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,version):
     stims = []
     txts = []
     if dict["Language"] == "English":
-        txts.append("You will see several objects. For every object, indicate "
-                    "whether you saw this object in the video. The green button means you saw it, "
-                    "the red button means you did not see it. Click ‘continue’ to go to the next question. ")
+        txts.append("You will see an object from the video. Where is the white spaceship (endpoint of the route) "
+                    "located when you are standing at the location of this object? Choose the image with the arrow "
+                    "pointing in the right direction.")
     else:
-        txts.append("Je ziet een aantal voorwerpen. Geef voor ieder voorwerp aan of je dit hebt gezien in de video. "
-                    "De groene knop voor wel gezien, de rode knop voor niet gezien. Druk op verder om naar de volgende "
-                    "vraag te gaan.")
+        txts.append("Je ziet steeds een voorwerp uit de video. Waar bevindt het witte ruimteschip "
+                    "(eindpunt van de route) zich wanneer je bij het voorwerp bent? Kies het plaatje "
+                    "met de pijl die de juiste kant op wijst.")
 
     DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0,150], "Continue")
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
 
-    # Decide which set we will use.
-    randInt = random.randint(1,2)
-
-    if randInt == 1:
-        imgList = [1,3,5,7]
+    imgList = [1,2,3,4,5,6,7,8]
+    if version == 1:
+        answerList = ["","Left","Left","Right","Left","Right","Right","Right","Left"]
     else:
-        imgList = [2,4,6,8]
+        answerList = ["", "Right", "Left", "Left", "Right", "Left", "Left", "Right", "Right"]
 
-    # Get Image list.
-    imgFileList = []
-    for i in range(len(imgList)):
-        imgFileList.append("./img/Version"+str(version)+"/Task/LandmarkRecognition/Q" + str(imgList[i]) + ".png")
+    random.shuffle(imgList)
 
-    # Include distracted images.
-    for i in range(1,5):
-        imgFileList.append("./img/Version"+str(version)+"/Task/LandmarkRecognition/Distractor_" +
-                           str(i) + ".png")
-    # Shuffle.
-    random.shuffle(imgFileList)
-
-    # Run task.
-    for i in range(len(imgFileList)):
-        if 'Distractor' in imgFileList[i]:
-            RightAnswer = "False"
-        else:
-            RightAnswer = "True"
-        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFileList[i],["True","False"],30,RightAnswer)
+    for i in range(4):
+        imgFile = "./img/Version"+str(version)+"/Task/PathRoute/Q" + str(imgList[i]) + ".png"
+        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile,["Left","Right"],30,answerList[imgList[i]])

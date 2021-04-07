@@ -34,22 +34,28 @@ Created on Thu Feb 18 08:11:29 EST 2021
 - Created on Thu Feb 18 08:11:29 EST 2021 by KL
 """
 
-from psychopy import visual,core
-from DictWrite import DictWriteRaw,SectionStart,SectionEnd
-from DrawButton import DrawButton
+from DictWrite import SectionStart,SectionEnd,DictWriteRaw
 import os
 import platform
+import random
 
-def PlayVideo(df,dfRaw,params,dict,dictRaw,win):
+def PlayVideo(df,dfRaw,params,dict,dictRaw,win,version):
     # Initialization
-    dict["Section"] = "Video Play"
+    dict["Section"] = "Video Play: Version" + str(version)
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
 
+    # Play Video
+    DictWriteRaw(dfRaw, dictRaw, params, "Video Play (Started): Version" + str(version))
     if platform.system() == 'Windows':
-        os.system('runvideo.bat')
+        if version == 1:
+            os.system('runvideo1.bat')
+        elif version == 2:
+            os.system('runvideo2.bat')
+
     # elif platform.system() == 'Drawin':
         # os.system('/Applications/VLC.app/Contents/MacOS/VLC --fullscreen "./video/version1.mp4" vlc://quit')
+    DictWriteRaw(dfRaw, dictRaw, params, "Video Play (Ended): Version" + str(version))
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])

@@ -34,14 +34,14 @@ Created on Thu Feb 18 08:11:29 EST 2021
 - Created on Thu Feb 18 08:11:29 EST 2021 by KL
 """
 
-from DictWrite import SectionStart,SectionEnd
+from psychopy import visual,core
+from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
 from SelectTwoOption import SelectTwoOption
 import glob
-import random
 
 
-def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,version):
+def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,randomVersion):
     # Initialization
     dict["Section"] = "Subtask 1 Introduction"
 
@@ -63,30 +63,15 @@ def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,version):
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
 
-    # Decide which set we will use.
-    randInt = random.randint(1,2)
-
-    if randInt == 1:
+    if randomVersion == 1:
         imgList = [1,3,5,7]
+
     else:
         imgList = [2,4,6,8]
 
-    # Get Image list.
-    imgFileList = []
     for i in range(len(imgList)):
-        imgFileList.append("./img/Version"+str(version)+"/Task/LandmarkRecognition/Q" + str(imgList[i]) + ".png")
+        imgFile = "./img/LandmarkRecognition/B-LM_" + str(imgList[i]) + ".png"
+        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile)
 
-    # Include distracted images.
-    for i in range(1,5):
-        imgFileList.append("./img/Version"+str(version)+"/Task/LandmarkRecognition/Distractor_" +
-                           str(i) + ".png")
-    # Shuffle.
-    random.shuffle(imgFileList)
+    # img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"
 
-    # Run task.
-    for i in range(len(imgFileList)):
-        if 'Distractor' in imgFileList[i]:
-            RightAnswer = "False"
-        else:
-            RightAnswer = "True"
-        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFileList[i],["True","False"],30,RightAnswer)

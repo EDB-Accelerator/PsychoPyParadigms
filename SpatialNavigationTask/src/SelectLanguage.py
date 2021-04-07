@@ -76,12 +76,12 @@ def SelectLanguage(df,dfRaw,params,dict,dictRaw,win):
     clicked = False
     while (not clicked):
         if img1.contains(my_mouse):
-            shape1.fillColor = 'blue'
+            shape1.fillColor = 'yellow'
         else:
             shape1.fillColor = 'white'
 
         if img2.contains(my_mouse):
-            shape3.fillColor = 'blue'
+            shape3.fillColor = 'yellow'
         else:
             shape3.fillColor = 'white'
 

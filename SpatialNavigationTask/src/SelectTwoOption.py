@@ -40,21 +40,23 @@ from psychopy import visual,core
 from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord
 
-def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img):
+def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOptionSize,rightAnswer):
+
     # Initialization
     dict["Section"] = "Landmark recognition:" + img
     dict["User Answer"] = ""
+
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
     img = visual.ImageStim(win=win, image=img, units="pix", opacity=1,
                             size=(250, 250),
                             pos=[0, 150])
 
-    opt1 = visual.TextStim(win, text="Yes", height=30, bold=True,
+    opt1 = visual.TextStim(win, text=answerOption[0], height=answerOptionSize, bold=True,
                     units='pix', pos=[-150,-50], wrapWidth=1000,
                     color=(-1, -1, -1),
                     colorSpace='rgb', opacity=1)
-    opt2 = visual.TextStim(win, text="No", height=30, bold=True,
+    opt2 = visual.TextStim(win, text=answerOption[1], height=answerOptionSize, bold=True,
                     units='pix', pos=[150,-50], wrapWidth=1000,
                     color=(-1, -1, -1),
                     colorSpace='rgb', opacity=1)
@@ -83,19 +85,19 @@ def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img):
     my_mouse = Mouse()
     clicked = False
     while (not clicked):
-        if (opt1.contains(my_mouse) or dict["User Answer"] == "Yes") and dict["User Answer"] != "No":
+        if (opt1.contains(my_mouse) or dict["User Answer"] == "True") and dict["User Answer"] != "False":
             shape1.fillColor = 'yellow'
             shape3.fillColor = 'white'
         else:
             shape1.fillColor = 'white'
 
-        if (opt2.contains(my_mouse) or dict["User Answer"] == "No") and dict["User Answer"] != "Yes":
+        if (opt2.contains(my_mouse) or dict["User Answer"] == "False") and dict["User Answer"] != "True":
             shape3.fillColor = 'yellow'
             shape1.fillColor = 'white'
         else:
             shape3.fillColor = 'white'
 
-        if dict["User Answer"] == "Yes" or dict["User Answer"] == "No":
+        if dict["User Answer"] == "True" or dict["User Answer"] == "False":
             imgButton.image = "./img/button/click2.png"
 
         shape2.draw()
@@ -109,16 +111,16 @@ def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img):
         opt2.draw()
         win.flip()
         if my_mouse.getPressed()[0] == 1:
-            if (dict["User Answer"] == "Yes" or dict["User Answer"] == "No") and imgButton.contains(my_mouse):
+            if (dict["User Answer"] == "True" or dict["User Answer"] == "False") and imgButton.contains(my_mouse):
                 DictWriteRaw(dfRaw, dictRaw, params, "User Answered:" + dict["User Answer"])
-                ResponseRecord(params, dict, dict["User Answer"], "Yes")
+                ResponseRecord(params, dict, dict["User Answer"], rightAnswer)
                 clicked = True
 
             if opt1.contains(my_mouse) or opt2.contains(my_mouse):
                 if opt1.contains(my_mouse):
-                    dict["User Answer"] = "Yes"
+                    dict["User Answer"] = "True"
                 elif opt2.contains(my_mouse):
-                    dict["User Answer"] = "No"
+                    dict["User Answer"] = "False"
 
                 my_mouse.getPressed()[0] = 0
 

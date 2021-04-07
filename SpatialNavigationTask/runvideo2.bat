@@ -1,0 +1,1 @@
+"C:\Program Files\VideoLAN\VLC\vlc.exe" --fullscreen "./img/Version2/Video/video.mp4" vlc://quit

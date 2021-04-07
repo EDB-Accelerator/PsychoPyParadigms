@@ -47,8 +47,9 @@ from SelectLanguage import SelectLanguage
 from PlayInstruction import PlayInstruction
 from PlayVideo import PlayVideo
 from PlaySubTask1 import PlaySubTask1
+from PlaySubTask4 import PlaySubTask4
 from SelectTwoOption import SelectTwoOption
-import os
+import os,random
 
 # Make empty output directory if there is not.
 if not os.path.exists('./result'):
@@ -60,19 +61,29 @@ pd.set_option('display.max_columns', None)
 # Receive User input from Window.
 UserInputBank = UserInputPlay()
 
+# userInput = gui.Dlg(title="Memory Paradigm Session Information")
+# userInput.addField('Subject ID:', )
+# userInput.addField('Session:', 1)
+# userInput.addField('Version:', choices=[1, 2])
+# userInput.addField('Age (leave blank if you do not wish to provide this information)', )
+# userInput.addField('Gender', choices=["Male", "Female", "I do not wish to provide this information"])
+
 # Output Summary Header Initialization
-Header = ["SubjectID","expName","Session","Language","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","User Answer","Right Answer","User Answer Correctness","Image Shown"]
+Header = ["SubjectID","Age","Gender","expName","Session","Version","Language","Section","Section Start Time","Section End Time","Section Time",
+          "Response Time","User Answer","Right Answer","User Answer Correctness"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","SubjectID","Session","Event"]
 
 # Declare primary task parameters.
 params = {
-    'expName' : 'SpatialNavigation', # The name of the experiment
-    'SubjectID' : UserInputBank[0],      # Subject ID
-    'Session' : UserInputBank[1], # Session ID
-    'screenSize' : (1100,800), # The resolution of Psychopy Window
+    'expName' : 'SpatialNavigation',
+    'SubjectID' : UserInputBank[0],
+    'Session' : UserInputBank[1],
+    'Version' : UserInputBank[2],
+    'Age' : str(UserInputBank[3]),
+    'Gender' : UserInputBank[4],
+    'screenSize' : (1100,800),
 }
 
 # Decide the name of output files.
@@ -102,10 +113,18 @@ SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
 
 # Play Video
-PlayVideo(df,dfRaw,params,dict,dictRaw,win)
+PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 # Play Subtask1
-PlaySubTask1(df,dfRaw,params,dict,dictRaw,win)
+PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+
+# Determine task order in random order
+TaskOrder = [2, 3, 4, 5]
+random.shuffle(TaskOrder)
+
+# Play Subtask4
+PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+
 
 #
 # img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"
