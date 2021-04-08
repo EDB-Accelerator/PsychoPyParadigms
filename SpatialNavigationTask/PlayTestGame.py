@@ -50,6 +50,7 @@ from PlaySubTask1 import PlaySubTask1
 from PlaySubTask2 import PlaySubTask2
 from PlaySubTask3 import PlaySubTask3
 from PlaySubTask4 import PlaySubTask4
+from PlaySubTask5 import PlaySubTask5
 from SelectTwoOption import SelectTwoOption
 import os,random
 
@@ -112,13 +113,13 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 
 # # Play Instruction
-# PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
+PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
 #
 # # Play Video
-# PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 #
 # # Play Subtask1
-# PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 #
 # # Determine task order in random order
 # TaskOrder = [2, 3, 4, 5]
@@ -128,12 +129,12 @@ SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 # PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 # Play Subtask3
-PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-
+# PlaySubTask2(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 # Play Subtask3
-PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+# PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
+PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 #
 # img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"

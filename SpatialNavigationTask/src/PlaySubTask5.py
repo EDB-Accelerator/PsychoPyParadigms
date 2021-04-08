@@ -34,16 +34,15 @@ Created on Thu Feb 18 08:11:29 EST 2021
 - Created on Thu Feb 18 08:11:29 EST 2021 by KL
 """
 
-from psychopy import visual,core
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
-from SelectTwoOption import SelectTwoOption
-import glob
+from SelectTwoClosestImages import SelectTwoClosestImages
+import random
 
+def PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,version):
 
-def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,randomVersion):
     # Initialization
-    dict["Section"] = "Subtask 1 Introduction"
+    dict["Section"] = "Subtask 5 Introduction"
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
@@ -51,27 +50,27 @@ def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,randomVersion):
     stims = []
     txts = []
     if dict["Language"] == "English":
-        txts.append("You will see several objects. For every object, indicate "
-                    "whether you saw this object in the video. The green button means you saw it, "
-                    "the red button means you did not see it. Click ‘continue’ to go to the next question. ")
+        txts.append("You will now see three objects from the video. Two of these objects are closest together "
+                    "(as the crow flies). Click on these two objects.")
     else:
-        txts.append("Je ziet een aantal voorwerpen. Geef voor ieder voorwerp aan of je dit hebt gezien in de video. "
-                    "De groene knop voor wel gezien, de rode knop voor niet gezien. Druk op verder om naar de volgende "
-                    "vraag te gaan.")
+        txts.append("Je ziet nu steeds 3 voorwerpen uit de video. Twee van deze voorwerpen liggen het dichtst "
+                    "(hemelsbreed) bij elkaar . Klik op deze twee voorwerpen.")
 
     DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0,150], "Continue")
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
 
-    if randomVersion == 1:
-        imgList = [1,3,5,7]
-
+    imgList = [1,2,3,4]
+    version = 1
+    if version == 1:
+        answerList = ["4,6","3,5","6,7","7,8"]
     else:
-        imgList = [2,4,6,8]
+        answerList = ["3,4", "3,5", "6,7", "7,8"]
+
+    # Shuffle image and select 4 images.
+    random.shuffle(imgList)
 
     for i in range(len(imgList)):
-        imgFile = "./img/LandmarkRecognition/B-LM_" + str(imgList[i]) + ".png"
-        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile)
-
-    # img = "./img/Version1/Tasks/AllocentricLocation/Q1.png"
-
+        imgFolder = "./img/Version"+str(version)+"/Task/PathSurvey/Q" + str(imgList[i]) + "/"
+        rightAnswer = answerList[imgList[i]]
+        SelectTwoClosestImages(df,dfRaw,params,dict,dictRaw,win,imgFolder,rightAnswer)
