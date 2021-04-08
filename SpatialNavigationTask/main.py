@@ -24,9 +24,9 @@ SOFTWARE.
 """
 
 """
-PlayTestGame.py
+main.py
 
-MemoryParadigm Psychopy3 Test Driver File.
+Spatial Navigation Task Psychopy3 Test Driver File.
 
 Created on Mon Feb 22 12:49:15 EST 2021
 
@@ -79,7 +79,11 @@ params = {
     'Age' : str(UserInputBank[3]),
     'Gender' : UserInputBank[4],
     'screenSize' : (1100,800),
+    'FullScreen' : UserInputBank[5],
 }
+
+prefs.general['fullscr'] = params['FullScreen']
+prefs.general['shutdownKey'] = 'q'
 
 # Decide the name of output files.
 params['outFile'] = "./result/test_" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\
@@ -118,16 +122,16 @@ TaskOrder = [2, 3, 4, 5]
 random.shuffle(TaskOrder)
 
 for i in TaskOrder:
-    if i==2:
-        # Play Subtask2
-        PlaySubTask2(df, dfRaw, params, dict, dictRaw, win, params['Version'])
-    elif i==3:
-        # Play Subtask3
-        PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-    elif i==4:
-        # Play Subtask4
-        PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-    elif i==5:
+    # if i==2:
+    #     # Play Subtask2
+    #     PlaySubTask2(df, dfRaw, params, dict, dictRaw, win, params['Version'])
+    # elif i==3:
+    #     # Play Subtask3
+    #     PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+    # elif i==4:
+    #     # Play Subtask4
+    #     PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+    if i==5:
         # Play Subtask5
         PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 

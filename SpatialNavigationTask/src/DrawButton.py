@@ -22,19 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-DrawButton.py
-
-MemoryParadigm Task Psychopy3 Sub function.
-
-This function is for displaying button to continue.
-
-Created on Thu Feb 25 13:46:31 EST 2021
-
-@author: Kyunghun Lee
-- Created on Thu Feb 25 13:46:31 EST 2021 by KL
-"""
-
 from psychopy import visual,core
 from DictWrite import DictWriteRaw,ResponseRecord
 from psychopy.event import Mouse

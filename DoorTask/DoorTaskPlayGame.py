@@ -29,7 +29,8 @@ def shutdown_key():
 userInputBank = userInputPlay()
 
 # Audio library configuration.
-prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
+# prefs.hardware['audioLib'] = ['PTB']
+# prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 
 # Declare primary task parameters.
 params = {

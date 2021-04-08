@@ -23,19 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-DicInitialize.py
-
-MemoryParadigm Psychopy3 Sub function.
-
-This function is for initializing a dictionary instance.
-
-Created on Thu Feb 18 17:43:35 EST 202
-
-@author: Kyunghun Lee
-- Created on Thu Feb 18 17:43:35 EST 202 by KL
-"""
-
 def DictInitialize(params):
 
     dict = {'expName' : params['expName'],

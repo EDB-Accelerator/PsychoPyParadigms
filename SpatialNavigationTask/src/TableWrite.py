@@ -23,18 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-DisplayFixationCross.py
-
-DwellTask Psychopy3 Sub function.
-
-This function is for writing Table.
-
-Created on Wed Feb  3 13:49:20 EST 2021
-
-@author: Kyunghun Lee
-- Created on Wed Feb  3 13:34:46 EST 2021 by KL
-"""
 import pandas as pd
 import datetime
 

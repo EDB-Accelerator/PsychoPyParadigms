@@ -22,18 +22,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
-"""
-PlayInstruction.py
-
-This function is for displaying Instructions.
-
-Created on Thu Feb 18 08:11:29 EST 2021
-
-@author: Kyunghun Lee
-- Created on Thu Feb 18 08:11:29 EST 2021 by KL
-"""
-
+# Import developer-defined functions
+import sys
+sys.path.insert(1, './src')
 from DictWrite import SectionStart,SectionEnd,DictWriteRaw
 import os
 import platform

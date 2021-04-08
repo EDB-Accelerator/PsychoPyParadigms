@@ -23,19 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-SelectLanguage.py
-
-MemoryParadigm Task Psychopy3 Sub function.
-
-This function is for displaying Instructions.
-
-Created on Thu Feb 18 08:11:29 EST 2021
-
-@author: Kyunghun Lee
-- Created on Thu Feb 18 08:11:29 EST 2021 by KL
-"""
-
 from psychopy import visual,core
 from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord

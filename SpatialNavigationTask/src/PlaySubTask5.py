@@ -23,17 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-PlayInstruction.py
-
-This function is for displaying Instructions.
-
-Created on Thu Feb 18 08:11:29 EST 2021
-
-@author: Kyunghun Lee
-- Created on Thu Feb 18 08:11:29 EST 2021 by KL
-"""
-
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton
 from SelectTwoClosestImages import SelectTwoClosestImages
@@ -70,6 +59,6 @@ def PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,version):
     random.shuffle(imgList)
 
     for i in range(len(imgList)):
-        imgFolder = "./img/Version"+str(version)+"/Task/PathSurvey/Q" + str(imgList[i]) + "/"
+        imgFolder = "./img/Version"+str(version)+"/Task/PathSurvey/Q" + str(imgList[i])
         rightAnswer = answerList[imgList[i]]
         SelectTwoClosestImages(df,dfRaw,params,dict,dictRaw,win,imgFolder,rightAnswer)

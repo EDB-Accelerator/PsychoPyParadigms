@@ -23,17 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-PlayInstruction.py
-
-This function is for displaying Instructions.
-
-Created on Thu Feb 18 08:11:29 EST 2021
-
-@author: Kyunghun Lee
-- Created on Thu Feb 18 08:11:29 EST 2021 by KL
-"""
-
 from psychopy import visual,core
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd
 from DrawButton import DrawButton

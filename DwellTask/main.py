@@ -39,6 +39,7 @@ import datetime,sys,random
 import pandas as pd
 from psychopy import visual,prefs
 from glob import glob
+import os
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -47,6 +48,11 @@ from DictInitialize import DictInitialize
 from DisplayFixationCross import DisplayFixationCross
 from DisplayMatrix import DisplayMatrix
 from DisplayBlank import DisplayBlank
+
+# Make empty output directory if it does not exist.
+directory = './result'
+if not os.path.exists(directory):
+    os.makedirs(directory)
 
 # Audio library configuration.
 prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']

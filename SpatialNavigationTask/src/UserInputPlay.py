@@ -27,11 +27,12 @@ from psychopy import gui
 
 # Function to get user inputs.
 def UserInputPlay():
-    userInput = gui.Dlg(title="Memory Paradigm Session Information")
+    userInput = gui.Dlg(title="SpatialNavigation Task Session Information")
     userInput.addField('Subject ID:',)
     userInput.addField('Session:',1)
     userInput.addField('Version:', choices=[1, 2])
     userInput.addField('Age (leave blank if you do not wish to provide this information)',)
     userInput.addField('Gender',choices=["Male", "Female","I do not wish to provide this information"])
+    userInput.addField('Full Screen',True)
 
     return userInput.show()
