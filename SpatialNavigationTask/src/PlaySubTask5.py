@@ -61,11 +61,10 @@ def PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,version):
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
 
     imgList = [1,2,3,4]
-    version = 1
     if version == 1:
-        answerList = ["4,6","3,5","6,7","7,8"]
+        answerList = ["","4,6","3,5","6,7","7,8"]
     else:
-        answerList = ["3,4", "3,5", "6,7", "7,8"]
+        answerList = ["","3,4", "3,5", "6,7", "7,8"]
 
     # Shuffle image and select 4 images.
     random.shuffle(imgList)

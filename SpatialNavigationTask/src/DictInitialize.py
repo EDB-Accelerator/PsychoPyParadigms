@@ -44,6 +44,7 @@ def DictInitialize(params):
             "Gender": params['Gender'],
             "Session": params['Session'],
             "Section": "",
+            "Version": params['Version'],
     }
     dictRaw = dict.copy()
 

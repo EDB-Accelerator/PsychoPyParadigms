@@ -53,10 +53,10 @@ def SelectTwoClosestImages(df,dfRaw,params,dict,dictRaw,win,imgFolder,rightAnswe
 
     # Starting Screen
     if dict["Language"] == "English":
-        txt1 = visual.TextStim(win, text="Selecteer de twee voorwerpen die het dichtst bij elkaar liggen:", height=20, bold=True,
+        txt1 = visual.TextStim(win, text="Select the two objects that were closest together:", height=20, bold=True,
                            units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
     else:
-        txt1 = visual.TextStim(win, text="Select the two objects that were closest together:", height=20, bold=True,
+        txt1 = visual.TextStim(win, text="Selecteer de twee voorwerpen die het dichtst bij elkaar liggen:", height=20, bold=True,
                            units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
 
     # Find image file paths.
