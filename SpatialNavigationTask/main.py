@@ -52,6 +52,8 @@ from PlaySubTask3 import PlaySubTask3
 from PlaySubTask4 import PlaySubTask4
 from PlaySubTask5 import PlaySubTask5
 import os,random
+import warnings
+
 
 # Make empty output directory if there is not.
 if not os.path.exists('./result'):
@@ -108,32 +110,33 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 # Select Language.
 SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 
-# # Play Instruction
+# Play Instruction
 PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
-#
-# # Play Video
+
+# Play Video
 PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-#
-# # Play Subtask1
+
+# Play Subtask1
 PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-#
+
 # Determine task order in random order
 TaskOrder = [2, 3, 4, 5]
-random.shuffle(TaskOrder)
+# random.shuffle(TaskOrder)
 
 for i in TaskOrder:
-    # if i==2:
-    #     # Play Subtask2
-    #     PlaySubTask2(df, dfRaw, params, dict, dictRaw, win, params['Version'])
-    # elif i==3:
-    #     # Play Subtask3
-    #     PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-    # elif i==4:
-    #     # Play Subtask4
-    #     PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,params['Version'])
-    if i==5:
+    version = params['Version']
+    if i==2:
+        # Play Subtask2
+        PlaySubTask2(df, dfRaw, params, dict, dictRaw, win, version)
+    elif i==3:
+        # Play Subtask3
+        PlaySubTask3(df,dfRaw,params,dict,dictRaw,win,version)
+    elif i==4:
+        # Play Subtask4
+        PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,version)
+    elif i==5:
         # Play Subtask5
-        PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+        PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,version)
 
 # Close the psychopy window.
 win.close()

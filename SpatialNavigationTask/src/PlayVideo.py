@@ -29,6 +29,8 @@ from DictWrite import SectionStart,SectionEnd,DictWriteRaw
 import os
 import platform
 import random
+import subprocess
+
 
 def PlayVideo(df,dfRaw,params,dict,dictRaw,win,version):
     # Initialization
@@ -41,9 +43,9 @@ def PlayVideo(df,dfRaw,params,dict,dictRaw,win,version):
     DictWriteRaw(dfRaw, dictRaw, params, "Video Play (Started): Version" + str(version))
     if platform.system() == 'Windows':
         if version == 1:
-            os.system('runvideo1.bat')
+            output = subprocess.check_output('runvideo1.bat', shell=True)
         elif version == 2:
-            os.system('runvideo2.bat')
+            output = subprocess.check_output('runvideo2.bat', shell=True)
 
     # elif platform.system() == 'Drawin':
         # os.system('/Applications/VLC.app/Contents/MacOS/VLC --fullscreen "./video/version1.mp4" vlc://quit')

@@ -35,6 +35,16 @@ def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOpti
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
+
+    # Starting Screen
+    if dict["Language"] == "English":
+        txt1 = visual.TextStim(win, text="In which direction did the route continue?", height=20, bold=True,
+                           units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
+    else:
+        txt1 = visual.TextStim(win, text="Welke kant ben je hier op gegaan?", height=20, bold=True,
+                           units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
+
+
     img = visual.ImageStim(win=win, image=img, units="pix", opacity=1,
                             size=(250, 250),
                             pos=[0, 150])
@@ -87,6 +97,7 @@ def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOpti
         if dict["User Answer"] == answerOption[0] or dict["User Answer"] == answerOption[1]:
             imgButton.image = "./img/button/click2.png"
 
+        txt1.draw()
         shape2.draw()
         shape1.draw()
         shape4.draw()

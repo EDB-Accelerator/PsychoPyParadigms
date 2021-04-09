@@ -28,6 +28,7 @@ from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord
 import glob
 import random
+import os
 
 def SelectTwoClosestImages(df,dfRaw,params,dict,dictRaw,win,imgFolder,rightAnswer):
 
@@ -47,7 +48,11 @@ def SelectTwoClosestImages(df,dfRaw,params,dict,dictRaw,win,imgFolder,rightAnswe
                            units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
 
     # Find image file paths.
-    imgFiles = glob.glob(imgFolder+ "*.png")
+    imgFiles = []
+    imgLists = os.listdir(imgFolder)
+    for i in range(len(imgLists)):
+        imgFiles.append(imgFolder + '/' + imgLists[i])
+
 
     # Shuffle image file list.
     random.shuffle(imgFiles)
