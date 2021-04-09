@@ -78,4 +78,4 @@ def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,version):
             RightAnswer = "False"
         else:
             RightAnswer = "True"
-        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFileList[i],["True","False"],30,RightAnswer)
+        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFileList[i],["True","False"],30,RightAnswer,"","")

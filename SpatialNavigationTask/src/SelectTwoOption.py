@@ -27,7 +27,7 @@ from psychopy import visual
 from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord
 
-def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOptionSize,rightAnswer):
+def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOptionSize,rightAnswer,txt1,txt2):
 
     # Initialization
     dict["Section"] = "Image shown: " + img
@@ -38,10 +38,10 @@ def SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,img,answerOption,answerOpti
 
     # Starting Screen
     if dict["Language"] == "English":
-        txt1 = visual.TextStim(win, text="In which direction did the route continue?", height=20, bold=True,
+        txt1 = visual.TextStim(win, text=txt1, height=20, bold=True,
                            units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
     else:
-        txt1 = visual.TextStim(win, text="Welke kant ben je hier op gegaan?", height=20, bold=True,
+        txt1 = visual.TextStim(win, text=txt2, height=20, bold=True,
                            units='pix', pos=[0, 350], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
 
 

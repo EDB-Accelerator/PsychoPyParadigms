@@ -63,4 +63,6 @@ def PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,version):
 
     for i in range(len(imgList)):
         imgFile = "./img/Version"+str(version)+"/Task/PathRoute/Q" + str(imgList[i]) + ".png"
-        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile,["Left","Right"],30,answerList[imgList[i]])
+        txt1 = "In which direction did the route continue?"
+        txt2 = "Welke kant ben je hier op gegaan?"
+        SelectTwoOption(df,dfRaw,params,dict,dictRaw,win,imgFile,["Left","Right"],30,answerList[imgList[i]],txt1,txt2)
