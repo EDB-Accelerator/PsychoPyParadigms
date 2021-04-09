@@ -46,6 +46,7 @@ from DictInitialize import DictInitialize
 from SelectLanguage import SelectLanguage
 from PlayInstruction import PlayInstruction
 from PlayVideo import PlayVideo
+from PlayScale import PlayScale
 from PlaySubTask1 import PlaySubTask1
 from PlaySubTask2 import PlaySubTask2
 from PlaySubTask3 import PlaySubTask3
@@ -109,6 +110,9 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
 # Select Language.
 SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
+
+
+PlayScale(df,dfRaw,params,dict,dictRaw,win)
 
 # Play Instruction
 PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
