@@ -46,7 +46,8 @@ from DictInitialize import DictInitialize
 from SelectLanguage import SelectLanguage
 from PlayInstruction import PlayInstruction
 from PlayVideo import PlayVideo
-from PlayScale import PlayScale
+from PlayScale1 import PlayScale1
+from PlayScale2 import PlayScale2
 from PlaySubTask1 import PlaySubTask1
 from PlaySubTask2 import PlaySubTask2
 from PlaySubTask3 import PlaySubTask3
@@ -111,8 +112,7 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 # Select Language.
 SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 
-
-PlayScale(df,dfRaw,params,dict,dictRaw,win)
+PlayScale1(df,dfRaw,params,dict,dictRaw,win)
 
 # Play Instruction
 PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
@@ -125,7 +125,7 @@ PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 # Determine task order in random order
 TaskOrder = [2, 3, 4, 5]
-# random.shuffle(TaskOrder)
+random.shuffle(TaskOrder)
 
 for i in TaskOrder:
     version = params['Version']
@@ -141,6 +141,8 @@ for i in TaskOrder:
     elif i==5:
         # Play Subtask5
         PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,version)
+
+PlayScale2(df,dfRaw,params,dict,dictRaw,win)
 
 # Close the psychopy window.
 win.close()

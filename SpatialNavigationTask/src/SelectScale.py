@@ -27,7 +27,7 @@ from psychopy import visual
 from psychopy.event import Mouse
 from DictWrite import DictWriteRaw,SectionStart,SectionEnd,ResponseRecord
 
-def SelectScale(df,dfRaw,params,dict,dictRaw,win,question):
+def SelectScale(df,dfRaw,params,dict,dictRaw,win,question,labels):
 
     # Initialization
     dict["Section"] = "scale question shown:" + question
@@ -37,39 +37,27 @@ def SelectScale(df,dfRaw,params,dict,dictRaw,win,question):
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
 
     # Text message
-    txt = visual.TextStim(win, text=question, height=20, bold=True,
+    txt1 = visual.TextStim(win, text=question, height=20, bold=True,
                            units='pix', pos=[0, 300], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
+    # Text message
+    txt2 = visual.TextStim(win, text=labels[0], height=20, bold=True,
+                           units='pix', pos=[-250, -150], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
+    txt3 = visual.TextStim(win, text=labels[1], height=20, bold=True,
+                           units='pix', pos=[250, -150], wrapWidth=800, color=(-1, -1, -1), colorSpace='rgb')
 
-    # Scale
-    # scale = visual.RatingScale(win,
-    #                            # markerStart=50,
-    #                            singleClick=True,
-    #                            lineColor='Black',pos=[0,0],
-    #                            # low=1, high=7,
-    #                            tickHeight=0.2,
-    #                            # precision=1,
-    #                            choices=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-    #                            size=2, textSize=0.2,
-    #                            acceptText='Continue', showValue=True, showAccept=True,
-    #                            markerColor="Blue")  # markerstart=50
-    # scale = visual.RatingScale(win=win, name='rating', marker='triangle', size=1.3, pos=[0.0, -0.5],
-    #                                  choices=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], tickHeight=1,
-    #                                  markerColor="Blue",
-    #                                  lineColor='Black'
-    #                                  )
-    scale = visual.RatingScale(win=win, name='rating', marker='triangle', size=1.0, pos=[0.0, -0.5],lineColor='Black',
-                                     choices=['1', '2', '3', '4', '5', '6', '7'], tickHeight=-1)
-
-    # ratingScale = visual.RatingScale(win=win, name='rating', marker='triangle', size=1.0, pos=[0.0, -0.5],
-    #                                  choices=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], tickHeight=-1)
+    scale = visual.RatingScale(win=win, name='rating', marker='triangle', size=1.2, pos=[0.0, -0.5],lineColor='Black',
+                                     choices=[1, 2, 3, 4, 5, 6, 7], tickHeight=-1,
+                                     labels=labels,textColor='Black')
 
     while scale.noResponse:
         scale.draw()
-        txt.draw()
+        txt1.draw()
+        txt2.draw()
+        txt3.draw()
         win.flip()
 
     # Get user input value.
-    dict["User Answer"] = scale.getRating()
+    dict["User Answer"] = str(scale.getRating())
 
     DictWriteRaw(dfRaw, dictRaw, params, "User Answered:" + dict["User Answer"])
     ResponseRecord(params, dict, dict["User Answer"],"")
