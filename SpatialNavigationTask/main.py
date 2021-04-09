@@ -112,6 +112,7 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 # Select Language.
 SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
 
+# PlayScale1 (Qestion part1)
 PlayScale1(df,dfRaw,params,dict,dictRaw,win)
 
 # Play Instruction
@@ -142,6 +143,7 @@ for i in TaskOrder:
         # Play Subtask5
         PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,version)
 
+# PlayScale2 (Qestion part2)
 PlayScale2(df,dfRaw,params,dict,dictRaw,win)
 
 # Close the psychopy window.

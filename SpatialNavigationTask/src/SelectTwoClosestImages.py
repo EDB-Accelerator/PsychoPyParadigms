@@ -97,7 +97,7 @@ def SelectTwoClosestImages(df,dfRaw,params,dict,dictRaw,win,imgFolder,rightAnswe
             else:
                 shapes[i].fillColor = 'white'
 
-        if dict["User Answer"] != "":
+        if len(dict["User Answer"]) == 3:
             imgButton.image = "./img/button/click2.png"
 
         for i in range(len(imgFiles)):
