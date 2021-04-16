@@ -6,6 +6,9 @@ DoorTask Game Main Driver File.
 
 Created on Fri July 24 15:04:19 2020
 
+Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
+
+
 @author: Kyunghun Lee
 - Created July/24/20 by KL
 - Updated 09/3/2020 Tue by KL (Trigger)
@@ -15,8 +18,8 @@ Created on Fri July 24 15:04:19 2020
 
 import datetime
 import pandas as pd
-from psychopy import visual,core,event
-from Helper import fadeInOutImage, Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,waitUserSpace
+from psychopy import visual,core
+from Helper import Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,waitUserSpace
 from Helper import InstructionPlay,userInputPlay,waitUserInput, waitAnyKeys,ResolutionIntialization
 from psychopy import parallel
 from psychopy import prefs
@@ -47,6 +50,7 @@ params = {
     'numTaskRun3': userInputBank[6],  # The number of Trials in TaskRun2.
     'JoyStickSupport' : True, # Check if joystick option is checked or not.
     'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
+    'EyeTrackerSupport': userInputBank[8],
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
@@ -61,6 +65,31 @@ params = {
 }
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
+
+# Eyetracker Calibration
+if params['EyeTrackerSupport']:
+    from psychopy.iohub import launchHubServer
+    from psychopy.core import getTime, wait
+
+    iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
+                    {'name': 'tracker',
+                     'model_name': 'EYELINK 1000 DESKTOP',
+                     'runtime_settings': {'sampling_rate': 500,
+                                          'track_eyes': 'RIGHT'}
+                     }
+                    }
+    io = launchHubServer(**iohub_config)
+
+    # Get the eye tracker device.
+    tracker = io.devices.tracker
+
+    # run eyetracker calibration
+    r = tracker.runSetupProcedure()
+
+    # Check for and print any eye tracker events received...
+    tracker.setRecordingState(True)
+
+
 
 ## Setup Section.
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
@@ -224,8 +253,6 @@ win.mouseVisible = False
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
 waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
-
-
 
 # ====================== #
 # ======== Question ========= #

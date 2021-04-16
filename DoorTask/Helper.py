@@ -123,6 +123,7 @@ def userInputPlay():
     userInput.addField('# of TaskRun3:', 49)
     # userInput.addField('Joystick Support:', True)
     userInput.addField('Trigger Support:', True)
+    userInput.addField('Eyetracker Support:', True)
     # userInput.addField('Port Address', "0xE050")
     # userInput.addField('Screen Size (W)', 1024)
     # userInput.addField('Screen Size (H)', 780)
