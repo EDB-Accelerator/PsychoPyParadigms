@@ -1,0 +1,23 @@
+from psychopy import core, visual, event, sound,gui
+import random, re, datetime, glob, time, platform
+import pandas as pd
+import numpy as np
+from psychopy.hardware import joystick
+import pygame
+from sys import exit
+
+
+# Function to get user inputs.
+def userInputPlay():
+    userInput = gui.Dlg(title="DOORS Task Information")
+    userInput.addField('Subject Number:',23986)
+    userInput.addField('Session:',1)
+    userInput.addField('Version:', choices=[1, 2])
+    userInput.addField('# of Practice Trials:', 5)
+    userInput.addField('# of TaskRun1:', 49)
+    userInput.addField('# of TaskRun2:', 49)
+    userInput.addField('# of TaskRun3:', 49)
+    userInput.addField('Trigger Support:', True)
+    userInput.addField('Eyetracker Support:', True)
+    userInput.addField('Full Screen', True)
+    return userInput.show()

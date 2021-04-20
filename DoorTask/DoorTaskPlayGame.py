@@ -8,7 +8,6 @@ Created on Fri July 24 15:04:19 2020
 
 Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 
-
 @author: Kyunghun Lee
 - Created July/24/20 by KL
 - Updated 09/3/2020 Tue by KL (Trigger)
@@ -16,14 +15,25 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Save result when exit 10/26/2020 Mon by KL
 """
 
+# Import developer-defined functions
+import sys
+sys.path.insert(1, './src')
 import datetime
 import pandas as pd
-from psychopy import visual,core
-from Helper import Questionplay,DoorGamePlay,PracticeGamePlay,VASplay,waitUserSpace
-from Helper import InstructionPlay,userInputPlay,waitUserInput, waitAnyKeys,ResolutionIntialization
+from psychopy import visual,core,event
+from Helper import Questionplay,waitUserSpace
+from Helper import waitUserInput, waitAnyKeys,ResolutionIntialization
+
+from userInputPlay import userInputPlay
+from VASplay import VASplay
+from InstructionPlay import InstructionPlay
+from PracticeGamePlay import PracticeGamePlay
+from DoorGamePlay import DoorGamePlay
+
 from psychopy import parallel
 from psychopy import prefs
 from sys import platform
+import time
 
 def shutdown_key():
     core.quit()
@@ -51,6 +61,7 @@ params = {
     'JoyStickSupport' : True, # Check if joystick option is checked or not.
     'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
     'EyeTrackerSupport': userInputBank[8],
+    'FullScreen': False,
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
@@ -63,6 +74,9 @@ params = {
     'resolutionMode' : True,
     'subTrialCounter': 0,
 }
+
+prefs.general['fullscr'] = params['FullScreen']
+
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
 
@@ -89,26 +103,66 @@ if params['EyeTrackerSupport']:
     # Check for and print any eye tracker events received...
     tracker.setRecordingState(True)
 
-
-
-## Setup Section.
+## Setup Psychopy Window.
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+
+img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1, size=(params[ 'screenSize'][0], params['screenSize'][1]))
+
+if params['EyeTrackerSupport']:
+    c = event.getKeys()
+    while (c != ['space']):
+        core.wait(1 / 120)
+        c = event.getKeys()
+        position = tracker.getPosition()
+        if position is None:
+            continue
+        # for i in range(2):
+        #     position[i] *= 1
+        if c == ['r']:
+            print(position)
+
+        # Thresholding
+        position[0] = params['screenSize'][0] if position[0]>params['screenSize'][0] else position[0]
+        position[0] = -1*params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
+        position[1] = params['screenSize'][1] if position[1]>params['screenSize'][1] else position[1]
+        position[1] = -1*params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
+
+        circle = visual.Circle(win=win,units="pix",fillColor='black',lineColor='white',edges=1000,pos = position, radius=10)
+
+        img.draw()
+        circle.draw()
+        win.flip()
+
+        startTime = time.time()
+        gazeTime = 0
+        while abs(position[0])<80 and abs(position[1]) <80:
+            gazeTime = time.time() - startTime
+            position = tracker.getPosition()
+            circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=position,
+                                   radius=10)
+            img.draw()
+            circle.draw()
+            win.flip()
+            core.wait(1 / 120)
+
+
+        if gazeTime > 0.5:
+            break
+    tracker.setRecordingState(False)
+
+    core.quit()
+    tracker.getPosition()
+
 # win = visual.Window(monitor="testMonitor",color="black",winType='pyglet')
 
 # Trigger Initialization
 port = 0
 
-# platform="darwin"
-
-
 if platform == "darwin":
     params['triggerSupport'] = False
 if params['triggerSupport']:
     port = parallel.ParallelPort(address=params['portAddress'])
-    port.setData(0) # initialize to all zeros
-
-# Display NIMH logo.
-# fadeInOutImage(win,"./img/nimh.png",0.5,(300,300))
+    port.setData(0) # initialize to all zeroscv
 
 # ====================== #
 # ==== Title Screen ==== #
@@ -116,7 +170,6 @@ if params['triggerSupport']:
 img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
 win.mouseVisible = False
 img1.draw();win.flip();
-# waitUserInput(Df,img1,win,params)
 waitAnyKeys()
 
 # ======================== #
@@ -148,7 +201,6 @@ Df = InstructionPlay(Df,win,params)
 # ========================================== #
 # ==== Screen Resolution Initialization ==== #
 # ========================================== #
-
 ResolutionIntialization(params,size_diff=1/65)
 
 # ====================== #
