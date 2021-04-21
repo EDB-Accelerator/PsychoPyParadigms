@@ -1,7 +1,6 @@
-from psychopy import core, visual, event, sound,gui
-import random, re, datetime, glob, time, platform
+from psychopy import core, visual, event
+import datetime, time
 import pandas as pd
-import numpy as np
 from psychopy.hardware import joystick
 import pygame
 from sys import exit

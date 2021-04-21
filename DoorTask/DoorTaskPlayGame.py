@@ -29,6 +29,8 @@ from VASplay import VASplay
 from InstructionPlay import InstructionPlay
 from PracticeGamePlay import PracticeGamePlay
 from DoorGamePlay import DoorGamePlay
+from EyeTrackerCalibration import EyeTrackerCalibration
+from EyeTrackerInitialization import EyeTrackerInitialization
 
 from psychopy import parallel
 from psychopy import prefs
@@ -75,85 +77,20 @@ params = {
     'subTrialCounter': 0,
 }
 
+# # Import Eyetracker library.
+# if params['EyeTrackerSupport']:
+#     from psychopy.iohub import launchHubServer
+
 prefs.general['fullscr'] = params['FullScreen']
 
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
 
-# Eyetracker Calibration
-if params['EyeTrackerSupport']:
-    from psychopy.iohub import launchHubServer
-    from psychopy.core import getTime, wait
-
-    iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
-                    {'name': 'tracker',
-                     'model_name': 'EYELINK 1000 DESKTOP',
-                     'runtime_settings': {'sampling_rate': 500,
-                                          'track_eyes': 'RIGHT'}
-                     }
-                    }
-    io = launchHubServer(**iohub_config)
-
-    # Get the eye tracker device.
-    tracker = io.devices.tracker
-
-    # run eyetracker calibration
-    r = tracker.runSetupProcedure()
-
-    # Check for and print any eye tracker events received...
-    tracker.setRecordingState(True)
 
 ## Setup Psychopy Window.
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-
 img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1, size=(params[ 'screenSize'][0], params['screenSize'][1]))
 
-if params['EyeTrackerSupport']:
-    c = event.getKeys()
-    while (c != ['space']):
-        core.wait(1 / 120)
-        c = event.getKeys()
-        position = tracker.getPosition()
-        if position is None:
-            continue
-        # for i in range(2):
-        #     position[i] *= 1
-        if c == ['r']:
-            print(position)
-
-        # Thresholding
-        position[0] = params['screenSize'][0] if position[0]>params['screenSize'][0] else position[0]
-        position[0] = -1*params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
-        position[1] = params['screenSize'][1] if position[1]>params['screenSize'][1] else position[1]
-        position[1] = -1*params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
-
-        circle = visual.Circle(win=win,units="pix",fillColor='black',lineColor='white',edges=1000,pos = position, radius=10)
-
-        img.draw()
-        circle.draw()
-        win.flip()
-
-        startTime = time.time()
-        gazeTime = 0
-        while abs(position[0])<80 and abs(position[1]) <80:
-            gazeTime = time.time() - startTime
-            position = tracker.getPosition()
-            circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=position,
-                                   radius=10)
-            img.draw()
-            circle.draw()
-            win.flip()
-            core.wait(1 / 120)
-
-
-        if gazeTime > 0.5:
-            break
-    tracker.setRecordingState(False)
-
-    core.quit()
-    tracker.getPosition()
-
-# win = visual.Window(monitor="testMonitor",color="black",winType='pyglet')
 
 # Trigger Initialization
 port = 0
@@ -188,14 +125,10 @@ Df = pd.DataFrame(columns=Header)
 win.mouseVisible = True
 Df = VASplay(Df,win,params,"VAS pre")
 win.mouseVisible = False
+
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
-
-
-if platform != "darwin":
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 Df = InstructionPlay(Df,win,params)
 
 # ========================================== #
@@ -206,17 +139,31 @@ ResolutionIntialization(params,size_diff=1/65)
 # ====================== #
 # ===== Practice ======= #
 # ====================== #
-# Get the DOOR image file list.
-if platform != "darwin":
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
-win.mouseVisible = False
-Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,"Practice")
+if params['EyeTrackerSupport']:
+    # Eyetracker Initialization
+    tracker = EyeTrackerInitialization()
+
+    # Eyetracker Calibration and start recording.
+    tracker = EyeTrackerCalibration(tracker)
+
+Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,tracker,"Practice")
+
+# Stop recording
+if params['EyeTrackerSupport']:
+    tracker.setRecordingState(False)
 
 # ====================== #
 # ===== TaskRun1 ======= #
 # ====================== #
-Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,"TaskRun1")
+if params['EyeTrackerSupport']:
+    # Eyetracker Calibration and start recording.
+    tracker = EyeTrackerCalibration(tracker)
+
+Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,tracker,"TaskRun1")
+
+# Stop recording
+if params['EyeTrackerSupport']:
+    tracker.setRecordingState(False)
 
 # ====================== #
 # ======== VAS 1 ========= #
@@ -244,11 +191,15 @@ win.flip();
 # ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
-if platform != "darwin":
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
-# win.mouseVisible = False
-Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,"TaskRun2")
+if params['EyeTrackerSupport']:
+    # Eyetracker Calibration and start recording.
+    tracker = EyeTrackerCalibration(tracker)
+
+Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,tracker,"TaskRun2")
+
+# Stop recording
+if params['EyeTrackerSupport']:
+    tracker.setRecordingState(False)
 
 # ====================== #
 # ======== VAS mid ========= #
@@ -277,11 +228,15 @@ win.flip();
 # ====================== #
 # ===== TaskRun3 ======= #
 # ====================== #
-if platform != "darwin":
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='glfw')
-# win.mouseVisible = False
-Df = DoorGamePlay(Df,win,params,params['numTaskRun3'],port,"TaskRun3")
+if params['EyeTrackerSupport']:
+    # Eyetracker Calibration and start recording.
+    tracker = EyeTrackerCalibration(tracker)
+
+Df = DoorGamePlay(Df,win,params,params['numTaskRun3'],port,tracker,"TaskRun3")
+
+# Stop recording
+if params['EyeTrackerSupport']:
+    tracker.setRecordingState(False)
 
 # ====================== #
 # ======== VAS post ========= #

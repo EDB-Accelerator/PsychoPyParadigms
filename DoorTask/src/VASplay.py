@@ -1,15 +1,9 @@
 import sys
 sys.path.insert(1, './src')
 
-from psychopy import core, visual, event, sound,gui
+from psychopy import visual
 from Helper import waitUserSpace,displayVAS,tableWrite
-import random, re, datetime, glob, time, platform
-import pandas as pd
-import numpy as np
-from psychopy.hardware import joystick
-import pygame
-from sys import exit
-
+import datetime, time
 
 # VAS Session Module.
 def VASplay(Df, win, params, SectionName):

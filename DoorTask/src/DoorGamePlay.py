@@ -3,13 +3,15 @@ sys.path.insert(1, './src')
 
 from psychopy import core, visual, event, sound,gui
 from Helper import waitUserSpace,displayVAS,tableWrite,get_keypress,waitUserInput,triggerGo,displayText
+from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
 import pygame
 import numpy as np
 import pandas as pd
-from psychopy.hardware import joystick
+# from psychopy.hardware import joystick
+from WaitEyeGazed import WaitEyeGazed
 
-def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
+def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
@@ -18,23 +20,32 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
     #     return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(width, height))
-        waitUserInput(Df,img1, win, params,'glfw')
+        img1.draw();
+        win.flip()
+        anyKeyPressed = (JoystickInput())['buttons_text']
+        while (anyKeyPressed == ' '):
+            anyKeyPressed = (JoystickInput())['buttons_text']
+            time.sleep(0.001)
+
+        # waitUserInput(Df,img1, win, params,'glfw')
 
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
-
     totalCoin = 0
 
     # Joystick Initialization
-    joystick.backend = 'glfw'  # must match the Window
-    nJoys = joystick.getNumJoysticks()  # to check if we have any
-    if nJoys == 0:
-        print("There is no available Joystick.")
-        exit()
-    joy = joystick.Joystick(0)  # id must be <= nJoys - 1
+    # joystick.backend = 'glfw'  # must match the Window
+    # nJoys = joystick.getNumJoysticks()  # to check if we have any
+    # if nJoys == 0:
+    #     print("There is no available Joystick.")
+    #     exit()
+    # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
     # if sum(joy.getAllButtons()) != 0:
     #     break
+    if JoystickInput() == -1:
+        print("There is no available Joystick.")
+        exit()
 
     # Shuffle image. # https://pynative.com/python-random-shuffle/
 
@@ -91,7 +102,8 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
         count = 0
         pygame.joystick.quit()
         pygame.joystick.init()
-        preInput =  joy.getY()
+        # preInput = a['y']
+        joy = JoystickInput()
         while count < 3:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -99,18 +111,20 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 c[0] = "timeisUp"
                 break
             # if (sum(joy.getAllButtons()) != 0):
-            if joy.getButton(0)!=0:
+            if joy['buttons_text'] != ' ':
                 count += 1
                 if count >= 2:
                     Dict["Distance_lock"] = 1
                     break
 
-            joyUserInput = joy.getY()
+            # joyUserInput = joy.getY()
+            joy = JoystickInput()
+            joyUserInput = joy['y']
 
-            if joyUserInput < -0.1 and level < 100:
+            if joyUserInput < -0.5 and level < 100:
                 level += 1
                 level = min(100,level)
-            elif joyUserInput > 0.1 and level > 0:
+            elif joyUserInput > 0.5 and level > 0:
                 level -= 1
                 level = max(0,level)
 
@@ -170,12 +184,18 @@ def DoorGamePlay(Df, win, params, iterNum, port, SectionName):
                 totalCoin += int(r)
 
         # ITI duration
-        width = params["screenSize"][0]
-        height = params["screenSize"][1]
-        img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
-        img1.draw();win.flip();
-        Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
-        time.sleep(Dict["ITI_duration"] / 1000)
+        if params['EyeTrackerSupport']:
+            startTime = time.time()
+            WaitEyeGazed(win, params, tracker)
+            Dict["ITI_duration"] = time.time() - startTime
+
+        else:
+            width = params["screenSize"][0]
+            height = params["screenSize"][1]
+            img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
+            img1.draw();win.flip();
+            Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
+            time.sleep(Dict["ITI_duration"] / 1000)
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.

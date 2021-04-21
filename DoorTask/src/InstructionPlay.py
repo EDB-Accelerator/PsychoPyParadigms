@@ -1,8 +1,8 @@
 import sys
 sys.path.insert(1, './src')
 
-from psychopy import core, visual, event, sound,gui
-from Helper import waitUserSpace,displayVAS,tableWrite,get_keypress
+from psychopy import core, visual, event
+from Helper import waitUserSpace,tableWrite,get_keypress
 import datetime
 
 # Instruction Session Module.

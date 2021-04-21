@@ -1,37 +1,45 @@
 import sys
 sys.path.insert(1, './src')
 
-from psychopy import core, visual, event, sound,gui
-from Helper import waitUserSpace,displayVAS,tableWrite,get_keypress,waitUserInput,triggerGo
-import random, re, datetime, glob, time, platform
+from psychopy import visual, event
+from Helper import tableWrite,get_keypress,triggerGo
+import random, datetime, glob, time
 import pygame
-from psychopy.hardware import joystick
+# from psychopy.hardware import joystick
+from JoystickInput import JoystickInput
+from WaitEyeGazed import WaitEyeGazed
+
+# Debuging
+# PracticeGamePlay(Df, win, params, params['numPractice'], port, "Practice")
+# iterNum = params['numPractice']; SectionName = "Practice"
 
 # Door Game Session Module.
-def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
-
-    # if params['JoyStickSupport'] == False:
-    #     return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
+def PracticeGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
 
     # Start Section Display
     img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(width, height))
-    # text1 = visual.TextStim(win, text="Press Any Buttons on Joystick to Continue", height=.12, units='norm', pos=[0, -0.3], wrapWidth=2)
-    # text1.draw
-    waitUserInput(Df,img1, win, params,'glfw')
+    # waitUserInput(Df,img1, win, params,'glfw')
+
+    img1.draw();win.flip()
+    anyKeyPressed = (JoystickInput())['buttons_text']
+    while(anyKeyPressed == ' '):
+        anyKeyPressed = (JoystickInput())['buttons_text']
+        time.sleep(0.001)
 
     # Read Door Open Chance file provided by Rany.
     imgList = glob.glob("./img/practice/*_door.jpg")
 
     # Joystick Initialization
-    joystick.backend = 'glfw'  # must match the Window
-    nJoys = joystick.getNumJoysticks()  # to check if we have any
-    if nJoys == 0:
+    # joystick.backend = 'glfw'  # must match the Window
+    # nJoys = joystick.getNumJoysticks()  # to check if we have any
+    if JoystickInput() == -1:
         print("There is no available Joystick.")
         exit()
-    joy = joystick.Joystick(0)  # id must be <= nJoys - 1
+
+    # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
     for i in range(iterNum):
         Dict = {
             "ExperimentName" : params['expName'],
@@ -49,8 +57,6 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         # Display the image.
         c = ['']
         level = Dict["Distance_start"] = params["DistanceStart"]
-        # width = params["screenSize"][0] * (1 - level / 110)
-        # height = params["screenSize"][1] * (1 - level / 110)
         width = params['width_bank'][level]
         height = params['height_bank'][level]
 
@@ -70,9 +76,10 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         triggerGo(port, params, 1, 1, 1)  # Door onset (conflict)
         win.flip()
         count = 0
-        pygame.joystick.quit()
-        pygame.joystick.init()
-        preInput = joy.getY()
+        # pygame.joystick.quit()
+        # pygame.joystick.init()
+        # preInput = a['y']
+        joy = JoystickInput()
         while count < 3:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -80,18 +87,21 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
                 c[0] = "timeisUp"
                 break
             # if (sum(joy.getAllButtons()) != 0):
-            if joy.getButton(0)!=0:
+            # if joy.getButton(0)!=0:
+            if joy['buttons_text'] != ' ':
                 count += 1
                 if count >= 2:
                     Dict["Distance_lock"] = 1
                     break
 
-            joyUserInput = joy.getY()
+            # joyUserInput = joy.getY()
+            joy = JoystickInput()
+            joyUserInput = joy['y']
 
-            if joyUserInput < -0.1 and level < 100:
+            if joyUserInput < -0.5 and level < 100:
                 level += 1
                 level = min(100,level)
-            elif joyUserInput > 0.1 and level > 0:
+            elif joyUserInput > 0.5 and level > 0:
                 level -= 1
                 level = max(0,level)
             get_keypress(Df,params)
@@ -106,7 +116,6 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
             img1.draw();win.flip()
             # print("level :", str(level))
 
-
         triggerGo(port, params, 1, 1, 2)  # Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
 
@@ -119,21 +128,24 @@ def PracticeGamePlay(Df, win, params, iterNum, port,SectionName):
         # height = params["screenSize"][1] * 0.5 * (1 - level / 110)
         img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                 size=(width* 0.235, height* 0.464))
-        # waitUserInput(Df,img2, win, params)
         img1.draw();img2.draw();win.flip()
         event.waitKeys(maxWait=2)
 
-        # Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
-        # time.sleep(Dict["ITI_duration"] / 1000)
-
         # ITI duration
-        width = params["screenSize"][0]
-        height = params["screenSize"][1]
-        img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
-        img1.draw();win.flip();
-        Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
-        time.sleep(Dict["ITI_duration"] / 1000)
+        if params['EyeTrackerSupport']:
+            startTime = time.time()
+            WaitEyeGazed(win, params, tracker)
+            Dict["ITI_duration"] = time.time() - startTime
+
+        else:
+            width = params["screenSize"][0]
+            height = params["screenSize"][1]
+            img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
+            img1.draw();win.flip();
+            Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
+            time.sleep(Dict["ITI_duration"] / 1000)
 
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
     return Df
+

@@ -1,11 +1,4 @@
-from psychopy import core, visual, event, sound,gui
-import random, re, datetime, glob, time, platform
-import pandas as pd
-import numpy as np
-from psychopy.hardware import joystick
-import pygame
-from sys import exit
-
+from psychopy import gui
 
 # Function to get user inputs.
 def userInputPlay():
