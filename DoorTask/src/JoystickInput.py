@@ -11,7 +11,6 @@ from ctypes.wintypes import WCHAR as TCHAR
 
 def JoystickInput():
 
-
     # Fetch function pointers
     joyGetNumDevs = ctypes.windll.winmm.joyGetNumDevs
     joyGetPos = ctypes.windll.winmm.joyGetPos
@@ -98,7 +97,7 @@ def JoystickInput():
     num_devs = joyGetNumDevs()
     if num_devs == 0:
         print("Joystick driver not loaded.")
-        return -1
+        # return -1
 
     # Number of the joystick to open.
     joy_id = 0
@@ -108,13 +107,13 @@ def JoystickInput():
     p_info = ctypes.pointer(info)
     if joyGetPos(0, p_info) != 0:
         print("Joystick %d not plugged in." % (joy_id + 1))
-        return -1
+        # return -1
 
     # Get device capabilities.
     caps = JOYCAPS()
     if joyGetDevCaps(joy_id, ctypes.pointer(caps), ctypes.sizeof(JOYCAPS)) != 0:
         print("Failed to get device capabilities.")
-        return -1
+        # return -1
 
     # print("Driver name:", caps.szPname)
 
@@ -137,12 +136,19 @@ def JoystickInput():
 
     # Set the initial button states.
     button_states = {}
-    for b in range(caps.wNumButtons):
+    # for b in range(caps.wNumButtons):
+    for b in range(len(button_names)):
         name = button_names[b]
-        if (1 << b) & info.wButtons:
-            button_states[name] = True
-        else:
-            button_states[name] = False
+        try:
+            if (1 << b) & info.dwButtons:
+                button_states[name] = True
+            else:
+                button_states[name] = False
+        except AttributeError:
+            if (1 << b) & info.wButtons:
+                button_states[name] = True
+            else:
+                button_states[name] = False
 
     for name in povbtn_names:
         button_states[name] = False
@@ -171,7 +177,8 @@ def JoystickInput():
         rt = max(-1.0, -trig * 2 - 1.0)
 
         # Figure out which buttons are pressed.
-        for b in range(caps.wNumButtons):
+        # for b in range(caps.wNumButtons):
+        for b in range(len(button_names)):
             pressed = (0 != (1 << b) & info.dwButtons)
             name = button_names[b]
             button_states[name] = pressed
@@ -202,7 +209,7 @@ def JoystickInput():
         erase = ' ' * max(0, prev_len - len(buttons_text))
 
         # Display the x, y, trigger values.
-        print("\r(% .3f % .3f % .3f) (% .3f % .3f % .3f)%s%s" % (x, y, lt, rx, ry, rt, buttons_text, erase), end='')
+        # print("\r(% .3f % .3f % .3f) (% .3f % .3f % .3f)%s%s" % (x, y, lt, rx, ry, rt, buttons_text, erase), end='')
 
         res = {
             'x': x,
@@ -217,7 +224,7 @@ def JoystickInput():
             "Driver name:": caps.szPname
         }
 
-        #print info.dwXpos, info.dwYpos, info.dwZpos, info.dwRpos, info.dwUpos, info.dwVpos, info.dwButtons, info.dwButtonNumber, info.dwPOV, info.dwReserved1, info.dwReserved2
+        # print info.dwXpos, info.dwYpos, info.dwZpos, info.dwRpos, info.dwUpos, info.dwVpos, info.dwButtons, info.dwButtonNumber, info.dwPOV, info.dwReserved1, info.dwReserved2
         # time.sleep(0.01)
         break
     return res
@@ -226,5 +233,5 @@ def JoystickInput():
 # import time
 # start = time.time()
 # outExample = JoystickInput()
-# print(a)
+# print(outExample)
 # print(time.time()-start)

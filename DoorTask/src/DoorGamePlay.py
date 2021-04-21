@@ -34,15 +34,6 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
     totalCoin = 0
 
-    # Joystick Initialization
-    # joystick.backend = 'glfw'  # must match the Window
-    # nJoys = joystick.getNumJoysticks()  # to check if we have any
-    # if nJoys == 0:
-    #     print("There is no available Joystick.")
-    #     exit()
-    # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
-    # if sum(joy.getAllButtons()) != 0:
-    #     break
     if JoystickInput() == -1:
         print("There is no available Joystick.")
         exit()

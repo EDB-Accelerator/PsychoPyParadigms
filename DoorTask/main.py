@@ -78,10 +78,6 @@ params = {
     'subTrialCounter': 0,
 }
 
-# # Import Eyetracker library.
-# if params['EyeTrackerSupport']:
-#     from psychopy.iohub import launchHubServer
-
 prefs.general['fullscr'] = params['FullScreen']
 
 if userInputBank[3]!= 1:
@@ -170,9 +166,6 @@ if params['EyeTrackerSupport']:
 # ======== VAS 1 ========= #
 # ====================== #
 win.mouseVisible = True
-if platform != "darwin":
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
 message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
