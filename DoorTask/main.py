@@ -12,6 +12,7 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Created July/24/20 by KL
 - Updated 09/3/2020 Tue by KL (Trigger)
 - Updated 09/15/2020 Tue by KL (Major Updates)
+- Updated 4/21/2021 Wed by KL (Eyetracker update - major updates)
 - Save result when exit 10/26/2020 Mon by KL
 """
 
