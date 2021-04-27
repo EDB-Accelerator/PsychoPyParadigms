@@ -5,7 +5,7 @@ from psychopy import core, visual, event, sound,gui
 from Helper import waitUserSpace,displayVAS,tableWrite,get_keypress,waitUserInput,triggerGo,displayText
 from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
-import pygame
+# import pygame
 import numpy as np
 import pandas as pd
 # from psychopy.hardware import joystick
@@ -15,16 +15,20 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
-
+    params['subTrialCounter'] = 0
     # if params['JoyStickSupport'] == False:
     #     return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(width, height))
         img1.draw();
         win.flip()
-        anyKeyPressed = (JoystickInput())['buttons_text']
-        while (anyKeyPressed == ' '):
-            anyKeyPressed = (JoystickInput())['buttons_text']
+
+        # Wait for User input.
+        while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
+            time.sleep(0.001)
+            img1.draw();
+            win.flip()
+        while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
             time.sleep(0.001)
 
         # waitUserInput(Df,img1, win, params,'glfw')
@@ -87,12 +91,12 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
         width = params['width_bank'][level]
         height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-        img1.draw();
-        win.flip()
+        # img1.draw();
+        # win.flip()
         triggerGo(port, params, r, p, 1) # Trigger: Door onset (conflict)
         count = 0
-        pygame.joystick.quit()
-        pygame.joystick.init()
+        # pygame.joystick.quit()
+        # pygame.joystick.init()
         # preInput = a['y']
         joy = JoystickInput()
         while count < 3:  # while presenting stimuli
@@ -113,11 +117,17 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
             joyUserInput = joy['y']
 
             if joyUserInput < -0.5 and level < 100:
+                level += 2
+                level = min(100,level)
+            elif joyUserInput < -0.1 and level < 100:
                 level += 1
                 level = min(100,level)
             elif joyUserInput > 0.5 and level > 0:
-                level -= 1
+                level -= 2
                 level = max(0,level)
+            elif joyUserInput > 0.1 and level > 0:
+                level -= 1
+                level = max(0, level)
 
             width = params['width_bank'][level]
             height = params['height_bank'][level]

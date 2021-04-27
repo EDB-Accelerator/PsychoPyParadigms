@@ -32,6 +32,7 @@ from PracticeGamePlay import PracticeGamePlay
 from DoorGamePlay import DoorGamePlay
 from EyeTrackerCalibration import EyeTrackerCalibration
 from EyeTrackerInitialization import EyeTrackerInitialization
+from ELIdxRecord import ELIdxRecord
 
 from psychopy import parallel
 from psychopy import prefs
@@ -69,13 +70,16 @@ params = {
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
+
 # declare output file location
     'outFolder': './output', # the location of output file.
+
 # declare display parameters
     'screenSize' : (1024,780),
     'volume' : 0.8,
     'resolutionMode' : True,
     'subTrialCounter': 0,
+    'idxTR': 0,
 }
 
 prefs.general['fullscr'] = params['FullScreen']
@@ -91,9 +95,6 @@ img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opa
 
 # Trigger Initialization
 port = 0
-
-if platform == "darwin":
-    params['triggerSupport'] = False
 if params['triggerSupport']:
     port = parallel.ParallelPort(address=params['portAddress'])
     port.setData(0) # initialize to all zeroscv
@@ -113,8 +114,11 @@ Header = ["ExperimentName","SessionStartDateTime","Subject","Session","Version",
           "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
           "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
           "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
-
 Df = pd.DataFrame(columns=Header)
+
+if params['EyeTrackerSupport']:
+    HeaderTR = ["Index","subjectID","Session","Version","Section","Subtrial","Event"]
+    DfTR = pd.DataFrame(columns=HeaderTR)
 
 # ====================== #
 # ======== VAS pre ========= #
@@ -136,6 +140,7 @@ ResolutionIntialization(params,size_diff=1/65)
 # ====================== #
 # ===== Practice ======= #
 # ====================== #
+tracker = ""
 if params['EyeTrackerSupport']:
     # Eyetracker Initialization
     tracker = EyeTrackerInitialization()
@@ -143,128 +148,138 @@ if params['EyeTrackerSupport']:
     # Eyetracker Calibration and start recording.
     tracker = EyeTrackerCalibration(tracker)
 
-Df = PracticeGamePlay(Df,win,params,params['numPractice'],port,tracker,"Practice")
+    # Start recording
+    tracker.setRecordingState(True)
+
+    # Eyetracker label record
+    DfTR = pd.DataFrame(columns=HeaderTR)
+    DfTR = ELIdxRecord(DfTR,params,"","","After Calibration Before Door Practice Game")
+
+Df,DfTR = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,tracker,"Practice")
 
 # Stop recording
 if params['EyeTrackerSupport']:
     tracker.setRecordingState(False)
 
-# ====================== #
-# ===== TaskRun1 ======= #
-# ====================== #
-if params['EyeTrackerSupport']:
-    # Eyetracker Calibration and start recording.
-    tracker = EyeTrackerCalibration(tracker)
-
-Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,tracker,"TaskRun1")
-
-# Stop recording
-if params['EyeTrackerSupport']:
-    tracker.setRecordingState(False)
-
-# ====================== #
-# ======== VAS 1 ========= #
-# ====================== #
-win.mouseVisible = True
-message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS 1")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-# ====================== #
-# ===== TaskRun2 ======= #
-# ====================== #
-if params['EyeTrackerSupport']:
-    # Eyetracker Calibration and start recording.
-    tracker = EyeTrackerCalibration(tracker)
-
-Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,tracker,"TaskRun2")
-
-# Stop recording
-if params['EyeTrackerSupport']:
-    tracker.setRecordingState(False)
-
-# ====================== #
-# ======== VAS mid ========= #
-# ====================== #
-win.mouseVisible = True
-if platform != "darwin":
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
-message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS mid")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
+# # ====================== #
+# # ===== TaskRun1 ======= #
+# # ====================== #
+# if params['EyeTrackerSupport']:
+#     # Eyetracker Calibration and start recording.
+#     tracker = EyeTrackerCalibration(tracker)
+#
+# Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,tracker,"TaskRun1")
+#
+# # Stop recording
+# # if params['EyeTrackerSupport']:
+# #     tracker.setRecordingState(False)
+#
+# # ====================== #
+# # ======== VAS 1 ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS 1")
 # win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-
-# ====================== #
-# ===== TaskRun3 ======= #
-# ====================== #
-if params['EyeTrackerSupport']:
-    # Eyetracker Calibration and start recording.
-    tracker = EyeTrackerCalibration(tracker)
-
-Df = DoorGamePlay(Df,win,params,params['numTaskRun3'],port,tracker,"TaskRun3")
-
-# Stop recording
-if params['EyeTrackerSupport']:
-    tracker.setRecordingState(False)
-
-# ====================== #
-# ======== VAS post ========= #
-# ====================== #
-win.mouseVisible = True
-if platform != "darwin":
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet',units="pix")
-message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS post")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-# ====================== #
-# ======== Question ========= #
-# ====================== #
-Df = Questionplay(Df, win, params, "Question")
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# # message.draw();
+# win.mouseVisible = False
+# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# waitUserInput(Df,img1, win, params,'pyglet')
+# win.flip();
+#
+# # ====================== #
+# # ===== TaskRun2 ======= #
+# # ====================== #
+# if params['EyeTrackerSupport']:
+#     # Eyetracker Calibration and start recording.
+#     tracker = EyeTrackerCalibration(tracker)
+#
+# Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,tracker,"TaskRun2")
+#
+# # Stop recording
+# # if params['EyeTrackerSupport']:
+# #     tracker.setRecordingState(False)
+#
+# # ====================== #
+# # ======== VAS mid ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS mid")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# # message.draw();
+# # win.mouseVisible = False
+# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# waitUserInput(Df,img1, win, params,'pyglet')
+# win.flip();
+#
+#
+# # ====================== #
+# # ===== TaskRun3 ======= #
+# # ====================== #
+# if params['EyeTrackerSupport']:
+#     # Eyetracker Calibration and start recording.
+#     tracker = EyeTrackerCalibration(tracker)
+#
+# Df = DoorGamePlay(Df,win,params,params['numTaskRun3'],port,tracker,"TaskRun3")
+#
+# # Stop recording
+# # if params['EyeTrackerSupport']:
+# #     tracker.setRecordingState(False)
+#
+# # ====================== #
+# # ======== VAS post ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit.  when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS post")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# # message.draw();
+# # win.mouseVisible = False
+# # img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# # waitUserInput(Df,img1, win, params,'pyglet')
+# # win.flip();
+#
+# # ====================== #
+# # ======== Question ========= #
+# # ====================== #
+# win.mouseVisible = True
+# Df = Questionplay(Df, win, params, "Question")
 
 # Write the output file.
 outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+outFileTR = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "TR.csv"
 
 Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
+DfTR.to_csv(outFileTR, sep=',', encoding='utf-8', index=False)
+
+
 
 # Close the psychopy window.
 win.close()
