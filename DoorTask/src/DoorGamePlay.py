@@ -5,19 +5,23 @@ from psychopy import core, visual, event, sound,gui
 from Helper import waitUserSpace,displayVAS,tableWrite,get_keypress,waitUserInput,triggerGo,displayText
 from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
-# import pygame
+import pylink
 import numpy as np
 import pandas as pd
 # from psychopy.hardware import joystick
 from WaitEyeGazed import WaitEyeGazed
+from ELIdxRecord import ELIdxRecord
+from EyeTrackerCalibration import EyeTrackerCalibration
+from psychopy.iohub import launchHubServer
 
-def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
+def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
+
+    params["idxTR"] = 0
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
     params['subTrialCounter'] = 0
-    # if params['JoyStickSupport'] == False:
-    #     return DoorGamePlay_keyboard(Df,win,params,iterNum,SectionName)
+
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(width, height))
         img1.draw();
@@ -31,7 +35,35 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
         while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
             time.sleep(0.001)
 
-        # waitUserInput(Df,img1, win, params,'glfw')
+    # Eyetracker start recording
+    if params['EyeTrackerSupport']:
+
+        iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
+                            {'name': 'tracker',
+                             'model_name': 'EYELINK 1000 DESKTOP',
+                             'runtime_settings': {'sampling_rate': 500,
+                                                  'track_eyes': 'RIGHT'}
+                             }
+                        }
+        # Start new ioHub server.
+        import psychopy.iohub.client
+
+        try:
+            io = launchHubServer(**iohub_config)
+        except:
+            q = psychopy.iohub.client.ioHubConnection.getActiveConnection().quit()
+            io = launchHubServer(**iohub_config)
+        # Get the eye tracker device.
+        tracker = io.devices.tracker
+
+        # Eyetracker Calibration.
+        tracker = EyeTrackerCalibration(tracker)
+
+        # Eyetracker start recording
+        tracker.setRecordingState(True)
+
+        # Eyetracker label record (start)
+        tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
 
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
@@ -43,6 +75,14 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
         exit()
 
     # Shuffle image. # https://pynative.com/python-random-shuffle/
+
+    if params['EyeTrackerSupport']:
+        # Eyetracker label record
+        # tracker.sendMessage('TRIAL_RESULT 0') # # EDF labeling (end)
+        # DfTR = ELIdxRecord(DfTR, params, SectionName, "", "After Calibration Before Door Game")
+
+        # EDF labeling (start)
+        tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
 
     for i in range(iterNum):
         params['subTrialCounter'] += 1
@@ -87,7 +127,7 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
 
         # Initial screen
         # width = params["screenSize"][0] * (1 - level / 110)
-        # height = params["screenSize"][1] * (1 - level / 110)
+        # height = params["scre  enSize"][1] * (1 - level / 110)
         width = params['width_bank'][level]
         height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
@@ -143,15 +183,31 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
         triggerGo(port, params, r, p, 2) # Trigger: Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
 
+        if params['EyeTrackerSupport']:
+            tracker.sendMessage('TRIAL_RESULT 0')
+            DfTR = ELIdxRecord(DfTR, params,SectionName,i, "Playing Door Game (Before lock).")
+            tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
+
+
         # Door Anticipation time
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
+
+        if params['EyeTrackerSupport']:
+            tracker.sendMessage('TRIAL_RESULT 0')
+            DfTR = ELIdxRecord(DfTR, params,SectionName,i, "After lock: Door Anticipation Time.")
+            tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
 
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1.draw();win.flip()
             triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
             event.waitKeys(maxWait=2)
+
+            if params['EyeTrackerSupport']:
+                tracker.sendMessage('TRIAL_RESULT 0')
+                DfTR = ELIdxRecord(DfTR, params, SectionName, i, "Reward screen (Door not opened) displayed.")
+                tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
         else:
             Dict["Door_opened"] = "opened"
             if random.random() < 0.5:
@@ -183,6 +239,10 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
                 event.waitKeys(maxWait=2)
                 sound1.stop()
                 totalCoin += int(r)
+            if params['EyeTrackerSupport']:
+                tracker.sendMessage('TRIAL_RESULT 0')
+                DfTR = ELIdxRecord(DfTR, params, SectionName, i, "Reward screen displayed.")
+                tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
 
         # ITI duration
         if params['EyeTrackerSupport']:
@@ -198,7 +258,24 @@ def DoorGamePlay(Df, win, params, iterNum, port,tracker,SectionName):
             Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
             time.sleep(Dict["ITI_duration"] / 1000)
 
+        if params['EyeTrackerSupport']:
+            tracker.sendMessage('TRIAL_RESULT 0')
+            DfTR = ELIdxRecord(DfTR, params, SectionName, i, "ITI screen displayed.")
+
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 
-    return Df
+    # Eyetracker finish recording
+    if params['EyeTrackerSupport']:
+        # Eyetracker stop recording
+        tracker.setRecordingState(False)
+
+        # open a connection to the tracker and download the result file.
+        trackerIO = pylink.EyeLink('100.1.1.1')
+        trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
+
+        # Stop the ioHub Server
+        io.quit()
+        trackerIO.close()
+
+    return Df,DfTR

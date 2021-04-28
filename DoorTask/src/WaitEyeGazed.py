@@ -12,6 +12,9 @@ def WaitEyeGazed(win, params,tracker):
     c = event.getKeys()
     circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
                            radius=10)
+    img.draw()
+    circle.draw()
+    win.flip()
     while (c != ['space']):
         core.wait(1 / 120)
         c = event.getKeys()

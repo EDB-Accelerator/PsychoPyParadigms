@@ -3,3 +3,5 @@ test*.py
 output/*.csv
 PsychoPy3/*
 tmp*.py
+*.edf
+*.EDF

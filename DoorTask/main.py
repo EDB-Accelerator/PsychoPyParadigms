@@ -18,6 +18,7 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 
 # Import developer-defined functions
 import sys
+import pylink
 sys.path.insert(1, './src')
 import datetime
 import pandas as pd
@@ -33,11 +34,13 @@ from DoorGamePlay import DoorGamePlay
 from EyeTrackerCalibration import EyeTrackerCalibration
 from EyeTrackerInitialization import EyeTrackerInitialization
 from ELIdxRecord import ELIdxRecord
-
+from EyeLinkCoreGraphicsPsychoPy import EyeLinkCoreGraphicsPsychoPy
+from psychopy.iohub import launchHubServer
 from psychopy import parallel
 from psychopy import prefs
 from sys import platform
 import time
+
 
 def shutdown_key():
     core.quit()
@@ -82,6 +85,21 @@ params = {
     'idxTR': 0,
 }
 
+# Define Output file names.
+timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
+outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  timeLabel + ".csv"
+outFileTrackerLog = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  timeLabel + "TR.csv"
+params['Practice'] =  params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  timeLabel + "PR.EDF"
+params['TaskRun1'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  timeLabel + "TR1.EDF"
+params['TaskRun2'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  timeLabel + "TR2.EDF"
+params['TaskRun3'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  timeLabel + "TR3.EDF"
+
 prefs.general['fullscr'] = params['FullScreen']
 
 if userInputBank[3]!= 1:
@@ -117,7 +135,7 @@ Header = ["ExperimentName","SessionStartDateTime","Subject","Session","Version",
 Df = pd.DataFrame(columns=Header)
 
 if params['EyeTrackerSupport']:
-    HeaderTR = ["Index","subjectID","Session","Version","Section","Subtrial","Event"]
+    HeaderTR = ["Index","subjectID","Session","Version","Section","Subtrial","Event","Duration(ms)"]
     DfTR = pd.DataFrame(columns=HeaderTR)
 
 # ====================== #
@@ -137,42 +155,25 @@ Df = InstructionPlay(Df,win,params)
 # ========================================== #
 ResolutionIntialization(params,size_diff=1/65)
 
+# ========================================== #
+# ==== Eyetracker Initialization =========== #
+# ========================================== #
+tracker = ""
+# if params['EyeTrackerSupport']:
+
 # ====================== #
 # ===== Practice ======= #
 # ====================== #
-tracker = ""
-if params['EyeTrackerSupport']:
-    # Eyetracker Initialization
-    tracker = EyeTrackerInitialization()
-
-    # Eyetracker Calibration and start recording.
-    tracker = EyeTrackerCalibration(tracker)
-
-    # Start recording
-    tracker.setRecordingState(True)
-
-    # Eyetracker label record
-    DfTR = pd.DataFrame(columns=HeaderTR)
-    DfTR = ELIdxRecord(DfTR,params,"","","After Calibration Before Door Practice Game")
-
-Df,DfTR = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,tracker,"Practice")
-
-# Stop recording
-if params['EyeTrackerSupport']:
-    tracker.setRecordingState(False)
+win.mouseVisible = False
+Df,DfTR = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
+win.mouseVisible = True
 
 # # ====================== #
 # # ===== TaskRun1 ======= #
 # # ====================== #
-# if params['EyeTrackerSupport']:
-#     # Eyetracker Calibration and start recording.
-#     tracker = EyeTrackerCalibration(tracker)
-#
-# Df = DoorGamePlay(Df,win,params,params['numTaskRun1'],port,tracker,"TaskRun1")
-#
-# # Stop recording
-# # if params['EyeTrackerSupport']:
-# #     tracker.setRecordingState(False)
+# win.mouseVisible = False
+# Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
+# win.mouseVisible = True
 #
 # # ====================== #
 # # ======== VAS 1 ========= #
@@ -198,15 +199,7 @@ if params['EyeTrackerSupport']:
 # # ====================== #
 # # ===== TaskRun2 ======= #
 # # ====================== #
-# if params['EyeTrackerSupport']:
-#     # Eyetracker Calibration and start recording.
-#     tracker = EyeTrackerCalibration(tracker)
-#
-# Df = DoorGamePlay(Df,win,params,params['numTaskRun2'],port,tracker,"TaskRun2")
-#
-# # Stop recording
-# # if params['EyeTrackerSupport']:
-# #     tracker.setRecordingState(False)
+# Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
 #
 # # ====================== #
 # # ======== VAS mid ========= #
@@ -233,15 +226,7 @@ if params['EyeTrackerSupport']:
 # # ====================== #
 # # ===== TaskRun3 ======= #
 # # ====================== #
-# if params['EyeTrackerSupport']:
-#     # Eyetracker Calibration and start recording.
-#     tracker = EyeTrackerCalibration(tracker)
-#
-# Df = DoorGamePlay(Df,win,params,params['numTaskRun3'],port,tracker,"TaskRun3")
-#
-# # Stop recording
-# # if params['EyeTrackerSupport']:
-# #     tracker.setRecordingState(False)
+# Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
 #
 # # ====================== #
 # # ======== VAS post ========= #
@@ -270,16 +255,8 @@ if params['EyeTrackerSupport']:
 # win.mouseVisible = True
 # Df = Questionplay(Df, win, params, "Question")
 
-# Write the output file.
-outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
-outFileTR = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "TR.csv"
-
 Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
-DfTR.to_csv(outFileTR, sep=',', encoding='utf-8', index=False)
-
-
+DfTR.to_csv(outFileTrackerLog, sep=',', encoding='utf-8', index=False)
 
 # Close the psychopy window.
 win.close()

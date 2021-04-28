@@ -2,18 +2,71 @@ import sys
 sys.path.insert(1, './src')
 
 from psychopy import visual, event
-from Helper import tableWrite,get_keypress,triggerGo
+from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace
 import random, datetime, glob, time
 from ELIdxRecord import ELIdxRecord
 from JoystickInput import JoystickInput
 from WaitEyeGazed import WaitEyeGazed
+from EyeTrackerCalibration import EyeTrackerCalibration
+from psychopy.iohub import launchHubServer
+import pylink,time
 
 # Debuging
 # PracticeGamePlay(Df, win, params, params['numPractice'], port, "Practice")
 # iterNum = params['numPractice']; SectionName = "Practice"
 
 # Door Game Session Module.
-def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,tracker,SectionName):
+def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
+
+    # Eyetracker start recording
+    params["idxTR"] = 0
+    if params['EyeTrackerSupport']:
+
+        message = visual.TextStim(win,
+                                  text="Eyetracker Calibration will start.  Press the spacebar when you are ready.",
+                                  units='norm', wrapWidth=2)
+        message.draw();
+        win.flip();
+        waitUserSpace(Df, params)
+
+        iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
+                            {'name': 'tracker',
+                             'model_name': 'EYELINK 1000 DESKTOP',
+                             'runtime_settings': {'sampling_rate': 500,
+                                                  'track_eyes': 'RIGHT'}
+                             }
+                        }
+        # Start new ioHub server.
+        import psychopy.iohub.client
+
+        try:
+            io = launchHubServer(**iohub_config)
+        except:
+            q = psychopy.iohub.client.ioHubConnection.getActiveConnection().quit()
+            io = launchHubServer(**iohub_config)
+
+        # Get the eye tracker device.
+        tracker = io.devices.tracker
+
+        # Eyetracker Calibration.
+        tracker = EyeTrackerCalibration(tracker)
+
+        # Eyetracker start recording
+        tracker.setRecordingState(True)
+        ELstartTime = time.time()
+
+        # EDF labeling (start)
+        # tracker.sendMessage('TRIALID %d' % params["idxTR"])
+
+
+
+        # message = visual.TextStim(win,
+        #                           text="Calibration is complete.  Press the spacebar when you are ready.",
+        #                           units='norm', wrapWidth=2)
+        # message.draw();
+        # win.flip();
+        # waitUserSpace(Df, params)
+
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
@@ -41,8 +94,21 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,tracker,SectionName):
         print("There is no available Joystick.")
         exit()
 
+
+        # Eyetracker label record
+        # tracker.sendMessage('TRIAL_RESULT 0') # # EDF labeling (end)
+    if params['EyeTrackerSupport']:
+        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game")
+        tracker.sendMessage('TRIAL_RESULT 0')
+
     # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
     for i in range(iterNum):
+
+        # EDF labeling (start)
+        if params['EyeTrackerSupport']:
+            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
+
         Dict = {
             "ExperimentName" : params['expName'],
             "Subject" : params['subjectID'],
@@ -63,8 +129,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,tracker,SectionName):
 
         # tracker.sendMessage("Practice trial started (Door image shown)")
         # tracker.sendMessage("TRIAL_INDEX " + str(i))
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+
 
         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
         Dict["Distance_lock"] = 0
@@ -142,8 +207,9 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,tracker,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,i, "Playing Door Game (Before lock).")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
 
 
         triggerGo(port, params, 1, 1, 2)  # Joystick lock (start anticipation)
@@ -153,6 +219,12 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,tracker,SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
+        if params['EyeTrackerSupport']:
+            tracker.sendMessage('TRIAL_RESULT 0')
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.")
+            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
+
         awardImg = "./img/practice/practice_outcome.jpg"
         img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                 size=(width* 0.235, height* 0.464))
@@ -161,8 +233,9 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,tracker,SectionName):
         event.waitKeys(maxWait=2)
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,i, "Locked and Reward screen displayed.")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
 
         # ITI duration
         if params['EyeTrackerSupport']:
@@ -177,12 +250,26 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,tracker,SectionName):
             img1.draw();win.flip();
             Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
             time.sleep(Dict["ITI_duration"] / 1000)
-        # tracker.sendMessage("Practice trial Ended (Door image gone)")
+
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,i, "ITI")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.")
 
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+
+
+    # Eyetracker finish recording
+    if params['EyeTrackerSupport']:
+        # Eyetracker stop recording
+        tracker.setRecordingState(False)
+
+        # open a connection to the tracker and download the result file.
+        trackerIO = pylink.EyeLink('100.1.1.1')
+        trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
+        # Stop the ioHub Server
+        io.quit()
+        trackerIO.close()
+
 
     return Df,DfTR
 
