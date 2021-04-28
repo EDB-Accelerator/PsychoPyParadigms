@@ -23,7 +23,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
     if params['EyeTrackerSupport']:
 
         message = visual.TextStim(win,
-                                  text="Eyetracker Calibration will start.  Press the spacebar when you are ready.",
+                                  text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
                                   units='norm', wrapWidth=2)
         message.draw();
         win.flip();
@@ -55,19 +55,6 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.setRecordingState(True)
         ELstartTime = time.time()
 
-        # EDF labeling (start)
-        # tracker.sendMessage('TRIALID %d' % params["idxTR"])
-
-
-
-        # message = visual.TextStim(win,
-        #                           text="Calibration is complete.  Press the spacebar when you are ready.",
-        #                           units='norm', wrapWidth=2)
-        # message.draw();
-        # win.flip();
-        # waitUserSpace(Df, params)
-
-
     width = params["screenSize"][0]
     height = params["screenSize"][1]
 
@@ -88,8 +75,6 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
     imgList = glob.glob("./img/practice/*_door.jpg")
 
     # Joystick Initialization
-    # joystick.backend = 'glfw'  # must match the Window
-    # nJoys = joystick.getNumJoysticks()  # to check if we have any
     if JoystickInput() == -1:
         print("There is no available Joystick.")
         exit()

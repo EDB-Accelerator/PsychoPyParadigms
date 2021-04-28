@@ -38,6 +38,13 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
     # Eyetracker start recording
     if params['EyeTrackerSupport']:
 
+        message = visual.TextStim(win,
+                                  text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
+                                  units='norm', wrapWidth=2)
+        message.draw();
+        win.flip();
+        waitUserSpace(Df, params)
+
         iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
                             {'name': 'tracker',
                              'model_name': 'EYELINK 1000 DESKTOP',
@@ -61,9 +68,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         # Eyetracker start recording
         tracker.setRecordingState(True)
-
-        # Eyetracker label record (start)
-        tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
+        ELstartTime = time.time()
 
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
@@ -77,14 +82,16 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
     # Shuffle image. # https://pynative.com/python-random-shuffle/
 
     if params['EyeTrackerSupport']:
-        # Eyetracker label record
-        # tracker.sendMessage('TRIAL_RESULT 0') # # EDF labeling (end)
-        # DfTR = ELIdxRecord(DfTR, params, SectionName, "", "After Calibration Before Door Game")
-
-        # EDF labeling (start)
-        tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
+        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game")
+        tracker.sendMessage('TRIAL_RESULT 0')
 
     for i in range(iterNum):
+
+        # EDF labeling (start)
+        if params['EyeTrackerSupport']:
+            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
+
         params['subTrialCounter'] += 1
         Dict = {
             "ExperimentName" : params['expName'],
@@ -185,9 +192,9 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,i, "Playing Door Game (Before lock).")
-            tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
-
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).")
+            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
 
         # Door Anticipation time
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
@@ -195,8 +202,9 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,i, "After lock: Door Anticipation Time.")
-            tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.")
+            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
 
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
@@ -206,8 +214,9 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
             if params['EyeTrackerSupport']:
                 tracker.sendMessage('TRIAL_RESULT 0')
-                DfTR = ELIdxRecord(DfTR, params, SectionName, i, "Reward screen (Door not opened) displayed.")
-                tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
+                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door not opened) displayed.")
+                tracker.sendMessage('TRIALID %d' % params["idxTR"])
+                ELstartTime = time.time()
         else:
             Dict["Door_opened"] = "opened"
             if random.random() < 0.5:
@@ -241,8 +250,9 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 totalCoin += int(r)
             if params['EyeTrackerSupport']:
                 tracker.sendMessage('TRIAL_RESULT 0')
-                DfTR = ELIdxRecord(DfTR, params, SectionName, i, "Reward screen displayed.")
-                tracker.sendMessage('TRIALID %d' % params["idxTR"] + 1)
+                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door Opened) displayed.")
+                tracker.sendMessage('TRIALID %d' % params["idxTR"])
+                ELstartTime = time.time()
 
         # ITI duration
         if params['EyeTrackerSupport']:
@@ -260,7 +270,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params, SectionName, i, "ITI screen displayed.")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.")
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
