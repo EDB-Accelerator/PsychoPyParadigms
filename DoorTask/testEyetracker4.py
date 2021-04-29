@@ -16,7 +16,9 @@ err = tk.startRecording(1, 1, 1, 1)
 pylink.pumpDelay(100)  # wait for 100 ms to cache some samples
 
 ratio = 1
-tk.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, newPoint(236,1024/2,ratio), newPoint(-42,780/2,ratio), newPoint(788,1024/2,ratio), newPoint(940,780/2,ratio), 'example_IA'))
+tk.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, newPoint(178,1024/2,ratio), newPoint(-125,780/2,ratio), newPoint(843,1024/2,ratio), newPoint(1049,780/2,ratio), 'example_IA'))
+
+# tk.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, newPoint(236,1024/2,ratio), newPoint(-42,780/2,ratio), newPoint(788,1024/2,ratio), newPoint(940,780/2,ratio), 'example_IA'))
 # tk.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (2, newPoint(12,1024/2,ratio), newPoint(-42,780/2,ratio), newPoint(157,1024/2,ratio), newPoint(942,780/2,ratio), 'example_IA'))
 # tk.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, newPoint(863,1024/2,ratio), newPoint(-42,780/2,ratio), newPoint(1008,1024/2,ratio), newPoint(942,780/2,ratio), 'example_IA'))
 

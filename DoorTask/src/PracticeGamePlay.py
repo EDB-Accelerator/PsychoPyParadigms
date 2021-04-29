@@ -45,11 +45,11 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # open a connection to the tracker and download the result file.
         trackerIO = pylink.EyeLink('100.1.1.1')
 
-        # trackerIO.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        trackerIO.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
         # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
-        # trackerIO.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        trackerIO.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         try:
             io = launchHubServer(**iohub_config)
@@ -60,8 +60,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Get the eye tracker device.
         tracker = io.devices.tracker
 
-        tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
-        tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        # tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        # tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
         # Eyetracker Calibration.
         tracker = EyeTrackerCalibration(tracker)
 
@@ -101,6 +101,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.sendMessage('TRIAL_RESULT 0')
 
     # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
+    aoiTimeStart = time.time() * 1000
     for i in range(iterNum):
 
         # EDF labeling (start)
@@ -145,18 +146,18 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=position,
                                    radius=5)
 
-            # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, width / 2, height / 2))
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, 1024/2, 780 / 2))
-            # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, 1024 / 2, 780 / 2))
-            # trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 500, 500, 400, 400, 'example_IA'))
+            # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, 1024/2, 780 / 2))
 
         triggerGo(port, params, 1, 1, 1)  # Door onset (conflict)
         win.flip()
 
 
         count = 0
+        ratioX = 1
+        ratioY = 1
 
         joy = JoystickInput()
+
         while count < 4:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -208,11 +209,26 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 circle.pos = position
                 circle.draw()
 
-                ratio = 1
-                tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-                1, newPoint(236, 1024 / 2, ratio), newPoint(-42, 780 / 2, ratio), newPoint(788, 1024 / 2, ratio),
-                newPoint(940, 780 / 2, ratio), 'example_IA'))
+                aoiTimeEnd = time.time() * 1000
+                ratioX = width/1024
+                ratioY = height/780
+                # tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (0,int(aoiTimeStart-aoiTimeEnd),
+                # 1, newPoint(178, 1024 / 2, ratioX), newPoint(-125, 780 / 2, ratioY), newPoint(843, 1024 / 2, ratioX),
+                # newPoint(1049, 780 / 2, ratioY), 'DOOR'))
 
+                tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (0,int(aoiTimeStart-aoiTimeEnd),
+                                                                                    1, 512 - width * 105 / 1024,
+                                                                                    390 - height * 160 / 780,
+                                                                                    512 + width * 105 / 1024,
+                                                                                    390 + height * 200 / 780, 'DOOR'))
+
+                # tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
+                #                                                               390 - height * 160 / 780,
+                #                                                               512 + width * 105 / 1024,
+                #                                                               390 + height * 200 / 780,
+                #                                                               'DOOR'))
+
+                aoiTimeStart = aoiTimeEnd
                 # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 0,0,width, height))
 
                 # trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780), 'example_IA'))
@@ -223,6 +239,17 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             tracker.sendMessage('TRIAL_RESULT 0')
             DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2, 780 / 2, width, height))
+            # tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, newPoint(178, 1024 / 2, ratioX),
+            #                                                                     newPoint(-125, 780 / 2, ratioY),
+            #                                                                     newPoint(843, 1024 / 2, ratioX),
+            #                                                                     newPoint(1049, 780 / 2, ratioY),
+            #                                                                     'DOOR'))
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*105/1024,
+                                                                                390-height*160/780,
+                                                                                512+width*105/1024,
+                                                                                390+height*200/780,
+                                                                                'DOOR'))
             ELstartTime = time.time()
 
 
@@ -237,6 +264,19 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             tracker.sendMessage('TRIAL_RESULT 0')
             DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('./img/practice/combined.jpg', 1024 / 2, 780 / 2, width, height))
+            # tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, newPoint(343, 1024 / 2, ratioX),
+            #                                                                     newPoint(184, 780 / 2, ratioY),
+            #                                                                     newPoint(703, 1024 / 2, ratioX),
+            #                                                                     newPoint(584, 780 / 2, ratioY),
+            #                                                                     'Reward(question)'))
+            print(width)
+            print(height)
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*105/1024,
+                                                                                390-height*160/780,
+                                                                                512+width*105/1024,
+                                                                                390+height*200/780,
+                                                                                'DOOR'))
             ELstartTime = time.time()
 
         awardImg = "./img/practice/practice_outcome.jpg"
@@ -262,6 +302,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             # 'example_IA'))
 
             trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
+            # trackerIO.sendMessage('!V IMGLOAD  %s %d %d' % ("./img/ITI_fixation.jpg", 0,0))
             trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780),
             'example_IA'))
