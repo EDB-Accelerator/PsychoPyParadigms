@@ -39,6 +39,15 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Start new ioHub server.
         import psychopy.iohub.client
 
+        # open a connection to the tracker and download the result file.
+        trackerIO = pylink.EyeLink('100.1.1.1')
+
+        trackerIO.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+
+        # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
+        # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
+        trackerIO.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+
         try:
             io = launchHubServer(**iohub_config)
         except:
@@ -131,8 +140,13 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=position,
                                    radius=5)
 
+            # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2,780/2,width, height))
+            # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, 1024 / 2, 780 / 2))
+            # trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 500, 500, 400, 400, 'example_IA'))
+
         triggerGo(port, params, 1, 1, 1)  # Door onset (conflict)
         win.flip()
+
 
         count = 0
 
@@ -187,6 +201,9 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
                 circle.pos = position
                 circle.draw()
+                # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 0,0,width, height))
+
+                trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780), 'example_IA'))
 
             win.flip()
 
@@ -225,6 +242,13 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # ITI duration
         if params['EyeTrackerSupport']:
             startTime = time.time()
+            width = params["screenSize"][0]
+            height = params["screenSize"][1]
+            trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
+            trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+            1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780),
+            'example_IA'))
+
             WaitEyeGazed(win, params, tracker)
             Dict["ITI_duration"] = time.time() - startTime
 
@@ -248,8 +272,6 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Eyetracker stop recording
         tracker.setRecordingState(False)
 
-        # open a connection to the tracker and download the result file.
-        trackerIO = pylink.EyeLink('100.1.1.1')
         trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
         # Stop the ioHub Server
         io.quit()

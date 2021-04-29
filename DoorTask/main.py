@@ -68,7 +68,7 @@ params = {
     'JoyStickSupport' : True, # Check if joystick option is checked or not.
     'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
     'EyeTrackerSupport': userInputBank[8],
-    'FullScreen': False,
+    'FullScreen': userInputBank[9],
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
@@ -79,6 +79,7 @@ params = {
 
 # declare display parameters
     'screenSize' : (1024,780),
+#     'screenSize' : userInputBank[9],
     'volume' : 0.8,
     'resolutionMode' : True,
     'subTrialCounter': 0,
@@ -105,11 +106,9 @@ prefs.general['fullscr'] = params['FullScreen']
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
 
-
 ## Setup Psychopy Window.
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1, size=(params[ 'screenSize'][0], params['screenSize'][1]))
-
 
 # Trigger Initialization
 port = 0
@@ -168,92 +167,92 @@ win.mouseVisible = False
 Df,DfTR = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
 win.mouseVisible = True
 
-# ====================== #
-# ===== TaskRun1 ======= #
-# ====================== #
-win.mouseVisible = False
-Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
-win.mouseVisible = True
-
-# ====================== #
-# ======== VAS 1 ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS 1")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-# ====================== #
-# ===== TaskRun2 ======= #
-# ====================== #
-Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
-
-# ====================== #
-# ======== VAS mid ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS mid")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
+# # ====================== #
+# # ===== TaskRun1 ======= #
+# # ====================== #
 # win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-
-# ====================== #
-# ===== TaskRun3 ======= #
-# ====================== #
-Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
-
-# ====================== #
-# ======== VAS post ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit.  when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS post")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
+# Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
+# win.mouseVisible = True
+#
+# # ====================== #
+# # ======== VAS 1 ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS 1")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# # message.draw();
 # win.mouseVisible = False
 # img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
 # waitUserInput(Df,img1, win, params,'pyglet')
 # win.flip();
-
-# ====================== #
-# ======== Question ========= #
-# ====================== #
-win.mouseVisible = True
-Df = Questionplay(Df, win, params, "Question")
+#
+# # ====================== #
+# # ===== TaskRun2 ======= #
+# # ====================== #
+# Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
+#
+# # ====================== #
+# # ======== VAS mid ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS mid")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# # message.draw();
+# # win.mouseVisible = False
+# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# waitUserInput(Df,img1, win, params,'pyglet')
+# win.flip();
+#
+#
+# # ====================== #
+# # ===== TaskRun3 ======= #
+# # ====================== #
+# Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
+#
+# # ====================== #
+# # ======== VAS post ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit.  when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS post")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# # message.draw();
+# # win.mouseVisible = False
+# # img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# # waitUserInput(Df,img1, win, params,'pyglet')
+# # win.flip();
+#
+# # ====================== #
+# # ======== Question ========= #
+# # ====================== #
+# win.mouseVisible = True
+# Df = Questionplay(Df, win, params, "Question")
 
 Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
 DfTR.to_csv(outFileTrackerLog, sep=',', encoding='utf-8', index=False)
