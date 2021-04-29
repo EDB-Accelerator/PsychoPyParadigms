@@ -15,6 +15,9 @@ import pylink,time
 # PracticeGamePlay(Df, win, params, params['numPractice'], port, "Practice")
 # iterNum = params['numPractice']; SectionName = "Practice"
 
+def newPoint(n,center,ratio):
+    return int((n-center) * ratio + center)
+
 # Door Game Session Module.
 def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
@@ -33,7 +36,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                             {'name': 'tracker',
                              'model_name': 'EYELINK 1000 DESKTOP',
                              'runtime_settings': {'sampling_rate': 500,
-                                                  'track_eyes': 'RIGHT'}
+                                                  'track_eyes': 'LEFT'}
                              }
                         }
         # Start new ioHub server.
@@ -42,11 +45,11 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # open a connection to the tracker and download the result file.
         trackerIO = pylink.EyeLink('100.1.1.1')
 
-        trackerIO.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        # trackerIO.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
         # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
-        trackerIO.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        # trackerIO.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         try:
             io = launchHubServer(**iohub_config)
@@ -57,6 +60,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Get the eye tracker device.
         tracker = io.devices.tracker
 
+        tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
         # Eyetracker Calibration.
         tracker = EyeTrackerCalibration(tracker)
 
@@ -140,7 +145,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=position,
                                    radius=5)
 
-            # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2,780/2,width, height))
+            # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, width / 2, height / 2))
+            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, 1024/2, 780 / 2))
             # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgFile, 1024 / 2, 780 / 2))
             # trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 500, 500, 400, 400, 'example_IA'))
 
@@ -201,9 +207,15 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
                 circle.pos = position
                 circle.draw()
+
+                ratio = 1
+                tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+                1, newPoint(236, 1024 / 2, ratio), newPoint(-42, 780 / 2, ratio), newPoint(788, 1024 / 2, ratio),
+                newPoint(940, 780 / 2, ratio), 'example_IA'))
+
                 # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 0,0,width, height))
 
-                trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780), 'example_IA'))
+                # trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780), 'example_IA'))
 
             win.flip()
 
@@ -244,6 +256,11 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             startTime = time.time()
             width = params["screenSize"][0]
             height = params["screenSize"][1]
+            # trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
+            # trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+            # 1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780),
+            # 'example_IA'))
+
             trackerIO.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
             trackerIO.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             1, int(335 * width / 1024), int(217 * height / 780), int(689 * width / 1024), int(561 * height / 780),
@@ -273,6 +290,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.setRecordingState(False)
 
         trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
+        # tracker._eyelink.receiveDataFile("et_data.EDF", params[SectionName])
         # Stop the ioHub Server
         io.quit()
         trackerIO.close()
