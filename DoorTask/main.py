@@ -84,6 +84,7 @@
         'resolutionMode' : True,
         'subTrialCounter': 0,
         'idxTR': 0,
+        'idxImg': 0,
     }
 
     # Define Output file names.
@@ -167,9 +168,9 @@
     Df,DfTR = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
     win.mouseVisible = True
 
-    # # ====================== #
-    # # ===== TaskRun1 ======= #
-    # # ====================== #
+    # ====================== #
+    # ===== TaskRun1 ======= #
+    # ====================== #
     # win.mouseVisible = False
     # Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
     # win.mouseVisible = True
