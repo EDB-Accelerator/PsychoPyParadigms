@@ -71,7 +71,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         # Eyetracker Calibration.
-        tracker = EyeTrackerCalibration(tracker)
+        # tracker = EyeTrackerCalibration(tracker)
 
         # Eyetracker start recording
         tracker.setRecordingState(True)
@@ -261,6 +261,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
+
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
             DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.")
@@ -273,11 +274,13 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             #                                                                     'Reward (Question mark)'))
             ELstartTime = time.time()
 
+        Dict["Door_outcome"] = ""
+        Dict["Door_opened"] = ""
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1.draw();win.flip()
             triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
-            event.waitKeys(maxWait=2)
+            # event.waitKeys(maxWait=2)
 
             if params['EyeTrackerSupport']:
                 # tracker.sendMessage('TRIAL_RESULT 0')
@@ -294,13 +297,16 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();img2.draw();message.draw();win.flip()
+                # img1.draw();
+                # img2.draw();
+                # win.flip()
                 triggerGo(port, params, r, p, 4)  #Door outcome: punishment
-                sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
-                sound1.play()
-                event.waitKeys(maxWait=2)
-                sound1.stop()
+                # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
+                # sound1.play()
+                # event.waitKeys(maxWait=2)
+                # sound1.stop()
                 totalCoin -= int(p)
-                displayText(win, "-" + str(p))
+                # displayText(win, "-" + str(p))
             else:
                 Dict["Door_outcome"] = "reward"
                 awardImg = "./img/outcomes/" + r + "_reward.jpg"
@@ -310,10 +316,10 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 message.pos = (0, 50)
                 img1.draw();img2.draw();win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
-                sound1 = sound.Sound("./img/sounds/reward_sound.wav")
-                sound1.play()
-                event.waitKeys(maxWait=2)
-                sound1.stop()
+                # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
+                # sound1.play()
+                # event.waitKeys(maxWait=2)
+                # sound1.stop()
                 totalCoin += int(r)
             if params['EyeTrackerSupport']:
                 # tracker.sendMessage('TRIAL_RESULT 0')
@@ -322,21 +328,36 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 ELstartTime = time.time()
 
         if params['EyeTrackerSupport']:
-            imgScreenShot = './img/outscreenshot/' + str(params['idxImg']) + '.jpg'
-            imgScreenShot2 = './output/img/outscreenshot/' + str(params['idxImg']) + '.jpg'
+            # imgScreenShot = './img/outscreenshot/' + str(params['idxImg']) + '.jpg'
+            # imgScreenShot2 = './output/img/outscreenshot/' + str(params['idxImg']) + '.jpg'
+            imgScreenShot = './img/outscreenshot/' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+            imgScreenShot2 = './output/img/outscreenshot/' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
 
             win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
             win.saveMovieFrames(imgScreenShot)
             shutil.copyfile(imgScreenShot, imgScreenShot2)
-            params['idxImg'] += 1
 
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgScreenShot, 1024 / 2, 780 / 2, width, height))
-            print(imgScreenShot)
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*50/1024,
-                                                                                390-height*40/780,
-                                                                                512+width*50/1024,
-                                                                                390+height*50/780,
-                                                                                'Reward'))
+            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgScreenShot, 1024 / 2, 780 / 2, params["screenSize"][0], params["screenSize"][1]))
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
+                                                                          390 - height * 160 / 780,
+                                                                          512 + width * 105 / 1024,
+                                                                          390 + height * 200 / 780,
+                                                                          'Reward/punishment/closed'))
+
+        if Dict["Door_outcome"] == "reward":
+            sound1 = sound.Sound("./img/sounds/reward_sound.wav")
+            sound1.play()
+            event.waitKeys(maxWait=2)
+            sound1.stop()
+        elif Dict["Door_outcome"] == "punishment":
+            sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
+            sound1.play()
+            event.waitKeys(maxWait=2)
+            sound1.stop()
+        else:
+            event.waitKeys(maxWait=2)
+
+        if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
 
