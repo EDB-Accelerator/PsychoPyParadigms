@@ -163,6 +163,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             joy = JoystickInput()
             joyUserInput = joy['y']
 
+            changed = True
             if joyUserInput < -0.5 and level < 100:
                 level += 2
                 level = min(100,level)
@@ -175,6 +176,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             elif joyUserInput > 0.1 and level > 0:
                 level -= 1
                 level = max(0, level)
+            else:
+                changed = False
             get_keypress(Df,params)
             width = params['width_bank'][level]
             height = params['height_bank'][level]
@@ -197,13 +200,14 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 circle.draw()
 
                 aoiTimeEnd = time.time() * 1000
-                tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (0,int(aoiTimeStart-aoiTimeEnd),
-                                                                                    1, 512 - width * 105 / 1024,
-                                                                                    390 - height * 160 / 780,
-                                                                                    512 + width * 105 / 1024,
-                                                                                    390 + height * 200 / 780, 'DOOR'))
+                if changed == True:
+                    tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd-aoiTimeStart),0,
+                                                                                        1, 512 - width * 105 / 1024,
+                                                                                        390 - height * 160 / 780,
+                                                                                        512 + width * 105 / 1024,
+                                                                                        390 + height * 200 / 780, 'DOOR'))
 
-                aoiTimeStart = aoiTimeEnd
+                    aoiTimeStart = aoiTimeEnd
 
             win.flip()
 

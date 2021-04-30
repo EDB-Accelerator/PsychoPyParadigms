@@ -164,16 +164,16 @@
     # ====================== #
     # ===== Practice ======= #
     # ====================== #
-    win.mouseVisible = False
-    Df,DfTR = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
-    win.mouseVisible = True
+    # win.mouseVisible = False
+    # Df,DfTR = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
+    # win.mouseVisible = True
 
     # ====================== #
     # ===== TaskRun1 ======= #
     # ====================== #
-    # win.mouseVisible = False
-    # Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
-    # win.mouseVisible = True
+    win.mouseVisible = False
+    Df,DfTR = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
+    win.mouseVisible = True
     #
     # # ====================== #
     # # ======== VAS 1 ========= #
