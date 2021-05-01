@@ -25,7 +25,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(width, height))
-        img1.draw();
+        img1.draw()
         win.flip()
 
         # Wait for User input.
@@ -71,11 +71,15 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         # Eyetracker Calibration.
-        # tracker = EyeTrackerCalibration(tracker)
+        tracker = EyeTrackerCalibration(tracker)
 
         # Eyetracker start recording
         tracker.setRecordingState(True)
         ELstartTime = time.time()
+
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
+    win.mouseVisible = False
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
@@ -400,5 +404,5 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Stop the ioHub Server
         io.quit()
         trackerIO.close()
-
-    return Df,DfTR
+    win.mouseVisible = True
+    return Df,DfTR,win

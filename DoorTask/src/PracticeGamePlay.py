@@ -64,6 +64,10 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.setRecordingState(True)
         ELstartTime = time.time()
 
+    win.close()
+    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
+    win.mouseVisible = False
+
     width = params["screenSize"][0]
     height = params["screenSize"][1]
 
@@ -296,6 +300,6 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         io.quit()
         trackerIO.close()
 
-
-    return Df,DfTR
+    win.mouseVisible = True
+    return Df,DfTR,win
 
