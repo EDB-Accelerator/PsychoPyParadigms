@@ -63,6 +63,9 @@ pd.set_option('display.max_columns', None)
 # Receive User input from Window.
 UserInputBank = UserInputPlay()
 
+# Full screen support
+prefs.general['fullscr'] = UserInputBank[4]
+
 # Output Summary Header Initialization
 Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Run","Block","TrialCount","Section",
           "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]

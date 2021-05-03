@@ -31,4 +31,6 @@ def UserInputPlay():
     userInput.addField('Subject ID:',)
     userInput.addField('Session:',1)
     userInput.addField('# of Run trials:', 30)
+    userInput.addField('# of Run trials:', 30)
+    userInput.addField('Full Screen', True)
     return userInput.show()
