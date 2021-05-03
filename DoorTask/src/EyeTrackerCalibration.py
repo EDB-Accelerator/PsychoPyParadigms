@@ -8,7 +8,7 @@ def EyeTrackerCalibration(tracker):
     r = tracker.runSetupProcedure()
 
     # Check for and print any eye tracker events received...
-    tracker.setRecordingState(True)
+    # tracker.setRecordingState(True)
 
     return tracker
 

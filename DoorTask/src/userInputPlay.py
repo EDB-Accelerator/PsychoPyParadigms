@@ -13,4 +13,5 @@ def userInputPlay():
     userInput.addField('Trigger Support:', True)
     userInput.addField('Eyetracker Support:', True)
     userInput.addField('Full Screen', True)
+    # userInput.addField('Resolution', (1024,780))
     return userInput.show()
