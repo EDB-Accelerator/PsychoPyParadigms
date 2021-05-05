@@ -4,3 +4,4 @@ PsychoPy3/*
 tmp*.py
 *.edf
 *.EDF
+output/img/*.jpg
