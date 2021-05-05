@@ -1,14 +1,13 @@
 import sys
 sys.path.insert(1, './src')
 
-from psychopy import core, visual, event, sound,gui
-from Helper import waitUserSpace,displayVAS,tableWrite,get_keypress,waitUserInput,triggerGo,displayText
+from psychopy import visual, event, sound
+from Helper import waitUserSpace,tableWrite,get_keypress,triggerGo,waitUserSpaceAndC
 from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
 import pylink
 import numpy as np
 import pandas as pd
-# from psychopy.hardware import joystick
 from WaitEyeGazed import WaitEyeGazed
 from ELIdxRecord import ELIdxRecord
 from EyeTrackerCalibration import EyeTrackerCalibration
@@ -71,7 +70,18 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         # Eyetracker Calibration.
-        tracker = EyeTrackerCalibration(tracker)
+        c = 'c'
+        while c != 'space':
+            tracker = EyeTrackerCalibration(tracker)
+            win.close()
+            win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
+            message = visual.TextStim(win,
+                                      text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
+                                      units='norm', wrapWidth=2)
+            message.draw();
+            win.flip();
+            c = waitUserSpaceAndC(Df, params)
+        win.close()
 
         # Eyetracker start recording
         tracker.setRecordingState(True)
@@ -96,7 +106,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
     # Shuffle image. # https://pynative.com/python-random-shuffle/
 
     if params['EyeTrackerSupport']:
-        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game")
+        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game","","")
         tracker.sendMessage('TRIAL_RESULT 0')
 
     aoiTimeStart = time.time() * 1000
@@ -174,13 +184,13 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             if joyUserInput < -0.5 and level < 100:
                 level += 2
                 level = min(100,level)
-            elif joyUserInput < -0.1 and level < 100:
+            elif joyUserInput < -0.1- params['sensitivity']*0.1 and level < 100:
                 level += 1
                 level = min(100,level)
             elif joyUserInput > 0.5 and level > 0:
                 level -= 2
                 level = max(0,level)
-            elif joyUserInput > 0.1 and level > 0:
+            elif joyUserInput > 0.1+params['sensitivity']*0.1 and level > 0:
                 level -= 1
                 level = max(0, level)
             else:
@@ -236,7 +246,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).",r,p)
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
             tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2, 768 / 2, width, height))
             # Door
@@ -268,7 +278,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.",r,p)
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
             # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('./img/practice/combined.jpg', 1024 / 2, 768 / 2, width, height))
             # tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*50/1024,
@@ -288,7 +298,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
             if params['EyeTrackerSupport']:
                 # tracker.sendMessage('TRIAL_RESULT 0')
-                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door not opened) displayed.")
+                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door not opened) displayed.",r,p)
                 # tracker.sendMessage('TRIALID %d' % params["idxTR"])
                 ELstartTime = time.time()
         else:
@@ -327,14 +337,14 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 totalCoin += int(r)
             if params['EyeTrackerSupport']:
                 # tracker.sendMessage('TRIAL_RESULT 0')
-                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door Opened) displayed.")
+                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door Opened) displayed.",r,p)
                 # tracker.sendMessage('TRIALID %d' % params["idxTR"])
                 ELstartTime = time.time()
 
         if params['EyeTrackerSupport']:
             # imgScreenShot = './img/outscreenshot/' + str(params['idxImg']) + '.jpg'
             # imgScreenShot2 = './output/img/outscreenshot/' + str(params['idxImg']) + '.jpg'
-            imgScreenShot = './img/outscreenshot/' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+            imgScreenShot = './img/outscreenshot/' + Dict["Door_opened"] + '_'+ Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
             imgScreenShot2 = './output/img/outscreenshot/' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
 
             win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
@@ -347,7 +357,6 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                           512 + width * 105 / 1024,
                                                                           390 + height * 200 / 768,
                                                                           'Reward/punishment/closed'))
-
         if Dict["Door_outcome"] == "reward":
             sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             sound1.play()
@@ -374,7 +383,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
             'fixation treasure'))
-            WaitEyeGazed(win, params, tracker)
+            WaitEyeGazed(win, params, tracker,False)
             Dict["ITI_duration"] = time.time() - startTime
 
         else:
@@ -387,7 +396,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.

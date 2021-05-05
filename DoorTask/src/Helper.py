@@ -76,6 +76,24 @@ def waitUserSpace(Df,params):
             print('Q pressed. Forced Exit.')
             core.quit()
 
+def waitUserSpaceAndC(Df,params):
+    # Wait for user types a space key.
+    c = ['']
+    while (c[0] != 'space' and c[0] != 'c'):
+        core.wait(1 / 120)
+        c = event.waitKeys()  # read a character
+
+        if c == ['q'] or c == ['Q'] or c == ['Esc']:
+            # Write the output file.
+            outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+                      str(params['Version']) + '_' + datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+
+            Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
+
+            print('Q pressed. Forced Exit.')
+            core.quit()
+    return c[0]
+
 # Function to wait for any user input.
 def waitUserInput(Df,img,win,params,mode):
     # if params['JoyStickSupport'] == False:

@@ -15,18 +15,18 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Updated 4/21/2021 Wed by KL (Eyetracker update - major updates)
 - Save result when exit 10/26/2020 Mon by KL
 
-To-do: 1. reward screen fix 2. joystick sensitivty option 3. 190=>220 (Done) 4. screen resolution (right one 768) => Done.
-5. psychopy screen to check if calibartion is good or do again.
+To-do: 1. reward screen fix 2. joystick sensitivty option (done) 3. 190=>220 (Done) 4. screen resolution (right one 768) => Done.
+5. psychopy screen to check if calibration is good or do again. (done) 6. reward punishment record (done)
+7. send recording
 
 """
 
 # Import developer-defined functions
 import sys
-import pylink
 sys.path.insert(1, './src')
 import datetime
 import pandas as pd
-from psychopy import visual,core,event
+from psychopy import visual,core
 from Helper import Questionplay,waitUserSpace
 from Helper import waitUserInput, waitAnyKeys,ResolutionIntialization
 
@@ -35,16 +35,8 @@ from VASplay import VASplay
 from InstructionPlay import InstructionPlay
 from PracticeGamePlay import PracticeGamePlay
 from DoorGamePlay import DoorGamePlay
-from EyeTrackerCalibration import EyeTrackerCalibration
-from EyeTrackerInitialization import EyeTrackerInitialization
-from ELIdxRecord import ELIdxRecord
-from EyeLinkCoreGraphicsPsychoPy import EyeLinkCoreGraphicsPsychoPy
-from psychopy.iohub import launchHubServer
 from psychopy import parallel
 from psychopy import prefs
-from sys import platform
-import time
-
 
 def shutdown_key():
     core.quit()
@@ -73,6 +65,7 @@ params = {
     'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
     'EyeTrackerSupport': userInputBank[8],
     'FullScreen': userInputBank[9],
+    'sensitivity': userInputBank[10],
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
@@ -83,7 +76,6 @@ params = {
 
 # declare display parameters
     'screenSize' : (1024,768),
-#     'screenSize' : userInputBank[9],
     'volume' : 0.8,
     'resolutionMode' : True,
     'subTrialCounter': 0,
@@ -139,7 +131,7 @@ Header = ["ExperimentName","SessionStartDateTime","Subject","Session","Version",
 Df = pd.DataFrame(columns=Header)
 
 if params['EyeTrackerSupport']:
-    HeaderTR = ["Index","subjectID","Session","Version","Section","Subtrial","Event","Duration(ms)"]
+    HeaderTR = ["Index","subjectID","Session","Version","Section","Subtrial","Event","Reward","Punishment","Duration(ms)"]
     DfTR = pd.DataFrame(columns=HeaderTR)
 
 # ====================== #

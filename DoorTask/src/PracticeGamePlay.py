@@ -2,7 +2,7 @@ import sys
 sys.path.insert(1, './src')
 
 from psychopy import visual, event
-from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace
+from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace,waitUserSpaceAndC
 import random, datetime, glob, time
 from ELIdxRecord import ELIdxRecord
 from JoystickInput import JoystickInput
@@ -58,7 +58,18 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         # Eyetracker Calibration.
-        tracker = EyeTrackerCalibration(tracker)
+        c = 'c'
+        while c != 'space':
+            tracker = EyeTrackerCalibration(tracker)
+            win.close()
+            win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
+            message = visual.TextStim(win,
+                                      text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
+                                      units='norm', wrapWidth=2)
+            message.draw();
+            win.flip();
+            c = waitUserSpaceAndC(Df, params)
+        win.close()
 
         # Eyetracker start recording
         tracker.setRecordingState(True)
@@ -96,7 +107,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Eyetracker label record
         # tracker.sendMessage('TRIAL_RESULT 0') # # EDF labeling (end)
     if params['EyeTrackerSupport']:
-        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game")
+        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game","","")
         tracker.sendMessage('TRIAL_RESULT 0')
 
     # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
@@ -171,13 +182,13 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             if joyUserInput < -0.5 and level < 100:
                 level += 2
                 level = min(100,level)
-            elif joyUserInput < -0.1 and level < 100:
+            elif joyUserInput < -0.1-params['sensitivity']*0.1 and level < 100:
                 level += 1
                 level = min(100,level)
             elif joyUserInput > 0.5 and level > 0:
                 level -= 2
                 level = max(0,level)
-            elif joyUserInput > 0.1 and level > 0:
+            elif joyUserInput > 0.1+params['sensitivity']*0.1 and level > 0:
                 level -= 1
                 level = max(0, level)
             else:
@@ -217,7 +228,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).","","")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
             tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2, 768 / 2, width, height))
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*105/1024,
@@ -237,7 +248,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.","","")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
             tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('./img/practice/combined.jpg', 1024 / 2, 768 / 2, width, height))
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*50/1024,
@@ -255,7 +266,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         event.waitKeys(maxWait=2)
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.","","")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
             ELstartTime = time.time()
 
@@ -269,7 +280,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
             'fixation treasure'))
 
-            WaitEyeGazed(win, params, tracker)
+            WaitEyeGazed(win, params, tracker,True)
             Dict["ITI_duration"] = time.time() - startTime
 
         else:
@@ -282,7 +293,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
 
         Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
 

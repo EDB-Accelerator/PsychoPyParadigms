@@ -1,8 +1,7 @@
-def ELIdxRecord(DfTR,params,section,duration,subtrial,event):
+def ELIdxRecord(DfTR,params,section,duration,subtrial,event,reward,punishment):
 
     # Create empty dictionary.
     dict = {}
-    HeaderTR = ["Index","subjectID","Session","Version","Section","Subtrial","Event","Duration(ms)"]
 
     # Index Increment.
     params["idxTR"] += 1
@@ -15,6 +14,9 @@ def ELIdxRecord(DfTR,params,section,duration,subtrial,event):
     dict["Section"] = section
     dict["Subtrial"] = subtrial
     dict["Event"] = event
+    dict["Reward"] = str(reward)
+    dict["Punishment"] = str(punishment)
+
     dict["Duration(ms)"] = duration * 1000
 
     DfTR = DfTR.append(dict, ignore_index=True)

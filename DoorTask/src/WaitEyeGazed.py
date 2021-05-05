@@ -5,7 +5,7 @@ from psychopy import visual, event,core
 import time
 
 # Door Game Session Module.
-def WaitEyeGazed(win, params,tracker):
+def WaitEyeGazed(win, params,tracker,circleCheck):
     img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1,
                            size=(params['screenSize'][0], params['screenSize'][1]))
 
@@ -13,7 +13,8 @@ def WaitEyeGazed(win, params,tracker):
     circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
                            radius=10)
     img.draw()
-    circle.draw()
+    if circleCheck:
+        circle.draw()
     win.flip()
     while (c != ['space']):
         core.wait(1 / 120)
@@ -45,12 +46,14 @@ def WaitEyeGazed(win, params,tracker):
 
             circle.pos = position
             img.draw()
-            circle.draw()
+            if circleCheck:
+                circle.draw()
             win.flip()
 
         img.draw()
         circle.pos = position
-        circle.draw()
+        if circleCheck:
+            circle.draw()
         win.flip()
 
 

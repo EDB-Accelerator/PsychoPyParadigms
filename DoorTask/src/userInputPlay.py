@@ -13,5 +13,6 @@ def userInputPlay():
     userInput.addField('Trigger Support:', True)
     userInput.addField('Eyetracker Support:', True)
     userInput.addField('Full Screen', True)
+    userInput.addField('Joystick Sensitivity (0: very sensitive, 1: normal, 2: less sensitive', choices=[0,1,2])
     # userInput.addField('Resolution', (1024,780))
     return userInput.show()
