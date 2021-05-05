@@ -14,7 +14,13 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Updated 09/15/2020 Tue by KL (Major Updates)
 - Updated 4/21/2021 Wed by KL (Eyetracker update - major updates)
 - Save result when exit 10/26/2020 Mon by KL
+
+To-do: 1. reward screen fix 2. joystick sensitivty option 3. 190=>220 4. screen resolution (right one 768)
+5. psychopy screen to check if calibartion is good or do again.
+
 """
+
+
 
 # Import developer-defined functions
 import sys
