@@ -47,7 +47,7 @@ def DictWriteRaw(dfRaw,dictRaw,params):
 
 def DictWrite(df,params,dict):
     # Move data in Dict into Df.
-    dict["Run"] = params["Run"]
+    # dict["Run"] = params["Run"]
     dict["Block"] = params["Block"]
     dict["TrialCount"] = params["TrialCount"]
     df = df.append(dict,ignore_index=True)

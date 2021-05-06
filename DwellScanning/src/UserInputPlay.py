@@ -29,8 +29,7 @@ from psychopy import gui
 def UserInputPlay():
     userInput = gui.Dlg(title="Dwell Task Information")
     userInput.addField('Subject ID:',)
-    userInput.addField('Session:',1)
-    userInput.addField('# of Run trials:', 30)
-    userInput.addField('# of Run trials:', 30)
+    userInput.addField('Session:',)
+    userInput.addField('# of trials per block (** there are 3 blocks):', 60)
     userInput.addField('Full Screen', True)
     return userInput.show()

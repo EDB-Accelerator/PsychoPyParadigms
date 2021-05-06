@@ -23,51 +23,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-DisplayBlank.py
-
-DwellTask Psychopy3 Sub function.
-
-This function is for displaying blank part.
-
-Created on Wed Feb  3 13:32:56 EST 2021
-
-@author: Kyunghun Lee
-- Created on Wed Feb  3 13:32:56 EST 2021 by KL
-"""
-
-from psychopy import core
-import random,datetime,sys
+from psychopy import core,event,visual
+import datetime,sys
 import time
 
 # Import defined functions
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
-from GetKeyPress import GetKeyPress
 
-def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
+def waitUserSpace(Df,params):
+    # Wait for user types a space key.
+    c = ['']
+    while (c[0] != 'space'):
+        core.wait(1 / 120)
+        c = event.waitKeys()  # read a character
 
-    # Select BlankTime duration randomly.
-    # blankTime = [0,2,4]
-    blankTime = [2]
-    blankDuration = random.choice(blankTime)
+        if c == ['q'] or c == ['Q'] or c == ['Esc']:
+            print('Q pressed. Forced Exit.')
+            core.quit()
+
+def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
 
     # Record status
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    dict["Section"] = "DisplayBlank"
-    dict["Image Displayed"] = "Blank for " + str(blankDuration) + " sec"
+    dict["Section"] = "DisplayRestScreen"
+    dict["Image Displayed"] = "Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing."
     dict["Button Pressed"] = ""
     dict["Button Correct/Incorrect"] = ""
     dict["Button Response Time"] = ""
-    dictRaw["Event"] = dict["Image Displayed"] + "shown (start)"
+    dictRaw["Event"] = "Rest message shown (start)"
     DictWriteRaw(dfRaw, dictRaw, params)
 
+    message = visual.TextStim(win,
+                              text="Let's rest for a bit.  \n\n Press the spacebar when you are ready to keep playing.",
+                              units='norm', wrapWidth=2,color='black')
+    message.draw()
     win.flip()
-    # core.wait(blankDuration)
-    startTime = time.time()
-    while (time.time() - startTime < blankDuration):
-        GetKeyPress()
-        core.wait(1 / 300)
+    waitUserSpace(df, params)
 
     # Record status
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]

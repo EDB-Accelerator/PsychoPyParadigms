@@ -29,6 +29,7 @@ DwellTask.py
 DwellTask Psychopy3 Main Driver File.
 
 Created on Thu Jan 28 15:20:30 EST 2021
+Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen)
 
 @author: Kyunghun Lee
 - Created on Thu Jan 28 15:20:30 EST 2021 by KL
@@ -48,6 +49,7 @@ from DictInitialize import DictInitialize
 from DisplayFixationCross import DisplayFixationCross
 from DisplayMatrix import DisplayMatrix
 from DisplayBlank import DisplayBlank
+from DisplayRest import DisplayRest
 
 # Make empty output directory if it does not exist.
 directory = './result'
@@ -55,7 +57,7 @@ if not os.path.exists(directory):
     os.makedirs(directory)
 
 # Audio library configuration.
-prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
+# prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 
 # Pandas configuration (debugging options)
 pd.set_option('display.max_columns', None)
@@ -64,10 +66,10 @@ pd.set_option('display.max_columns', None)
 UserInputBank = UserInputPlay()
 
 # Full screen support
-prefs.general['fullscr'] = UserInputBank[4]
+prefs.general['fullscr'] = UserInputBank[3]
 
 # Output Summary Header Initialization
-Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Run","Block","TrialCount","Section",
+Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Block","TrialCount","Section",
           "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]
 
 # Output Raw Header Initialization
@@ -93,16 +95,6 @@ params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subje
 # Instance result initialization
 dict,dictRaw = DictInitialize(params)
 
-# Open Window.
-win = visual.Window(params['screenSize'],monitor="testMonitor",color="white",winType='pyglet')
-
-# Disable mouse cursor.
-win.mouseVisible = False
-
-# Make image list and Shuffle.
-RunList = glob('./img/*')
-random.shuffle(RunList)
-
 # Construct pandas dataframe structure.
 df = pd.DataFrame(columns=Header)
 dfRaw = pd.DataFrame(columns=HeaderRaw)
@@ -111,28 +103,48 @@ dfRaw = pd.DataFrame(columns=HeaderRaw)
 df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
-# run = RunList[0]
+# Open Window.
+win = visual.Window(params['screenSize'],monitor="testMonitor",color="white",winType='pyglet')
+
+# Disable mouse cursor.
+win.mouseVisible = False
+
+# Make image list.
+RunList = glob('./img/*')
+random.shuffle(RunList)
+idx = 0
+ImgList = []
 for run in RunList:
-    params["Run"] = run.split('/')[-1]
-    # Get Block list and Shuffle.
     BlockList = glob(run + '/*')
     random.shuffle(BlockList)
 
-# block = BlockList[0]
     for block in BlockList:
         params["Block"] = block.split('/')[-1]
-        # Get Image list of each block and Shuffle.
-        ImgList = glob(block + '/*.jpeg')
-        random.shuffle(ImgList)
-        # trial = 0
-        for trial in range(params['numTrial']):
-            params["TrialCount"] = trial
-            img = ImgList[trial]
 
-            # Fixation cross section
-            DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
-            DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
-            DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
+        # Get Image list of each block and Shuffle.
+        ImgList = ImgList + glob(block + '/*.jpeg')
+        idx += 1
+
+# Shuffle Images.
+random.shuffle(ImgList)
+
+
+# Run the main task.
+for block in range(3):
+    params["Block"] = block
+
+    for trial in range(params['numTrial']):
+        params["TrialCount"] = trial
+        img = ImgList[trial+block*params['numTrial']]
+
+        # Fixation cross section
+        DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
+        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
+        DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
+
+    if block != 2:
+        # Rest between each block.
+        DisplayRest(df, dfRaw, params, dict, dictRaw, win)
 
 # Close the psychopy window.
 win.close()
