@@ -330,22 +330,16 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 message.pos = (0, 50)
                 img1.draw();img2.draw();win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
-                # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
-                # sound1.play()
-                # event.waitKeys(maxWait=2)
-                # sound1.stop()
                 totalCoin += int(r)
             if params['EyeTrackerSupport']:
-                # tracker.sendMessage('TRIAL_RESULT 0')
                 DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door Opened) displayed.",r,p)
-                # tracker.sendMessage('TRIALID %d' % params["idxTR"])
                 ELstartTime = time.time()
 
         if params['EyeTrackerSupport']:
             # imgScreenShot = './img/outscreenshot/' + str(params['idxImg']) + '.jpg'
             # imgScreenShot2 = './output/img/outscreenshot/' + str(params['idxImg']) + '.jpg'
-            imgScreenShot = './img/outscreenshot/' + Dict["Door_opened"] + '_'+ Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
-            imgScreenShot2 = './output/img/outscreenshot/' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+            imgScreenShot = './img/outscreenshot/' + Dict['Version'] + '_' + Dict["Door_opened"] + '_'+ Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+            imgScreenShot2 = './output/img/outscreenshot/' + Dict['Version'] + '_' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
 
             win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
             win.saveMovieFrames(imgScreenShot)
