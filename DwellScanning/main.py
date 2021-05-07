@@ -128,7 +128,6 @@ for run in RunList:
 # Shuffle Images.
 random.shuffle(ImgList)
 
-
 # Run the main task.
 for block in range(3):
     params["Block"] = block
