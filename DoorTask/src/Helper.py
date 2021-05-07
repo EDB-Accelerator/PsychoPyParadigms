@@ -66,7 +66,7 @@ def waitUserSpace(Df,params):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
 
-        if c == ['q'] or c == ['Q'] or c == ['Esc']:
+        if c == ['q'] or c == ['Q']:
             # Write the output file.
             outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
                       str(params['Version']) + '_' + datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
@@ -83,7 +83,7 @@ def waitUserSpaceAndC(Df,params):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
 
-        if c == ['q'] or c == ['Q'] or c == ['Esc']:
+        if c == ['q'] or c == ['Q']:
             # Write the output file.
             outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
                       str(params['Version']) + '_' + datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
