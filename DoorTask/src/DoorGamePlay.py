@@ -13,6 +13,7 @@ from ELIdxRecord import ELIdxRecord
 from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
 import shutil
+import os
 
 def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
@@ -338,8 +339,17 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         if params['EyeTrackerSupport']:
             # imgScreenShot = './img/outscreenshot/' + str(params['idxImg']) + '.jpg'
             # imgScreenShot2 = './output/img/outscreenshot/' + str(params['idxImg']) + '.jpg'
+
+            if not os.path.exists('img/outscreenshot'):
+                os.makedirs('img/outscreenshot')
+
+            if not os.path.exists('output/img/outscreenshot'):
+                os.makedirs('output/img/outscreenshot')
+
             imgScreenShot = './img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_'+ Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
             imgScreenShot2 = './output/img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+
+
 
             win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
             win.saveMovieFrames(imgScreenShot)
