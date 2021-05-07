@@ -32,7 +32,5 @@ def UserInputPlay():
     userInput.addField('Session:',)
     userInput.addField('# of trials per block (** there are 3 blocks):', 60)
     userInput.addField('Full Screen', True)
-    userInput.addField('Eyetracker Support:', True)
-    userInput.addField('Resolution:', True)
-
+    userInput.addField('Resolution:', [900,900])
     return userInput.show()

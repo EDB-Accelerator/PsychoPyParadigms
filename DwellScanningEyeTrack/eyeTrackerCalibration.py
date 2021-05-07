@@ -25,3 +25,5 @@ while getTime()-stime < 2.0:
     for e in tracker.getEvents():
         print(e)
 
+# Check for and print any eye tracker events received...
+tracker.setRecordingState(False)
