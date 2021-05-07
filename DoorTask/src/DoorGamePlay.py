@@ -338,8 +338,8 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         if params['EyeTrackerSupport']:
             # imgScreenShot = './img/outscreenshot/' + str(params['idxImg']) + '.jpg'
             # imgScreenShot2 = './output/img/outscreenshot/' + str(params['idxImg']) + '.jpg'
-            imgScreenShot = './img/outscreenshot/' + Dict['Version'] + '_' + Dict["Door_opened"] + '_'+ Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
-            imgScreenShot2 = './output/img/outscreenshot/' + Dict['Version'] + '_' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+            imgScreenShot = './img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_'+ Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+            imgScreenShot2 = './output/img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
 
             win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
             win.saveMovieFrames(imgScreenShot)
