@@ -162,7 +162,7 @@ win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", 
 
 message = visual.TextStim(win,
                           text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
-                          units='norm', wrapWidth=2)
+                          units='norm', wrapWidth=2,color="black")
 message.draw();
 win.flip();
 waitUserSpace()
@@ -199,10 +199,10 @@ while c != 'space':
     win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
     message = visual.TextStim(win,
                               text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
-                              units='norm', wrapWidth=2)
+                              units='norm', wrapWidth=2,color="black")
     message.draw();
     win.flip();
-    c = waitUserSpaceAndC(df, params)
+    c = waitUserSpaceAndC()
 win.close()
 
 
