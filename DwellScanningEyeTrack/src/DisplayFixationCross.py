@@ -36,7 +36,7 @@ Created on Wed Feb  3 13:33:38 EST 2021
 - Created on Wed Feb  3 13:33:38 EST 2021 by KL
 """
 
-from psychopy import visual,event,core
+from psychopy import visual,core,event
 import time,random,datetime,sys
 
 # Import defined functions
@@ -45,7 +45,7 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 from GetKeyPress import GetKeyPress
 
-def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
+def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Initialization
     fCS = 0.1 # size (for brevity)
@@ -86,21 +86,67 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win):
     startTime = endTime = time.time()
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     core.wait(0.15)
-    while (endTime - startTime < 1):
-        # keys = event.getKeys()
-        keys = GetKeyPress()
-        endTime = time.time()
-        if keys == ['1'] or keys == ['2']:
-            dictRaw["Event"] = keys[0] + " pressed"
-            DictWriteRaw(dfRaw, dictRaw, params)
-            dict["Button Pressed"] = keys[0]
-            dict["Button Response Time"] = endTime - startTime
-            dict["Button Correct/Incorrect"] = "Correct" if randN+1 == int(keys[0]) else "Incorrect"
+    # while (endTime - startTime < 1):
+    #     # keys = event.getKeys()
+    #     keys = GetKeyPress()
+    #     endTime = time.time()
+    #     if keys == ['1'] or keys == ['2']:
+    #         dictRaw["Event"] = keys[0] + " pressed"
+    #         DictWriteRaw(dfRaw, dictRaw, params)
+    #         dict["Button Pressed"] = keys[0]
+    #         dict["Button Response Time"] = endTime - startTime
+    #         dict["Button Correct/Incorrect"] = "Correct" if randN+1 == int(keys[0]) else "Incorrect"
+    #         break
+    #     core.wait(1 / 300)
+    # while (endTime - startTime < 1):
+    #     endTime = time.time()
+    #     core.wait(1 / 300)
+    c = event.getKeys()
+    circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
+                           radius=10)
+    circle.draw()
+    fixation1.draw()
+    fixation2.draw()
+    while (c != ['space']):
+        core.wait(1 / 120)
+        c = event.getKeys()
+        position = tracker.getPosition()
+        if position is None or type(position) == int:
+            continue
+
+        print("position")
+        print(position)
+        # Thresholding
+        position[0] = params['screenSize'][0] if position[0]>params['screenSize'][0] else position[0]
+        position[0] = -1*params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
+        position[1] = params['screenSize'][1] if position[1]>params['screenSize'][1] else position[1]
+        position[1] = -1*params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
+
+        startTime = time.time()
+        gazeTime = 0
+        while abs(position[0])<80 and abs(position[1]) <80:
+            gazeTime = time.time() - startTime
+            positionTmp = position
+            position = tracker.getPosition()
+
+            if position is None:
+                position = positionTmp
+                # continue
+
+            circle.pos = position
+            circle.draw()
+            fixation1.draw()
+            fixation2.draw()
+            win.flip()
+
+        circle.pos = position
+        circle.draw()
+        fixation1.draw()
+        fixation2.draw()
+        win.flip()
+
+        if gazeTime > 0.5:
             break
-        core.wait(1 / 300)
-    while (endTime - startTime < 1):
-        endTime = time.time()
-        core.wait(1 / 300)
 
     dictRaw["Event"] = bold + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
