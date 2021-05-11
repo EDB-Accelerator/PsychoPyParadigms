@@ -51,20 +51,11 @@ from DisplayFixationCross import DisplayFixationCross
 from DisplayMatrix import DisplayMatrix
 from DisplayBlank import DisplayBlank
 from DisplayRest import DisplayRest
+from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
+import psychopy.iohub.client
 
-def waitUserSpaceAndC():
-    # Wait for user types a space key.
-    c = ['']
-    while (c[0] != 'space' and c[0] != 'c'):
-        core.wait(1 / 120)
-        c = event.waitKeys()  # read a character
-
-        if c == ['q'] or c == ['Q'] or c == ['Esc']:
-            print('Q or ESC pressed. Forced Exit.')
-            core.quit()
-    return c[0]
 
 def waitUserSpace():
     # Wait for user types a space key.
@@ -157,101 +148,30 @@ for run in RunList:
 # Shuffle Images.
 random.shuffle(ImgList)
 
-# if params['EyeTrackerSupport']:
-win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+# Eyetracker Initialization
+win,tracker = EyeTrackerIntialization(params)
 
-message = visual.TextStim(win,
-                          text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
-                          units='norm', wrapWidth=2,color="black")
-message.draw();
-win.flip();
-waitUserSpace()
+# Run the main task.
+for block in range(3):
+    params["Block"] = block
 
-iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
-                    {'name': 'tracker',
-                     'model_name': 'EYELINK 1000 DESKTOP',
-                     'runtime_settings': {'sampling_rate': 500,
-                                          'track_eyes': 'RIGHT'}
-                     }
-                }
-# Start new ioHub server.
-import psychopy.iohub.client
+    # Eyetracker Calibration.
+    tracker = EyeTrackerCalibration(win, params, tracker,block)
 
-try:
-    io = launchHubServer(**iohub_config)
-except:
-    q = psychopy.iohub.client.ioHubConnection.getActiveConnection().quit()
-    io = launchHubServer(**iohub_config)
-# Get the eye tracker device.
-tracker = io.devices.tracker
+    for trial in range(params['numTrial']):
+        win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+        params["TrialCount"] = trial
+        img = ImgList[trial+block*params['numTrial']]
 
-tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
-# save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
-# see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
-tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        # Fixation cross section
+        DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
+        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
+        DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
 
-# Eyetracker Calibration.
-c = 'c'
-while c != 'space':
-    tracker = EyeTrackerCalibration(tracker)
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
-    message = visual.TextStim(win,
-                              text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
-                              units='norm', wrapWidth=2,color="black")
-    message.draw();
-    win.flip();
-    c = waitUserSpaceAndC()
+    if block != 2:
+        # Rest between each block.
+        DisplayRest(df, dfRaw, params, dict, dictRaw, win)
+
+# Close the psychopy window.
 win.close()
-
-
-# # Run the main task.
-# for block in range(3):
-#     params["Block"] = block
-#
-#     # if params['EyeTrackerSupport'] and block>=1:
-#
-#     # win.close()
-#     win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
-#     message = visual.TextStim(win,
-#                               text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
-#                               units='norm', wrapWidth=2,color='black')
-#     message.draw();
-#     win.flip();
-#     waitUserSpace()
-#     # win.close()
-#     tracker = EyeTrackerCalibration(tracker)
-#
-#     # Eyetracker Calibration.
-#     c = 'c'
-#     while c != 'space':
-#         win.close()
-#         win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
-#         message = visual.TextStim(win,
-#                                   text="Calibration is completed.\n\nPress the spacebar when you are ready to keep playing.\n\n Press 'c' to do calibration again.",
-#                                   units='norm', wrapWidth=2,color='black')
-#         message.draw();
-#         win.flip();
-#         c = waitUserSpaceAndC()
-#         if c != 'space':
-#             break
-#     # win.close()
-#
-#     for trial in range(params['numTrial']):
-#         win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
-#         params["TrialCount"] = trial
-#         img = ImgList[trial+block*params['numTrial']]
-#
-#
-#         # Fixation cross section
-#         DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
-#         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
-#         DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
-#
-#     if block != 2:
-#         # Rest between each block.
-#         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
-#
-# # Close the psychopy window.
-# win.close()
