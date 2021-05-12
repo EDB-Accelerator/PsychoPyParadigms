@@ -33,7 +33,8 @@ def EyeTrackerIntialization(params):
                         {'name': 'tracker',
                          'model_name': 'EYELINK 1000 DESKTOP',
                          'runtime_settings': {'sampling_rate': 500,
-                                              'track_eyes': 'RIGHT'}
+                                              # 'track_eyes': 'RIGHT'}
+                                              'track_eyes': params['eyeSelection']}
                          }
                     }
     # Start new ioHub server.

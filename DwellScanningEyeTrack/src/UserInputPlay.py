@@ -33,4 +33,5 @@ def UserInputPlay():
     userInput.addField('# of trials per block (** there are 3 blocks):', 60)
     userInput.addField('Full Screen', True)
     userInput.addField('Resolution:', [1024,768])
+    userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT"])
     return userInput.show()

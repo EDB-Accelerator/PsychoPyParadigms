@@ -45,7 +45,9 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 
 def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
-    imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(900,900))
+    # imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(900,900))
+    # imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1)
+    imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
     imgStim.draw()
     win.flip()
 

@@ -56,7 +56,6 @@ from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
 import psychopy.iohub.client
 
-
 def waitUserSpace():
     # Wait for user types a space key.
     c = ['']
@@ -83,8 +82,7 @@ pd.set_option('display.max_columns', None)
 # Receive User input from Window.
 UserInputBank = UserInputPlay()
 
-# Full screen support
-prefs.general['fullscr'] = UserInputBank[3]
+
 
 # Output Summary Header Initialization
 Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Block","TrialCount","Section",
@@ -100,11 +98,16 @@ params = {
     'Session' : UserInputBank[1], # Session ID
     'BlockNum' : 3, # The number of blocks
     'RunNum' : 2, # The number of Runs
-
     'numTrial': UserInputBank[2],  # The number of Trials.
-    # 'screenSize': (900, 900),  # The resolution of Psychopy Window
+    'fullscr': UserInputBank[3],  # The resolution of Psychopy Window
     'screenSize': UserInputBank[4],  # The resolution of Psychopy Window
+    'eyeSelection' : UserInputBank[5],  # Which eye will be used for eyetracking
+    'eyeIdx' : 0,
 }
+
+# Full screen support
+# prefs.general['fullscr'] = UserInputBank[3]
+prefs.general['fullscr'] = params['fullscr']
 
 # Decide the name of output files.
 params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
@@ -127,7 +130,7 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 # win = visual.Window(params['screenSize'],monitor="testMonitor",color="white",winType='pyglet')
 
 # Disable mouse cursor.
-# win.mouseVisible = False
+#
 
 # Make image list.
 RunList = glob('./img/*')
@@ -151,12 +154,18 @@ random.shuffle(ImgList)
 # Eyetracker Initialization
 win,tracker = EyeTrackerIntialization(params)
 
+# Hide mouse cursor.
+win.mouseVisible = False
+
 # Run the main task.
 for block in range(3):
     params["Block"] = block
 
     # Eyetracker Calibration.
     tracker = EyeTrackerCalibration(win, params, tracker,block)
+
+    # Start recording
+    tracker.setRecordingState(True)
 
     for trial in range(params['numTrial']):
         win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
@@ -168,9 +177,18 @@ for block in range(3):
         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
         DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
 
+    # Stop Recording
+    tracker.setRecordingState(False)
+
+    # Import the result (from eyetracker)
+    trackerIO = pylink.EyeLink('100.1.1.1')
+    trackerIO.receiveDataFile("et_data.EDF", "block" + str(block) +".edf")
+
+
     if block != 2:
         # Rest between each block.
         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
+
 
 # Close the psychopy window.
 win.close()

@@ -45,7 +45,16 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 from GetKeyPress import GetKeyPress
 
+def pointFromCenter(n,center,standard):
+    return int(center+n*(center*2)/standard)
+
 def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
+
+    # After Calibration before fixation cross
+    tracker.sendMessage('TRIAL_RESULT 0')
+
+    # Eyetracker start
+    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
 
     # Initialization
     fCS = 0.1 # size (for brevity)
@@ -79,6 +88,13 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Flip Window (display FixationCross image)
     win.flip()
+
+    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
+    tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, pointFromCenter(-70,params['screenSize'][0]/2,1024), pointFromCenter(-70,params['screenSize'][1]/2,768), pointFromCenter(70,params['screenSize'][0]/2,1024), pointFromCenter(70,params['screenSize'][1]/2,768), 'Fixation Cross'))
+
+    # win.getMovieFrame()
+    # win.saveMovieFrames("./img/" + bold + '.jpg')
+
     dictRaw["Event"] = bold + " shown (start)"
     DictWriteRaw(dfRaw,dictRaw,params)
 
@@ -86,21 +102,6 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     startTime = endTime = time.time()
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     core.wait(0.15)
-    # while (endTime - startTime < 1):
-    #     # keys = event.getKeys()
-    #     keys = GetKeyPress()
-    #     endTime = time.time()
-    #     if keys == ['1'] or keys == ['2']:
-    #         dictRaw["Event"] = keys[0] + " pressed"
-    #         DictWriteRaw(dfRaw, dictRaw, params)
-    #         dict["Button Pressed"] = keys[0]
-    #         dict["Button Response Time"] = endTime - startTime
-    #         dict["Button Correct/Incorrect"] = "Correct" if randN+1 == int(keys[0]) else "Incorrect"
-    #         break
-    #     core.wait(1 / 300)
-    # while (endTime - startTime < 1):
-    #     endTime = time.time()
-    #     core.wait(1 / 300)
     c = event.getKeys()
     circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
                            radius=10)
@@ -147,6 +148,9 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
         if gazeTime > 0.5:
             break
+
+    # End Eyetracker
+    tracker.sendMessage('TRIAL_RESULT 0')
 
     dictRaw["Event"] = bold + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)

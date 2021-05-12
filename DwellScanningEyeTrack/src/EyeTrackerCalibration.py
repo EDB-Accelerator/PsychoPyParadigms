@@ -33,6 +33,8 @@ def waitUserSpaceAndC():
 
 def EyeTrackerCalibration(win,params,tracker,block):
     c = 'c'
+    # tracker.setRecordingState(False)
+
     while c != 'space':
         # Eyetracker Calibration
         if block==0:
@@ -47,6 +49,7 @@ def EyeTrackerCalibration(win,params,tracker,block):
         c = waitUserSpaceAndC()
         block = 0
     win.close()
+    # tracker.setRecordingState(True)
 
     return tracker
 
