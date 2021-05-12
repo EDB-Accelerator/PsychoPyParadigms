@@ -25,6 +25,10 @@ while getTime()-stime < 2.0:
     for e in tracker.getEvents():
         print(e)
 
+
+
+
+
 # Check for and print current eye position every 100 msec.
 stime = getTime()
 while getTime()-stime < 5.0:
