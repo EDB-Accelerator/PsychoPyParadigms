@@ -53,9 +53,6 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     # After Calibration before fixation cross
     tracker.sendMessage('TRIAL_RESULT 0')
 
-    # Eyetracker start
-    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
-
     # Initialization
     fCS = 0.1 # size (for brevity)
     fCP = [0,0] # position (for brevity)
@@ -89,6 +86,9 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     # Flip Window (display FixationCross image)
     win.flip()
 
+    # Eyetracker label (start)
+    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    params["eyeIdx"] += 1
     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, pointFromCenter(-70,params['screenSize'][0]/2,1024), pointFromCenter(-70,params['screenSize'][1]/2,768), pointFromCenter(70,params['screenSize'][0]/2,1024), pointFromCenter(70,params['screenSize'][1]/2,768), 'Fixation Cross'))
 
@@ -149,11 +149,15 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         if gazeTime > 0.5:
             break
 
-    # End Eyetracker
-    tracker.sendMessage('TRIAL_RESULT 0')
-
+    # Record Result
     dictRaw["Event"] = bold + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
     dict["Image Displayed"] = bold
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     DictWrite(df, params, dict)
+
+    # End Eyetracker
+    # Eyetracker label (end and new start)
+    tracker.sendMessage('TRIAL_RESULT 0')
+    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    params["eyeIdx"] += 1
