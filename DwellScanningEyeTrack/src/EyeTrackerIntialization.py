@@ -51,6 +51,6 @@ def EyeTrackerIntialization(params):
     # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
     tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
-    win.close()
-    return io,tracker
+    # win.close()
+    return win,io,tracker
 

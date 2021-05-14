@@ -167,15 +167,15 @@ for block in range(3):
     params["Block"] = block
 
     # Eyetracker Calibration.
-    io,tracker = EyeTrackerIntialization(params)
-    tracker = EyeTrackerCalibration(params, tracker,block)
+    win,io,tracker = EyeTrackerIntialization(params)
+    win,tracker = EyeTrackerCalibration(params, tracker,block,win)
 
     # Start recording
     tracker.setRecordingState(True)
 
     for trial in range(params['numTrial']):
-        win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
-        win.mouseVisible = False
+        # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+        # win.mouseVisible = False
         params["TrialCount"] = trial
         img = ImgList[trial+block*params['numTrial']]
 

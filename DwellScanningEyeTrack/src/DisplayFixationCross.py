@@ -87,8 +87,11 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     win.flip()
 
     # Eyetracker label (start)
+    resolution = params['screenSize']
     tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
+    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
     1, pointFromCenter(-70, params['screenSize'][0] / 2, params['screenSize'][0]),
@@ -148,7 +151,7 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         fixation2.draw()
         win.flip()
 
-        if gazeTime > 0.5:
+        if gazeTime > 1:
             break
 
     # Record Result

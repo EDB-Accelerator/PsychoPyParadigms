@@ -31,7 +31,7 @@ def waitUserSpaceAndC():
             core.quit()
     return c[0]
 
-def EyeTrackerCalibration(params,tracker,block):
+def EyeTrackerCalibration(params,tracker,block,win):
     c = 'c'
     # tracker.setRecordingState(False)
 
@@ -39,7 +39,7 @@ def EyeTrackerCalibration(params,tracker,block):
         # Eyetracker Calibration
         # if block==0:
         r = tracker.runSetupProcedure()
-        # win.close()
+        win.close()
         win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
         win.mouseVisible = False
         message = visual.TextStim(win,
@@ -49,8 +49,8 @@ def EyeTrackerCalibration(params,tracker,block):
         win.flip();
         c = waitUserSpaceAndC()
         block = 0
-        win.close()
+        # win.close()
     # tracker.setRecordingState(True)
 
-    return tracker
+    return win,tracker
 
