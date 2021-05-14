@@ -34,4 +34,5 @@ def UserInputPlay():
     userInput.addField('Full Screen', True)
     userInput.addField('Resolution:', [1024,768])
     userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT"])
+    userInput.addField('EyeTrack Circle', False)
     return userInput.show()

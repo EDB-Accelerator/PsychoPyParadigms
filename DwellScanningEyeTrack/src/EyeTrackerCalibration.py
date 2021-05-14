@@ -27,20 +27,21 @@ def waitUserSpaceAndC():
         c = event.waitKeys()  # read a character
 
         if c == ['q'] or c == ['Q'] or c == ['Esc']:
-            print('Q or ESC pressed. Forced Exit.')
+            print('Q pressed. Forced Exit.')
             core.quit()
     return c[0]
 
-def EyeTrackerCalibration(win,params,tracker,block):
+def EyeTrackerCalibration(params,tracker,block):
     c = 'c'
     # tracker.setRecordingState(False)
 
     while c != 'space':
         # Eyetracker Calibration
-        if block==0:
-            r = tracker.runSetupProcedure()
-        win.close()
+        # if block==0:
+        r = tracker.runSetupProcedure()
+        # win.close()
         win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+        win.mouseVisible = False
         message = visual.TextStim(win,
                                   text="Press 'c' to calibrate eyelink again.\n\nPress the spacebar to continue.\n ",
                                   units='norm', wrapWidth=2, color="black")
@@ -48,7 +49,7 @@ def EyeTrackerCalibration(win,params,tracker,block):
         win.flip();
         c = waitUserSpaceAndC()
         block = 0
-    win.close()
+        win.close()
     # tracker.setRecordingState(True)
 
     return tracker

@@ -45,7 +45,7 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 from GetKeyPress import GetKeyPress
 
-def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
+def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Select BlankTime duration randomly.
     # blankTime = [0,2,4]
@@ -63,6 +63,11 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
     DictWriteRaw(dfRaw, dictRaw, params)
 
     win.flip()
+
+    resolution = params['screenSize']
+    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+
     # core.wait(blankDuration)
     startTime = time.time()
     while (time.time() - startTime < blankDuration):
@@ -74,3 +79,9 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win):
     dictRaw["Event"] = dict["Image Displayed"] + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
     DictWrite(df, params, dict)
+
+    # End Eyetracker
+    # Eyetracker label (end and new start)
+    # tracker.sendMessage('TRIAL_RESULT 0')
+    # tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    # params["eyeIdx"] += 1

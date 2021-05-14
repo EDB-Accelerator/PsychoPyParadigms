@@ -90,10 +90,11 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
-    tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, pointFromCenter(-70,params['screenSize'][0]/2,1024), pointFromCenter(-70,params['screenSize'][1]/2,768), pointFromCenter(70,params['screenSize'][0]/2,1024), pointFromCenter(70,params['screenSize'][1]/2,768), 'Fixation Cross'))
-
-    # win.getMovieFrame()
-    # win.saveMovieFrames("./img/" + bold + '.jpg')
+    tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+    1, pointFromCenter(-70, params['screenSize'][0] / 2, params['screenSize'][0]),
+    pointFromCenter(-70, params['screenSize'][1] / 2, params['screenSize'][1]),
+    pointFromCenter(70, params['screenSize'][0] / 2, params['screenSize'][0]),
+    pointFromCenter(70, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation Cross'))
 
     dictRaw["Event"] = bold + " shown (start)"
     DictWriteRaw(dfRaw,dictRaw,params)
@@ -105,7 +106,8 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     c = event.getKeys()
     circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
                            radius=10)
-    circle.draw()
+    if params['circle']:
+        circle.draw()
     fixation1.draw()
     fixation2.draw()
     while (c != ['space']):
@@ -115,8 +117,6 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         if position is None or type(position) == int:
             continue
 
-        print("position")
-        print(position)
         # Thresholding
         position[0] = params['screenSize'][0] if position[0]>params['screenSize'][0] else position[0]
         position[0] = -1*params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
@@ -135,13 +135,15 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
                 # continue
 
             circle.pos = position
-            circle.draw()
+            if params['circle']:
+                circle.draw()
             fixation1.draw()
             fixation2.draw()
             win.flip()
 
         circle.pos = position
-        circle.draw()
+        if params['circle']:
+            circle.draw()
         fixation1.draw()
         fixation2.draw()
         win.flip()
@@ -161,3 +163,4 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     tracker.sendMessage('TRIAL_RESULT 0')
     tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
+

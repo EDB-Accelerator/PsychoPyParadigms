@@ -101,6 +101,7 @@ params = {
     'fullscr': UserInputBank[3],  # The resolution of Psychopy Window
     'screenSize': UserInputBank[4],  # The resolution of Psychopy Window
     'eyeSelection' : UserInputBank[5],  # Which eye will be used for eyetracking
+    'circle' : UserInputBank[6],
     'eyeIdx' : 0,
 }
 
@@ -109,10 +110,14 @@ params = {
 prefs.general['fullscr'] = params['fullscr']
 
 # Decide the name of output files.
+timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
 params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + ".csv"
+          timeLabel + ".csv"
 params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-          datetime.datetime.now().strftime("%m%d%Y_%H%M%S") + "_raw.csv"
+          timeLabel + "_raw.csv"
+
+params["edfFile"] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          timeLabel + "_"
 
 # Instance result initialization
 dict,dictRaw = DictInitialize(params)
@@ -151,43 +156,46 @@ for run in RunList:
 random.shuffle(ImgList)
 
 # Eyetracker Initialization
-win,tracker = EyeTrackerIntialization(params)
+# win,tracker = EyeTrackerIntialization(params)
 
 # Hide mouse cursor.
-win.mouseVisible = False
+# win.mouseVisible = False
+
 
 # Run the main task.
 for block in range(3):
     params["Block"] = block
 
     # Eyetracker Calibration.
-    tracker = EyeTrackerCalibration(win, params, tracker,block)
+    io,tracker = EyeTrackerIntialization(params)
+    tracker = EyeTrackerCalibration(params, tracker,block)
 
     # Start recording
     tracker.setRecordingState(True)
 
     for trial in range(params['numTrial']):
         win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+        win.mouseVisible = False
         params["TrialCount"] = trial
         img = ImgList[trial+block*params['numTrial']]
 
         # Fixation cross section
         DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
-        DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
+        DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
 
     # Stop Recording
     tracker.setRecordingState(False)
 
     # Import the result (from eyetracker)
     trackerIO = pylink.EyeLink('100.1.1.1')
-    trackerIO.receiveDataFile("et_data.EDF", "block" + str(block) +".edf")
-
-
+    trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "block" + str(block) +".edf")
+    # Stop the ioHub Server
+    io.quit()
+    trackerIO.close()
     if block != 2:
         # Rest between each block.
         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
-
 
 # Close the psychopy window.
 win.close()

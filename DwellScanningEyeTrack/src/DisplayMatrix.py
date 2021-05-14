@@ -48,6 +48,10 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
 
     imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
     imgStim.draw()
+    circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
+                           radius=10)
+    if params['circle']:
+        circle.draw()
     win.flip()
 
     # Send message Eyetracker
@@ -80,10 +84,29 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
     DictWriteRaw(dfRaw, dictRaw, params)
 
     # Wait for 6 seconds
-    # core.wait(6)
+    # startTime = time.time()
+    # while (time.time() - startTime < 6):
+    #     GetKeyPress()
+    #     core.wait(1 / 300)
+
     startTime = time.time()
     while (time.time() - startTime < 6):
         GetKeyPress()
+        position = tracker.getPosition()
+        if position is None or type(position) == int:
+            continue
+
+        # Thresholding
+        position[0] = params['screenSize'][0] if position[0] > params['screenSize'][0] else position[0]
+        position[0] = -1 * params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
+        position[1] = params['screenSize'][1] if position[1] > params['screenSize'][1] else position[1]
+        position[1] = -1 * params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
+
+        circle.pos = position
+        imgStim.draw()
+        if params['circle']:
+            circle.draw()
+        win.flip()
         core.wait(1 / 300)
 
     # Record status

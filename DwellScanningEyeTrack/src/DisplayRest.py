@@ -58,6 +58,7 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
                               text="Let's rest for a bit.  \n\n Press the spacebar when you are ready to keep playing.",
                               units='norm', wrapWidth=2,color='black')
     message.draw()
+    win.mouseVisible = False
     win.flip()
     waitUserSpace(df, params)
 
@@ -66,3 +67,4 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
     dictRaw["Event"] = dict["Image Displayed"] + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
     DictWrite(df, params, dict)
+    win.close()

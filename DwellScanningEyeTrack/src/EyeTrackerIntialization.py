@@ -21,7 +21,7 @@ def waitUserSpace():
 
 def EyeTrackerIntialization(params):
     win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
-
+    win.mouseVisible = False
     message = visual.TextStim(win,
                               text="Eyetracker Calibration will start.  \n\nPress the space bar when you are ready.",
                               units='norm', wrapWidth=2, color="black")
@@ -51,5 +51,6 @@ def EyeTrackerIntialization(params):
     # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
     tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
-    return win,tracker
+    win.close()
+    return io,tracker
 

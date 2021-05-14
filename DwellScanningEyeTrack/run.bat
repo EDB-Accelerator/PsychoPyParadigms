@@ -1,3 +1,3 @@
 @setlocal enableextensions
 @cd /d "%~dp0"
-"C:\Program Files\PsychoPy3\python.exe" main.py
+"C:\Users\leek13\AppData\Local\PsychoPy3\python.exe" main.py
