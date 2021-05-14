@@ -54,6 +54,7 @@ from DisplayRest import DisplayRest
 from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
+from MakeAOI import MakeAOI
 import psychopy.iohub.client
 
 def waitUserSpace():
@@ -81,8 +82,6 @@ pd.set_option('display.max_columns', None)
 
 # Receive User input from Window.
 UserInputBank = UserInputPlay()
-
-
 
 # Output Summary Header Initialization
 Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Block","TrialCount","Section",
@@ -118,6 +117,9 @@ params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subje
 # Instance result initialization
 dict,dictRaw = DictInitialize(params)
 
+# Generate AOI locations for face matrix.
+MakeAOI(params)
+
 # Construct pandas dataframe structure.
 df = pd.DataFrame(columns=Header)
 dfRaw = pd.DataFrame(columns=HeaderRaw)
@@ -128,9 +130,6 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
 # Open Window.
 # win = visual.Window(params['screenSize'],monitor="testMonitor",color="white",winType='pyglet')
-
-# Disable mouse cursor.
-#
 
 # Make image list.
 RunList = glob('./img/*')
@@ -174,7 +173,7 @@ for block in range(3):
 
         # Fixation cross section
         DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
-        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win)
+        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
         DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win)
 
     # Stop Recording

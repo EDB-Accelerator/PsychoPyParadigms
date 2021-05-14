@@ -25,7 +25,7 @@ tk.openDataFile(dataFileName)
 err = tk.startRecording(1, 1, 1, 1)
 pylink.pumpDelay(100)  # wait for 100 ms to cache some samples
 
-resolution = [1920,1080]
+resolution = [1024,768]
 
 faceLocations = []
 for i in range(4):
@@ -57,12 +57,12 @@ for i in range(len(faceLocations)):
     tk.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i,x1,y1,x2,y2,'Face' + str(i)))
 
 
-# tk.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-# "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2,resolution[0], resolution[1]))
+tk.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+"./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2,resolution[0], resolution[1]))
 # tk.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('img/Anger-Neutral/6N-10A/block1matrix1.jpeg', resolution[0]/2,resolution[1]/2,resolution[1],resolution[1]))
 
-tk.sendMessage('!V IMGLOAD TOP_LEFT %s %d %d %d %d' % (
-"./img/FixationCross/blank.jpg", 0,0,resolution[0], resolution[1]))
+# tk.sendMessage('!V IMGLOAD TOP_LEFT %s %d %d %d %d' % (
+# "./img/FixationCross/blank.jpg", 0,0,resolution[0], resolution[1]))
 # tk.sendMessage('!V IMGLOAD TOP_LEFT %s %d %d %d %d' % ('img/Anger-Neutral/6N-10A/block1matrix1.jpeg', 0,0,resolution[1],resolution[1]))
 tk.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('img/Anger-Neutral/6N-10A/block1matrix1.jpeg', resolution[0]/2,resolution[1]/2,resolution[1],resolution[1]))
 

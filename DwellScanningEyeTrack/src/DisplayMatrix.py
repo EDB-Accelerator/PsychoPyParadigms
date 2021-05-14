@@ -44,12 +44,29 @@ from GetKeyPress import GetKeyPress
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 
-def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
-    # imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(900,900))
-    # imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1)
+def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
+
     imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
     imgStim.draw()
     win.flip()
+
+    # Send message Eyetracker
+    faceLocations =  params['faceLocations']
+
+    for i in range(len(faceLocations)):
+        x1, y1, x2, y2 = faceLocations[i][0], faceLocations[i][1], faceLocations[i][2], faceLocations[i][3]
+        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i)))
+
+    resolution = params['screenSize']
+    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+    # tk.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('img/Anger-Neutral/6N-10A/block1matrix1.jpeg', resolution[0]/2,resolution[1]/2,resolution[1],resolution[1]))
+
+    # tk.sendMessage('!V IMGLOAD TOP_LEFT %s %d %d %d %d' % (
+    # "./img/FixationCross/blank.jpg", 0,0,resolution[0], resolution[1]))
+    # tk.sendMessage('!V IMGLOAD TOP_LEFT %s %d %d %d %d' % ('img/Anger-Neutral/6N-10A/block1matrix1.jpeg', 0,0,resolution[1],resolution[1]))
+    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+    img, resolution[0] / 2, resolution[1] / 2, resolution[1], resolution[1]))
 
     # Record status
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
@@ -74,3 +91,9 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win):
     dictRaw["Event"] = str(img) + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
     DictWrite(df, params, dict)
+
+    # End Eyetracker
+    # Eyetracker label (end and new start)
+    tracker.sendMessage('TRIAL_RESULT 0')
+    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    params["eyeIdx"] += 1
