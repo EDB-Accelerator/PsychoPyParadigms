@@ -48,8 +48,8 @@ from GetKeyPress import GetKeyPress
 def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Select BlankTime duration randomly.
-    # blankTime = [0,2,4]
-    blankTime = [2]
+    blankTime = [0,2,4]
+    # blankTime = [2]
     blankDuration = random.choice(blankTime)
 
     # Record status
