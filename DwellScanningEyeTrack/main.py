@@ -54,6 +54,7 @@ from DisplayRest import DisplayRest
 from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
+from DisplayFolderSelection import DisplayFolderSelection
 from MakeAOI import MakeAOI
 import psychopy.iohub.client
 
@@ -95,19 +96,52 @@ params = {
     'expName' : 'DwellTask', # The name of the experiment
     'subjectID' : UserInputBank[0],      # Subject ID
     'Session' : UserInputBank[1], # Session ID
+    'Version': UserInputBank[2],  # Version
     'BlockNum' : 3, # The number of blocks
     'RunNum' : 2, # The number of Runs
-    'numTrial': UserInputBank[2],  # The number of Trials.
-    'fullscr': UserInputBank[3],  # The resolution of Psychopy Window
-    'screenSize': UserInputBank[4],  # The resolution of Psychopy Window
-    'eyeSelection' : UserInputBank[5],  # Which eye will be used for eyetracking
-    'circle' : UserInputBank[6],
+    'numTrial': UserInputBank[3],  # The number of Trials.
+    'fullscr': UserInputBank[4],  # The resolution of Psychopy Window
+    'screenSize': UserInputBank[5],  # The resolution of Psychopy Window
+    'eyeSelection' : UserInputBank[6],  # Which eye will be used for eyetracking
+    'circle' : UserInputBank[7],
     'eyeIdx' : 0,
 }
 
 # Full screen support
-# prefs.general['fullscr'] = UserInputBank[3]
 prefs.general['fullscr'] = params['fullscr']
+
+# Parameter Configuration based on the version.
+if params['Version'] == 2:
+    params['blankTime'] = [0,2,4]
+    params['musicMode'] = 'off'
+elif params['Version'] == 3:
+    params['blankTime'] = [2]
+    params['musicMode'] = 'allTheTime'
+elif params['Version'] == 4:
+    params['blankTime'] = [2]
+    params['musicMode'] = 'onlyWhenStareAt'
+
+# Music
+if params['musicMode'] != 'off':
+    import pygame
+    # Folder Selection
+    params['musicList'] = DisplayFolderSelection(params)
+    pygame.mixer.init()
+    pygame.mixer.music.load(params['musicList'].pop())
+    pygame.mixer.music.queue(params['musicList'].pop())
+    pygame.mixer.music.set_endevent(pygame.USEREVENT)
+    pygame.mixer.music.play(loops=-1)
+
+
+# from psychopy import sound
+# sound1 = sound.Sound(params['musicList'][0])
+# sound1.play()
+# sound1.stop()
+#
+# from pygame import mixer  # Load the popular external library
+# mixer.init()
+# mixer.music.load(params['musicList'][0])
+# mixer.music.play()
 
 # Decide the name of output files.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
@@ -115,7 +149,6 @@ params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectI
           timeLabel + ".csv"
 params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
           timeLabel + "_raw.csv"
-
 params["edfFile"] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
           timeLabel + "_"
 

@@ -39,12 +39,15 @@ Created on Wed Feb  3 13:34:46 EST 2021
 from psychopy import visual,core
 import datetime,sys,time
 from GetKeyPress import GetKeyPress
+import os
 
 # Import defined functions
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 
 def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
+
+    os.system('start ' + params['musicList'][0])
 
     imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
     imgStim.draw()
