@@ -28,3 +28,4 @@ def MakeAOI(params):
             faceLocations.append([x1New, y1New, x2New, y2New])
 
     params['faceLocations'] = faceLocations
+

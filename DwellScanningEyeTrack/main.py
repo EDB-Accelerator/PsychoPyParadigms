@@ -34,6 +34,8 @@ Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen
 @author: Kyunghun Lee
 - Created on Thu Jan 28 15:20:30 EST 2021 by KL
 """
+# End Music if exist.
+open('c', 'a').close()
 
 # Import standard python libraries
 import datetime,sys,random
@@ -42,6 +44,7 @@ from psychopy import visual,prefs,core,event
 from glob import glob
 import os
 import pylink
+import asyncio,threading
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -54,6 +57,7 @@ from DisplayRest import DisplayRest
 from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
+from MusicControl import PauseMusic,UnpauseMusic
 from DisplayFolderSelection import DisplayFolderSelection
 from MakeAOI import MakeAOI
 import psychopy.iohub.client
@@ -121,17 +125,10 @@ elif params['Version'] == 4:
     params['blankTime'] = [2]
     params['musicMode'] = 'onlyWhenStareAt'
 
-# Music
+    # Music Selection
 if params['musicMode'] != 'off':
-    import pygame
     # Folder Selection
     params['musicList'] = DisplayFolderSelection(params)
-    pygame.mixer.init()
-    pygame.mixer.music.load(params['musicList'].pop())
-    pygame.mixer.music.queue(params['musicList'].pop())
-    pygame.mixer.music.set_endevent(pygame.USEREVENT)
-    pygame.mixer.music.play(loops=-1)
-
 
 # from psychopy import sound
 # sound1 = sound.Sound(params['musicList'][0])
@@ -194,10 +191,21 @@ random.shuffle(ImgList)
 # Hide mouse cursor.
 # win.mouseVisible = False
 
+# Music
+if params['musicMode'] != 'off':
+    import subprocess, sys
+
+    p = subprocess.Popen([sys.executable, 'src/StartMusic.py'],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    PauseMusic()
 
 # Run the main task.
 for block in range(3):
     params["Block"] = block
+
+    # Pause Music
+    UnpauseMusic()
 
     # Eyetracker Calibration.
     win,io,tracker = EyeTrackerIntialization(params)
@@ -220,6 +228,9 @@ for block in range(3):
     # Stop Recording
     tracker.setRecordingState(False)
 
+    # # Stop music
+    # t.end()
+
     # Import the result (from eyetracker)
     trackerIO = pylink.EyeLink('100.1.1.1')
     trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "block" + str(block) +".edf")
@@ -227,8 +238,11 @@ for block in range(3):
     io.quit()
     trackerIO.close()
     if block != 2:
+        # End Music
+        PauseMusic()
         # Rest between each block.
         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
 
 # Close the psychopy window.
 win.close()
+p.terminate()

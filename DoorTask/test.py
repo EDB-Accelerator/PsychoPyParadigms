@@ -3,22 +3,24 @@ import psychopy.misc
 from psychopy import visual
 
 win = visual.Window(
-    size=[400, 400],
+    size=[1024, 768],
     units="pix",
     fullscr=False,
-    color=[1, 1, 1]
+    color='white'
 )
 
-circle = visual.Circle(win=win,units="pix",fillColor=[-1] * 3,lineColor=[-1] * 3,edges=128,pos = [0,0])
-
+circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0, 0),
+                       radius=10)
 # 'test' circles
-circle.radius = 12
+circle.radius = 30
+
+rectangle = visual.Rect(win=win,units="pix",width=1000,height=1000,pos=(0,0),fillColor='black')
 
 test_offset = 100
 
-
-
 circle.draw()
+rectangle.draw()
+win.flip()
 
 
 win.flip()

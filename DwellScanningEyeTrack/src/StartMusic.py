@@ -12,6 +12,13 @@ def playplaylist(playlist):
         print("there is no music in the playlist.")
         return
 
+    if os.path.isfile('a'):
+        os.remove('a')
+    if os.path.isfile('b'):
+        os.remove('b')
+    if os.path.isfile('c'):
+        os.remove('c')
+
     mixer.init()
     pygame.display.init()
     running = True
@@ -33,7 +40,14 @@ def playplaylist(playlist):
             if idx == len(playlist):
                 idx = 0
                 random.shuffle(playlist)
+
+        if os.path.isfile('c'):
+            os.remove('c')
+            mixer.music.pause()
+            return
+
         time.sleep(0.1)
+
 
 
 playplaylist(playlist)

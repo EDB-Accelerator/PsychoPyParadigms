@@ -44,10 +44,22 @@ import os
 # Import defined functions
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
+from MusicControl import PauseMusic,UnpauseMusic
 
 def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
 
-    os.system('start ' + params['musicList'][0])
+    rectangles = []
+    resolution = params['screenSize']
+    for i in range(4):
+        for j in range(4):
+            gap = 287.5 * 2 / 3 * resolution[1] / 768
+            length = 177 * resolution[1] / 768
+            oPoint = 287.5 * resolution[1] / 768
+            rectangles.append(visual.Rect(win=win, units="pix", width=length, height=length,
+                                          pos=(-oPoint + j * gap, oPoint - i * gap), fillColor='null', lineColor='null'))
+            # rectangles[-1].draw()
+
+    # os.system('start ' + params['musicList'][0])
 
     imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
     imgStim.draw()
@@ -67,11 +79,6 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
     resolution = params['screenSize']
     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
         "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
-    # tk.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('img/Anger-Neutral/6N-10A/block1matrix1.jpeg', resolution[0]/2,resolution[1]/2,resolution[1],resolution[1]))
-
-    # tk.sendMessage('!V IMGLOAD TOP_LEFT %s %d %d %d %d' % (
-    # "./img/FixationCross/blank.jpg", 0,0,resolution[0], resolution[1]))
-    # tk.sendMessage('!V IMGLOAD TOP_LEFT %s %d %d %d %d' % ('img/Anger-Neutral/6N-10A/block1matrix1.jpeg', 0,0,resolution[1],resolution[1]))
     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
     img, resolution[0] / 2, resolution[1] / 2, resolution[1], resolution[1]))
 
@@ -109,6 +116,14 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
         imgStim.draw()
         if params['circle']:
             circle.draw()
+
+        if params['musicMode'] == 'onlyWhenStareAt':
+
+            if rectangles[0].contains(circle.pos):
+                UnpauseMusic()
+            else:
+                PauseMusic()
+
         win.flip()
         core.wait(1 / 300)
 
@@ -123,3 +138,6 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
     tracker.sendMessage('TRIAL_RESULT 0')
     tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
+
+    if params['musicMode'] == 'onlyWhenStareAt':
+        UnpauseMusic()

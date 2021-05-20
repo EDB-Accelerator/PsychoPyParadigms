@@ -114,7 +114,13 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     fixation1.draw()
     fixation2.draw()
     while (c != ['space']):
+        # print(c)
         core.wait(1 / 120)
+        # import asyncio, threading
+        # loop = asyncio.get_event_loop()
+        # t = threading.Thread(target=event.getKeys(), args=())
+        # t.start()
+
         c = event.getKeys()
         position = tracker.getPosition()
         if position is None or type(position) == int:
