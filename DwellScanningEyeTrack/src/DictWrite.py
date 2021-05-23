@@ -48,7 +48,7 @@ def DictWriteRaw(dfRaw,dictRaw,params):
 def DictWrite(df,params,dict):
     # Move data in Dict into Df.
     # dict["Run"] = params["Run"]
-    dict["Block"] = params["Block"]
+    dict["Section"] = params["Section"]
     dict["TrialCount"] = params["TrialCount"]
     df = df.append(dict,ignore_index=True)
     df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)

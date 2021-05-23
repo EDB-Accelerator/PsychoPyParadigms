@@ -34,8 +34,7 @@ Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen
 @author: Kyunghun Lee
 - Created on Thu Jan 28 15:20:30 EST 2021 by KL
 """
-# End Music if exist.
-open('c', 'a').close()
+
 
 # Import standard python libraries
 import datetime,sys,random
@@ -57,10 +56,15 @@ from DisplayRest import DisplayRest
 from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
-from MusicControl import PauseMusic,UnpauseMusic
+from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 from DisplayFolderSelection import DisplayFolderSelection
+from GetAngryLabels import GetAngryLabels
 from MakeAOI import MakeAOI
 import psychopy.iohub.client
+
+
+# End Music if exist.
+StopMusic()
 
 def waitUserSpace():
     # Wait for user types a space key.
@@ -89,7 +93,7 @@ pd.set_option('display.max_columns', None)
 UserInputBank = UserInputPlay()
 
 # Output Summary Header Initialization
-Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Block","TrialCount","Section",
+Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Section","TrialCount","Section",
           "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]
 
 # Output Raw Header Initialization
@@ -108,6 +112,7 @@ params = {
     'screenSize': UserInputBank[5],  # The resolution of Psychopy Window
     'eyeSelection' : UserInputBank[6],  # Which eye will be used for eyetracking
     'circle' : UserInputBank[7],
+    'faceMatrixDuration': UserInputBank[8],
     'eyeIdx' : 0,
 }
 
@@ -129,16 +134,10 @@ elif params['Version'] == 4:
 if params['musicMode'] != 'off':
     # Folder Selection
     params['musicList'] = DisplayFolderSelection(params)
-
-# from psychopy import sound
-# sound1 = sound.Sound(params['musicList'][0])
-# sound1.play()
-# sound1.stop()
-#
-# from pygame import mixer  # Load the popular external library
-# mixer.init()
-# mixer.music.load(params['musicList'][0])
-# mixer.music.play()
+    dfLabel = {}
+    labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
+    for label in labelList:
+        dfLabel[label] = pd.read_csv('label/' + label + '.csv')
 
 # Decide the name of output files.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
@@ -198,14 +197,12 @@ if params['musicMode'] != 'off':
     p = subprocess.Popen([sys.executable, 'src/StartMusic.py'],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
-    PauseMusic()
+
+    # PauseMusic()
 
 # Run the main task.
-for block in range(3):
-    params["Block"] = block
-
-    # Pause Music
-    UnpauseMusic()
+for section in range(3):
+    params["Section"] = section # This block is different from original block.
 
     # Eyetracker Calibration.
     win,io,tracker = EyeTrackerIntialization(params)
@@ -214,15 +211,23 @@ for block in range(3):
     # Start recording
     tracker.setRecordingState(True)
 
+    # Pause Music
+    if section == 0:
+        UnpauseMusic()
+
     for trial in range(params['numTrial']):
         # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
         # win.mouseVisible = False
         params["TrialCount"] = trial
-        img = ImgList[trial+block*params['numTrial']]
+        img = ImgList[trial+section*params['numTrial']]
+
+        if params['musicMode'] != 'off':
+            labels = GetAngryLabels(dfLabel,img)
 
         # Fixation cross section
         DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
-        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
+        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
+                      labels=labels)
         DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
 
     # Stop Recording
@@ -233,15 +238,18 @@ for block in range(3):
 
     # Import the result (from eyetracker)
     trackerIO = pylink.EyeLink('100.1.1.1')
-    trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "block" + str(block) +".edf")
+    trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+
     # Stop the ioHub Server
     io.quit()
     trackerIO.close()
-    if block != 2:
+    if section != 2:
         # End Music
-        PauseMusic()
-        # Rest between each block.
+        # PauseMusic()
+        # Rest between each section.
         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
+
+PauseMusic()
 
 # Close the psychopy window.
 win.close()

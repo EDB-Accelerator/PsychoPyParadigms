@@ -36,7 +36,7 @@ Created on Wed Feb  3 13:34:46 EST 2021
 - Created on Wed Feb  3 13:34:46 EST 2021 by KL
 """
 
-from psychopy import visual,core
+from psychopy import visual,core,event
 import datetime,sys,time
 from GetKeyPress import GetKeyPress
 import os
@@ -46,7 +46,7 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 from MusicControl import PauseMusic,UnpauseMusic
 
-def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
+def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
 
     rectangles = []
     resolution = params['screenSize']
@@ -58,8 +58,10 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
             rectangles.append(visual.Rect(win=win, units="pix", width=length, height=length,
                                           pos=(-oPoint + j * gap, oPoint - i * gap), fillColor='null', lineColor='null'))
             # rectangles[-1].draw()
-
-    # os.system('start ' + params['musicList'][0])
+    angryRectangles = []
+    for i in range(len(rectangles)):
+        if labels[i]==True:
+            angryRectangles.append(rectangles[i])
 
     imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
     imgStim.draw()
@@ -100,8 +102,17 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
     #     core.wait(1 / 300)
 
     startTime = time.time()
-    while (time.time() - startTime < 6):
-        GetKeyPress()
+    musicPause = False
+    c = ''
+    while (c != ['space']):
+        if time.time() - startTime >= params['faceMatrixDuration']:
+            break
+        # GetKeyPress()
+        c = event.getKeys()
+        if c == ['q']:
+            print('Q pressed. Forced Exit.')
+            core.quit()
+
         position = tracker.getPosition()
         if position is None or type(position) == int:
             continue
@@ -119,10 +130,22 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker):
 
         if params['musicMode'] == 'onlyWhenStareAt':
 
-            if rectangles[0].contains(circle.pos):
+            # for rectangle in rectangles:
+                # if r
+            eyeOnAngryFace = False
+            for rectangle in angryRectangles:
+                if rectangle.contains(circle.pos):
+                    PauseMusic()
+                    eyeOnAngryFace = True
+                    musicPause = True
+            if not eyeOnAngryFace and musicPause:
                 UnpauseMusic()
-            else:
-                PauseMusic()
+                musicPause = False
+
+            # if rectangles[0].contains(circle.pos):
+            #     UnpauseMusic()
+            # else:
+            #     PauseMusic()
 
         win.flip()
         core.wait(1 / 300)

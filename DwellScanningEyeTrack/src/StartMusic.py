@@ -5,6 +5,7 @@ import time
 import os.path
 import asyncio,threading
 import random
+from MusicControl import PauseMusic
 playlist = glob.glob('./music/*.mp3')
 
 def playplaylist(playlist):
@@ -21,8 +22,14 @@ def playplaylist(playlist):
 
     mixer.init()
     pygame.display.init()
+    random.shuffle(playlist)
     running = True
     idx = 0
+
+
+    while os.path.isfile('b') == False:
+        time.sleep(0.1)
+
     while running:
         if mixer.music.get_busy() == 1 and os.path.isfile('a'):
             mixer.music.pause()
@@ -51,5 +58,4 @@ def playplaylist(playlist):
 
 
 playplaylist(playlist)
-
 # open('b', 'a').close()

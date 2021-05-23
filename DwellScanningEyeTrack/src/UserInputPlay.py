@@ -36,4 +36,6 @@ def UserInputPlay():
     userInput.addField('Resolution:', choices=[[1024,768],[1920,1080]])
     userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT"])
     userInput.addField('EyeTrack Circle', False)
+    userInput.addField('Face Matrix Duration', 6)
+
     return userInput.show()
