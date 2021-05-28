@@ -23,3 +23,5 @@ PsychoPyBuilderDemos
 __pycache__
 .idea
 .ipynb_checkpoints
+
+*.zip
