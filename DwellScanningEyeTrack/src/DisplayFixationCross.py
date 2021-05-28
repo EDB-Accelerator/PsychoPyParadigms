@@ -38,6 +38,7 @@ Created on Wed Feb  3 13:33:38 EST 2021
 
 from psychopy import visual,core,event
 import time,random,datetime,sys
+from MusicControl import PauseMusic,UnpauseMusic
 
 # Import defined functions
 sys.path.insert(1, './src')
@@ -49,6 +50,7 @@ def pointFromCenter(n,center,standard):
     return int(center+n*(center*2)/standard)
 
 def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
+    UnpauseMusic()
 
     # After Calibration before fixation cross
     tracker.sendMessage('TRIAL_RESULT 0')

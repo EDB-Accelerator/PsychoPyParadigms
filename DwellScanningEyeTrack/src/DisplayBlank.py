@@ -39,6 +39,8 @@ Created on Wed Feb  3 13:32:56 EST 2021
 from psychopy import core
 import random,datetime,sys
 import time
+from MusicControl import PauseMusic,UnpauseMusic
+
 
 # Import defined functions
 sys.path.insert(1, './src')
@@ -46,7 +48,7 @@ from DictWrite import DictWrite,DictWriteRaw
 from GetKeyPress import GetKeyPress
 
 def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker):
-
+    UnpauseMusic()
     # Select BlankTime duration randomly.
     blankTime = params['blankTime']
     # blankTime = [2]

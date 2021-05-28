@@ -44,7 +44,7 @@ import os
 # Import defined functions
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
-from MusicControl import PauseMusic,UnpauseMusic
+from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 
 def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
 
@@ -58,25 +58,35 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
             rectangles.append(visual.Rect(win=win, units="pix", width=length, height=length,
                                           pos=(-oPoint + j * gap, oPoint - i * gap), fillColor='null', lineColor='null'))
             # rectangles[-1].draw()
+    imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
+    imgStim.draw()
+
     angryRectangles = []
     for i in range(len(rectangles)):
         if labels[i]==True:
             angryRectangles.append(rectangles[i])
+            if params['circle']:
+                angryRectangles[-1].lineColor = 'red'
+                # rectangles[i].lineColor = 'red'
+                # rectangles[i].draw()
 
-    imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1, size=(params['screenSize'][1],params['screenSize'][1]))
-    imgStim.draw()
     circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
                            radius=10)
     if params['circle']:
+        for rectangle in angryRectangles:
+            rectangle.draw()
         circle.draw()
     win.flip()
 
     # Send message Eyetracker
-    faceLocations =  params['faceLocations']
+    faceLocations = params['faceLocations']
 
     for i in range(len(faceLocations)):
         x1, y1, x2, y2 = faceLocations[i][0], faceLocations[i][1], faceLocations[i][2], faceLocations[i][3]
-        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i)))
+        if labels[i]:
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i) + '(Angry)'))
+        else:
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i)))
 
     resolution = params['screenSize']
     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
@@ -104,13 +114,14 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
     startTime = time.time()
     musicPause = False
     c = ''
-    while (c != ['space']):
+    while (c != ['p']):
         if time.time() - startTime >= params['faceMatrixDuration']:
             break
         # GetKeyPress()
         c = event.getKeys()
         if c == ['q']:
             print('Q pressed. Forced Exit.')
+            StopMusic()
             core.quit()
 
         position = tracker.getPosition()
@@ -125,13 +136,14 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
 
         circle.pos = position
         imgStim.draw()
+
         if params['circle']:
+            for rectangle in angryRectangles:
+                rectangle.draw()
             circle.draw()
 
         if params['musicMode'] == 'onlyWhenStareAt':
 
-            # for rectangle in rectangles:
-                # if r
             eyeOnAngryFace = False
             for rectangle in angryRectangles:
                 if rectangle.contains(circle.pos):
@@ -150,6 +162,11 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
         win.flip()
         core.wait(1 / 300)
 
+    if params['musicMode'] == 'onlyWhenStareAt':
+        if musicPause:
+            UnpauseMusic()
+            musicPause = False
+
     # Record status
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dictRaw["Event"] = str(img) + " shown (end)"
@@ -162,5 +179,4 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
     tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
 
-    if params['musicMode'] == 'onlyWhenStareAt':
-        UnpauseMusic()
+

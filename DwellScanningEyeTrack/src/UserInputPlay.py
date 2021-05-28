@@ -37,5 +37,6 @@ def UserInputPlay():
     userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT"])
     userInput.addField('EyeTrack Circle', False)
     userInput.addField('Face Matrix Duration', 6)
+    userInput.addField('Music Folder:','./music')
 
     return userInput.show()
