@@ -212,7 +212,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                     position = positionTmp
 
                 circle.pos = position
-                circle.draw()
+                if params['eyeTrackCircle']:
+                    circle.draw()
 
                 aoiTimeEnd = time.time() * 1000
                 if changed == True:
@@ -280,7 +281,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
             'fixation treasure'))
 
-            WaitEyeGazed(win, params, tracker,True)
+            WaitEyeGazed(win, params, tracker,'eyeTrackCircle')
             Dict["ITI_duration"] = time.time() - startTime
 
         else:

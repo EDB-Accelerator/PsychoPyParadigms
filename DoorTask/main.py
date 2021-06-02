@@ -66,6 +66,8 @@ params = {
     'EyeTrackerSupport': userInputBank[8],
     'FullScreen': userInputBank[9],
     'sensitivity': userInputBank[10],
+    # 'eyeTrackCircle': userInputBank[11],
+    'eyeTrackCircle': True,
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
@@ -136,7 +138,7 @@ Df = pd.DataFrame(columns=params['Header'])
 if params['EyeTrackerSupport']:
     DfTR = pd.DataFrame(columns=params['HeaderTR'])
 else:
-    DfTR=""
+    DfTR = ""
 
 # Make Empty output files.
 Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
@@ -230,7 +232,6 @@ win.mouseVisible = False
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
 waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
-
 
 # ====================== #
 # ===== TaskRun3 ======= #
