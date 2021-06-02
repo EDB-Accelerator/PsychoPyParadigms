@@ -295,7 +295,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             tracker.sendMessage('TRIAL_RESULT 0')
             DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
 
-        Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+        Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
 
     # Eyetracker finish recording

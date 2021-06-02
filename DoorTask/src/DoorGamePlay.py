@@ -2,6 +2,7 @@ import sys
 sys.path.insert(1, './src')
 
 from psychopy import visual, event, sound
+from pygame import mixer
 from Helper import waitUserSpace,tableWrite,get_keypress,triggerGo,waitUserSpaceAndC
 from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
@@ -362,11 +363,21 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                           390 + height * 200 / 768,
                                                                           'Reward/punishment/closed'))
         if Dict["Door_outcome"] == "reward":
+            # mixer.init()
+            # mixer.music.load("./img/sounds/reward_sound.wav")
+            # mixer.music.play()
+            # event.waitKeys(maxWait=2)
+            # mixer.music.stop()
             sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             sound1.play()
             event.waitKeys(maxWait=2)
             sound1.stop()
         elif Dict["Door_outcome"] == "punishment":
+            # mixer.music.load("./img/sounds/punishment_sound.wav")
+            # mixer.music.play()
+            # event.waitKeys(maxWait=2)
+            # mixer.music.stop()
+
             sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
             sound1.play()
             event.waitKeys(maxWait=2)
@@ -403,7 +414,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
 
         Dict["Total_coins"] = totalCoin
-        Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
+        Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # Eyetracker finish recording
     if params['EyeTrackerSupport']:

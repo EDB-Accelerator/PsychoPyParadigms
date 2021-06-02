@@ -20,6 +20,7 @@ def ELIdxRecord(DfTR,params,section,duration,subtrial,event,reward,punishment):
     dict["Duration(ms)"] = duration * 1000
 
     DfTR = DfTR.append(dict, ignore_index=True)
+    DfTR.to_csv(params['outFileTrackerLog'], mode='a', sep=',', encoding='utf-8', index=False, header=False)
 
     return DfTR
 

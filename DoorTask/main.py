@@ -85,9 +85,9 @@ params = {
 
 # Define Output file names.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
-outFile = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+params['outFile'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  timeLabel + ".csv"
-outFileTrackerLog = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+params['outFileTrackerLog'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  timeLabel + "TR.csv"
 params['Practice'] =  params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  timeLabel + "PR.EDF"
@@ -124,15 +124,24 @@ waitAnyKeys()
 # ======================== #
 # Dataframe Initialization #
 # ======================== #
-Header = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
+params['Header'] = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
           "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
           "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
           "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
-Df = pd.DataFrame(columns=Header)
+params['HeaderTR'] = ["Index", "subjectID", "Session", "Version", "Section", "Subtrial", "Event", "Reward", "Punishment",
+            "Duration(ms)"]
 
+# Pandas dataframe Initialization
+Df = pd.DataFrame(columns=params['Header'])
 if params['EyeTrackerSupport']:
-    HeaderTR = ["Index","subjectID","Session","Version","Section","Subtrial","Event","Reward","Punishment","Duration(ms)"]
-    DfTR = pd.DataFrame(columns=HeaderTR)
+    DfTR = pd.DataFrame(columns=params['HeaderTR'])
+else:
+    DfTR=""
+
+# Make Empty output files.
+Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+if params['EyeTrackerSupport']:
+    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
 
 # ====================== #
 # ======== VAS pre ========= #
@@ -161,7 +170,11 @@ tracker = ""
 # ===== Practice ======= #
 # ====================== #
 win.mouseVisible = False
-Df,DfTR,win = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
+iterNum = params['numPractice']
+SectionName = "Practice"
+
+# Df,DfTR,win = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
+Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
 win.mouseVisible = True
 
 # ====================== #
@@ -253,8 +266,8 @@ win.mouseVisible = False
 win.mouseVisible = True
 Df = Questionplay(Df, win, params, "Question")
 
-Df.to_csv(outFile, sep=',', encoding='utf-8', index=False)
-DfTR.to_csv(outFileTrackerLog, sep=',', encoding='utf-8', index=False)
+Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
 
 # Close the psychopy window.
 win.close()
