@@ -267,7 +267,8 @@ win.mouseVisible = True
 Df = Questionplay(Df, win, params, "Question")
 
 Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
+if params['EyeTrackerSupport']:
+    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
 
 # Close the psychopy window.
 win.close()
