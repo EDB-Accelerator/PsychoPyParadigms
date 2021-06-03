@@ -27,7 +27,7 @@ sys.path.insert(1, './src')
 import datetime
 import pandas as pd
 from psychopy import visual,core
-from Helper import Questionplay,waitUserSpace
+from Helper import waitUserSpace
 from Helper import waitUserInput, waitAnyKeys,ResolutionIntialization
 
 from userInputPlay import userInputPlay
@@ -35,6 +35,7 @@ from VASplay import VASplay
 from InstructionPlay import InstructionPlay
 from PracticeGamePlay import PracticeGamePlay
 from DoorGamePlay import DoorGamePlay
+from QuestionPlay import QuestionPlay
 from psychopy import parallel
 from psychopy import prefs
 
@@ -90,15 +91,15 @@ timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
 params['outFile'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  timeLabel + ".csv"
 params['outFileTrackerLog'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR.csv"
+          str(params['Version']) + '_' +  timeLabel + "TrackerLog.csv"
 params['Practice'] =  params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "PR.EDF"
+          str(params['Version']) + '_' +  timeLabel + "Practice.EDF"
 params['TaskRun1'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR1.EDF"
+          str(params['Version']) + '_' +  timeLabel + "TaskRun1.EDF"
 params['TaskRun2'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR2.EDF"
+          str(params['Version']) + '_' +  timeLabel + "TaskRun2.EDF"
 params['TaskRun3'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR3.EDF"
+          str(params['Version']) + '_' +  timeLabel + "TaskRun3.EDF"
 
 prefs.general['fullscr'] = params['FullScreen']
 
@@ -149,13 +150,13 @@ if params['EyeTrackerSupport']:
 # ======== VAS pre ========= #
 # ====================== #
 win.mouseVisible = True
-Df = VASplay(Df,win,params,"VAS pre")
+VASplay(Df,win,params,"VAS pre")
 win.mouseVisible = False
 
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
-Df = InstructionPlay(Df,win,params)
+InstructionPlay(Df,win,params)
 
 # ========================================== #
 # ==== Screen Resolution Initialization ==== #
@@ -170,14 +171,14 @@ iterNum = params['numPractice']
 SectionName = "Practice"
 
 # Df,DfTR,win = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
-Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
+win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
 win.mouseVisible = True
 
 # ====================== #
 # ===== TaskRun1 ======= #
 # ====================== #
 win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
+win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
 win.mouseVisible = True
 
 # ====================== #
@@ -187,7 +188,7 @@ win.mouseVisible = True
 message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS 1")
+VASplay(Df,win,params,"VAS 1")
 win.mouseVisible = False
 
 # ====================== #
@@ -201,7 +202,7 @@ win.flip();
 # ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
+win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
 
 # ====================== #
 # ======== VAS mid ========= #
@@ -210,7 +211,7 @@ win.mouseVisible = True
 message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS mid")
+VASplay(Df,win,params,"VAS mid")
 win.mouseVisible = False
 
 # ====================== #
@@ -224,7 +225,7 @@ win.flip();
 # ===== TaskRun3 ======= #
 # ====================== #
 win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
+win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
 win.mouseVisible = True
 
 # ====================== #
@@ -234,18 +235,14 @@ win.mouseVisible = True
 message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS post")
+VASplay(Df,win,params,"VAS post")
 win.mouseVisible = False
 
 # ====================== #
 # ======== Question ========= #
 # ====================== #
 win.mouseVisible = True
-Df = Questionplay(Df, win, params, "Question")
-
-Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-if params['EyeTrackerSupport']:
-    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
+QuestionPlay(Df, win, params, "Question")
 
 # Close the psychopy window.
 win.close()
