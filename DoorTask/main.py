@@ -6,18 +6,19 @@ DoorTask Game Main Driver File.
 
 Created on Fri July 24 15:04:19 2020
 
-Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
+Known issue:
+
+ Does not work with AMD Radeon GPU devices. (worked with NVIDA).
+ Only works on Windows 10.
+ Resolution: 1024x768.
 
 @author: Kyunghun Lee
 - Created July/24/20 by KL
 - Updated 09/3/2020 Tue by KL (Trigger)
 - Updated 09/15/2020 Tue by KL (Major Updates)
-- Updated 4/21/2021 Wed by KL (Eyetracker update - major updates)
 - Save result when exit 10/26/2020 Mon by KL
-
-To-do: 1. reward screen fix 2. joystick sensitivty option (done) 3. 190=>220 (Done) 4. screen resolution (right one 768) => Done.
-5. psychopy screen to check if calibration is good or do again. (done) 6. reward punishment record (done)
-7. send recording
+- Updated 4/21/2021 Wed by KL (Eyetracker update - major updates)
+- Major update and bug fixed 6/3/2021 by KL
 
 """
 
@@ -78,7 +79,7 @@ params = {
     'outFolder': './output', # the location of output file.
 
 # declare display parameters
-    'screenSize' : (1024,768),
+    'screenSize' : (userInputBank[11][0],userInputBank[11][1]),
     'volume' : 0.8,
     'resolutionMode' : True,
     'subTrialCounter': 0,

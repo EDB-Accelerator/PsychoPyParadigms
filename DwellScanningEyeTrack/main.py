@@ -58,7 +58,7 @@ from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
 from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 from DisplayFolderSelection import DisplayFolderSelection
-from GetAngryLabels import GetAngryLabels
+from GetEmotionLabels import GetEmotionLabels
 from MakeAOI import MakeAOI
 import psychopy.iohub.client
 
@@ -223,12 +223,12 @@ for section in range(3):
         img = ImgList[trial+section*params['numTrial']]
 
         if params['musicMode'] != 'off':
-            labels = GetAngryLabels(dfLabel,img)
+            emotion,labels = GetEmotionLabels(dfLabel,img)
 
         # Fixation cross section
         DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
-                      labels=labels)
+                      labels=labels,emotion=emotion)
         DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
 
     # Stop Recording

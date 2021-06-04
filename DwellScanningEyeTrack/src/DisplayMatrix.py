@@ -46,7 +46,7 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 
-def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
+def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
 
     rectangles = []
     resolution = params['screenSize']
@@ -84,7 +84,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels):
     for i in range(len(faceLocations)):
         x1, y1, x2, y2 = faceLocations[i][0], faceLocations[i][1], faceLocations[i][2], faceLocations[i][3]
         if labels[i]:
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i) + '(Angry)'))
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i) + '(' + emotion + ')'))
         else:
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i)))
 

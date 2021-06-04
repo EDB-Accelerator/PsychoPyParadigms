@@ -1,6 +1,6 @@
 # example: './img\\Disgust-Neutral\\10N-6D\\Block1Matrix23.jpeg'
 import re
-def GetAngryLabels(dfLabel,img):
+def GetEmotionLabels(dfLabel,img):
     for fileName in ['6N-10A','8N-8A','10N-6A','6N-10D','8N-8D','10N-6D']:
         if fileName in img:
             break
@@ -13,11 +13,12 @@ def GetAngryLabels(dfLabel,img):
 
     dfLabelRow = dfLabelFile[dfLabelFile['SlideImage']==SlideImage]
 
-    AngryLabels = []
+    Emotion = "Anger" if "Anger" in img else "Disgust"
+    EmotionLables = []
     for i in range(1,17):
         if 'NE' in dfLabelRow.iloc[0]['Cell'+str(i)]:
-            AngryLabels.append(False)
+            EmotionLables.append(False)
         else:
-            AngryLabels.append(True)
+            EmotionLables.append(True)
 
-    return AngryLabels
+    return Emotion,EmotionLables

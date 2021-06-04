@@ -1,3 +1,5 @@
+
+
 def newPointResolution(X, resolution):
     ratio = resolution[1] / 768
     center = [resolution[0] / 2, resolution[1] / 2]
