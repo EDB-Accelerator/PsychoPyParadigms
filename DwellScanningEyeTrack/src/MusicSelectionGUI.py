@@ -6,6 +6,8 @@ from ObjectListView import ObjectListView, ColumnDefn, OLVEvent
 import glob
 from mutagen.easyid3 import EasyID3
 from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
+import pandas as pd
+import numpy as np
 
 class Results(object):
     """"""
@@ -63,16 +65,16 @@ class OLVCheckPanel(wx.Panel):
         self.SetSizer(mainSizer)
 
     def on_item_checked(self, event):
-        a = self.resultsOlv.GetCheckedObjects()
+        # a = self.resultsOlv.GetCheckedObjects()
         # if len(a)>=0:
         #     print(a[0].ReleaseDate)
-        obj = self.resultsOlv.GetSelectedObject()
-        checked = 'Checked' if self.resultsOlv.IsChecked(obj) else 'Unchecked'
-        print('{} row is {}'.format(obj.ReleaseDate, checked))
-        print(len(a), ' music file(s) selected')
-        self.title = str(len(a)) + ' music file(s) selected'
+        obj = self.resultsOlv.GetCheckedObjects()
+        # checked = 'Checked' if self.resultsOlv.IsChecked(obj) else 'Unchecked'
+        # print('{} row is {}'.format(obj.ReleaseDate, checked))
+        # print(len(a), ' music file(s) selected')
+        # self.title = str(len(a)) + ' music file(s) selected'
         self.log.Clear()
-        self.log.AppendText(str(len(a)) + ' music file(s) selected')
+        self.log.AppendText(str(len(obj)) + ' music file(s) selected')
 
     def onCheck(self, event):
         """"""
@@ -96,9 +98,23 @@ class OLVCheckPanel(wx.Panel):
             self.log.Clear()
             self.log.AppendText('At least 10 music files need to be selected. Only ' + str(len(obj)) + ' music file(s) selected.')
             return
-
         # print(self.GetCheckedObjects)
+        df = pd.DataFrame()
+        for musicObj in obj:
+            musicInfo = []
+            musicInfo.append(musicObj.title)
+            musicInfo.append(musicObj.Artist)
+            musicInfo.append(musicObj.Album)
+            musicInfo.append(musicObj.Genre)
+            musicInfo.append(musicObj.ReleaseDate)
+            musicInfoPD = (np.array(musicInfo).flatten()).reshape(1, len(musicInfo))
+            musicInfoPD = pd.DataFrame(musicInfoPD, columns=["Title","Artist","Album","Genre","Release Date"])
+            df = df.append(musicInfoPD,ignore_index = True)
+
+        df.to_csv("userMusicSelection.csv", mode='w', sep=',', encoding='utf-8')
+
         wx.CallAfter(frame.Close)
+
 
     def setResults(self):
 
