@@ -79,7 +79,8 @@ params = {
     'outFolder': './output', # the location of output file.
 
 # declare display parameters
-    'screenSize' : (userInputBank[11][0],userInputBank[11][1]),
+#     'screenSize' : (userInputBank[11][0],userInputBank[11][1]),
+    'screenSize' : (1024,768),
     'volume' : 0.8,
     'resolutionMode' : True,
     'subTrialCounter': 0,
