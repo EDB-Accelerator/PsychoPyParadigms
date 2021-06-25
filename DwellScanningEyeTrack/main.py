@@ -113,7 +113,7 @@ params = {
     'eyeSelection' : UserInputBank[6],  # Which eye will be used for eyetracking
     'circle' : UserInputBank[7],
     'faceMatrixDuration': UserInputBank[8],
-    'musicList' : UserInputBank[9],
+    # 'musicList' : UserInputBank[9],
     'eyeIdx' : 0,
 }
 
@@ -134,7 +134,7 @@ elif params['Version'] == 4:
     # Music Selection
 if params['musicMode'] != 'off':
     # Folder Selection
-    params['musicList'] = DisplayFolderSelection(params)
+    # params['musicList'] = DisplayFolderSelection(params)
     dfLabel = {}
     labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
     for label in labelList:

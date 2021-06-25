@@ -1,11 +1,12 @@
-# http://objectlistview.sourceforge.net/python/gettitlegStarted.html#mental-gear-shift
+# Refernece:
 # https://www.blog.pythonlibrary.org/2013/02/27/wxpython-adding-checkboxes-to-objectlistview/
 # OLVcheckboxes2.py
+import sys
+
 import wx
 from ObjectListView import ObjectListView, ColumnDefn, OLVEvent
 import glob
 from mutagen.easyid3 import EasyID3
-from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
 import pandas as pd
 import numpy as np
 
@@ -31,11 +32,14 @@ class OLVCheckPanel(wx.Panel):
         btnSizer = wx.BoxSizer(wx.HORIZONTAL)
         logSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        musicList = glob.glob("../music/*.mp3")
+        musicList = glob.glob("music/*.mp3")
+        self.fileNames = {}
         self.test_data = []
         for musicFile in musicList:
             audio = EasyID3(musicFile)
-            self.test_data.append(Results(audio['title'][0],audio['artist'][0],audio['album'][0],audio['genre'][0],audio['date'][0]))
+            self.fileNames['title'] = musicFile
+            self.test_data.append(Results(audio['title'][0],audio['artist'][0],audio['album'][0],audio['genre'][0],
+                                          audio['date'][0]))
         self.resultsOlv = ObjectListView(self,
                                          style=wx.LC_REPORT | wx.SUNKEN_BORDER)
 
@@ -98,23 +102,23 @@ class OLVCheckPanel(wx.Panel):
             self.log.Clear()
             self.log.AppendText('At least 10 music files need to be selected. Only ' + str(len(obj)) + ' music file(s) selected.')
             return
-        # print(self.GetCheckedObjects)
+
         df = pd.DataFrame()
         for musicObj in obj:
             musicInfo = []
+            musicInfo.append(self.fileNames['title'])
             musicInfo.append(musicObj.title)
             musicInfo.append(musicObj.Artist)
             musicInfo.append(musicObj.Album)
             musicInfo.append(musicObj.Genre)
             musicInfo.append(musicObj.ReleaseDate)
             musicInfoPD = (np.array(musicInfo).flatten()).reshape(1, len(musicInfo))
-            musicInfoPD = pd.DataFrame(musicInfoPD, columns=["Title","Artist","Album","Genre","Release Date"])
+            musicInfoPD = pd.DataFrame(musicInfoPD, columns=["fileName","Title","Artist","Album","Genre","Release Date"])
             df = df.append(musicInfoPD,ignore_index = True)
 
         df.to_csv("userMusicSelection.csv", mode='w', sep=',', encoding='utf-8')
 
         wx.CallAfter(frame.Close)
-
 
     def setResults(self):
 
@@ -128,7 +132,6 @@ class OLVCheckPanel(wx.Panel):
         ])
         self.resultsOlv.CreateCheckStateColumn()
         self.resultsOlv.SetObjects(self.test_data)
-
 
 class OLVCheckFrame(wx.Frame):
     """"""

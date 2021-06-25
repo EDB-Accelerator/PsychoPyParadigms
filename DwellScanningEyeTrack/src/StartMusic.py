@@ -6,7 +6,11 @@ import os.path
 import asyncio,threading
 import random
 from MusicControl import PauseMusic
-playlist = glob.glob('./music/*.mp3')
+# playlist = glob.glob('./music/*.mp3')
+import glob
+import pandas as pd
+df = pd.read_csv('userMusicSelection.csv')
+playlist = df['fileName'].tolist()
 
 def playplaylist(playlist):
     if len(playlist)==0:

@@ -57,15 +57,6 @@ def DisplayFolderSelection(params):
     message.draw()
     win.flip()
 
-    # app = wx.App(False)
-    # frame = MyForm()
-    # frame.Show()
-    # app.MainLoop()
-    # win.close()
-
-    # musicFolder = frame.MusicFolder
-    # musicList = glob.glob(musicFolder + '/*.mp3')
-
     import tkinter as tk
     import tkinter.filedialog as fd
     root = tk.Tk()
