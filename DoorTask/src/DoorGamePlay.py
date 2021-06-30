@@ -362,25 +362,26 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                           390 + height * 200 / 768,
                                                                           'Reward/punishment/closed'))
         if Dict["Door_outcome"] == "reward":
-            # mixer.init()
-            # mixer.music.load("./img/sounds/reward_sound.wav")
-            # mixer.music.play()
-            # event.waitKeys(maxWait=2)
-            # mixer.music.stop()
-            sound1 = sound.Sound("./img/sounds/reward_sound.wav")
-            sound1.play()
+            mixer.init()
+            mixer.music.load("./img/sounds/new_reward.mp3")
+            mixer.music.play()
             event.waitKeys(maxWait=2)
-            sound1.stop()
+            mixer.music.stop()
+            # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
+            # sound1.play()
+            # event.waitKeys(maxWait=2)
+            # sound1.stop()
         elif Dict["Door_outcome"] == "punishment":
-            # mixer.music.load("./img/sounds/punishment_sound.wav")
-            # mixer.music.play()
-            # event.waitKeys(maxWait=2)
-            # mixer.music.stop()
-
-            sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
-            sound1.play()
+            mixer.init()
+            mixer.music.load("./img/sounds/punishment_sound.mp3")
+            mixer.music.play()
             event.waitKeys(maxWait=2)
-            sound1.stop()
+            mixer.music.stop()
+
+            # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
+            # sound1.play()
+            # event.waitKeys(maxWait=2)
+            # sound1.stop()
         else:
             event.waitKeys(maxWait=2)
 
