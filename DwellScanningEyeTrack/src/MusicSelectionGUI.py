@@ -37,7 +37,7 @@ class OLVCheckPanel(wx.Panel):
         self.test_data = []
         for musicFile in musicList:
             audio = EasyID3(musicFile)
-            self.fileNames['title'] = musicFile
+            self.fileNames[audio['title'][0]] = musicFile
             self.test_data.append(Results(audio['title'][0],audio['artist'][0],audio['album'][0],audio['genre'][0],
                                           audio['date'][0]))
         self.resultsOlv = ObjectListView(self,
@@ -106,7 +106,7 @@ class OLVCheckPanel(wx.Panel):
         df = pd.DataFrame()
         for musicObj in obj:
             musicInfo = []
-            musicInfo.append(self.fileNames['title'])
+            musicInfo.append(self.fileNames[musicObj.title])
             musicInfo.append(musicObj.title)
             musicInfo.append(musicObj.Artist)
             musicInfo.append(musicObj.Album)

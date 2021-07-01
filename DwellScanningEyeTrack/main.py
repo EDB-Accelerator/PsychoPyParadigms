@@ -209,6 +209,14 @@ for section in range(3):
     win,io,tracker = EyeTrackerIntialization(params)
     win,tracker = EyeTrackerCalibration(params, tracker,block,win)
 
+    # Wait for 8 seconds. (Get Ready Screen)
+    message = visual.TextStim(win,
+                              text="Get Ready\n ",
+                              units='norm', wrapWidth=2, color="black")
+    message.draw()
+    win.flip()
+    core.wait(8)
+
     # Start recording
     tracker.setRecordingState(True)
 
