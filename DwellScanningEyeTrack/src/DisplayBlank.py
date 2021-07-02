@@ -47,12 +47,14 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 from GetKeyPress import GetKeyPress
 
-def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker):
+def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker,blankTime):
     UnpauseMusic()
+
     # Select BlankTime duration randomly.
-    blankTime = params['blankTime']
-    # blankTime = [2]
-    blankDuration = random.choice(blankTime)
+    # blankTime = params['blankTime']
+    # # blankTime = [2]
+    # blankDuration = random.choice(blankTime)
+    blankDuration = blankTime
 
     # Record status
     dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]

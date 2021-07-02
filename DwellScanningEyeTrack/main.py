@@ -44,6 +44,7 @@ from glob import glob
 import os
 import pylink
 import asyncio,threading
+import numpy as np
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -58,10 +59,12 @@ from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
 from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 from DisplayFolderSelection import DisplayFolderSelection
+from LoadTimingFile import LoadTimingFile
 from GetEmotionLabels import GetEmotionLabels
 from MakeAOI import MakeAOI
 import psychopy.iohub.client
 
+import pandas as pd
 
 # End Music if exist.
 StopMusic()
@@ -93,11 +96,11 @@ pd.set_option('display.max_columns', None)
 UserInputBank = UserInputPlay()
 
 # Output Summary Header Initialization
-Header = ["Section Start Time","Section End Time","expName","subjectID","Session","Section","TrialCount","Section",
+Header = ["Section Start Time","Section End Time","expName","Version","subjectID","Session","Section",'timingFile',"TrialCount","Section",
           "Image Displayed","Button Pressed","Button Correct/Incorrect","Button Response Time"]
 
 # Output Raw Header Initialization
-HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
+HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
 
 # Declare primary task parameters.
 params = {
@@ -124,6 +127,19 @@ prefs.general['fullscr'] = params['fullscr']
 if params['Version'] == 2:
     params['blankTime'] = [0,2,4]
     params['musicMode'] = 'off'
+
+    # Load Timing File.
+    timingFileList = glob("timing/notUsed/*.txt")
+
+    if len(timingFileList) == 0:
+        print("There is no available timing files. Please upload timing file.")
+        exit(0)
+
+    random.shuffle(timingFileList)
+
+    params['timingFile'] = timingFileList[0]
+    # df1, df2, df3 = LoadTimingFile(params['timingFile'])
+
 elif params['Version'] == 3:
     params['blankTime'] = [2]
     params['musicMode'] = 'allTheTime'
@@ -132,13 +148,13 @@ elif params['Version'] == 4:
     params['musicMode'] = 'onlyWhenStareAt'
 
     # Music Selection
-if params['musicMode'] != 'off':
+# if params['musicMode'] != 'off':
     # Folder Selection
     # params['musicList'] = DisplayFolderSelection(params)
-    dfLabel = {}
-    labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
-    for label in labelList:
-        dfLabel[label] = pd.read_csv('label/' + label + '.csv')
+dfLabel = {}
+labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
+for label in labelList:
+    dfLabel[label] = pd.read_csv('label/' + label + '.csv')
 
 # Decide the name of output files.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
@@ -167,23 +183,43 @@ dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 # win = visual.Window(params['screenSize'],monitor="testMonitor",color="white",winType='pyglet')
 
 # Make image list.
-RunList = glob('./img/*')
-random.shuffle(RunList)
+# RunList = glob('./img/*')
+RunList = ['Anger-Neutral','Disgust-Neutral']
 idx = 0
-ImgList = []
+Imgs = {}
 for run in RunList:
-    BlockList = glob(run + '/*')
+    ImgTmp = []
+    BlockList = glob('img/' + run + '/*')
     random.shuffle(BlockList)
 
     for block in BlockList:
-        params["Block"] = block.split('/')[-1]
+        # params["Block"] = block.split('/')[-1]
 
         # Get Image list of each block and Shuffle.
-        ImgList = ImgList + glob(block + '/*.jpeg')
+        ImgTmp = ImgTmp + glob(block + '/*.jpeg')
         idx += 1
+    random.shuffle(ImgTmp)
+    Imgs[run] = ImgTmp
 
-# Shuffle Images.
-random.shuffle(ImgList)
+ImgList = []
+if params['Version'] == 2:
+    # Load Timing File
+    dfTiming = LoadTimingFile(params['timingFile'])
+    i = 0
+    j = 0
+    for emotion in dfTiming['class']:
+        if emotion==1:
+            ImgList.append(Imgs['Disgust-Neutral'][i])
+            i += 1
+        else:
+            ImgList.append(Imgs['Anger-Neutral'][j])
+            j += 1
+    params['RestTiming'] = np.array(dfTiming['rest'])
+
+elif params['Version'] == 3 or params['Version'] == 4:
+    for run in RunList:
+        ImgList = ImgList + Imgs[run]
+    random.shuffle(ImgList)
 
 # Eyetracker Initialization
 # win,tracker = EyeTrackerIntialization(params)
@@ -198,10 +234,10 @@ if params['musicMode'] != 'off':
     p = subprocess.Popen([sys.executable, 'src/StartMusic.py'],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
-
     # PauseMusic()
 
 # Run the main task.
+index = 0
 for section in range(3):
     params["Section"] = section # This block is different from original block.
 
@@ -230,14 +266,20 @@ for section in range(3):
         params["TrialCount"] = trial
         img = ImgList[trial+section*params['numTrial']]
 
-        if params['musicMode'] != 'off':
-            emotion,labels = GetEmotionLabels(dfLabel,img)
+        # if params['musicMode'] != 'off':
+        emotion,labels = GetEmotionLabels(dfLabel,img)
 
         # Fixation cross section
         DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
                       labels=labels,emotion=emotion)
-        DisplayBlank(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
+        if params['Version'] == 2:
+            DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
+                         blankTime=params['RestTiming'][index])
+        else:
+            DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
+                         blankTime=2)
+        index += 1
 
     # Stop Recording
     tracker.setRecordingState(False)
@@ -262,4 +304,11 @@ PauseMusic()
 
 # Close the psychopy window.
 win.close()
-p.terminate()
+
+if params['Version'] == 2:
+    # Move timing file into 'used' folder.
+    params['timingFileNew'] = params['timingFile'].replace('notUsed','used')
+    os.rename(params['timingFile'],params['timingFileNew'])
+
+if params['musicMode'] != 'off':
+    p.terminate()

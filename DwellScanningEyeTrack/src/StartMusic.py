@@ -30,7 +30,6 @@ def playplaylist(playlist):
     running = True
     idx = 0
 
-
     while os.path.isfile('b') == False:
         time.sleep(0.1)
 
@@ -58,8 +57,6 @@ def playplaylist(playlist):
             return
 
         time.sleep(0.1)
-
-
 
 playplaylist(playlist)
 # open('b', 'a').close()

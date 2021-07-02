@@ -41,15 +41,18 @@ import datetime
 def DictWriteRaw(dfRaw,dictRaw,params):
     # Move data in Dict into Df.
     dictRaw["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4] # Record Timestamp.
+    dictRaw["Version"] = params["Version"]
     dfRaw = dfRaw.append(dictRaw, ignore_index=True)
     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
     # dfRaw = dfRaw[:-1] # Drop the last row.
 
 def DictWrite(df,params,dict):
     # Move data in Dict into Df.
-    # dict["Run"] = params["Run"]
     dict["Section"] = params["Section"]
+    dict["Version"] = params["Version"]
     dict["TrialCount"] = params["TrialCount"]
+    if 'timingFile' in params:
+        dict["timingFile"] = params['timingFile']
     df = df.append(dict,ignore_index=True)
     df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
     # df = df[:-1] # Drop the last row.
