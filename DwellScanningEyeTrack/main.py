@@ -33,6 +33,7 @@ Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen
 
 @author: Kyunghun Lee
 - Created on Thu Jan 28 15:20:30 EST 2021 by KL
+- Major updated on July 5 EST 2021 by KL
 """
 
 
@@ -45,6 +46,7 @@ import os
 import pylink
 import asyncio,threading
 import numpy as np
+from shutil import copyfile
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -63,7 +65,7 @@ from LoadTimingFile import LoadTimingFile
 from GetEmotionLabels import GetEmotionLabels
 from MakeAOI import MakeAOI
 import psychopy.iohub.client
-
+import os
 import pandas as pd
 
 # End Music if exist.
@@ -147,10 +149,16 @@ elif params['Version'] == 4:
     params['blankTime'] = [2]
     params['musicMode'] = 'onlyWhenStareAt'
 
-    # Music Selection
-# if params['musicMode'] != 'off':
-    # Folder Selection
-    # params['musicList'] = DisplayFolderSelection(params)
+# Music Selection
+if params['musicMode'] != 'off':
+    # find command path.
+    # with open(".tmp/pythonpath", "r") as myfile:
+    #     data = myfile.readlines()
+    # pythonPath = data[0].replace("\n","")
+    # print(pythonPath)
+    # Run Music Selection GUI
+    os.system("dwellscansub\python.exe" + " src/MusicSelectionGUI.py")
+
 dfLabel = {}
 labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
 for label in labelList:
@@ -164,6 +172,8 @@ params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subje
           timeLabel + "_raw.csv"
 params["edfFile"] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
           timeLabel + "_"
+params['outMusicSelection'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+          timeLabel + "_music_selection.csv"
 
 # Instance result initialization
 dict,dictRaw = DictInitialize(params)
@@ -312,3 +322,6 @@ if params['Version'] == 2:
 
 if params['musicMode'] != 'off':
     p.terminate()
+
+# os.replace("userMusicSelection.csv",params['outMusicSelection'])
+copyfile("userMusicSelection.csv", params['outMusicSelection'])
