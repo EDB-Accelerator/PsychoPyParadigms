@@ -40,7 +40,7 @@ Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen
 # Import standard python libraries
 import datetime,sys,random
 import pandas as pd
-from psychopy import visual,prefs,core,event
+from psychopy import visual,prefs,core,event,sound
 from glob import glob
 import os
 import pylink
@@ -64,12 +64,13 @@ from DisplayFolderSelection import DisplayFolderSelection
 from LoadTimingFile import LoadTimingFile
 from GetEmotionLabels import GetEmotionLabels
 from MakeAOI import MakeAOI
+from StartMusic import playMusic,pauseMusic,stopMusic
 import psychopy.iohub.client
 import os
 import pandas as pd
 
 # End Music if exist.
-StopMusic()
+# StopMusic()
 
 def waitUserSpace():
     # Wait for user types a space key.
@@ -81,7 +82,6 @@ def waitUserSpace():
         if c == ['q'] or c == ['Q']:
             print('Q pressed. Forced Exit.')
             core.quit()
-
 
 # Make empty output directory if it does not exist.
 directory = './result'
@@ -141,7 +141,6 @@ if params['Version'] == 2:
 
     params['timingFile'] = timingFileList[0]
     # df1, df2, df3 = LoadTimingFile(params['timingFile'])
-
 elif params['Version'] == 3:
     params['blankTime'] = [2]
     params['musicMode'] = 'allTheTime'
@@ -151,13 +150,14 @@ elif params['Version'] == 4:
 
 # Music Selection
 if params['musicMode'] != 'off':
-    # find command path.
-    # with open(".tmp/pythonpath", "r") as myfile:
-    #     data = myfile.readlines()
-    # pythonPath = data[0].replace("\n","")
-    # print(pythonPath)
     # Run Music Selection GUI
     os.system("dwellscansub\python.exe" + " src/MusicSelectionGUI.py")
+    df = pd.read_csv('userMusicSelection.csv')
+    playlist = df['fileName'].tolist()
+    random.shuffle(playlist)
+    params['playlist'] = playlist
+    params['musicIdx'] = 0
+    params['sound1'] = sound.Sound(params['playlist'][params['musicIdx']])
 
 dfLabel = {}
 labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
@@ -237,14 +237,9 @@ elif params['Version'] == 3 or params['Version'] == 4:
 # Hide mouse cursor.
 # win.mouseVisible = False
 
-# Music
-if params['musicMode'] != 'off':
-    import subprocess, sys
-
-    p = subprocess.Popen([sys.executable, 'src/StartMusic.py'],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
-    # PauseMusic()
+# Music Start
+# if params['musicMode'] != 'off':
+#     playMusic(sound1, params)
 
 # Run the main task.
 index = 0
@@ -266,9 +261,9 @@ for section in range(3):
     # Start recording
     tracker.setRecordingState(True)
 
-    # Pause Music
-    if section == 0:
-        UnpauseMusic()
+    # Start Music
+    if params['musicMode'] != 'off':
+        playMusic(params)
 
     for trial in range(params['numTrial']):
         # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
@@ -310,7 +305,8 @@ for section in range(3):
         # Rest between each section.
         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
 
-PauseMusic()
+# PauseMusic()
+stopMusic(params)
 
 # Close the psychopy window.
 win.close()
@@ -320,8 +316,8 @@ if params['Version'] == 2:
     params['timingFileNew'] = params['timingFile'].replace('notUsed','used')
     os.rename(params['timingFile'],params['timingFileNew'])
 
-if params['musicMode'] != 'off':
-    p.terminate()
+# if params['musicMode'] != 'off':
+    # p.terminate()
 
 # os.replace("userMusicSelection.csv",params['outMusicSelection'])
 copyfile("userMusicSelection.csv", params['outMusicSelection'])

@@ -44,7 +44,7 @@ import os
 # Import defined functions
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
-from MusicControl import PauseMusic,UnpauseMusic,StopMusic
+from StartMusic import playMusic,pauseMusic,stopMusic
 
 def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
 
@@ -112,7 +112,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
     #     core.wait(1 / 300)
 
     startTime = time.time()
-    musicPause = False
+    # musicPause = False
     c = ''
     while (c != ['p']):
         if time.time() - startTime >= params['faceMatrixDuration']:
@@ -121,7 +121,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
         c = event.getKeys()
         if c == ['q']:
             print('Q pressed. Forced Exit.')
-            StopMusic()
+            stopMusic(params)
             core.quit()
 
         position = tracker.getPosition()
@@ -147,25 +147,30 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
             eyeOnAngryFace = False
             for rectangle in angryRectangles:
                 if rectangle.contains(circle.pos):
-                    PauseMusic()
+                    pauseMusic(params)
                     eyeOnAngryFace = True
-                    musicPause = True
-            if not eyeOnAngryFace and musicPause:
-                UnpauseMusic()
-                musicPause = False
+                    # musicPause = True
+            # if not eyeOnAngryFace and musicPause:
+            if not eyeOnAngryFace:
+                playMusic(params)
+                # resumeMusic(sound)
+                # musicPause = False
 
             # if rectangles[0].contains(circle.pos):
             #     UnpauseMusic()
             # else:
             #     PauseMusic()
-
+        else:
+            playMusic(params)
         win.flip()
         core.wait(1 / 300)
 
     if params['musicMode'] == 'onlyWhenStareAt':
-        if musicPause:
-            UnpauseMusic()
-            musicPause = False
+        playMusic(params)
+        # resumeMusic(sound)
+        # if musicPause:
+        #     UnpauseMusic()
+        #     musicPause = False
 
     # Record status
     dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]

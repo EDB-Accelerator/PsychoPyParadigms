@@ -1,62 +1,38 @@
-from pygame import mixer  # Load the popular external library
-import pygame
-import glob
-import time
-import os.path
-import asyncio,threading
-import random
-from MusicControl import PauseMusic
-# playlist = glob.glob('./music/*.mp3')
-import glob
-import pandas as pd
-df = pd.read_csv('userMusicSelection.csv')
-playlist = df['fileName'].tolist()
+from psychopy import sound
 
-def playplaylist(playlist):
-    if len(playlist)==0:
-        print("there is no music in the playlist.")
-        return
+# params['sound1'] = sound.Sound('src/punishment_sound.wav')
+# params['sound1'].play()
+# params = {}
+# params['playlist'] = ['src/punishment_sound.wav','src/punishment_sound.wav']
+# params['musicIdx'] = 0
 
-    if os.path.isfile('a'):
-        os.remove('a')
-    if os.path.isfile('b'):
-        os.remove('b')
-    if os.path.isfile('c'):
-        os.remove('c')
+def playMusic(params):
 
-    mixer.init()
-    pygame.display.init()
-    random.shuffle(playlist)
-    running = True
-    idx = 0
+    if params['sound1'].status == 0:
+        params['sound1'] = sound.Sound(params['playlist'][params['musicIdx']])
+        params['sound1'].play()
+        print("playing:" + params['playlist'][params['musicIdx']])
+    elif params['sound1'].status == -1:
+        params['musicIdx'] += 1
+        if params['musicIdx'] >= len(params['playlist']):
+            params['musicIdx'] = 0
+        params['sound1'] = sound.Sound(params['playlist'][params['musicIdx']])
+        params['sound1'].play()
+        print("playing:" + params['playlist'][params['musicIdx']])
+    elif params['sound1'].status == 2:
+        params['sound1'].play()
+    return params['sound1']
 
-    while os.path.isfile('b') == False:
-        time.sleep(0.1)
+def pauseMusic(params):
+    if params['sound1'].status == 1:
+        params['sound1'].pause()
+    return params['sound1']
 
-    while running:
-        if mixer.music.get_busy() == 1 and os.path.isfile('a'):
-            mixer.music.pause()
-            os.remove('a')
-            continue
-        if mixer.music.get_busy() == 1 and os.path.isfile('b'):
-            mixer.music.unpause()
-            os.remove('b')
-            continue
+# def resumeMusic(params['sound1']):
+#     if params['sound1'].status == 2:
+#         params['sound1'].play()
 
-        if mixer.music.get_busy() == 0:  # A track has ended
-            mixer.music.load(playlist[idx])  # Q
-            mixer.music.play()
-            idx += 1
-            if idx == len(playlist):
-                idx = 0
-                random.shuffle(playlist)
+def stopMusic(params):
+    params['sound1'].stop()
+    return params['sound1']
 
-        if os.path.isfile('c'):
-            os.remove('c')
-            mixer.music.pause()
-            return
-
-        time.sleep(0.1)
-
-playplaylist(playlist)
-# open('b', 'a').close()

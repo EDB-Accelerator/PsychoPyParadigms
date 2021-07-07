@@ -106,7 +106,11 @@ class OLVCheckPanel(wx.Panel):
         df = pd.DataFrame()
         for musicObj in obj:
             musicInfo = []
-            musicInfo.append(self.fileNames[musicObj.title])
+            musicFileName = self.fileNames[musicObj.title]
+            musicFileName = musicFileName.replace("mp3","wav")
+
+            # musicInfo.append(self.fileNames[musicObj.title])
+            musicInfo.append(musicFileName)
             musicInfo.append(musicObj.title)
             musicInfo.append(musicObj.Artist)
             musicInfo.append(musicObj.Album)
