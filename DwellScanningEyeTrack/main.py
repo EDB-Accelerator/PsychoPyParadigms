@@ -58,14 +58,10 @@ from DisplayBlank import DisplayBlank
 from DisplayRest import DisplayRest
 from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
-from psychopy.iohub import launchHubServer
-from MusicControl import PauseMusic,UnpauseMusic,StopMusic
-from DisplayFolderSelection import DisplayFolderSelection
 from LoadTimingFile import LoadTimingFile
 from GetEmotionLabels import GetEmotionLabels
 from MakeAOI import MakeAOI
 from StartMusic import playMusic,pauseMusic,stopMusic
-import psychopy.iohub.client
 import os
 import pandas as pd
 
@@ -218,7 +214,7 @@ if params['Version'] == 2:
     i = 0
     j = 0
     for emotion in dfTiming['class']:
-        if emotion==1:
+        if emotion == 1:
             ImgList.append(Imgs['Disgust-Neutral'][i])
             i += 1
         else:
@@ -230,16 +226,6 @@ elif params['Version'] == 3 or params['Version'] == 4:
     for run in RunList:
         ImgList = ImgList + Imgs[run]
     random.shuffle(ImgList)
-
-# Eyetracker Initialization
-# win,tracker = EyeTrackerIntialization(params)
-
-# Hide mouse cursor.
-# win.mouseVisible = False
-
-# Music Start
-# if params['musicMode'] != 'off':
-#     playMusic(sound1, params)
 
 # Run the main task.
 index = 0
@@ -289,9 +275,6 @@ for section in range(3):
     # Stop Recording
     tracker.setRecordingState(False)
 
-    # # Stop music
-    # t.end()
-
     # Import the result (from eyetracker)
     trackerIO = pylink.EyeLink('100.1.1.1')
     trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
@@ -305,7 +288,7 @@ for section in range(3):
         # Rest between each section.
         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
 
-# PauseMusic()
+# Stop music.
 stopMusic(params)
 
 # Close the psychopy window.
@@ -316,8 +299,5 @@ if params['Version'] == 2:
     params['timingFileNew'] = params['timingFile'].replace('notUsed','used')
     os.rename(params['timingFile'],params['timingFileNew'])
 
-# if params['musicMode'] != 'off':
-    # p.terminate()
-
-# os.replace("userMusicSelection.csv",params['outMusicSelection'])
-copyfile("userMusicSelection.csv", params['outMusicSelection'])
+if params['musicMode'] != 'off':
+    copyfile("userMusicSelection.csv", params['outMusicSelection'])
