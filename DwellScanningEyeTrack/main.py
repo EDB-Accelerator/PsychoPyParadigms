@@ -36,15 +36,11 @@ Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen
 - Major updated on July 5 EST 2021 by KL
 """
 
-
 # Import standard python libraries
 import datetime,sys,random
-import pandas as pd
 from psychopy import visual,prefs,core,event,sound
 from glob import glob
-import os
 import pylink
-import asyncio,threading
 import numpy as np
 from shutil import copyfile
 
@@ -223,9 +219,23 @@ if params['Version'] == 2:
     params['RestTiming'] = np.array(dfTiming['rest'])
 
 elif params['Version'] == 3 or params['Version'] == 4:
-    for run in RunList:
-        ImgList = ImgList + Imgs[run]
-    random.shuffle(ImgList)
+    random.shuffle(Imgs['Disgust-Neutral'])
+    random.shuffle(Imgs['Anger-Neutral'])
+
+    # Image combination (DN: 30, AN: 30 for each block)
+    imgList1 = Imgs['Disgust-Neutral'][:30] + Imgs['Anger-Neutral'][:30]
+    imgList2 = Imgs['Disgust-Neutral'][30:60] + Imgs['Anger-Neutral'][30:60]
+    imgList3 = Imgs['Disgust-Neutral'][60:] + Imgs['Anger-Neutral'][60:]
+
+    # shuffle each list.
+    random.shuffle(imgList1)
+    random.shuffle(imgList2)
+    random.shuffle(imgList3)
+
+    # Combine varialbles into one single variable.
+    ImgList = imgList1 + imgList2 + imgList3
+
+params['ImgList'] = ImgList
 
 # Run the main task.
 index = 0
@@ -252,18 +262,17 @@ for section in range(3):
         playMusic(params)
 
     for trial in range(params['numTrial']):
-        # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
-        # win.mouseVisible = False
         params["TrialCount"] = trial
-        img = ImgList[trial+section*params['numTrial']]
+        img = (params['ImgList'])[trial+section*params['numTrial']]
 
-        # if params['musicMode'] != 'off':
+        # Get emotion labels.
         emotion,labels = GetEmotionLabels(dfLabel,img)
 
         # Fixation cross section
         DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
                       labels=labels,emotion=emotion)
+
         if params['Version'] == 2:
             DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
                          blankTime=params['RestTiming'][index])
@@ -283,9 +292,7 @@ for section in range(3):
     io.quit()
     trackerIO.close()
     if section != 2:
-        # End Music
-        # PauseMusic()
-        # Rest between each section.
+        # Rest between each section. (ITI duration)
         DisplayRest(df, dfRaw, params, dict, dictRaw, win)
 
 # Stop music.
