@@ -64,9 +64,6 @@ import os
 import pandas as pd
 import pickle
 
-# End Music if exist.
-# StopMusic()
-
 # Make empty output directory if it does not exist.
 directory = './result'
 if not os.path.exists(directory):
