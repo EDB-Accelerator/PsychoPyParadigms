@@ -133,81 +133,6 @@ def waitUserInput(Df,img,win,params,mode):
     while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
         time.sleep(0.001)
 
-# Question Session Module.
-def Questionplay(Df, win, params, SectionName):
-    Dict = {'ExperimentName': params['expName'],
-            "Subject": params['subjectID'],
-            "Session": params['Session'],
-            "Version": params['Version'],
-            "Section": SectionName,
-            "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")}
-
-    width = params["screenSize"][0]
-    height = params["screenSize"][1]
-
-    # Question (Won)
-    Dict["Q_type"] = "Won"
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you won?",
-                                                       ['Won very few', 'Won very many'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # Question (Lost)
-    Dict["Q_type"] = "Lost"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you lost?",
-                                                       ['Lost very few', 'Lost very many'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # Question (Monster versus Coin)
-    Dict["Q_type"] = "Before"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before the door opened, what did you think you would see?",
-                                                       ['Monster', 'Coins'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # Question (Monster)
-    Dict["Q_type"] = "Monster"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How often did you see the monster when the door opened?",
-                                                       ['Never', 'All the time'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # Question (Coins)
-    Dict["Q_type"] = "Coins"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win,"How often did you win coins when the door opened?",
-                                                       ['Never', 'All the time'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    Df = tableWrite(Df, Dict)  # Log the dict result on pandas dataFrame.
-
-    # Question (Performance)
-    Dict["Q_type"] = "Performance"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win,"How do you feel about how well you’ve done so far?",
-                                               ["I didn't do well","I did very well"])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-
-    # Log the dict result on pandas dataFrame.
-    Df = tableWrite(Df, Dict)
-
-    # Ending Screen
-    img1 = visual.ImageStim(win=win, image="./instruction/end_slide.jpg", units="pix", opacity=1, size=(width, height))
-    # waitUserInput(Df,img1, win, params)
-    img1.draw();
-    win.flip()
-    waitUserSpace(Df,params)
-
-    return Df
 
 # Door Game Session Module.
 
@@ -217,12 +142,20 @@ def Questionplay(Df, win, params, SectionName):
 # iterNum = params['numTaskRun1']
 
 
-def tableWrite(Df, Dict):
+def tableWrite(df, params,dict):
     # Move data in Dict into Df.
-    Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
-    for key in Dict:
-        Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
-    return Df
+    # Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
+    # Move data in Dict into Df.
+    for key in params['Header']:
+        if key not in dict.keys():
+            dict[key] = ""
+    df = df.append(dict,ignore_index=True)
+    # df.to_csv(params['outFile'], mode='a', sep=',', encoding='utf-8', index=False, header=False)
+    df.to_csv(params['outFile'], sep=',', mode='a',encoding='utf-8', index=False, header=False)
+
+    # for key in Dict:
+    #     Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
+    # return df
 
 
 def displayVAS(Df,params,win, text, labels):

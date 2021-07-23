@@ -3,7 +3,7 @@ from psychopy import gui
 # Function to get user inputs.
 def userInputPlay():
     userInput = gui.Dlg(title="DOORS Task Information")
-    userInput.addField('Subject Number:',23986)
+    userInput.addField('Subject Number:')
     userInput.addField('Session:',1)
     userInput.addField('Version:', choices=[1, 2])
     userInput.addField('# of Practice Trials:', 5)
@@ -13,6 +13,6 @@ def userInputPlay():
     userInput.addField('Trigger Support:', True)
     userInput.addField('Eyetracker Support:', True)
     userInput.addField('Full Screen', True)
-    userInput.addField('Joystick Sensitivity (0: very sensitive, 1: normal, 2: less sensitive', choices=[0,1,2])
-    # userInput.addField('Resolution', (1024,780))
+    userInput.addField('Joystick Sensitivity (0: very sensitive, 1: normal, 2: less sensitive', 2, choices=[0,1,2])
+    # userInput.addField('Eyetracker Circle', True)
     return userInput.show()
