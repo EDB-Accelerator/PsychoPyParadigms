@@ -107,7 +107,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Eyetracker label record
         # tracker.sendMessage('TRIAL_RESULT 0') # # EDF labeling (end)
     if params['EyeTrackerSupport']:
-        ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game","","")
+        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game","","")
         tracker.sendMessage('TRIAL_RESULT 0')
 
     # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
@@ -222,13 +222,14 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                                         390 - height * 160 / 768,
                                                                                         512 + width * 105 / 1024,
                                                                                         390 + height * 200 / 768, 'DOOR'))
+
                     aoiTimeStart = aoiTimeEnd
 
             win.flip()
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).","","")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).","","")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
             tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2, 768 / 2, width, height))
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*105/1024,
@@ -248,7 +249,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.","","")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.","","")
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
             tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('./img/practice/combined.jpg', 1024 / 2, 768 / 2, width, height))
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*50/1024,
@@ -266,25 +267,12 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         event.waitKeys(maxWait=2)
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.","","")
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.","","")
+            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            ELstartTime = time.time()
 
+        # ITI duration
         if params['EyeTrackerSupport']:
-            # Blank screen
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            ELstartTime = time.time()
-            width = params["screenSize"][0]
-            height = params["screenSize"][1]
-            img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
-            img1.draw();
-            win.flip()
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/iti.jpg", width/2, height/2))
-            time.sleep(1)
-            tracker.sendMessage('TRIAL_RESULT 0')
-            ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Blank screen displayed (before ITI).","","")
-
-            # ITI duration
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            ELstartTime = time.time()
             startTime = time.time()
             width = params["screenSize"][0]
             height = params["screenSize"][1]
@@ -295,12 +283,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
             WaitEyeGazed(win, params, tracker,'eyeTrackCircle')
             Dict["ITI_duration"] = time.time() - startTime
-            tracker.sendMessage('TRIAL_RESULT 0')
-            ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
-
 
         else:
-            # ITI duration
             width = params["screenSize"][0]
             height = params["screenSize"][1]
             img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
@@ -308,7 +292,11 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
             time.sleep(Dict["ITI_duration"] / 1000)
 
-        tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+        if params['EyeTrackerSupport']:
+            tracker.sendMessage('TRIAL_RESULT 0')
+            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
+
+        Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
 
     # Eyetracker finish recording
@@ -319,11 +307,11 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # open a connection to the tracker and download the result file.
         trackerIO = pylink.EyeLink('100.1.1.1')
         trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
-
+        # tracker._eyelink.receiveDataFile("et_data.EDF", params[SectionName])
         # Stop the ioHub Server
         io.quit()
         trackerIO.close()
 
     win.mouseVisible = True
-    return win
+    return Df,DfTR,win
 

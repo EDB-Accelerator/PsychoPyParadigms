@@ -3,7 +3,7 @@ from psychopy import gui
 # Function to get user inputs.
 def userInputPlay():
     userInput = gui.Dlg(title="DOORS Task Information")
-    userInput.addField('Subject Number:')
+    userInput.addField('Subject Number:',23986)
     userInput.addField('Session:',1)
     userInput.addField('Version:', choices=[1, 2])
     userInput.addField('# of Practice Trials:', 5)

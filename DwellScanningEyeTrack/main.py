@@ -79,16 +79,16 @@ Header = ["Start Time","End Time","Duration","expName","Version","subjectID","Se
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
 
-###
+# Check if the previous session is not completed.
 resumeOkay = 'no'
-if os.path.isfile('params.pkl'):
+if os.path.isfile('.tmp/params.pkl'):
 
     from tkinter import *
     import tkinter.messagebox
 
     root = Tk()
     # Getting back the objects:
-    with open('params.pkl', 'rb') as f:  # Python 3: open(..., 'rb')
+    with open('.tmp/params.pkl', 'rb') as f:  # Python 3: open(..., 'rb')
         params, prefs, dfLabel, df, dfRaw, index, section, trial, dict, dictRaw = pickle.load(f)
 
     resumeOkay = tkinter.messagebox.askquestion('Resume', 'Do you want to resume your previous section? (subject id:' + params['subjectID'] + ')')
@@ -122,7 +122,7 @@ if os.path.isfile('params.pkl'):
 
     else:
         print('new session selected. saved session will be deleted.')
-        os.remove('params.pkl')
+        os.remove('.tmp/params.pkl')
         root.destroy()  # Closing Tkinter window forcefully.
     root.mainloop()
 
@@ -182,19 +182,11 @@ if resumeOkay == 'no':
         params['musicMode'] = 'onlyWhenStareAt'
         params['faceMatrixDuration'] = 24
 
-    # # Save the current status
-    # with open('params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
-    #     pickle.dump([params], f)
-
-    # # Getting back the objects:
-    # with open('params.pkl','rb') as f:  # Python 3: open(..., 'rb')
-    #     a = pickle.load(f)
-
     # Music Selection
     if params['musicMode'] != 'off':
         # Run Music Selection GUI
         os.system("dwellscansub\python.exe" + " src/MusicSelectionGUI.py")
-        df = pd.read_csv('userMusicSelection.csv')
+        df = pd.read_csv('.tmp/userMusicSelection.csv')
         playlist = df['fileName'].tolist()
         random.shuffle(playlist)
         params['playlist'] = playlist
@@ -209,13 +201,13 @@ if resumeOkay == 'no':
 
     # Decide the name of output files.
     timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
-    params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+    params['outFile'] = "./result/CSV/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
               timeLabel + ".csv"
-    params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+    params['outFileRaw'] = "./result/CSV/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
               timeLabel + "_raw.csv"
-    params["edfFile"] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+    params["edfFile"] = "./result/EDF/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
               timeLabel + "_"
-    params['outMusicSelection'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+    params['outMusicSelection'] = "./result/CSV/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
               timeLabel + "_music_selection.csv"
 
     # Instance result initialization
@@ -285,10 +277,10 @@ if resumeOkay == 'no':
     params['ImgList'] = ImgList
 
 # Run the main task.
-if os.path.isfile('params.pkl') == False:
+if os.path.isfile('.tmp/params.pkl') == False:
     index = 0
     section = 0
-# for section in range(3):
+
 while section < 3:
     params["Section"] = section # This block is different from original block.
 
@@ -325,8 +317,9 @@ while section < 3:
         sound1 = ""
 
     # for trial in range(params['numTrial']):
-    if os.path.isfile('params.pkl') == False:
+    if os.path.isfile('.tmp/params.pkl') == False:
         trial = 0
+
     while trial < params['numTrial']:
         params["TrialCount"] = trial
         img = (params['ImgList'])[trial+section*params['numTrial']]
@@ -334,7 +327,7 @@ while section < 3:
         # Get emotion labels.
         emotion,labels = GetEmotionLabels(dfLabel,img)
 
-        # Fixation cross section
+        # Fixation cross section (Version 2 only)
         if params['Version'] == 2:
             DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
 
@@ -342,22 +335,12 @@ while section < 3:
         sound1 = DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
                       labels=labels,emotion=emotion,sound1=sound1)
 
-        # Display Rest.
+        # Display Rest (Version 2 only).
         if params['Version'] == 2:
             DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
                          blankTime=params['RestTiming'][index])
-        # else:
-        #     DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
-        #                  blankTime=2)
         index += 1
         trial += 1
-
-        # Save the current status
-        # with open('params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
-        #     pickle.dump([params, prefs, dfLabel, df, dfRaw, index], f)
-        # Save the current status.
-        # with open('params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
-        #     pickle.dump([params,prefs,dfLabel,df,dfRaw,index,section,trial,dict,dictRaw], f)
 
     # Stop Recording
     tracker.setRecordingState(False)
@@ -375,7 +358,7 @@ while section < 3:
     section += 1
     trial = 0
     # Save the current status.
-    with open('params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+    with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
         pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
 
 # Stop music.
@@ -391,10 +374,10 @@ if params['Version'] == 2:
     os.rename(params['timingFile'],params['timingFileNew'])
 
 if params['musicMode'] != 'off':
-    copyfile("userMusicSelection.csv", params['outMusicSelection'])
+    copyfile(".tmp/userMusicSelection.csv", params['outMusicSelection'])
 
 # Delete status backup pickle file
-os.remove('params.pkl')
+os.remove('.tmp/params.pkl')
 
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
 win.mouseVisible = False

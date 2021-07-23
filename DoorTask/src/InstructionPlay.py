@@ -46,4 +46,4 @@ def InstructionPlay(Df, win, params):
                     waitUserSpace(Df,params)
 
     # Log the dict result on pandas dataFrame.
-    tableWrite(Df, params,Dict)
+    return tableWrite(Df, params,Dict)

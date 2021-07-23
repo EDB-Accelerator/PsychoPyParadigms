@@ -114,54 +114,58 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         circle.draw()
     fixation1.draw()
     fixation2.draw()
-    while (c != ['space']):
-        # print(c)
+
+    startTime = time.time()
+    while time.time() - startTime < 1:
         core.wait(1 / 120)
-        # import asyncio, threading
-        # loop = asyncio.get_event_loop()
-        # t = threading.Thread(target=event.getKeys(), args=())
-        # t.start()
 
-        c = event.getKeys()
-        position = tracker.getPosition()
-        if position is None or type(position) == int:
-            continue
-
-        # Thresholding
-        position[0] = params['screenSize'][0] if position[0]>params['screenSize'][0] else position[0]
-        position[0] = -1*params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
-        position[1] = params['screenSize'][1] if position[1]>params['screenSize'][1] else position[1]
-        position[1] = -1*params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
-
-        startTime = time.time()
-        # gazeTime = 0
-        while time.time()-startTime < 1:
-            core.wait(1/120)
-        # while abs(position[0])<80 and abs(position[1]) <80:
-        #     gazeTime = time.time() - startTime
-        #     positionTmp = position
-        #     position = tracker.getPosition()
-        #
-        #     if position is None:
-        #         position = positionTmp
-        #         # continue
-        #
-        #     circle.pos = position
-        #     if params['circle']:
-        #         circle.draw()
-        #     fixation1.draw()
-        #     fixation2.draw()
-        #     win.flip()
-
-        circle.pos = position
-        if params['circle']:
-            circle.draw()
-        fixation1.draw()
-        fixation2.draw()
-        win.flip()
-
-        # if gazeTime > 1:
-            # break
+    # while (c != ['space']):
+    #     # print(c)
+    #     core.wait(1 / 120)
+    #     # import asyncio, threading
+    #     # loop = asyncio.get_event_loop()
+    #     # t = threading.Thread(target=event.getKeys(), args=())
+    #     # t.start()
+    #
+    #     c = event.getKeys()
+    #     position = tracker.getPosition()
+    #     if position is None or type(position) == int:
+    #         continue
+    #
+    #     # Thresholding
+    #     position[0] = params['screenSize'][0] if position[0]>params['screenSize'][0] else position[0]
+    #     position[0] = -1*params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
+    #     position[1] = params['screenSize'][1] if position[1]>params['screenSize'][1] else position[1]
+    #     position[1] = -1*params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
+    #
+    #
+    #     # gazeTime = 0
+    #
+    #     # while abs(position[0])<80 and abs(position[1]) <80:
+    #     #     gazeTime = time.time() - startTime
+    #     #     positionTmp = position
+    #     #     position = tracker.getPosition()
+    #     #
+    #     #     if position is None:
+    #     #         position = positionTmp
+    #     #         # continue
+    #     #
+    #     #     circle.pos = position
+    #     #     if params['circle']:
+    #     #         circle.draw()
+    #     #     fixation1.draw()
+    #     #     fixation2.draw()
+    #     #     win.flip()
+    #
+    #     circle.pos = position
+    #     if params['circle']:
+    #         circle.draw()
+    #     fixation1.draw()
+    #     fixation2.draw()
+    #     win.flip()
+    #
+    #     # if gazeTime > 1:
+    #         # break
 
     # Record Result
     dictRaw["Event"] = bold + " shown (end)"

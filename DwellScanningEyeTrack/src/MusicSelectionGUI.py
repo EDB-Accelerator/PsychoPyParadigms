@@ -120,7 +120,7 @@ class OLVCheckPanel(wx.Panel):
             musicInfoPD = pd.DataFrame(musicInfoPD, columns=["fileName","Title","Artist","Album","Genre","Release Date"])
             df = df.append(musicInfoPD,ignore_index = True)
 
-        df.to_csv("userMusicSelection.csv", mode='w', sep=',', encoding='utf-8')
+        df.to_csv(".tmp/userMusicSelection.csv", mode='w', sep=',', encoding='utf-8')
 
         wx.CallAfter(frame.Close)
 

@@ -28,7 +28,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win, "How anxious do you feel right now?",
                                                        ['Not anxious', 'Very anxious'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # VAS (Avoidance)
     Dict["VAS_type"] = "Avoidance"
@@ -37,7 +37,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win, "How much do you feel like taking part in the task?",
                                                        ['Not at all', 'Very much'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # VAS (Tired)
     Dict["VAS_type"] = "Tired"
@@ -46,7 +46,7 @@ def VASplay(Df, win, params, SectionName):
     Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win, "How tired are you right now?",
                                                        ['Not at all tired', 'Very tired'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # VAS (Mood)
     Dict["VAS_type"] = "Mood"
@@ -56,4 +56,4 @@ def VASplay(Df, win, params, SectionName):
                                                        "Think about your mood right now. \nHow would you describe it?",
                                                        ['Worst mood ever', 'Best mood ever'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    return tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
