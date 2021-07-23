@@ -1,0 +1,12 @@
+*.csv
+*.edf
+*.mp3
+*.wav
+music/**
+dwellscansub/**
+*.zip
+*.7z
+__pycache__/**
+timing/**
+good_timing_files/**
+good_timing_files
