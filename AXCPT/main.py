@@ -66,10 +66,26 @@ dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between
 
 
 for i in range(numTrial):
-    print(i)
 
+    # ITI
+    core.wait(2)
 
+    # Get Letter type
+    trialLetter = dfTiming.iloc[i]['Trial Type']
 
+    # Display the first letter
+    message = visual.TextStim(win, text=trialLetter[0],
+                              units='norm', wrapWidth=2, color="black")
+    message.draw()
+    win.flip()
+    core.wait(0.5)
+
+    # Display the second letter
+    message = visual.TextStim(win, text=trialLetter[1],
+                              units='norm', wrapWidth=2, color="black")
+    message.draw()
+    win.flip()
+    core.wait(0.5)
 
 # message.draw()
 # win.flip()
