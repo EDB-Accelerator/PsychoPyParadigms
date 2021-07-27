@@ -31,10 +31,15 @@ SOFTWARE.
 import sys
 from psychopy import visual,core
 import pandas as pd
+import glob
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
 from PlayUserInputGUI import PlayUserInputGUI
+
+
+
+
 
 UserInputBank = PlayUserInputGUI()
 
@@ -47,31 +52,102 @@ params = {
     'fullscr': UserInputBank[3],  # The resolution of Psychopy Window
 }
 
-if params['numTrial'] is 'default':
+if params['numTrial'] == 'default':
     params['numTrial'] = 40
 else:
     params['numTrial'] = int(params['numTrial'])
 
+# Import dependencies.
+import sys
+from psychopy import visual,core
+import pandas as pd
+import glob
 
-win = visual.Window(monitor="testMonitor", color="white", winType='pyglet')
+# Import developer-defined functions
+sys.path.insert(1, './src')
+from PlayUserInputGUI import PlayUserInputGUI
+
+def WaitUserSpace():
+    from psychopy import core, event
+    # Wait for user types a space key.
+    c = ['']
+    while (c[0] != 'space'):
+        core.wait(1 / 120)
+        c = event.waitKeys()  # read a character
+
+        if c == ['q'] or c == ['Q']:
+            print('Q pressed. Forced Exit.')
+            core.quit()
+
+# Welcome Screen
+win = visual.Window(monitor="testMonitor", color="black", winType='pyglet')
 win.mouseVisible = False
-message = visual.TextStim(win,text="Thank you so much!\n ",
-                                  units='norm', wrapWidth=2, color="black")
+message = visual.TextStim(win,text="Welcome!\n\n"+
+                          "Please remember the task where we ask you to\n"+
+                          "remember a series of letters\n\n\n\n\n\n\n"+
+                          "Please press SPACE to see an example.",
+                                  units='pix', wrapWidth=1000, color="white",height=25)
 message.draw()
 win.flip()
+WaitUserSpace()
 
-timingFile = "timing/file01.csv"
+# Introduction
+message = visual.TextStim(win,text="The task sequence looks like:",
+                                  units='pix', wrapWidth=1000, color="white",height=25,pos=[0,250])
+message.draw()
+win.flip()
+WaitUserSpace()
+
+for i in range(3):
+    imgFile = "resource/img/intro" + str(i) + ".JPG"
+    img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1)
+    img1.draw()
+    message.draw()
+    win.flip()
+    WaitUserSpace()
+
+# Introduction Slide 2
+message = visual.TextStim(win,text="Press the YES (index) key as quickly as you can when you see the\n"+
+                          "blue letter that completes the target sequence. Press the NO\n"+
+                          "(middle) key as quickly as you can for all other letters.\n\n\n\n\n"+
+                          "Please Space Bar to continue",
+                                  units='pix', wrapWidth=1000, color="white",height=25)
+message.draw()
+win.flip()
+WaitUserSpace()
+
+# Introduction Slide 3
+message = visual.TextStim(win,text="Are you ready to start the task\n"
+                                   "or\n"
+                                   "should we review the instructions again?",
+                                  units='pix', wrapWidth=1000, color="white",height=25)
+message.draw()
+win.flip()
+WaitUserSpace()
+
+
+
+
+
+
+
+timingFiles = glob.glob('timing/*.csv')
+timingFile = timingFiles[0]
 numTrial = int(params['numTrial'])
 dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between Letters', 'Delay Between Trials'])
-
 
 for i in range(numTrial):
 
     # ITI
+    message = visual.TextStim(win, text="+", wrapWidth=2,color="black")
+    message.draw()
+    win.flip()
+
     core.wait(2)
 
     # Get Letter type
-    trialLetter = dfTiming.iloc[i]['Trial Type']
+    trialLetter = dfTiming.iloc[i]['Trial ' \
+                                   'Type']
 
     # Display the first letter
     message = visual.TextStim(win, text=trialLetter[0],
