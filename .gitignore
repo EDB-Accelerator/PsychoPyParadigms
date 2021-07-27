@@ -3,7 +3,6 @@
 
 # Experimental log files:
 *.log
-*.csv
 
 # Parameter files
 *.pickle
