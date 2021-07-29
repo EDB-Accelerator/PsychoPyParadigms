@@ -23,14 +23,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from psychopy import gui
-
 # Function to get user inputs.
 def PlayUserInputGUI():
+    from psychopy import prefs, gui
+    import datetime
+
     userInput = gui.Dlg(title="AXCPT task Information")
     userInput.addField('Subject ID:',)
     userInput.addField('Session:',)
     userInput.addField('# of trials per block (** there are 3 blocks):', choices=["default","5","3","1"])
     userInput.addField('Full Screen', True)
 
-    return userInput.show()
+    UserInputBank = userInput.show()
+
+    # Declare primary task parameters.
+    params = {
+        'expName' : 'AXCPT', # The name of this experiment
+        'subjectID' : UserInputBank[0],      # Subject ID
+        'Session' : UserInputBank[1], # Session ID
+        'numTrial': UserInputBank[2],  # The number of Trials.
+        'fullscr': UserInputBank[3],  # The resolution of Psychopy Window
+        'timingFile' : "",
+    }
+
+    if params['numTrial'] == 'default':
+        params['numTrial'] = 40
+    else:
+        params['numTrial'] = int(params['numTrial'])
+
+    timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
+    prefs.general['fullscr'] = params['fullscr']
+    params['outFile'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+              timeLabel + ".csv"
+
+    return params

@@ -30,186 +30,144 @@ SOFTWARE.
 # Import dependencies.
 import sys
 from psychopy import visual,core,event
-import time
-
-# Import developer-defined functions
-sys.path.insert(1, './src')
-from PlayUserInputGUI import PlayUserInputGUI
-
-def waitAndGetUserInput(c,waitTime):
-    startTime = time.time()
-    while time.time()-startTime < waitTime:
-        if c == []:
-            c = event.getKeys()
-        core.wait(1/120)
-
-    return c
-
-# Receive User input from GUI window
-UserInputBank = PlayUserInputGUI()
-
-# Declare primary task parameters.
-params = {
-    'expName' : 'AXCPT', # The name of this experiment
-    'subjectID' : UserInputBank[0],      # Subject ID
-    'Session' : UserInputBank[1], # Session ID
-    'numTrial': UserInputBank[2],  # The number of Trials.
-    'fullscr': UserInputBank[3],  # The resolution of Psychopy Window
-}
-
-if params['numTrial'] == 'default':
-    params['numTrial'] = 40
-else:
-    params['numTrial'] = int(params['numTrial'])
-
-# Import dependencies.
-import sys
-from psychopy import visual,core
 import pandas as pd
 import glob
+import time
+import datetime
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
+from WaitAndGetUserInput import WaitAndGetUserInput,WaitUserSpace
+from DictWrite import DataWrite
 from PlayUserInputGUI import PlayUserInputGUI
+from PlayIntroduction import PlayIntroduction
 
-def WaitUserSpace():
-    from psychopy import core, event
-    # Wait for user types a space key.
+# Receive User input from GUI window
+params = PlayUserInputGUI()
+
+# Start Session
+startTime = datetime.datetime.now()
+
+# Make Empty output files Construct pandas dataframe structure.
+Header = ["expName", "subjectID", "Session", "TrialCount", "Event", "Start Time", "End Time", "Duration (sec)",
+          'Timing File', "User Response", "Right Answer", "Correct or Incorrect", "User Response TimeStamp",
+          "User Response Time (the amount of time that passes from time the letter was shown)"]
+df = pd.DataFrame(columns=Header)
+df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+
+# Psychopy Window Initialization
+win = visual.Window(monitor="testMonitor", color="black", winType='pyglet',size=[1024,768])
+win.mouseVisible = False
+
+# Display Welcome Screen / Introduction
+win = PlayIntroduction(win,params)
+
+# Get a Timing file list
+timingFiles = glob.glob('timing/*.csv')
+timingFiles.sort()
+
+# timingFile = timingFiles[0]
+for timingFile in timingFiles:
+
+    # Load a Timing File.
+    dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between Letters', 'Delay Between Trials'])
+
+    ### ITI section ###
+    startTime = datetime.datetime.now()
+    message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+    message.draw()
+    win.flip()
     c = ['']
-    while (c[0] != 'space'):
+    # Wait for user until user types "5".
+    while (c[0]!="5"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
 
-        if c == ['q'] or c == ['Q']:
-            print('Q pressed. Forced Exit.')
-            core.quit()
+    # ITI Section Termination
+    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",
+              event="ITI", timingFile=timingFile, userResponse="5", rightAnswer="5",userResponseTime="",
+              userResponseOffset=0)
+    ### ITI section (end) ###
 
-# Welcome Screen
-win = visual.Window(monitor="testMonitor", color="black", winType='pyglet')
-win.mouseVisible = False
-message = visual.TextStim(win,text="Welcome!\n\n"+
-                          "Please remember the task where we ask you to\n"+
-                          "remember a series of letters\n\n\n\n\n\n\n"+
-                          "Please press SPACE BAR to see an example.",
-                                  units='pix', wrapWidth=1000, color="white",height=25)
-message.draw()
-win.flip()
-WaitUserSpace()
+    for i in range(params['numTrial']):
+        # Extract Timing Information
+        trialLetter = dfTiming.iloc[i]['Trial Type']
+        delayBetweenLetters = dfTiming.iloc[i]['Delay Between Letters'] / 1000
+        delayBetweenTrials = dfTiming.iloc[i]['Delay Between Trials'] / 1000
 
-# Introduction
-c = ['Y']
-while(c[0].upper()=='Y'):
+        # Display the first letter (cue)
+        startCueTime = datetime.datetime.now()
+        rightAnswer = "N"
 
-    message = visual.TextStim(win,text="The task sequence looks like:",
-                                      units='pix', wrapWidth=1000, color="white",height=25,pos=[0,250])
-    message.draw()
-    win.flip()
-    WaitUserSpace()
-
-
-    for i in range(3):
-        imgFile = "resource/img/intro" + str(i) + ".JPG"
-        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1)
-        img1.draw()
+        message = visual.TextStim(win, text=trialLetter[0],wrapWidth=2,units='norm',color="blue",height=1.005)
         message.draw()
         win.flip()
-        WaitUserSpace()
+        c,responseTime = WaitAndGetUserInput([],0.5)
+        if responseTime == "":
+            responseTime = "No response"
+            c = "No response"
 
-    # Introduction Slide 2
-    message = visual.TextStim(win,text="Press the YES (index) key as quickly as you can when you see the\n"+
-                              "blue letter that completes the target sequence. Press the NO\n"+
-                              "(middle) key as quickly as you can for all other letters.\n\n\n\n\n"+
-                              "Please SPACE BAR to continue",
-                                      units='pix', wrapWidth=1000, color="white",height=25)
-    message.draw()
-    win.flip()
-    WaitUserSpace()
+        DataWrite(params=params, startTime=startCueTime, endTime=datetime.datetime.now(), trialCount=str(i),
+                  event="First Letter Displayed.",
+                  timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
+                  userResponseOffset=0)
 
-    # Introduction Slide 3
-    message = visual.TextStim(win,text="Are you ready to start the task\n"
-                                       "or\n"
-                                       "should we review the instructions again?\n\n\n"
-                                       "Press Y if Yes / Press N if No",
-                                      units='pix', wrapWidth=1000, color="white",height=25)
-    message.draw()
-    win.flip()
-    c = ['']
-    # Wait for user types "y" or "n".
-    while (c[0].upper() != "Y" and c[0].upper() != "N"):
-        core.wait(1 / 120)
-        c = event.waitKeys()  # read a characters
+        # Display Fixation Cross (response window)
+        startResponseFixationTime = datetime.datetime.now()
+        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message.draw()
+        win.flip()
+        c,responseTime = WaitAndGetUserInput(c,1.5)
+        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i),
+                  event="Fixation Displayed (Response Window)",
+                  timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
+                  userResponseOffset=0.5)
 
+        # Display Fixation Cross (Delay Between Letters)
+        startTime = datetime.datetime.now()
+        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message.draw()
+        win.flip()
+        core.wait(delayBetweenLetters)
+        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i),
+                  event="Fixation Displayed (Delay Between Letters)",
+                  timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
+                  userResponseOffset=0)
 
-timingFiles = glob.glob('timing/*.csv')
-timingFile = timingFiles[0]
-# numTrial = int(params['numTrial'])
-numTrial = 3
-dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between Letters', 'Delay Between Trials'])
+        # Display the second letter (probe)
+        startProbeTime = datetime.datetime.now()
+        rightAnswer = "Y" if trialLetter == "AX" else "N"
+        message = visual.TextStim(win, text=trialLetter[1],wrapWidth=2,units='norm',color="white",height=1.005)
+        message.draw()
+        win.flip()
+        c,responseTime = WaitAndGetUserInput([],0.5)
+        if responseTime == "":
+            responseTime = "No response"
+            c = "No response"
 
-# ITI
-message = visual.TextStim(win, text="+", wrapWidth=2,units='pix',color="white",height=50,pos=[-25,0])
-message.draw()
-win.flip()
-c = ['']
-# Wait for user types "5".
-while (c[0]!="5"):
-    core.wait(1 / 120)
-    c = event.waitKeys()  # read a character
+        DataWrite(params=params, startTime=startProbeTime, endTime=datetime.datetime.now(), trialCount=str(i),
+                  event="Second Letter Displayed.("+str(trialLetter[1]) + ")",
+                  timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
+                  userResponseOffset=0)
 
-numTrial = 3
+        # Display Fixation Cross (response window)
+        startResponseFixationTime = datetime.datetime.now()
+        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message.draw()
+        win.flip()
+        c,responseTime = WaitAndGetUserInput(c,1.5)
+        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i),
+                  event="Fixation Displayed (Response Window)",
+                  timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
+                  userResponseOffset=0.5)
 
-for i in range(numTrial):
-
-    # Get Timing Information
-    trialLetter = dfTiming.iloc[i]['Trial Type']
-    delayBetweenLetters = dfTiming.iloc[i]['Delay Between Letters'] / 1000
-    delayBetweenTrials = dfTiming.iloc[i]['Delay Between Trials'] / 1000
-
-    # Display the first letter (cue)
-    message = visual.TextStim(win, text=trialLetter[0],wrapWidth=2,units='pix',color="white",height=100,pos=[-25,0])
-    message.draw()
-    win.flip()
-    c = waitAndGetUserInput([],0.5)
-
-    # Display Fixation Cross (response window)
-    message = visual.TextStim(win, text="+", wrapWidth=2,units='pix',color="white",height=50,pos=[-25,0])
-    message.draw()
-    win.flip()
-    c = waitAndGetUserInput(c,1.5)
-    print(c)
-
-    # Display Fixation Cross (Delay Between Letters)
-    message = visual.TextStim(win, text="+", wrapWidth=2,units='pix',color="white",height=50,pos=[-25,0])
-    message.draw()
-    win.flip()
-    core.wait(delayBetweenLetters)
-
-    # Display the second letter (probe)
-    message = visual.TextStim(win, text=trialLetter[1],wrapWidth=2,units='pix',color="white",height=100,pos=[-25,0])
-    message.draw()
-    win.flip()
-    c = waitAndGetUserInput([],0.5)
-
-    # Display Fixation Cross (response window)
-    message = visual.TextStim(win, text="+", wrapWidth=2,units='pix',color="white",height=50,pos=[-25,0])
-    message.draw()
-    win.flip()
-    c = waitAndGetUserInput(c,1.5)
-
-    # Display Fixation Cross (Delay Between Trials)
-    message = visual.TextStim(win, text="+", wrapWidth=2,units='pix',color="white",height=50,pos=[-25,0])
-    message.draw()
-    win.flip()
-    core.wait(delayBetweenTrials)
-    print(c)
-
-
-
-# message.draw()
-# win.flip()
-# core.wait(3)
-# win.close()
-#
-#
-
-# c = waitAndGetUserInput(c,20)
+        # Display Fixation Cross (Delay Between Trials)
+        startTime = datetime.datetime.now()
+        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message.draw()
+        win.flip()
+        core.wait(delayBetweenTrials)
+        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i),
+                  event="Fixation Displayed (Delay Between Trials)",
+                  timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
+                  userResponseOffset=0)
