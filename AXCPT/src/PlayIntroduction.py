@@ -62,7 +62,7 @@ def PlayIntroduction(win,params):
             c = event.waitKeys()  # read a characters
 
     # Section Termination
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",
+    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",trialType="",
               event="Instruction displayed", timingFile="", userResponse="", rightAnswer="",userResponseTime="",
               userResponseOffset=0)
 

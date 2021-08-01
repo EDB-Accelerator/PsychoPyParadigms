@@ -34,10 +34,11 @@ def DictWriteRaw(dfRaw,dictRaw,params):
     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
     # dfRaw = dfRaw[:-1] # Drop the last row.
 
-def DataWrite(params,startTime,endTime,trialCount,event,timingFile,userResponse,rightAnswer,userResponseTime,userResponseOffset):
+def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,userResponse,rightAnswer,userResponseTime,userResponseOffset):
 
     dict = {}
-    Header = ["expName", "subjectID", "Session", "TrialCount", "Event", "Start Time", "End Time", "Duration (sec)",
+    Header = ["expName", "subjectID", "Session", "TrialCount", "Trial Type", "Event", "Start Time", "End Time",
+              "Duration (sec)",
               'Timing File', "User Response", "Right Answer", "Correct or Incorrect", "User Response TimeStamp",
               "User Response Time (the amount of time that passes from time the letter was shown)"]
 
@@ -48,6 +49,7 @@ def DataWrite(params,startTime,endTime,trialCount,event,timingFile,userResponse,
 
     # Get information from arguments
     dict["TrialCount"] = trialCount
+    dict["Trial Type"] = trialType
     dict["Event"] = event
     # startTime = datetime.datetime.now()
     # endTime = datetime.datetime.now()
@@ -57,7 +59,7 @@ def DataWrite(params,startTime,endTime,trialCount,event,timingFile,userResponse,
 
     dict["Timing File"] = timingFile
     try:
-        dict["User Response"] = userResponse[0]
+        dict["User Response"] = userResponse[0] if userResponse != "space bar" and userResponse != "No response" else userResponse
     except:
         dict["User Response"] = userResponse
     dict["Right Answer"] = rightAnswer
@@ -65,10 +67,11 @@ def DataWrite(params,startTime,endTime,trialCount,event,timingFile,userResponse,
     if dict["Right Answer"] == "":
         dict["Correct or Incorrect"] = ""
     else:
-        dict["Correct or Incorrect"] = "Correct" if dict["User Response"].upper() == dict["Right Answer"] else "Incorrect"
+        dict["Correct or Incorrect"] = "Correct" if dict["User Response"].upper() == dict["Right Answer"].upper() else "Incorrect"
 
-    if userResponseTime == "No response":
+    if userResponseTime == "No response" or dict["User Response"] == "No response":
         dict["User Response TimeStamp"] = "No response"
+        dict["User Response"] = "No response"
         dict["User Response Time (the amount of time that passes from time the letter was shown)"] = "No response"
     elif userResponseTime == "":
         dict["User Response TimeStamp"] = ""
@@ -77,6 +80,8 @@ def DataWrite(params,startTime,endTime,trialCount,event,timingFile,userResponse,
         dict["User Response TimeStamp"] = userResponseTime.strftime("%m/%d/%Y %H:%M:%S.%f")[:-4]
         dict["User Response Time (the amount of time that passes from time the letter was shown)"] = \
             (userResponseTime - startTime).total_seconds() + userResponseOffset
+
+    dict["User Response"] = dict["User Response"].upper() if len(dict["User Response"])==1 else dict["User Response"]
 
     df = pd.DataFrame(columns=Header)
     df = df.append(dict,ignore_index=True)
