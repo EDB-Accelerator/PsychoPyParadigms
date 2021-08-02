@@ -5,13 +5,16 @@ def WaitAndGetUserInput(c,waitTime):
 
     startTime = time.time()
     responseTime = ""
+    c = []
     while time.time()-startTime < waitTime:
         if c == []:
             c = event.getKeys()
+            responseTime = datetime.datetime.now()
+            # print(c)
         core.wait(1/120)
 
-    if c != []:
-        responseTime = datetime.datetime.now()
+    if c == []:
+        responseTime = ""
 
     return c,responseTime
 

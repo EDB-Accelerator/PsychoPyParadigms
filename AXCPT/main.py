@@ -95,7 +95,7 @@ for timingFile in timingFiles:
               event="waiting for spacebar", timingFile=timingFile, userResponse="space bar", rightAnswer="space bar",
               userResponseTime="",userResponseOffset=0)
 
-    ### ITI section (wait for "+") ###
+    ### ITI section (wait for "5") ###
     startTime = datetime.datetime.now()
     message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
     if params['debug']:
@@ -152,10 +152,15 @@ for timingFile in timingFiles:
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         win.flip()
-        c,responseTime = WaitAndGetUserInput(c,1.5)
-        if responseTime == "":
-            responseTime = "No response"
-            c = "No response"
+
+        if c != "No response":
+            c = "Already answered"
+            core.wait(1.5)
+        else:
+            c,responseTime = WaitAndGetUserInput(c,1.5)
+            if responseTime == "":
+                responseTime = "No response"
+                c = "No response"
 
         DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i),
                   trialType=trialLetter,
@@ -221,10 +226,15 @@ for timingFile in timingFiles:
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         win.flip()
-        c,responseTime = WaitAndGetUserInput(c,1.5)
-        if responseTime == "":
-            responseTime = "No response"
-            c = "No response"
+
+        if c != "No response":
+            c = "Already answered"
+            core.wait(1.5)
+        else:
+            c,responseTime = WaitAndGetUserInput(c,1.5)
+            if responseTime == "":
+                responseTime = "No response"
+                c = "No response"
 
         DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
                   event="Fixation Displayed (Response Window)",

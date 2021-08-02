@@ -73,6 +73,10 @@ def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,use
         dict["User Response TimeStamp"] = "No response"
         dict["User Response"] = "No response"
         dict["User Response Time (the amount of time that passes from time the letter was shown)"] = "No response"
+    elif userResponse == "Already answered":
+        dict["User Response TimeStamp"] = "Already answered"
+        dict["User Response"] = "Already answered"
+        dict["User Response Time (the amount of time that passes from time the letter was shown)"] = "Already answered"
     elif userResponseTime == "":
         dict["User Response TimeStamp"] = ""
         dict["User Response Time (the amount of time that passes from time the letter was shown)"] = ""
