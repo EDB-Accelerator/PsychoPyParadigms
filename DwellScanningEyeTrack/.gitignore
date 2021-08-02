@@ -10,3 +10,4 @@ __pycache__/**
 timing/**
 good_timing_files/**
 good_timing_files
+psychopy3/**
