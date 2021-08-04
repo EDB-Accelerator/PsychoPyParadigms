@@ -31,7 +31,8 @@ from SelectFourOption import SelectFourOption
 def PlayScale2(df,dfRaw,params,dict,dictRaw,win):
 
     if dict["Language"] == "English":
-        labels = ["Does not apply to me at all","Fully applicable to me"]
+        # labels = ["Does not apply to me at all","Fully applicable to me"]
+        labels = ["Not uncomfortable","Very uncomfortable"]
         SelectScale(df, dfRaw, params, dict, dictRaw, win, "1. When I'm in a building I've never been to before, "
                                                            "I can point effortlessly in the direction of the building's "
                                                            "main entrance.",labels)

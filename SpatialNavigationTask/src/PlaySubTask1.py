@@ -40,9 +40,9 @@ def PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,version):
     stims = []
     txts = []
     if dict["Language"] == "English":
-        txts.append("You will see several objects. For every object, indicate "
-                    "whether you saw this object in the video. The green button means you saw it, "
-                    "the red button means you did not see it. Click ‘continue’ to go to the next question. ")
+        txts.append("Click TRUE if you saw it, and FALSE if you did not see it.\n"
+                    "The green button means you saw it,\n"
+                    "the red button means you did not see it. \nClick ‘continue’ to go to the next question. ")
     else:
         txts.append("Je ziet een aantal voorwerpen. Geef voor ieder voorwerp aan of je dit hebt gezien in de video. "
                     "De groene knop voor wel gezien, de rode knop voor niet gezien. Druk op verder om naar de volgende "

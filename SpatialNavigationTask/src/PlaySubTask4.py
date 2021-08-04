@@ -39,9 +39,7 @@ def PlaySubTask4(df,dfRaw,params,dict,dictRaw,win,version):
     stims = []
     txts = []
     if dict["Language"] == "English":
-        txts.append("You will see an object from the video. Where is the white spaceship (endpoint of the route) "
-                    "located when you are standing at the location of this object? Choose the image with the arrow "
-                    "pointing in the right direction.")
+        txts.append("You will now see an intersection. Indicate in which direction the route continued.")
     else:
         txts.append("Je ziet steeds een voorwerp uit de video. Waar bevindt het witte ruimteschip "
                     "(eindpunt van de route) zich wanneer je bij het voorwerp bent? Kies het plaatje "

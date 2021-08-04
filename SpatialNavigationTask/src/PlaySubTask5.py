@@ -39,8 +39,8 @@ def PlaySubTask5(df,dfRaw,params,dict,dictRaw,win,version):
     stims = []
     txts = []
     if dict["Language"] == "English":
-        txts.append("You will now see three objects from the video. Two of these objects are closest together "
-                    "(as the crow flies). Click on these two objects.")
+        txts.append("You will now see three objects from the video. Two of these objects are closest together. "
+                    "Click on these two objects.")
     else:
         txts.append("Je ziet nu steeds 3 voorwerpen uit de video. Twee van deze voorwerpen liggen het dichtst "
                     "(hemelsbreed) bij elkaar . Klik op deze twee voorwerpen.")

@@ -110,7 +110,8 @@ df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
 # Select Language.
-SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
+# SelectLanguage(df,dfRaw,params,dict,dictRaw,win)
+dict["Language"] = "English"
 
 # PlayScale1 (Qestion part1)
 PlayScale1(df,dfRaw,params,dict,dictRaw,win)
