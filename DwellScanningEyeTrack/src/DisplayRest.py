@@ -30,7 +30,8 @@ import time
 # Import defined functions
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
-from StartMusic import playMusic,pauseMusic,stopMusic
+# from StartMusic import playMusic,pauseMusic,stopMusic
+from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 
 def waitUserSpace(Df,params):
     # Wait for user types a space key.
@@ -43,7 +44,7 @@ def waitUserSpace(Df,params):
             print('Q pressed. Forced Exit.')
             core.quit()
 
-def DisplayRest(df,dfRaw,params,dict,dictRaw,win,sound1):
+def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
 
     # Record status
     dict["Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
@@ -61,9 +62,11 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win,sound1):
         message.draw()
         win.mouseVisible = False
         win.flip()
-        sound1 = pauseMusic(sound1)
+        # sound1 = pauseMusic(sound1)
+        PauseMusic()
         waitUserSpace(df, params)
-        sound1 = playMusic(sound1, params)
+        # sound1 = playMusic(sound1, params)
+        UnpauseMusic()
     else:
         message = visual.TextStim(win,
                                   text="Let's rest for a bit.",
@@ -78,4 +81,4 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win,sound1):
     DictWriteRaw(dfRaw, dictRaw, params)
     DictWrite(df, params, dict)
     win.close()
-    return sound1
+    # return sound1

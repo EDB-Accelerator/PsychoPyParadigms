@@ -44,9 +44,10 @@ import os
 # Import defined functions
 sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
-from StartMusic import playMusic,pauseMusic,stopMusic
+# from StartMusic import playMusic,pauseMusic,stopMusic
+from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 
-def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion,sound1):
+def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
 
     rectangles = []
     resolution = params['screenSize']
@@ -123,7 +124,8 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion,so
         if c == ['q']:
             print('Q pressed. Forced Exit.')
             if params['musicMode'] != 'off':
-                sound1 = stopMusic(sound1)
+                # sound1 = stopMusic(sound1)
+                StopMusic()
             core.quit()
 
         position = tracker.getPosition()
@@ -148,12 +150,14 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion,so
             eyeOnAngryFace = False
             for rectangle in angryRectangles:
                 if rectangle.contains(circle.pos):
-                    sound1 = pauseMusic(sound1)
+                    # sound1 = pauseMusic(sound1)
+                    PauseMusic()
                     eyeOnAngryFace = True
                     # musicPause = True
             # if not eyeOnAngryFace and musicPause:
             if not eyeOnAngryFace:
-                sound1 = playMusic(sound1,params)
+                # sound1 = playMusic(sound1,params)
+                UnpauseMusic()
                 # resumeMusic(sound)
                 # musicPause = False
 
@@ -162,12 +166,15 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion,so
             # else:
             #     PauseMusic()
         elif params['musicMode'] == 'allTheTime':
-            sound1 = playMusic(sound1,params)
+            # sound1 = playMusic(sound1,params)
+            UnpauseMusic()
+
         win.flip()
-        core.wait(1 / 300)
+        core.wait(1 / 100)
 
     if params['musicMode'] == 'onlyWhenStareAt':
-        sound1 = playMusic(sound1,params)
+        # sound1 = playMusic(sound1,params)
+        UnpauseMusic()
         # resumeMusic(sound)
         # if musicPause:
         #     UnpauseMusic()
@@ -186,6 +193,6 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion,so
     tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
 
-    return sound1
+    # return sound1
 
 

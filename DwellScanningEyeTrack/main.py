@@ -58,11 +58,22 @@ from EyeTrackerCalibration import EyeTrackerCalibration
 from LoadTimingFile import LoadTimingFile
 from GetEmotionLabels import GetEmotionLabels
 from MakeAOI import MakeAOI
-from StartMusic import playMusic,pauseMusic,stopMusic
+# from StartMusic import playMusic,pauseMusic,stopMusic
 from WaitUserSpace import WaitUserSpace
+from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 import os
 import pandas as pd
 import pickle
+import asyncio
+import threading
+import subprocess
+
+# # Audio library configuration.
+# prefs.hardware['audioLib'] = ['PTB']
+# StopMusic()
+
+# p = subprocess.Popen('C:\Program Files\PsychoPy\python.exe src/StartMusic2.py')
+# UnpauseMusic()
 
 # Make empty output directory if it does not exist.
 directory = './result'
@@ -110,8 +121,8 @@ if os.path.isfile('.tmp/params.pkl'):
         dict["End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         dict["Duration"] = time.time() - startTime
         DictWrite(df, params, dict)
-        if params['musicMode'] != 'off':
-            sound1 = sound.Sound(params['playlist'][params['musicIdx']])
+        # if params['musicMode'] != 'off':
+            # sound1 = sound.Sound(params['playlist'][params['musicIdx']])
 
         # Full screen support
         prefs.general['fullscr'] = params['fullscr']
@@ -191,8 +202,15 @@ if resumeOkay == 'no':
         random.shuffle(playlist)
         params['playlist'] = playlist
         params['musicIdx'] = 0
-        sound1 = sound.Sound(params['playlist'][params['musicIdx']])
-        # params['sound1'] = sound.Sound(params['playlist'][params['musicIdx']])
+        # sound1 = sound.Sound(params['playlist'][params['musicIdx']])
+        # Start Music sub-process
+        p = subprocess.Popen('C:\Program Files\PsychoPy3\python.exe src/StartMusic2.py')
+
+        # Delete music sub-process related files.
+        fileList = ['.tmp/a', '.tmp/b', '.tmp/c']
+        for F in fileList:
+            if os.path.exists(F):
+                os.remove(F)
 
     dfLabel = {}
     labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
@@ -312,9 +330,10 @@ while section < 3:
 
     # Start Music
     if params['musicMode'] != 'off':
-        sound1 = playMusic(sound1,params)
-    else:
-        sound1 = ""
+        # sound1 = playMusic(sound1,params)
+        UnpauseMusic()
+    # else:
+    #     sound1 = ""
 
     # for trial in range(params['numTrial']):
     if os.path.isfile('.tmp/params.pkl') == False:
@@ -332,8 +351,8 @@ while section < 3:
             DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
 
         # Display face matrix
-        sound1 = DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
-                      labels=labels,emotion=emotion,sound1=sound1)
+        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
+                      labels=labels,emotion=emotion)
 
         # Display Rest (Version 2 only).
         if params['Version'] == 2:
@@ -354,7 +373,7 @@ while section < 3:
     trackerIO.close()
     if section != 2:
         # Rest between each section. (ITI duration)
-        sound1 = DisplayRest(df, dfRaw, params, dict, dictRaw, win,sound1)
+        DisplayRest(df, dfRaw, params, dict, dictRaw, win)
     section += 1
     trial = 0
     # Save the current status.
@@ -363,7 +382,8 @@ while section < 3:
 
 # Stop music.
 if params['musicMode'] != 'off':
-    sound1 = stopMusic(sound1)
+    # sound1 = stopMusic(sound1)
+    StopMusic()
 
 # Close the psychopy window.
 win.close()
