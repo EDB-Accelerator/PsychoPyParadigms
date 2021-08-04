@@ -6,8 +6,9 @@ if exist "C:\Program Files\PsychoPy3\python.exe" (
   echo Psychopy: Admin location installed
   "C:\Program Files\PsychoPy3\python.exe" main.py
 ) 
-
+else (
 if exist "C:\Program Files\PsychoPy\python.exe" (
   echo Psychopy: Admin location installed
   "C:\Program Files\PsychoPy\python.exe" main.py
 ) 
+)

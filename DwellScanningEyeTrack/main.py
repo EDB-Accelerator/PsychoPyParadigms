@@ -31,10 +31,12 @@ DwellTask Psychopy3 Main Driver File.
 Created on Thu Jan 28 15:20:30 EST 2021
 Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen)
 
+
 @author: Kyunghun Lee
 - Created on Thu Jan 28 15:20:30 EST 2021 by KL
 - Major updated on July 5 EST 2021 by KL
 - Pause and Resume on Wed, Jul 14, 2021  3:13:55 PM by KL
+- Music Interface updated on Wed, Aug  4, 2021 11:23:24 AM by KL
 """
 
 # Import standard python libraries
@@ -202,7 +204,7 @@ if resumeOkay == 'no':
         random.shuffle(playlist)
         params['playlist'] = playlist
         params['musicIdx'] = 0
-        # sound1 = sound.Sound(params['playlist'][params['musicIdx']])
+
         # Start Music sub-process
         p = subprocess.Popen('C:\Program Files\PsychoPy3\python.exe src/StartMusic2.py')
 

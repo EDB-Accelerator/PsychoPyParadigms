@@ -7,19 +7,21 @@ import wx
 from ObjectListView import ObjectListView, ColumnDefn, OLVEvent
 import glob
 from mutagen.easyid3 import EasyID3
+from mutagen.mp3 import MP3
 import pandas as pd
 import numpy as np
 
 class Results(object):
     """"""
 
-    def __init__(self, title, Artist, Album, Genre, ReleaseDate):
+    def __init__(self, title, Artist, Album, Genre, ReleaseDate, Length):
         """Constructor"""
         self.title = title
         self.Artist = Artist
         self.Album = Album
         self.Genre = Genre
         self.ReleaseDate = ReleaseDate
+        self.Length = Length
 
 class OLVCheckPanel(wx.Panel):
     """"""
@@ -35,11 +37,15 @@ class OLVCheckPanel(wx.Panel):
         musicList = glob.glob("music/*.mp3")
         self.fileNames = {}
         self.test_data = []
+
         for musicFile in musicList:
             audio = EasyID3(musicFile)
+            audioLength = MP3(musicFile).info.length
+            audioLength = str(int(audioLength//60)) + ":" + str(int(audioLength%60))
+
             self.fileNames[audio['title'][0]] = musicFile
             self.test_data.append(Results(audio['title'][0],audio['artist'][0],audio['album'][0],audio['genre'][0],
-                                          audio['date'][0]))
+                                          audio['date'][0],audioLength))
         self.resultsOlv = ObjectListView(self,
                                          style=wx.LC_REPORT | wx.SUNKEN_BORDER)
 
@@ -78,7 +84,20 @@ class OLVCheckPanel(wx.Panel):
         # print(len(a), ' music file(s) selected')
         # self.title = str(len(a)) + ' music file(s) selected'
         self.log.Clear()
-        self.log.AppendText(str(len(obj)) + ' music file(s) selected')
+        # self.log.AppendText(str(len(obj)) + ' music file(s) selected')
+
+        totalTime = 0
+        for musicObj in obj:
+            musicLength = musicObj.Length
+            musicLength = "5:32"
+            musicMin = int(musicLength.split(":")[0])
+            musicSecond = int(musicLength.split(":")[1])
+            totalTime += musicMin*60 + musicSecond
+        totalMin = int(totalTime // 60)
+        totalSec = int(totalTime % 60)
+
+        self.log.AppendText(str(len(obj)) + ' music file(s) selected / total music duration:'+str(totalMin)+":"+str(totalSec))
+
 
     def onCheck(self, event):
         """"""
@@ -98,16 +117,31 @@ class OLVCheckPanel(wx.Panel):
 
     def wxQuit(self, event):
         obj = self.resultsOlv.GetCheckedObjects()
-        if len(obj) < 10:
+        # if len(obj) < 10:
+        #     self.log.Clear()
+        #     self.log.AppendText('At least 10 music files need to be selected. Only ' + str(len(obj)) + ' music file(s) selected.')
+        #     return
+
+        totalTime = 0
+        for musicObj in obj:
+            musicLength = musicObj.Length
+            musicLength = "5:32"
+            musicMin = int(musicLength.split(":")[0])
+            musicSecond = int(musicLength.split(":")[1])
+            totalTime += musicMin * 60 + musicSecond
+        totalMin = int(totalTime // 60)
+        totalSec = int(totalTime % 60)
+
+        if totalTime < 720:
             self.log.Clear()
-            self.log.AppendText('At least 10 music files need to be selected. Only ' + str(len(obj)) + ' music file(s) selected.')
+            self.log.AppendText('The total time should be at least 12 min. Only ' + str(totalMin)+":"+str(totalSec) + ' total time now.')
             return
 
         df = pd.DataFrame()
         for musicObj in obj:
             musicInfo = []
             musicFileName = self.fileNames[musicObj.title]
-            musicFileName = musicFileName.replace("mp3","wav")
+            # musicFileName = musicFileName.replace("mp3","wav")
 
             # musicInfo.append(self.fileNames[musicObj.title])
             musicInfo.append(musicFileName)
@@ -116,8 +150,9 @@ class OLVCheckPanel(wx.Panel):
             musicInfo.append(musicObj.Album)
             musicInfo.append(musicObj.Genre)
             musicInfo.append(musicObj.ReleaseDate)
+            musicInfo.append(musicObj.Length)
             musicInfoPD = (np.array(musicInfo).flatten()).reshape(1, len(musicInfo))
-            musicInfoPD = pd.DataFrame(musicInfoPD, columns=["fileName","Title","Artist","Album","Genre","Release Date"])
+            musicInfoPD = pd.DataFrame(musicInfoPD, columns=["fileName","Title","Artist","Album","Genre","Release Date","Length"])
             df = df.append(musicInfoPD,ignore_index = True)
 
         df.to_csv(".tmp/userMusicSelection.csv", mode='w', sep=',', encoding='utf-8')
@@ -132,7 +167,8 @@ class OLVCheckPanel(wx.Panel):
             ColumnDefn("Artist", "left", 150, "Artist"),
             ColumnDefn("Album", "left", 100, "Album"),
             ColumnDefn("Genre", "left", 150, "Genre"),
-            ColumnDefn("Release Date", "left", 150, "ReleaseDate")
+            ColumnDefn("Release Date", "left", 150, "ReleaseDate"),
+            ColumnDefn("Length", "left", 100, "Length")
         ])
         self.resultsOlv.CreateCheckStateColumn()
         self.resultsOlv.SetObjects(self.test_data)
