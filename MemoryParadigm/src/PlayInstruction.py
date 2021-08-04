@@ -69,7 +69,7 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
                             size=(250, 250),
                             pos=[128, 50])
     stims = [txt1,img1,img2]
-    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, [""], [0,-180], "Click here for instructions")
+    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, [""], [0,-180], "Click here to begin")
     SectionEnd(df,dfRaw,params,dict,dictRaw,fType +" Instruction (Screen 1)")
 
     # Second Screen
@@ -94,7 +94,7 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win,fType):
         # DictWriteRaw(dfRaw, dictRaw, params, "Instruction shown (Actual Instruction Screen)")
         txts.append("Let's test your memory for the images")
         txts.append("you learned a few minutes ago.")
-    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -100], "Click here for instructions")
+    DrawButton(df, dfRaw, params, dict, dictRaw, win, stims, txts, [0, -100], "Click here to begin")
     SectionEnd(df, dfRaw, params, dict, dictRaw, fType + " Instruction (Screen 2)")
 
 # Last screen (only test case)
