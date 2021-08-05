@@ -36,7 +36,7 @@ def SelectScale(df,dfRaw,params,dict,dictRaw,win,question,labels):
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
 
-    question = "To what extent do you feel uncomfortable in the following situation:\n\n" + question
+    # question = "To what extent do you feel uncomfortable in the following situation:\n\n" + question
 
     # Text message
     txt1 = visual.TextStim(win, text=question, height=20, bold=True,

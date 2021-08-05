@@ -31,8 +31,8 @@ from SelectFourOption import SelectFourOption
 def PlayScale2(df,dfRaw,params,dict,dictRaw,win):
 
     if dict["Language"] == "English":
-        # labels = ["Does not apply to me at all","Fully applicable to me"]
-        labels = ["Not uncomfortable","Very uncomfortable"]
+        labels = ["Does not apply to me at all","Fully applicable to me"]
+        # labels = ["Not uncomfortable","Very uncomfortable"]
         SelectScale(df, dfRaw, params, dict, dictRaw, win, "1. When I'm in a building I've never been to before, "
                                                            "I can point effortlessly in the direction of the building's "
                                                            "main entrance.",labels)
@@ -65,22 +65,25 @@ def PlayScale2(df,dfRaw,params,dict,dictRaw,win):
         SelectScale(df, dfRaw, params, dict, dictRaw, win,
                     "10. In an unfamiliar city I prefer to walk in a group than alone.",
                     labels)
+
         SelectScale(df, dfRaw, params, dict, dictRaw, win,
                     "11. When I get lost, I get nervous.",
                     labels)
+        labels = ["Not uncomfortable", "Very uncomfortable"]
         SelectScale(df, dfRaw, params, dict, dictRaw, win,
-                    "12. How uncomfortable do you feel in the following situation:\n\n- Decide which direction to go "
+                    "12. To what extent do you feel uncomfortable in the following situation:\n\n" +"How uncomfortable do you feel in the following situation:\n\n- Decide which direction to go "
                     "when you are just coming from a train, bus or metro station.",
                     labels)
         SelectScale(df, dfRaw, params, dict, dictRaw, win,
-                    "13. How uncomfortable do you feel in the following situation:\n\n- Finding your way in an unknown "
+                    "13. To what extent do you feel uncomfortable in the following situation:\n\n" +"How uncomfortable do you feel in the following situation:\n\n- Finding your way in an unknown "
                     "building (eg a hospital).",
                     labels)
         SelectScale(df, dfRaw, params, dict, dictRaw, win,
-                    "14. How uncomfortable do you feel in the following situation:\n\n- Finding your way to an "
+                    "14. To what extent do you feel uncomfortable in the following situation:\n\n" +"How uncomfortable do you feel in the following situation:\n\n- Finding your way to an "
                     "appointment "
                     "in an unfamiliar city or part of a city.",
                     labels)
+        labels = ["Does not apply to me at all", "Fully applicable to me"]
         SelectScale(df, dfRaw, params, dict, dictRaw, win,
                     "15. I'm scared to go to a destination I've never been to.",
                     labels)
