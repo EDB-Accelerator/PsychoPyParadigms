@@ -37,6 +37,7 @@ Created on Wed Feb  3 13:49:20 EST 2021
 """
 import pandas as pd
 import datetime
+import re
 
 def DictWriteRaw(dfRaw,dictRaw,params):
     # Move data in Dict into Df.
@@ -47,6 +48,19 @@ def DictWriteRaw(dfRaw,dictRaw,params):
     # dfRaw = dfRaw[:-1] # Drop the last row.
 
 def DictWrite(df,params,dict):
+    # "Emotion Image Group", "The number of neutral faces", "The number of emotional faces"
+
+    dict["Emotion Image Group"] = dict["The number of neutral faces"] = dict["The number of emotional faces"] = ""
+    nums = re.findall(r'\d+', dict["Image Displayed"])
+    if "Disgust-Neutral" in dict["Image Displayed"]:
+        dict["Emotion Image Group"] = "Disgust-Neutral"
+        dict["The number of neutral faces"] = nums[0]
+        dict["The number of emotional faces"] = nums[1]
+    elif "Anger-Neutral" in dict["Image Displayed"]:
+        dict["Emotion Image Group"] = "Anger-Neutral"
+        dict["The number of neutral faces"] = nums[0]
+        dict["The number of emotional faces"] = nums[1]
+
     # Move data in Dict into Df.
     dict["Section"] = params["Section"]
     dict["Version"] = params["Version"]

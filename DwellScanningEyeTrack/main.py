@@ -87,7 +87,7 @@ pd.set_option('display.max_columns', None)
 
 # Output Summary Header Initialization
 Header = ["Start Time","End Time","Duration","expName","Version","subjectID","Session","Section",'timingFile',"TrialCount",
-          "Image Displayed"]
+          "Image Displayed","Emotion Image Group","The number of neutral faces","The number of emotional faces"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
