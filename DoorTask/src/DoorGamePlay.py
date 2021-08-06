@@ -51,7 +51,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                             {'name': 'tracker',
                              'model_name': 'EYELINK 1000 DESKTOP',
                              'runtime_settings': {'sampling_rate': 500,
-                                                  'track_eyes': 'RIGHT'}
+                                                  'track_eyes': 'LEFT'}
                              }
                         }
         # Start new ioHub server.

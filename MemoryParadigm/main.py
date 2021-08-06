@@ -53,9 +53,6 @@ prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 # Pandas configuration (debugging options)
 pd.set_option('display.max_columns', None)
 
-# Receive User input from Window.
-UserInputBank = UserInputPlay()
-
 # Output Summary Header Initialization
 Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time",
           "Response Time","User Answer","User Answer Correctness", "Image Group","Image Count",
@@ -65,6 +62,9 @@ Header = ["SubjectID","expName","Session","Section","Section Start Time","Sectio
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","SubjectID","Session","Event"]
 
+# Receive User input from Window.
+UserInputBank = UserInputPlay()
+
 # Declare primary task parameters.
 params = {
     'expName' : 'MemoryParadigm', # The name of the experiment
@@ -72,8 +72,12 @@ params = {
     'Session' : UserInputBank[1], # Session ID
     'StudySection' : UserInputBank[2],
     'TestSection': UserInputBank[3],
-    'screenSize' : (1100,800), # The resolution of Psychopy Window
+    'screenSize' : (1024,768), # The resolution of Psychopy Window
+    'Full Screen' : UserInputBank[4],
 }
+
+# Full screen configuration
+prefs.general['fullscr'] = params['Full Screen']
 
 # Decide the name of output files.
 params['outFile'] = "./result/" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\

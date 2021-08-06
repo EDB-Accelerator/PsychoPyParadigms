@@ -32,4 +32,5 @@ def UserInputPlay():
     userInput.addField('Session:',1)
     userInput.addField('Study Section',True)
     userInput.addField('Test Section', True)
+    userInput.addField('Full Screen', True)
     return userInput.show()
