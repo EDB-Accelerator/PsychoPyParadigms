@@ -24,16 +24,23 @@ SOFTWARE.
 """
 
 from psychopy import gui
+import os
 
 # Function to get user inputs.
 def UserInputPlay():
     userInput = gui.Dlg(title="Dwell Task Information")
     userInput.addField('Subject ID:',)
     userInput.addField('Session:',)
-    userInput.addField('Version:',choices=[2,3,4])
+    if os.path.isfile('.tmp/version2Lock.txt'):
+        userInput.addField('Version:', choices=[2])
+    else:
+        userInput.addField('Version:',choices=[3,4])
     userInput.addField('# of trials per block (** there are 3 blocks):', choices=["default (version2: 60, version3 and 4: 30)","5","3","1"])
     userInput.addField('Full Screen', True)
-    userInput.addField('Resolution:', choices=[[1024,768],[1920,1080]])
+    if os.path.isfile('.tmp/version2Lock.txt'):
+        userInput.addField('Resolution:', choices=[[1024,768],[1920,1080]])
+    else:
+        userInput.addField('Resolution:', choices=[[1920, 1080],[1024,768]])
     userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT"])
     userInput.addField('EyeTrack Circle', False)
     # userInput.addField('Face Matrix Duration', 6)

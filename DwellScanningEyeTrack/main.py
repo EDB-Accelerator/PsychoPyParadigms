@@ -69,6 +69,7 @@ import pickle
 import asyncio
 import threading
 import subprocess
+from psychopy import prefs
 
 # # Audio library configuration.
 # prefs.hardware['audioLib'] = ['PTB']
@@ -399,7 +400,8 @@ if params['musicMode'] != 'off':
     copyfile(".tmp/userMusicSelection.csv", params['outMusicSelection'])
 
 # Delete status backup pickle file
-os.remove('.tmp/params.pkl')
+if os.path.exists('.tmp/params.pkl'):
+    os.remove('.tmp/params.pkl')
 
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
 win.mouseVisible = False
