@@ -1,4 +1,4 @@
-*.csv
+.tmp/**
 *.edf
 *.mp3
 *.wav
@@ -11,3 +11,6 @@ timing/**
 good_timing_files/**
 good_timing_files
 psychopy3/**
+result/CSV/csv
+result/EDF/*.edf
+

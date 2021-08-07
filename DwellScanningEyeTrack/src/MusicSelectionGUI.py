@@ -3,6 +3,9 @@
 # OLVcheckboxes2.py
 import sys
 
+import sys
+sys.path.append('libs')
+
 import wx
 from ObjectListView import ObjectListView, ColumnDefn, OLVEvent
 import glob

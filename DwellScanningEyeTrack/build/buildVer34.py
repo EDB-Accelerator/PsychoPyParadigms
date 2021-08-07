@@ -2,16 +2,6 @@ import glob,os
 import shutil
 from shutil import copyfile,move
 
-# remove all timing files in 'notUsed'
-fileList = glob.glob('timing/used/*.txt')
-for F in fileList:
-    os.remove(F)
-
-# Copy good timing files
-fileList = glob.glob('good_timing_files/*.txt')
-for F in fileList:
-    copyfile(F,F.replace('good_timing_files','timing\\notUsed'))
-
 # remove all result files
 fileList = glob.glob('result/CSV/*.csv')
 for F in fileList:
@@ -20,14 +10,10 @@ fileList = glob.glob('result/EDF/*.edf')
 for F in fileList:
     os.remove(F)
 
-# Move dwellscansub
-# move("dwellscansub","..")
 try:
-    move("music","..")
+    os.remove(".tmp/version2Lock.txt")
 except:
     pass
-open('.tmp/version2Lock.txt', 'a').close()
-
 # Make zip file
 import zipfile
 
@@ -42,12 +28,6 @@ def zipdir(path, ziph):
 import datetime
 timeLabel = datetime.datetime.now().strftime("%m%d%Y")
 
-zipf = zipfile.ZipFile('../DwellScanningEyeTrackVer2_' + timeLabel +'.zip', 'w', zipfile.ZIP_DEFLATED)
+zipf = zipfile.ZipFile('../DwellScanningEyeTrackVer3and4_' + timeLabel +'.zip', 'w', zipfile.ZIP_DEFLATED)
 zipdir('.', zipf)
 zipf.close()
-try:
-    os.remove(".tmp/version2Lock.txt")
-except:
-    pass
-# move("../dwellscansub",".")
-move("../music",".")

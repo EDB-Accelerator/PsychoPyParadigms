@@ -199,7 +199,11 @@ if resumeOkay == 'no':
     # Music Selection
     if params['musicMode'] != 'off':
         # Run Music Selection GUI
-        os.system("dwellscansub\python.exe" + " src/MusicSelectionGUI.py")
+        # os.system("dwellscansub\python.exe" + " src/MusicSelectionGUI.py")
+        p = subprocess.Popen('C:\Program Files\PsychoPy3\python.exe src/MusicSelectionGUI.py')
+        p.wait()
+
+        os.system(sys.executable+" src/MusicSelectionGUI.py")
         df = pd.read_csv('.tmp/userMusicSelection.csv')
         playlist = df['fileName'].tolist()
         random.shuffle(playlist)
@@ -393,6 +397,11 @@ win.close()
 
 if params['Version'] == 2:
     # Move timing file into 'used' folder.
+    try:
+        os.makedirs('timing/used')
+    except:
+        pass
+
     params['timingFileNew'] = params['timingFile'].replace('notUsed','used')
     os.rename(params['timingFile'],params['timingFileNew'])
 
@@ -400,8 +409,10 @@ if params['musicMode'] != 'off':
     copyfile(".tmp/userMusicSelection.csv", params['outMusicSelection'])
 
 # Delete status backup pickle file
-if os.path.exists('.tmp/params.pkl'):
+try:
     os.remove('.tmp/params.pkl')
+except:
+    pass
 
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
 win.mouseVisible = False
