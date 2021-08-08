@@ -11,6 +11,6 @@ timing/**
 good_timing_files/**
 good_timing_files
 psychopy3/**
-result/CSV/csv
+result/CSV/*.csv
 result/EDF/*.edf
 
