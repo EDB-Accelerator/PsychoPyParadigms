@@ -1,0 +1,6 @@
+Start Time,End Time,Duration,expName,Version,subjectID,Session,Section,timingFile,TrialCount,Image Displayed,Emotion Image Group,The number of neutral faces,The number of emotional faces
+08082021_21:53:15.94,08082021_21:53:19.91,3.973253011703491,DwellTask,3,1,1,0,,,Calibration,,,
+08082021_21:53:28.56,08082021_21:53:52.57,24.011855602264404,DwellTask,3,1,1,0,,0,img/Disgust-Neutral\10N-6D\Block1Matrix5.jpeg,Disgust-Neutral,10,6
+08082021_21:53:52.66,08082021_21:54:16.67,24.004783391952515,DwellTask,3,1,1,0,,1,img/Disgust-Neutral\10N-6D\Block1Matrix26.jpeg,Disgust-Neutral,10,6
+08082021_21:54:16.76,08082021_21:54:40.76,24.005301475524902,DwellTask,3,1,1,0,,2,img/Anger-Neutral\6N10A\Block1Matrix29.jpeg,Anger-Neutral,6,10
+08082021_21:54:43.01,08082021_21:54:44.61,1.6052093505859375,DwellTask,3,1,1,0,,2,Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing.,,,

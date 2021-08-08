@@ -1,0 +1,15 @@
+Start Time,End Time,Duration,expName,Version,subjectID,Session,Section,timingFile,TrialCount,Image Displayed,Emotion Image Group,The number of neutral faces,The number of emotional faces
+08082021_21:59:55.00,08082021_21:59:59.91,4.906256675720215,DwellTask,3,1,1,0,,,Calibration,,,
+08082021_22:00:08.54,08082021_22:00:32.55,24.00571084022522,DwellTask,3,1,1,0,,0,img/Disgust-Neutral\8N-8D\Block1Matrix13.jpeg,Disgust-Neutral,8,8
+08082021_22:00:32.64,08082021_22:00:56.64,24.004436492919922,DwellTask,3,1,1,0,,1,img/Disgust-Neutral\8N-8D\Block1Matrix6.jpeg,Disgust-Neutral,8,8
+08082021_22:00:56.73,08082021_22:01:20.74,24.00487446784973,DwellTask,3,1,1,0,,2,img/Disgust-Neutral\8N-8D\Block1Matrix23.jpeg,Disgust-Neutral,8,8
+08082021_22:01:22.98,08082021_22:01:26.80,3.826955556869507,DwellTask,3,1,1,0,,2,Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing.,,,
+08082021_22:01:30.54,08082021_22:01:35.80,5.260401725769043,DwellTask,3,1,1,1,,,Calibration,,,
+08082021_22:01:44.43,08082021_22:02:08.44,24.005723476409912,DwellTask,3,1,1,1,,0,img/Anger-Neutral\10N-6A\Block1Matrix27.jpeg,Anger-Neutral,10,6
+08082021_22:02:08.53,08082021_22:02:32.54,24.00523829460144,DwellTask,3,1,1,1,,1,img/Anger-Neutral\10N-6A\Block1Matrix10.jpeg,Anger-Neutral,10,6
+08082021_22:02:32.62,08082021_22:02:56.63,24.004287481307983,DwellTask,3,1,1,1,,2,img/Disgust-Neutral\8N-8D\Block1Matrix1.jpeg,Disgust-Neutral,8,8
+08082021_22:02:58.87,08082021_22:07:29.86,270.98568058013916,DwellTask,3,1,1,1,,2,Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing.,,,
+08082021_22:07:33.50,08082021_22:07:40.64,7.142591714859009,DwellTask,3,1,1,2,,,Calibration,,,
+08082021_22:07:49.26,08082021_22:08:13.26,24.00398540496826,DwellTask,3,1,1,2,,0,img/Anger-Neutral\6N10A\Block1Matrix12.jpeg,Anger-Neutral,6,10
+08082021_22:08:13.35,08082021_22:08:37.35,24.00446128845215,DwellTask,3,1,1,2,,1,img/Anger-Neutral\6N10A\Block1Matrix9.jpeg,Anger-Neutral,6,10
+08082021_22:08:37.43,08082021_22:09:01.44,24.00458073616028,DwellTask,3,1,1,2,,2,img/Disgust-Neutral\10N-6D\Block1Matrix14.jpeg,Disgust-Neutral,10,6

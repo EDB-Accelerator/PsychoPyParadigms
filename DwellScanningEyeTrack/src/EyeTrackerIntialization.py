@@ -19,8 +19,8 @@ def waitUserSpace():
             print('Q pressed. Forced Exit.')
             core.quit()
 
-def EyeTrackerIntialization(params):
-    win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+def EyeTrackerIntialization(params,win):
+    # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
     win.mouseVisible = False
     message = visual.TextStim(win,
                               text="Eyetracker Calibration will start.  \n\nPress the space bar when you are ready.",

@@ -80,5 +80,5 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
     dictRaw["Event"] = dict["Image Displayed"] + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
     DictWrite(df, params, dict)
-    win.close()
+    # win.close()
     # return sound1

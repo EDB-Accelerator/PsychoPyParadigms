@@ -49,8 +49,9 @@ def EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params,tracker,win):
     while c != 'space':
         # Eyetracker Calibration
         r = tracker.runSetupProcedure()
-        win.close()
-        win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+        # win.close()
+        # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+        win.winHandle.activate()
         win.mouseVisible = False
         message = visual.TextStim(win,
                                   text="Press 'c' to calibrate eyelink again.\n\nPress the spacebar to continue.\n ",

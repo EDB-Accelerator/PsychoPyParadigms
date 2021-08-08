@@ -1,0 +1,29 @@
+TimeStamp,expName,Version,subjectID,Session,Event
+08082021_21:59:55.00,DwellTask,3,1,1,Calibration started
+08082021_21:59:59.91,DwellTask,3,1,1,Calibration completed
+08082021_22:00:08.54,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix13.jpeg shown (start)
+08082021_22:00:32.55,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix13.jpeg shown (end)
+08082021_22:00:32.64,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix6.jpeg shown (start)
+08082021_22:00:56.64,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix6.jpeg shown (end)
+08082021_22:00:56.73,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix23.jpeg shown (start)
+08082021_22:01:20.74,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix23.jpeg shown (end)
+08082021_22:01:22.98,DwellTask,3,1,1,Rest message shown (start)
+08082021_22:01:26.80,DwellTask,3,1,1,Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing. shown (end)
+08082021_22:01:30.54,DwellTask,3,1,1,Calibration started
+08082021_22:01:35.80,DwellTask,3,1,1,Calibration completed
+08082021_22:01:44.43,DwellTask,3,1,1,img/Anger-Neutral\10N-6A\Block1Matrix27.jpeg shown (start)
+08082021_22:02:08.44,DwellTask,3,1,1,img/Anger-Neutral\10N-6A\Block1Matrix27.jpeg shown (end)
+08082021_22:02:08.53,DwellTask,3,1,1,img/Anger-Neutral\10N-6A\Block1Matrix10.jpeg shown (start)
+08082021_22:02:32.54,DwellTask,3,1,1,img/Anger-Neutral\10N-6A\Block1Matrix10.jpeg shown (end)
+08082021_22:02:32.62,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix1.jpeg shown (start)
+08082021_22:02:56.63,DwellTask,3,1,1,img/Disgust-Neutral\8N-8D\Block1Matrix1.jpeg shown (end)
+08082021_22:02:58.87,DwellTask,3,1,1,Rest message shown (start)
+08082021_22:07:29.86,DwellTask,3,1,1,Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing. shown (end)
+08082021_22:07:33.50,DwellTask,3,1,1,Calibration started
+08082021_22:07:40.64,DwellTask,3,1,1,Calibration completed
+08082021_22:07:49.26,DwellTask,3,1,1,img/Anger-Neutral\6N10A\Block1Matrix12.jpeg shown (start)
+08082021_22:08:13.26,DwellTask,3,1,1,img/Anger-Neutral\6N10A\Block1Matrix12.jpeg shown (end)
+08082021_22:08:13.35,DwellTask,3,1,1,img/Anger-Neutral\6N10A\Block1Matrix9.jpeg shown (start)
+08082021_22:08:37.35,DwellTask,3,1,1,img/Anger-Neutral\6N10A\Block1Matrix9.jpeg shown (end)
+08082021_22:08:37.43,DwellTask,3,1,1,img/Disgust-Neutral\10N-6D\Block1Matrix14.jpeg shown (start)
+08082021_22:09:01.44,DwellTask,3,1,1,img/Disgust-Neutral\10N-6D\Block1Matrix14.jpeg shown (end)

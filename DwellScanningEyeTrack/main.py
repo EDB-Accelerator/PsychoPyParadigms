@@ -306,11 +306,13 @@ if os.path.isfile('.tmp/params.pkl') == False:
     index = 0
     section = 0
 
+win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+
 while section < 3:
     params["Section"] = section # This block is different from original block.
 
     # Eyetracker Calibration.
-    win,io,tracker = EyeTrackerIntialization(params)
+    win,io,tracker = EyeTrackerIntialization(params,win)
     win,tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
 
     # If version is 2, '5' needs to be pressed to continue.
@@ -393,7 +395,7 @@ if params['musicMode'] != 'off':
     StopMusic()
 
 # Close the psychopy window.
-win.close()
+# win.close()
 
 if params['Version'] == 2:
     # Move timing file into 'used' folder.
@@ -414,7 +416,7 @@ try:
 except:
     pass
 
-win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+# win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
 win.mouseVisible = False
 message = visual.TextStim(win,text="Thank you so much!\n ",
                                   units='norm', wrapWidth=2, color="black")
