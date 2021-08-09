@@ -150,8 +150,8 @@ if resumeOkay == 'no':
         'subjectID' : UserInputBank[0],      # Subject ID
         'Session' : UserInputBank[1], # Session ID
         'Version': UserInputBank[2],  # Version
-        'BlockNum' : 3, # The number of blocks
-        'RunNum' : 2, # The number of Runs
+        # 'BlockNum' : 3, # The number of blocks
+        # 'RunNum' : 2, # The number of Runs
         'numTrial': UserInputBank[3],  # The number of Trials.
         'fullscr': UserInputBank[4],  # The resolution of Psychopy Window
         'screenSize': UserInputBank[5],  # The resolution of Psychopy Window
@@ -167,6 +167,10 @@ if resumeOkay == 'no':
         params['numTrial'] = 60 if params['Version'] == 2 else 30
     else:
         params["numTrial"] = int(params["numTrial"])
+
+    # The number of Runs
+    params['RunNum'] = 3 if params['Version'] == 2 else 1
+
 
     # Full screen support
     prefs.general['fullscr'] = params['fullscr']
@@ -306,9 +310,11 @@ if os.path.isfile('.tmp/params.pkl') == False:
     index = 0
     section = 0
 
-q
+win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
 
-while section < 3:
+
+# while section < 3:
+while section < params['RunNum']:
     params["Section"] = section # This block is different from original block.
 
     # Eyetracker Calibration.
