@@ -306,7 +306,7 @@ if os.path.isfile('.tmp/params.pkl') == False:
     index = 0
     section = 0
 
-win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
+q
 
 while section < 3:
     params["Section"] = section # This block is different from original block.
