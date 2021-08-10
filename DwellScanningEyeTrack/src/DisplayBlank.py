@@ -55,7 +55,7 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker,blankTime):
     blankDuration = blankTime
 
     # Record status
-    dict["Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     startTime = time.time()
     dict["Section"] = "DisplayBlank"
     dict["Image Displayed"] = "Blank for " + str(blankDuration) + " sec"
@@ -79,7 +79,7 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker,blankTime):
         core.wait(1 / 300)
 
     # Record status
-    dict["End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - startTime
     dictRaw["Event"] = dict["Image Displayed"] + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)

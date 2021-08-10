@@ -39,7 +39,7 @@ def EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params,tracker,win):
     # tracker.setRecordingState(False)
 
     # Record status (start)
-    dict["Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     startTime = time.time()
     params["TrialCount"] = ""
     dict["Image Displayed"] = "Calibration"
@@ -63,7 +63,7 @@ def EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params,tracker,win):
     # tracker.setRecordingState(True)
 
     # Record status
-    dict["End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - startTime
     dictRaw["Event"] = "Calibration completed"
     DictWriteRaw(dfRaw, dictRaw, params)

@@ -96,7 +96,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
     img, resolution[0] / 2, resolution[1] / 2, resolution[1], resolution[1]))
 
     # Record status
-    dict["Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     sectionStartTime = time.time()
     dict["Section"] = "DisplayMatrix"
     dict["Image Displayed"] = img
@@ -181,7 +181,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
         #     musicPause = False
 
     # Record status
-    dict["End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - sectionStartTime
     dictRaw["Event"] = str(img) + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)

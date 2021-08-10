@@ -41,7 +41,7 @@ import re
 
 def DictWriteRaw(dfRaw,dictRaw,params):
     # Move data in Dict into Df.
-    dictRaw["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4] # Record Timestamp.
+    dictRaw["TimeStamp"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4] # Record Timestamp.
     dictRaw["Version"] = params["Version"]
     dfRaw = dfRaw.append(dictRaw, ignore_index=True)
     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)

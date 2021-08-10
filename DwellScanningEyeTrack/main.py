@@ -119,9 +119,9 @@ if os.path.isfile('.tmp/params.pkl'):
         params["TrialCount"] = trial
         params["Section"] = section
         dict["Image Displayed"] = "Program Resumed"
-        dict["Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         startTime = time.time()
-        dict["End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         dict["Duration"] = time.time() - startTime
         DictWrite(df, params, dict)
         # if params['musicMode'] != 'off':
@@ -254,39 +254,66 @@ if resumeOkay == 'no':
     dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
     # Make image list.
-    RunList = ['Anger-Neutral','Disgust-Neutral']
-    idx = 0
-    Imgs = {}
-    for run in RunList:
-        ImgTmp = []
-        BlockList = glob('img/' + run + '/*')
-        random.shuffle(BlockList)
-
-        for block in BlockList:
-            # params["Block"] = block.split('/')[-1]
-
-            # Get Image list of each block and Shuffle.
-            ImgTmp = ImgTmp + glob(block + '/*.jpeg')
-            idx += 1
-        random.shuffle(ImgTmp)
-        Imgs[run] = ImgTmp
-
-    ImgList = []
+    # RunList = ['Anger-Neutral','Disgust-Neutral']
+    # idx = 0
+    # Imgs = {}
+    # for run in RunList:
+    #     ImgTmp = []
+    #     BlockList = glob('img/' + run + '/*')
+    #     random.shuffle(BlockList)
+    #
+    #     for block in BlockList:
+    #         # params["Block"] = block.split('/')[-1]
+    #
+    #         # Get Image list of each block and Shuffle.
+    #         ImgTmp = ImgTmp + glob(block + '/*.jpeg')
+    #         idx += 1
+    #     random.shuffle(ImgTmp)
+    #     Imgs[run] = ImgTmp
+    #
+    # ImgList = []
     if params['Version'] == 2:
+        RunList = ['6N10D','8N8D','10N6D','6N10A','8N8A','10N6A']
+        idx = 0
+        Imgs = {}
+        for run in RunList:
+            ImgTmp = []
+            if 'D' in run:
+                Imgs[run] = glob('img/Disgust-Neutral/' + run + '/*.jpeg')
+            elif 'A' in run:
+                Imgs[run] = glob('img/Anger-Neutral/' + run + '/*.jpeg')
+
+            # Randomization
+            random.shuffle(Imgs[run])
+
         # Load Timing File
         dfTiming = LoadTimingFile(params['timingFile'])
-        i = 0
-        j = 0
+        ImgList = []
         for emotion in dfTiming['class']:
-            if emotion == 1:
-                ImgList.append(Imgs['Disgust-Neutral'][i])
-                i += 1
-            else:
-                ImgList.append(Imgs['Anger-Neutral'][j])
-                j += 1
+            emotion = emotion[1:-1]
+            ImgList.append(Imgs[emotion].pop())
+
         params['RestTiming'] = np.array(dfTiming['rest'])
 
     elif params['Version'] == 3 or params['Version'] == 4:
+        RunList = ['Anger-Neutral', 'Disgust-Neutral']
+        idx = 0
+        Imgs = {}
+        for run in RunList:
+            ImgTmp = []
+            BlockList = glob('img/' + run + '/*')
+            random.shuffle(BlockList)
+
+            for block in BlockList:
+                # params["Block"] = block.split('/')[-1]
+
+                # Get Image list of each block and Shuffle.
+                ImgTmp = ImgTmp + glob(block + '/*.jpeg')
+                idx += 1
+            random.shuffle(ImgTmp)
+            Imgs[run] = ImgTmp
+
+        ImgList = []
         random.shuffle(Imgs['Disgust-Neutral'])
         random.shuffle(Imgs['Anger-Neutral'])
 
@@ -369,7 +396,7 @@ while section < params['RunNum']:
         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
                       labels=labels,emotion=emotion)
 
-        # Display Rest (Version 2 only).
+        # Display Rest (Blank) (Version 2 only).
         if params['Version'] == 2:
             DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
                          blankTime=params['RestTiming'][index])

@@ -105,9 +105,9 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Show scale and measure the elapsed wall-clock time.
     startTime = time.time()
-    dict["Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    core.wait(0.15)
-    c = event.getKeys()
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    # core.wait(0.15)
+    # c = event.getKeys()
     circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
                            radius=10)
     if params['circle']:
@@ -115,7 +115,6 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     fixation1.draw()
     fixation2.draw()
 
-    startTime = time.time()
     while time.time() - startTime < 1:
         core.wait(1 / 120)
 
@@ -171,7 +170,7 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     dictRaw["Event"] = bold + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
     dict["Image Displayed"] = bold
-    dict["End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - startTime
     DictWrite(df, params, dict)
 

@@ -47,7 +47,7 @@ def waitUserSpace(Df,params):
 def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
 
     # Record status
-    dict["Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     startTime = time.time()
     dict["Section"] = "DisplayRestScreen"
     dict["Image Displayed"] = "Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing."
@@ -75,7 +75,7 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
         core.wait(10)
 
     # Record status
-    dict["End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - startTime
     dictRaw["Event"] = dict["Image Displayed"] + " shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
