@@ -413,9 +413,9 @@ while section < params['RunNum']:
     # Stop the ioHub Server
     io.quit()
     trackerIO.close()
-    if section != 2:
-        # Rest between each section. (ITI duration)
-        DisplayRest(df, dfRaw, params, dict, dictRaw, win)
+    # if section != 2:
+    #     # Rest between each section. (ITI duration)
+    #     DisplayRest(df, dfRaw, params, dict, dictRaw, win)
     section += 1
     trial = 0
     # Save the current status.
