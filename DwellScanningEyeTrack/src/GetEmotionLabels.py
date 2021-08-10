@@ -1,7 +1,8 @@
 # example: './img\\Disgust-Neutral\\10N-6D\\Block1Matrix23.jpeg'
+#example: 'img/Anger-Neutral\\6N10A\\Block1Matrix29.jpeg'
 import re
 def GetEmotionLabels(dfLabel,img):
-    for fileName in ['6N-10A','8N-8A','10N-6A','6N-10D','8N-8D','10N-6D']:
+    for fileName in ['6N10A','8N8A','10N6A','6N10D','8N8D','10N6D']:
         if fileName in img:
             break
     dfLabelFile = dfLabel[fileName]

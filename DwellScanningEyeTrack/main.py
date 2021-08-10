@@ -224,7 +224,7 @@ if resumeOkay == 'no':
                 os.remove(F)
 
     dfLabel = {}
-    labelList = ['6N-10A','6N-10D','8N-8A','8N-8D','10N-6A','10N-6D']
+    labelList = ['6N10A','6N10D','8N8A','8N8D','10N6A','10N6D']
     for label in labelList:
         dfLabel[label] = pd.read_csv('label/' + label + '.csv')
 
