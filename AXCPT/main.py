@@ -34,6 +34,7 @@ import pandas as pd
 import glob
 import time
 import datetime
+import random
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -51,7 +52,7 @@ startTime = datetime.datetime.now()
 # Make Empty output files Construct pandas dataframe structure.
 Header = ["expName", "subjectID", "Session", "TrialCount", "Trial Type","Event", "Start Time", "End Time", "Duration (sec)",
           'Timing File', "User Response", "Right Answer", "Correct or Incorrect", "User Response TimeStamp",
-          "User Response Time (the amount of time that passes from time the letter was shown)"]
+          "User Response Time (the amount of time that passes from time the letter was shown)","Cue Letter","Probe Letter"]
 df = pd.DataFrame(columns=Header)
 df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
@@ -65,9 +66,14 @@ win = PlayIntroduction(win,params)
 # Get a Timing file list
 timingFiles = glob.glob('timing/*.csv')
 timingFiles.sort()
+random.shuffle(timingFiles)
 
 # timingFile = timingFiles[0]
 for timingFile in timingFiles:
+    BList = ['B','C','F','H','I','M','Q','R','T','V','Z']
+    YList = ['Y','D','E','G','J','L','N','O','P','S','U','W']
+    random.shuffle(BList)
+    random.shuffle(YList)
 
     # Load a Timing File.
     dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between Letters', 'Delay Between Trials'])
@@ -93,7 +99,7 @@ for timingFile in timingFiles:
     # wait Section Termination
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",trialType="",
               event="waiting for spacebar", timingFile=timingFile, userResponse="space bar", rightAnswer="space bar",
-              userResponseTime="",userResponseOffset=0)
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="")
 
     ### ITI section (wait for "5") ###
     startTime = datetime.datetime.now()
@@ -112,7 +118,7 @@ for timingFile in timingFiles:
 
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",trialType="",
               event="ITI (waiting for 5)", timingFile=timingFile, userResponse="5", rightAnswer="5",
-              userResponseTime="",userResponseOffset=0)
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="")
 
     ### ITI section (end) ###
 
@@ -126,7 +132,12 @@ for timingFile in timingFiles:
         startCueTime = datetime.datetime.now()
         rightAnswer = "N"
 
-        message = visual.TextStim(win, text=trialLetter[0],wrapWidth=2,units='norm',color="blue",height=1.005)
+        CueLetter = 'A' if trialLetter[0] == 'A' else BList.pop()
+        ProbeLetter = 'X' if trialLetter[1] == 'X' else YList.pop()
+
+        # message = visual.TextStim(win, text=trialLetter[0],wrapWidth=2,units='norm',color="cyan",height=1.005)
+        message = visual.TextStim(win, text=CueLetter, units='pix',height=80,color="cyan",
+                                  font='arial',bold=True)
         message.draw()
         if params['debug']:
             message2 = visual.TextStim(win, text="first letter (cue) displayed for 0.5 sec.",
@@ -139,13 +150,14 @@ for timingFile in timingFiles:
             c = "No response"
 
         DataWrite(params=params, startTime=startCueTime, endTime=datetime.datetime.now(), trialCount=str(i),
-                  trialType=trialLetter,event="First Letter Displayed.("+str(trialLetter[0]) + ")",
+                  # trialType=trialLetter,event="First Letter Displayed.("+str(trialLetter[0]) + ")",
+                  trialType=trialLetter, event="First Letter Displayed.(" + str(CueLetter) + ")",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0)
+                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter)
 
         # Display Fixation Cross (response window)
         startResponseFixationTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
         message.draw()
         if params['debug']:
             message2 = visual.TextStim(win, text="fixation cross (response window) for 1.5 sec.",
@@ -166,11 +178,11 @@ for timingFile in timingFiles:
                   trialType=trialLetter,
                   event="Fixation Displayed (Response Window)",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0.5)
+                  userResponseOffset=0.5,cueLetter="",probeLetter="")
 
         # Display Fixation Cross (Delay Between Letters)
         startTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
         message.draw()
         if params['debug']:
             message2 = visual.TextStim(win, text="fixation cross (delay between letters) for "+str(delayBetweenLetters) +" sec.",
@@ -181,12 +193,15 @@ for timingFile in timingFiles:
         DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
                   event="Fixation Displayed (Delay Between Letters)",
                   timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
-                  userResponseOffset=0)
+                  userResponseOffset=0,cueLetter="",probeLetter="")
 
         # Display the second letter (probe)
         startProbeTime = datetime.datetime.now()
         rightAnswer = "Y" if trialLetter == "AX" else "N"
-        message = visual.TextStim(win, text=trialLetter[1],wrapWidth=2,units='norm',color="white",height=1.005)
+
+        # message = visual.TextStim(win, text=trialLetter[1],wrapWidth=2,units='norm',color="white",height=1.005)
+        message = visual.TextStim(win, text=ProbeLetter, units='pix',height=80, color="white",
+                                  font='arial',bold=True)
         message.draw()
         if params['debug']:
             message2 = visual.TextStim(win, text="second letter (probe) displayed for 0.5 sec",
@@ -213,13 +228,14 @@ for timingFile in timingFiles:
 ######
 
         DataWrite(params=params, startTime=startProbeTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
-                  event="Second Letter Displayed.("+str(trialLetter[1]) + ")",
+                  # event="Second Letter Displayed.("+str(trialLetter[1]) + ")",
+                  event="Second Letter Displayed.(" + str(ProbeLetter) + ")",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0)
+                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter)
 
         # Display Fixation Cross (response window)
         startResponseFixationTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
         message.draw()
         if params['debug']:
             message2 = visual.TextStim(win, text="fixation cross (response window) for 1.5 sec",
@@ -239,11 +255,11 @@ for timingFile in timingFiles:
         DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
                   event="Fixation Displayed (Response Window)",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0.5)
+                  userResponseOffset=0.5,cueLetter="",probeLetter="")
 
         # Display Fixation Cross (Delay Between Trials)
         startTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
         if params['debug']:
             message2 = visual.TextStim(win, text="fixation cross (delay between trials) for "+str(delayBetweenTrials) +" sec.",
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
@@ -254,7 +270,7 @@ for timingFile in timingFiles:
         DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
                   event="Fixation Displayed (Delay Between Trials)",
                   timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
-                  userResponseOffset=0)
+                  userResponseOffset=0,cueLetter="",probeLetter="")
 
 message = visual.TextStim(win, text="Thank you!",
                           units='norm', wrapWidth=1000, color="white")

@@ -34,13 +34,15 @@ def DictWriteRaw(dfRaw,dictRaw,params):
     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
     # dfRaw = dfRaw[:-1] # Drop the last row.
 
-def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,userResponse,rightAnswer,userResponseTime,userResponseOffset):
+def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,userResponse,rightAnswer,userResponseTime,
+              userResponseOffset,cueLetter,probeLetter):
 
     dict = {}
     Header = ["expName", "subjectID", "Session", "TrialCount", "Trial Type", "Event", "Start Time", "End Time",
               "Duration (sec)",
               'Timing File', "User Response", "Right Answer", "Correct or Incorrect", "User Response TimeStamp",
-              "User Response Time (the amount of time that passes from time the letter was shown)"]
+              "User Response Time (the amount of time that passes from time the letter was shown)", "Cue Letter",
+              "Probe Letter"]
 
     # Basic information extraction from params
     dict["expName"] = params["expName"]
@@ -86,6 +88,9 @@ def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,use
             (userResponseTime - startTime).total_seconds() + userResponseOffset
 
     dict["User Response"] = dict["User Response"].upper() if len(dict["User Response"])==1 else dict["User Response"]
+
+    dict["Cue Letter"] = cueLetter
+    dict["Probe Letter"] = probeLetter
 
     df = pd.DataFrame(columns=Header)
     df = df.append(dict,ignore_index=True)

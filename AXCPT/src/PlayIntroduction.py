@@ -64,6 +64,6 @@ def PlayIntroduction(win,params):
     # Section Termination
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",trialType="",
               event="Instruction displayed", timingFile="", userResponse="", rightAnswer="",userResponseTime="",
-              userResponseOffset=0)
+              userResponseOffset=0,cueLetter="",probeLetter="")
 
     return win
