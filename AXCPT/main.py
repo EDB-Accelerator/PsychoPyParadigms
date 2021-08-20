@@ -24,6 +24,7 @@ SOFTWARE.
 """
 """
 @author: Kyunghun Lee
+- Updated on Fri Aug 20 09:15:51 EDT 2021 by KL
 - Created on Sun Jul 25 01:37:33 EDT 2021 by KL
 """
 
@@ -43,6 +44,21 @@ from DictWrite import DataWrite
 from PlayUserInputGUI import PlayUserInputGUI
 from PlayIntroduction import PlayIntroduction
 
+def checkUserQuit():
+    c = event.getKeys()
+    if c == ['q'] or c == ['Q']:
+        print('Q pressed. Forced Exit.')
+        core.quit()
+
+def waitForSeconds(waitTime):
+    startTime = time.time()
+    while time.time() - startTime < waitTime:
+        c = event.getKeys()
+        if c == ['q'] or c == ['Q']:
+            print('Q pressed. Forced Exit.')
+            core.quit()
+        core.wait(1/120)
+
 # Receive User input from GUI window
 params = PlayUserInputGUI()
 
@@ -50,9 +66,12 @@ params = PlayUserInputGUI()
 startTime = datetime.datetime.now()
 
 # Make Empty output files Construct pandas dataframe structure.
-Header = ["expName", "subjectID", "Session", "TrialCount", "Trial Type","Event", "Start Time", "End Time", "Duration (sec)",
+Header = ["expName", "subjectID", "Session", "TrialCount", "TimingCount", "Trial Type", "Event", "Start Time",
+          "End Time",
+          "Duration (sec)",
           'Timing File', "User Response", "Right Answer", "Correct or Incorrect", "User Response TimeStamp",
-          "User Response Time (the amount of time that passes from time the letter was shown)","Cue Letter","Probe Letter"]
+          "User Response Time (the amount of time that passes from time the letter was shown)", "Cue Letter",
+          "Probe Letter"]
 df = pd.DataFrame(columns=Header)
 df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
@@ -61,7 +80,7 @@ win = visual.Window(monitor="testMonitor", color="black", winType='pyglet',size=
 win.mouseVisible = False
 
 # Display Welcome Screen / Introduction
-win = PlayIntroduction(win,params)
+win = PlayIntroduction(win,params,"")
 
 # Get a Timing file list
 timingFiles = glob.glob('timing/*.csv')
@@ -69,6 +88,7 @@ timingFiles.sort()
 random.shuffle(timingFiles)
 
 # timingFile = timingFiles[0]
+timingFileCount = 0
 for timingFile in timingFiles:
     BList = ['B','C','F','H','I','M','Q','R','T','V','Z']
     YList = ['Y','D','E','G','J','L','N','O','P','S','U','W']
@@ -95,11 +115,14 @@ for timingFile in timingFiles:
     while (c[0]!="space"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
+        if c == ['q'] or c == ['Q']:
+            print('Q pressed. Forced Exit.')
+            core.quit()
 
     # wait Section Termination
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",trialType="",
+    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount, trialType="",
               event="waiting for spacebar", timingFile=timingFile, userResponse="space bar", rightAnswer="space bar",
-              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="")
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
 
     ### ITI section (wait for "5") ###
     startTime = datetime.datetime.now()
@@ -115,13 +138,15 @@ for timingFile in timingFiles:
     while (c[0]!="5"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
+        if c == ['q'] or c == ['Q']:
+            print('Q pressed. Forced Exit.')
+            core.quit()
 
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",trialType="",
+    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="ITI (waiting for 5)", timingFile=timingFile, userResponse="5", rightAnswer="5",
-              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="")
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
 
     ### ITI section (end) ###
-
     for i in range(params['numTrial']):
         # Extract Timing Information
         trialLetter = dfTiming.iloc[i]['Trial Type']
@@ -136,7 +161,7 @@ for timingFile in timingFiles:
         ProbeLetter = 'X' if trialLetter[1] == 'X' else YList.pop()
 
         # message = visual.TextStim(win, text=trialLetter[0],wrapWidth=2,units='norm',color="cyan",height=1.005)
-        message = visual.TextStim(win, text=CueLetter, units='pix',height=80,color="cyan",
+        message = visual.TextStim(win, text=CueLetter, units='pix',height=params['fontSize'],color="cyan",
                                   font='arial',bold=True)
         message.draw()
         if params['debug']:
@@ -146,61 +171,65 @@ for timingFile in timingFiles:
         win.flip()
         c,responseTime = WaitAndGetUserInput([],0.5)
         if responseTime == "":
-            responseTime = "No response"
-            c = "No response"
+            responseTime = ""
+            c = ""
 
-        DataWrite(params=params, startTime=startCueTime, endTime=datetime.datetime.now(), trialCount=str(i),
+        DataWrite(params=params, startTime=startCueTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
                   # trialType=trialLetter,event="First Letter Displayed.("+str(trialLetter[0]) + ")",
                   trialType=trialLetter, event="First Letter Displayed.(" + str(CueLetter) + ")",
-                  timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter)
+                  timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
+                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness="")
 
         # Display Fixation Cross (response window)
         startResponseFixationTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=params['plusSize'],color="white")
         message.draw()
         if params['debug']:
-            message2 = visual.TextStim(win, text="fixation cross (response window) for 1.5 sec.",
+            message2 = visual.TextStim(win, text="fixation cross (cue response window) for 1.5 sec.",
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         win.flip()
 
-        if c != "No response":
-            c = "Already answered"
-            core.wait(1.5)
+        if c != "":
+            correctness = "Correct" if c == rightAnswer else "Incorrect"
+            # c = "Already answered"
+            # core.wait(1.5)
+            waitForSeconds(1.5)
         else:
             c,responseTime = WaitAndGetUserInput(c,1.5)
             if responseTime == "":
                 responseTime = "No response"
                 c = "No response"
+            correctness = "Correct" if c == rightAnswer else "Incorrect"
 
-        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i),
+        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
                   trialType=trialLetter,
-                  event="Fixation Displayed (Response Window)",
+                  event="Fixation Displayed (Cue Response Window)",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0.5,cueLetter="",probeLetter="")
+                  userResponseOffset=0.5,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness=correctness)
 
         # Display Fixation Cross (Delay Between Letters)
         startTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=params['plusSize'],color="white")
         message.draw()
         if params['debug']:
             message2 = visual.TextStim(win, text="fixation cross (delay between letters) for "+str(delayBetweenLetters) +" sec.",
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         win.flip()
-        core.wait(delayBetweenLetters)
-        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
+        # core.wait(delayBetweenLetters)
+        waitForSeconds(delayBetweenLetters)
+        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
                   event="Fixation Displayed (Delay Between Letters)",
                   timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
-                  userResponseOffset=0,cueLetter="",probeLetter="")
+                  userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
 
         # Display the second letter (probe)
         startProbeTime = datetime.datetime.now()
         rightAnswer = "Y" if trialLetter == "AX" else "N"
 
         # message = visual.TextStim(win, text=trialLetter[1],wrapWidth=2,units='norm',color="white",height=1.005)
-        message = visual.TextStim(win, text=ProbeLetter, units='pix',height=80, color="white",
+        message = visual.TextStim(win, text=ProbeLetter, units='pix',height=params['fontSize'], color="white",
                                   font='arial',bold=True)
         message.draw()
         if params['debug']:
@@ -210,67 +239,60 @@ for timingFile in timingFiles:
         win.flip()
         c,responseTime = WaitAndGetUserInput([],0.5)
         if responseTime == "":
-            responseTime = "No response"
-            c = "No response"
+            responseTime = ""
+            c = ""
 
-######
-# startTime = startProbeTime
-# endTime = datetime.datetime.now()
-# trialCount = str(i)
-# trialType = trialLetter
-# event="Second Letter Displayed.("+str(trialLetter[1]) + ")"
-# timingFile=timingFile
-# userResponse=c
-# rightAnswer=rightAnswer
-# userResponseTime=responseTime
-# userResponseOffset=0
-
-######
-
-        DataWrite(params=params, startTime=startProbeTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
+        DataWrite(params=params, startTime=startProbeTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
                   # event="Second Letter Displayed.("+str(trialLetter[1]) + ")",
                   event="Second Letter Displayed.(" + str(ProbeLetter) + ")",
-                  timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter)
+                  timingFile=timingFile, userResponse=c, rightAnswer="",userResponseTime="",
+                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness="")
 
         # Display Fixation Cross (response window)
         startResponseFixationTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=params['plusSize'],color="white")
         message.draw()
         if params['debug']:
-            message2 = visual.TextStim(win, text="fixation cross (response window) for 1.5 sec",
+            message2 = visual.TextStim(win, text="fixation cross (probe response window) for 1.5 sec",
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         win.flip()
 
-        if c != "No response":
-            c = "Already answered"
-            core.wait(1.5)
+        if c != "":
+            correctness = "Correct" if c == rightAnswer else "Incorrect"
+            # c = "Already answered"
+            # core.wait(1.5)
+            waitForSeconds(1.5)
         else:
             c,responseTime = WaitAndGetUserInput(c,1.5)
             if responseTime == "":
                 responseTime = "No response"
                 c = "No response"
+            correctness = "Correct" if c == rightAnswer else "Incorrect"
 
-        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
-                  event="Fixation Displayed (Response Window)",
+        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
+                  trialType=trialLetter,
+                  event="Fixation Displayed (Probe Response Window)",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0.5,cueLetter="",probeLetter="")
+                  userResponseOffset=0.5,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness=correctness)
 
         # Display Fixation Cross (Delay Between Trials)
         startTime = datetime.datetime.now()
-        message = visual.TextStim(win, text="+", units='pix',height=32,color="white")
+        message = visual.TextStim(win, text="+", units='pix',height=params['plusSize'],color="white")
         if params['debug']:
             message2 = visual.TextStim(win, text="fixation cross (delay between trials) for "+str(delayBetweenTrials) +" sec.",
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         message.draw()
         win.flip()
-        core.wait(delayBetweenTrials)
-        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i),trialType=trialLetter,
+        # core.wait(delayBetweenTrials)
+        waitForSeconds(delayBetweenTrials)
+        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
                   event="Fixation Displayed (Delay Between Trials)",
                   timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
-                  userResponseOffset=0,cueLetter="",probeLetter="")
+                  userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+
+    timingFileCount += 1
 
 message = visual.TextStim(win, text="Thank you!",
                           units='norm', wrapWidth=1000, color="white")

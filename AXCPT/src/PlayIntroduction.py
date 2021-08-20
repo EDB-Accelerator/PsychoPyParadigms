@@ -1,4 +1,4 @@
-def PlayIntroduction(win,params):
+def PlayIntroduction(win,params,timingFileCount):
 
     from psychopy import visual, core, event
     from WaitAndGetUserInput import WaitUserSpace
@@ -48,10 +48,10 @@ def PlayIntroduction(win,params):
         WaitUserSpace()
 
         # Introduction Slide 3
-        message = visual.TextStim(win,text="Are you ready to start the task\n\n"
+        message = visual.TextStim(win,text="Are you ready to start the task?\n\n"
                                            "or\n\n"
                                            "should we review the instructions again?\n\n\n"
-                                           "Press Y if Yes / Press N if No",
+                                           "Press Y to review / Press N if ready to start",
                                           units='norm', wrapWidth=1000, color="white")
         message.draw()
         win.flip()
@@ -62,8 +62,8 @@ def PlayIntroduction(win,params):
             c = event.waitKeys()  # read a characters
 
     # Section Termination
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",trialType="",
+    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="Instruction displayed", timingFile="", userResponse="", rightAnswer="",userResponseTime="",
-              userResponseOffset=0,cueLetter="",probeLetter="")
+              userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
 
     return win

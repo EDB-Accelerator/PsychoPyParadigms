@@ -34,11 +34,11 @@ def DictWriteRaw(dfRaw,dictRaw,params):
     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
     # dfRaw = dfRaw[:-1] # Drop the last row.
 
-def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,userResponse,rightAnswer,userResponseTime,
-              userResponseOffset,cueLetter,probeLetter):
+def DataWrite(params,startTime,endTime,trialCount,timingCount,trialType,event,timingFile,userResponse,rightAnswer,userResponseTime,
+              userResponseOffset,cueLetter,probeLetter,correctness):
 
     dict = {}
-    Header = ["expName", "subjectID", "Session", "TrialCount", "Trial Type", "Event", "Start Time", "End Time",
+    Header = ["expName", "subjectID", "Session", "TrialCount","TimingCount", "Trial Type", "Event", "Start Time", "End Time",
               "Duration (sec)",
               'Timing File', "User Response", "Right Answer", "Correct or Incorrect", "User Response TimeStamp",
               "User Response Time (the amount of time that passes from time the letter was shown)", "Cue Letter",
@@ -51,6 +51,7 @@ def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,use
 
     # Get information from arguments
     dict["TrialCount"] = trialCount
+    dict["TimingCount"] = str(timingCount+1)
     dict["Trial Type"] = trialType
     dict["Event"] = event
     # startTime = datetime.datetime.now()
@@ -66,10 +67,12 @@ def DataWrite(params,startTime,endTime,trialCount,trialType,event,timingFile,use
         dict["User Response"] = userResponse
     dict["Right Answer"] = rightAnswer
 
-    if dict["Right Answer"] == "":
-        dict["Correct or Incorrect"] = ""
-    else:
-        dict["Correct or Incorrect"] = "Correct" if dict["User Response"].upper() == dict["Right Answer"].upper() else "Incorrect"
+    # if dict["Right Answer"] == "":
+    #     dict["Correct or Incorrect"] = ""
+    # else:
+    #     dict["Correct or Incorrect"] = "Correct" if dict["User Response"].upper() == dict["Right Answer"].upper() else "Incorrect"
+
+    dict["Correct or Incorrect"] = correctness
 
     if userResponseTime == "No response" or dict["User Response"] == "No response":
         dict["User Response TimeStamp"] = "No response"

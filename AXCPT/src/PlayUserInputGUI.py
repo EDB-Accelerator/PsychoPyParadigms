@@ -34,6 +34,9 @@ def PlayUserInputGUI():
     userInput.addField('# of trials per block (** there are 3 blocks):', choices=["default","5","3","1"])
     userInput.addField('Full Screen', True)
     userInput.addField('Debug',True)
+    userInput.addField('Font Size (pixel)', 180)
+    userInput.addField('+ Size (pixel)', 72)
+
 
     UserInputBank = userInput.show()
 
@@ -45,6 +48,9 @@ def PlayUserInputGUI():
         'numTrial': UserInputBank[2],  # The number of Trials.
         'fullscr': UserInputBank[3],  # The resolution of Psychopy Window
         'debug' : UserInputBank[4], # Debugging mode
+        'fontSize': UserInputBank[5],
+        'plusSize': UserInputBank[6],
+
         'timingFile' : "",
     }
 
