@@ -62,6 +62,10 @@ def waitForSeconds(waitTime):
 # Receive User input from GUI window
 params = PlayUserInputGUI()
 
+# Psychopy Window Initialization
+win = visual.Window(monitor="testMonitor", color="black", size=[1024,768],winType='pyglet')
+# win.mouseVisible = False
+# winType='pyglet',
 # Start Session
 startTime = datetime.datetime.now()
 
@@ -75,11 +79,12 @@ Header = ["expName", "subjectID", "Session", "TrialCount", "TimingCount", "Trial
 df = pd.DataFrame(columns=Header)
 df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
-# Psychopy Window Initialization
-win = visual.Window(monitor="testMonitor", color="black", winType='pyglet',size=[1024,768])
-win.mouseVisible = False
 
 # Display Welcome Screen / Introduction
+win.winHandle.maximize()
+win.winHandle.activate()
+win.flip()
+# win.winHandle.maximize()
 win = PlayIntroduction(win,params,"")
 
 # Get a Timing file list

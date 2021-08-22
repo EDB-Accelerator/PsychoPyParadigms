@@ -51,7 +51,7 @@ def DataWrite(params,startTime,endTime,trialCount,timingCount,trialType,event,ti
 
     # Get information from arguments
     dict["TrialCount"] = trialCount
-    dict["TimingCount"] = str(timingCount+1)
+    dict["TimingCount"] = str(timingCount+1) if timingCount != "" else ""
     dict["Trial Type"] = trialType
     dict["Event"] = event
     # startTime = datetime.datetime.now()

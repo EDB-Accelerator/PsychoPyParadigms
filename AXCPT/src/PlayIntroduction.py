@@ -16,17 +16,18 @@ def PlayIntroduction(win,params,timingFileCount):
                                       units='norm', wrapWidth=1000, color="white")
     message.draw()
     win.flip()
-    WaitUserSpace()
+    win.winHandle.activate()
+    WaitUserSpace(win)
 
     # Introduction
-    c = ['Y']
-    while (c[0].upper()=='Y'):
+    userInput = ['Y']
+    while (userInput[0].upper()=='Y'):
 
         message = visual.TextStim(win,text="The task sequence looks like:",
                                           units='norm', wrapWidth=1000, color="white",pos=[0,0.5])
         message.draw()
         win.flip()
-        WaitUserSpace()
+        WaitUserSpace(win)
 
 
         for i in range(3):
@@ -35,7 +36,7 @@ def PlayIntroduction(win,params,timingFileCount):
             img1.draw()
             message.draw()
             win.flip()
-            WaitUserSpace()
+            WaitUserSpace(win)
 
         # Introduction Slide 2
         message = visual.TextStim(win,text="Press the YES (index) key as quickly as you can when you see the\n"+
@@ -45,7 +46,7 @@ def PlayIntroduction(win,params,timingFileCount):
                                           units='norm', wrapWidth=1000, color="white")
         message.draw()
         win.flip()
-        WaitUserSpace()
+        WaitUserSpace(win)
 
         # Introduction Slide 3
         message = visual.TextStim(win,text="Are you ready to start the task?\n\n"
@@ -55,11 +56,16 @@ def PlayIntroduction(win,params,timingFileCount):
                                           units='norm', wrapWidth=1000, color="white")
         message.draw()
         win.flip()
-        c = ['']
+        userInput = ['']
         # Wait for user types "y" or "n".
-        while (c[0].upper() != "Y" and c[0].upper() != "N"):
+        while (userInput[0].upper() != "Y" and userInput[0].upper() != "N"):
             core.wait(1 / 120)
-            c = event.waitKeys()  # read a characters
+            userInput = event.waitKeys()  # read a characters
+            # print(userInput)
+            if userInput == ['q'] or userInput == ['Q']:
+                print('Q pressed. Forced Exit.')
+                core.quit()
+
 
     # Section Termination
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",

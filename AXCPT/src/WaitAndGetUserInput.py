@@ -1,7 +1,8 @@
+import time
+from psychopy import event, core
+import datetime
+
 def WaitAndGetUserInput(c,waitTime):
-    import time
-    from psychopy import event, core
-    import datetime
 
     startTime = time.time()
     responseTime = ""
@@ -28,15 +29,25 @@ def WaitAndGetUserInput(c,waitTime):
 
     return c,responseTime
 
-def WaitUserSpace():
-    from psychopy import core, event
+# def WaitUserSpace(win):
+#     # Wait for user types a space key.
+#     c = ['']
+#     while (c[0] != 'space'):
+#         core.wait(1 / 120)
+#         c = event.waitKeys()  # read a character
+#
+#         if c == ['q'] or c == ['Q']:
+#             print('Q pressed. Forced Exit.')
+#             core.quit()
+
+def WaitUserSpace(win):
     # Wait for user types a space key.
     c = ['']
     while (c[0] != 'space'):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
-        # print(c)
 
         if c == ['q'] or c == ['Q']:
+
             print('Q pressed. Forced Exit.')
             core.quit()
