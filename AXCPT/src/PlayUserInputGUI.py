@@ -33,8 +33,8 @@ def PlayUserInputGUI():
     userInput.addField('Session:',)
     userInput.addField('# of trials per block (** there are 3 blocks):', choices=["default","5","3","1"])
     userInput.addField('Full Screen', True)
-    userInput.addField('Debug',True)
-    userInput.addField('Font Size (pixel)', 180)
+    userInput.addField('Debug',False)
+    userInput.addField('Font Size (pixel)', 200)
     userInput.addField('+ Size (pixel)', 72)
 
 
