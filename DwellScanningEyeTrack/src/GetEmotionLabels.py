@@ -23,3 +23,26 @@ def GetEmotionLabels(dfLabel,img):
             EmotionLables.append(True)
 
     return Emotion,EmotionLables
+
+def GetEmotionLabelsThreeFour(dfLabel,img):
+    imgStr = img.split('Block')[-1]
+    [block, matrix] = re.findall('\d+', imgStr)
+
+    SlideImage = "block " + block + " matrix " + matrix + ".bmp"
+
+    dfLabelRow = dfLabel[dfLabel['SlideImage'] == SlideImage]
+
+    # find which emotion it has
+    for i in range(1,17):
+        if dfLabelRow['Cell'+str(i)].iloc[0] != 'NE':
+            Emotion = "Disgust" if dfLabelRow['Cell'+str(i)].iloc[0] == "DI" else "Anger"
+            break
+
+    # Emotion = "Anger" if "Anger" in img else "Disgust"
+    EmotionLables = []
+    for i in range(1, 17):
+        if 'NE' in dfLabelRow.iloc[0]['Cell' + str(i)]:
+            EmotionLables.append(False)
+        else:
+            EmotionLables.append(True)
+    return Emotion, EmotionLables

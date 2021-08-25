@@ -37,6 +37,7 @@ Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen
 - Major updated on July 5 EST 2021 by KL
 - Pause and Resume on Wed, Jul 14, 2021  3:13:55 PM by KL
 - Music Interface updated on Wed, Aug  4, 2021 11:23:24 AM by KL
+- Major Update (New training image dataset) on Wed, Aug 25, 2021  5:10:20 PM by KL
 """
 
 # Import standard python libraries
@@ -49,7 +50,7 @@ from shutil import copyfile
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
-from UserInputPlay import UserInputPlay
+from UserInputPlay import UserInputPlay,UserInputPlayTwoThree
 from DictInitialize import DictInitialize
 from DisplayFixationCross import DisplayFixationCross
 from DisplayMatrix import DisplayMatrix
@@ -58,7 +59,7 @@ from DisplayRest import DisplayRest
 from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
 from LoadTimingFile import LoadTimingFile
-from GetEmotionLabels import GetEmotionLabels
+from GetEmotionLabels import GetEmotionLabels,GetEmotionLabelsThreeFour
 from MakeAOI import MakeAOI
 # from StartMusic import playMusic,pauseMusic,stopMusic
 from WaitUserSpace import WaitUserSpace
@@ -162,6 +163,10 @@ if resumeOkay == 'no':
         'eyeIdx' : 0,
     }
 
+    userInputBank2 = UserInputPlayTwoThree()
+    params["Section"] = "Week" + str(userInputBank2[0])
+    week = userInputBank2[0]
+
     # The number of trials configuration
     if "default" in params['numTrial']:
         params['numTrial'] = 60 if params['Version'] == 2 else 30
@@ -170,7 +175,6 @@ if resumeOkay == 'no':
 
     # The number of Runs
     params['RunNum'] = 3 if params['Version'] == 2 else 1
-
 
     # Full screen support
     prefs.general['fullscr'] = params['fullscr']
@@ -222,11 +226,14 @@ if resumeOkay == 'no':
         for F in fileList:
             if os.path.exists(F):
                 os.remove(F)
+        labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
+        dfLabel = pd.read_csv(labelFile)
 
-    dfLabel = {}
-    labelList = ['6N10A','6N10D','8N8A','8N8D','10N6A','10N6D']
-    for label in labelList:
-        dfLabel[label] = pd.read_csv('label/' + label + '.csv')
+    else:
+        dfLabel = {}
+        labelList = ['6N10A','6N10D','8N8A','8N8D','10N6A','10N6D']
+        for label in labelList:
+            dfLabel[label] = pd.read_csv('label/' + label + '.csv')
 
     # Decide the name of output files.
     timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
@@ -253,25 +260,6 @@ if resumeOkay == 'no':
     df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
     dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
-    # Make image list.
-    # RunList = ['Anger-Neutral','Disgust-Neutral']
-    # idx = 0
-    # Imgs = {}
-    # for run in RunList:
-    #     ImgTmp = []
-    #     BlockList = glob('img/' + run + '/*')
-    #     random.shuffle(BlockList)
-    #
-    #     for block in BlockList:
-    #         # params["Block"] = block.split('/')[-1]
-    #
-    #         # Get Image list of each block and Shuffle.
-    #         ImgTmp = ImgTmp + glob(block + '/*.jpeg')
-    #         idx += 1
-    #     random.shuffle(ImgTmp)
-    #     Imgs[run] = ImgTmp
-    #
-    # ImgList = []
     if params['Version'] == 2:
         RunList = ['6N10D','8N8D','10N6D','6N10A','8N8A','10N6A']
         idx = 0
@@ -294,41 +282,10 @@ if resumeOkay == 'no':
             ImgList.append(Imgs[emotion].pop())
 
         params['RestTiming'] = np.array(dfTiming['rest'])
-
-    elif params['Version'] == 3 or params['Version'] == 4:
-        RunList = ['Anger-Neutral', 'Disgust-Neutral']
-        idx = 0
-        Imgs = {}
-        for run in RunList:
-            ImgTmp = []
-            BlockList = glob('img/' + run + '/*')
-            random.shuffle(BlockList)
-
-            for block in BlockList:
-                # params["Block"] = block.split('/')[-1]
-
-                # Get Image list of each block and Shuffle.
-                ImgTmp = ImgTmp + glob(block + '/*.jpeg')
-                idx += 1
-            random.shuffle(ImgTmp)
-            Imgs[run] = ImgTmp
-
-        ImgList = []
-        random.shuffle(Imgs['Disgust-Neutral'])
-        random.shuffle(Imgs['Anger-Neutral'])
-
-        # Image combination (DN: 30, AN: 30 for each block)
-        imgList1 = Imgs['Disgust-Neutral'][:30] + Imgs['Anger-Neutral'][:30]
-        imgList2 = Imgs['Disgust-Neutral'][30:60] + Imgs['Anger-Neutral'][30:60]
-        imgList3 = Imgs['Disgust-Neutral'][60:] + Imgs['Anger-Neutral'][60:]
-
-        # shuffle each list.
-        random.shuffle(imgList1)
-        random.shuffle(imgList2)
-        random.shuffle(imgList3)
-
-        # Combine varialbles into one single variable.
-        ImgList = imgList1 + imgList2 + imgList3
+    else:
+        ImgFolder = 'img_training/Week' + str(week)
+        ImgList = glob(ImgFolder + '/*.jpg')
+        random.shuffle(ImgList)
 
     params['ImgList'] = ImgList
 
@@ -341,15 +298,15 @@ win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", 
 
 
 # while section < 3:
-while section < params['RunNum']:
-    params["Section"] = section # This block is different from original block.
+if params['Version'] == 2:
+    while section < params['RunNum']:
+        params["Section"] = section # This block is different from original block.
 
-    # Eyetracker Calibration.
-    win,io,tracker = EyeTrackerIntialization(params,win)
-    win,tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
+        # Eyetracker Calibration.
+        win,io,tracker = EyeTrackerIntialization(params,win)
+        tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
 
-    # If version is 2, '5' needs to be pressed to continue.
-    if params['Version'] == 2:
+        # If version is 2, '5' needs to be pressed to continue.
         message = visual.TextStim(win,text="Please press 5 to continue.\n ",
                                   units='norm', wrapWidth=2, color="black")
         message.draw()
@@ -358,6 +315,64 @@ while section < params['RunNum']:
         while (c != ['5']):
             core.wait(1 / 120)
             c = event.getKeys()
+
+        # Wait for 8 seconds. (Get Ready Screen)
+        message = visual.TextStim(win,
+                                  text="Get Ready\n ",
+                                  units='norm', wrapWidth=2, color="black")
+        message.draw()
+        win.flip()
+        core.wait(8)
+
+        # Start recording
+        tracker.setRecordingState(True)
+
+        # for trial in range(params['numTrial']):
+        if os.path.isfile('.tmp/params.pkl') == False:
+            trial = 0
+
+        while trial < params['numTrial']:
+            params["TrialCount"] = trial
+            img = (params['ImgList'])[trial+section*params['numTrial']]
+
+            # Get emotion labels.
+            emotion,labels = GetEmotionLabelsThreeFour(dfLabel,img)
+
+            # Fixation cross section (Version 2 only)
+            DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
+
+            # Display face matrix
+            DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
+                          labels=labels,emotion=emotion)
+
+            # Display Rest (Blank) (Version 2 only).
+            DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
+                             blankTime=params['RestTiming'][index])
+            index += 1
+            trial += 1
+
+        # Stop Recording
+        tracker.setRecordingState(False)
+
+        # Import the result (from eyetracker)
+        trackerIO = pylink.EyeLink('100.1.1.1')
+        trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+
+        # Stop the ioHub Server
+        io.quit()
+        trackerIO.close()
+        # if section != 2:
+        #     # Rest between each section. (ITI duration)
+        #     DisplayRest(df, dfRaw, params, dict, dictRaw, win)
+        section += 1
+        trial = 0
+        # Save the current status.
+        with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+            pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
+else:
+    # Eyetracker Calibration.
+    win,io,tracker = EyeTrackerIntialization(params,win)
+    tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
 
     # Wait for 8 seconds. (Get Ready Screen)
     message = visual.TextStim(win,
@@ -371,37 +386,22 @@ while section < params['RunNum']:
     tracker.setRecordingState(True)
 
     # Start Music
-    if params['musicMode'] != 'off':
-        # sound1 = playMusic(sound1,params)
-        UnpauseMusic()
-    # else:
-    #     sound1 = ""
+    UnpauseMusic()
 
-    # for trial in range(params['numTrial']):
+    # If the program has been resumed, start from trial=0.
     if os.path.isfile('.tmp/params.pkl') == False:
         trial = 0
 
-    while trial < params['numTrial']:
+    for trial in range(params['numTrial']):
         params["TrialCount"] = trial
-        img = (params['ImgList'])[trial+section*params['numTrial']]
+        img = (params['ImgList'])[trial]
 
         # Get emotion labels.
-        emotion,labels = GetEmotionLabels(dfLabel,img)
-
-        # Fixation cross section (Version 2 only)
-        if params['Version'] == 2:
-            DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
+        emotion,labels = GetEmotionLabelsThreeFour(dfLabel,img)
 
         # Display face matrix
         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
                       labels=labels,emotion=emotion)
-
-        # Display Rest (Blank) (Version 2 only).
-        if params['Version'] == 2:
-            DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
-                         blankTime=params['RestTiming'][index])
-        index += 1
-        trial += 1
 
     # Stop Recording
     tracker.setRecordingState(False)
@@ -413,14 +413,11 @@ while section < params['RunNum']:
     # Stop the ioHub Server
     io.quit()
     trackerIO.close()
-    # if section != 2:
-    #     # Rest between each section. (ITI duration)
-    #     DisplayRest(df, dfRaw, params, dict, dictRaw, win)
-    section += 1
     trial = 0
     # Save the current status.
     with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
         pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
+
 
 # Stop music.
 if params['musicMode'] != 'off':

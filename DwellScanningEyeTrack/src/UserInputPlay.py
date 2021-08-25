@@ -41,9 +41,15 @@ def UserInputPlay():
         userInput.addField('Resolution:', choices=[[1024,768],[1920,1080]])
     else:
         userInput.addField('Resolution:', choices=[[1920, 1080],[1024,768]])
-    userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT"])
+    userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT","BOTH"])
     userInput.addField('EyeTrack Circle', False)
     # userInput.addField('Face Matrix Duration', 6)
     # userInput.addField('Music Folder:','./music')
+
+    return userInput.show()
+
+def UserInputPlayTwoThree():
+    userInput = gui.Dlg(title="Dwell Task Training Information")
+    userInput.addField('Week:', choices=[4,5,6,7,8,9,10,11,12])
 
     return userInput.show()
