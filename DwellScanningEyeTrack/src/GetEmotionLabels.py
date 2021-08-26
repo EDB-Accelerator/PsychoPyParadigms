@@ -33,7 +33,8 @@ def GetEmotionLabelsThreeFour(dfLabel,img):
     dfLabelRow = dfLabel[dfLabel['SlideImage'] == SlideImage]
 
     # find which emotion it has
-    Emotion = "Anger" if block <= 15 else "Disgust"
+    Emotion = "Anger" if int(matrix) <= 15 else "Disgust"
+    print("matrix:"+str(matrix))
 
     # Emotion = "Anger" if "Anger" in img else "Disgust"
     EmotionLables = []
