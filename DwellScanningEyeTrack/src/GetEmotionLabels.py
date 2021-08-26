@@ -33,10 +33,7 @@ def GetEmotionLabelsThreeFour(dfLabel,img):
     dfLabelRow = dfLabel[dfLabel['SlideImage'] == SlideImage]
 
     # find which emotion it has
-    for i in range(1,17):
-        if dfLabelRow['Cell'+str(i)].iloc[0] != 'NE':
-            Emotion = "Disgust" if dfLabelRow['Cell'+str(i)].iloc[0] == "DI" else "Anger"
-            break
+    Emotion = "Anger" if block <= 15 else "Disgust"
 
     # Emotion = "Anger" if "Anger" in img else "Disgust"
     EmotionLables = []
