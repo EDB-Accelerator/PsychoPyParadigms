@@ -52,7 +52,7 @@ def eyeTrkCalib(el, sp, cd):
     pl.closeGraphics()
     # el.setOfflineMode()
 
-def EyeTrackerCalibration():
+def EyeTrackerCalibration(win):
     import sys
     import pickle
     sys_backup = sys.path[:]
@@ -63,11 +63,11 @@ def EyeTrackerCalibration():
     from psychopy import visual, core, event
     from iohub import launchHubServer
 
-    win = visual.Window((1024, 768), monitor="testMonitor", color="black", winType='pyglet')
+    # win = visual.Window((1024, 768), monitor="testMonitor", color="black", winType='pyglet')
 
     message = visual.TextStim(win,
                               text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
-                              units='norm', wrapWidth=2)
+                              units='norm', wrapWidth=2,color='black')
     message.draw();
     win.flip();
     waitUserSpace()
@@ -108,33 +108,36 @@ def EyeTrackerCalibration():
     # Eyetracker Calibration.
     c = 'c'
     while c != 'space':
+        r = False
         r = tracker.runSetupProcedure()
 
         # win.close()
+        core.wait(2)
         win.winHandle.activate()
         message = visual.TextStim(win,
                                   text="Calibration is completed.\n\nPress the spacebar when you are ready to keep playing.\n\n Press 'c' to do calibration again.",
-                                  units='norm', wrapWidth=2)
+                                  units='norm', wrapWidth=2,color='black')
         message.draw();
         win.flip();
         c = waitUserSpaceAndC()
 
-    win.close()
+    # win.close()
     # Eyelink start recording
     tracker.setRecordingState(True)
-    return tracker
+    return tracker,io
 
 # from psychopy import visual
 # win = visual.Window((1024, 768), monitor="testMonitor", color="black", winType='pyglet')
 # EyeTrackerCalibration(win,[1024,768])
 
-def eyeLinkFinishRecording(tracker,outEDF):
+def eyeLinkFinishRecording(tracker,outEDF,io):
     import pylink
     tracker.sendMessage('TRIAL_RESULT 0')
     tracker.setRecordingState(False)
     # open a connection to the tracker and download the result file.
     trackerIO = pylink.EyeLink('100.1.1.1')
     trackerIO.receiveDataFile("et_data.EDF", outEDF)
+    io.quit()
     return tracker
 
 

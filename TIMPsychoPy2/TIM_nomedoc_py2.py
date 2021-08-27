@@ -9,7 +9,7 @@
 # Updated 8/20/20 by JG - created functions for output
 # Updated 8/31/20 by JG - changed visuals, added heat input, added VAS pre, mid, post, modified instructions to start over
 
-from psychopy import core, gui, data, event, sound, logging 
+from psychopy import core, gui, data, event, sound, logging
 import pandas as pd
 # from psychopy import visual # visual causes a bug in the guis, so it's declared after all GUIs run.
 from psychopy.tools.filetools import fromFile, toFile # saving and loading parameter files
@@ -26,6 +26,7 @@ import math
 import socket
 import devices
 from devices import Pathway
+from EyeTrackerCalibration import EyeTrackerCalibration, eyeLinkFinishRecording
 
 # ====================== #
 # ===== PARAMETERS ===== #
@@ -47,7 +48,7 @@ params = {
 # declare prompt and question files
     'skipPrompts': False,     # go right to the scanner-wait page
     'promptDir': 'Text/',     # directory containing prompts and questions files
-    'promptFile': 'HeatAnticipationPrompts.txt', # Name of text file containing prompts 
+    'promptFile': 'HeatAnticipationPrompts.txt', # Name of text file containing prompts
     'questionFile': 'Text/AnxietyScale.txt', # Name of text file containing Q&As
     'questionDownKey': '1',   # move slider left
     'questionUpKey':'2',      # move slider right
@@ -73,7 +74,7 @@ params = {
 # parallel port parameters
     'sendPortEvents': True, # send event markers to biopac computer via parallel port
     'portAddress': 0xE050,  # 0xE050,  0x0378,  address of parallel port
-    'codeBaseline': 144,     # parallel port code for baseline period 
+    'codeBaseline': 144,     # parallel port code for baseline period
     'codeFixation': 143,     #parallel port code for fixation period
     'codeVAS': 142,
     'convExcel': 'tempConv.xlsx',  #excel file with temp to binary code mappings
@@ -100,14 +101,14 @@ try: # try to get a previous parameters file
     expInfo = fromFile('%s-lastExpInfo.psydat'%scriptName)
     expInfo['session'] +=1 # automatically increment session number
     expInfo['paramsFile'] = [expInfo['paramsFile'],'Load...']
-    expInfo['Version'] = 1
+    expInfo['Version'] = 2
     expInfo['LHeat'] = 36.0
     expInfo['MHeat'] = 41.0
     expInfo['HHeat'] = 46.0
 except: # if not there then use a default set
     expInfo = {
-        'subject':'1', 
-        'session': 1, 
+        'subject':'1',
+        'session': 1,
         'Version': 1,
         'LHeat': '36.0',
         'MHeat': '41.0',
@@ -142,7 +143,7 @@ params['skipPrompts'] = expInfo['skipPrompts']
 # for key in sorted(params.keys()):
 #     print "   '%s': %s"%(key,params[key]) # print each value as-is (no quotes)
 # print '}'
-    
+
 # save experimental info
 toFile('%s-lastExpInfo.psydat'%scriptName, expInfo)#save params to file for next time
 
@@ -171,7 +172,7 @@ logging.log(level=logging.INFO, msg='---END PARAMETERS---')
 # ========================== # can't use AppKit on windows
 
 # kluge for secondary monitor
-#if params['fullScreen']: 
+#if params['fullScreen']:
 #    screens = AppKit.NSScreen.screens()
 #    screenRes = (int(screens[params['screenToShow']].frame().size.width), int(screens[params['screenToShow']].frame().size.height))
 #    screenRes = [1920, 1200]
@@ -208,7 +209,7 @@ screenRes = [1024,768]
 from psychopy import visual
 
 # Initialize deadline for displaying next frame
-tNextFlip = [0.0] # put in a list to make it mutable (weird quirk of python variables) 
+tNextFlip = [0.0] # put in a list to make it mutable (weird quirk of python variables)
 
 #create clocks and window
 globalClock = core.Clock()#to keep track of time
@@ -279,7 +280,7 @@ def AddToFlipTime(tIncrement=1.0):
 # flip window as soon as possible
 def SetFlipTimeToNow():
     tNextFlip[0] = globalClock.getTime()
-    
+
 def WaitForFlipTime():
     while (globalClock.getTime()<tNextFlip[0]):
         keyList = event.getKeys()
@@ -348,6 +349,7 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
             aoiPoint = np.array([26, 19.5])
             aoiDiff = aoiPoint * 0.216
 
+        Rbefore = anxSlider.getRating()
         for i in range(180):
             timer = core.Clock()
             timer.add(0.0665)
@@ -367,29 +369,31 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
             # Eyelink AOI record (start)
             aoiTimeEnd = time.time() * 1000
             R = anxSlider.getRating()
-            tracker.sendMessage(
-                '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                1, max(0,512 - aoiPoint[0]),
-                                                                max(0,390 - aoiPoint[1]),
-                                                                min(1024,512 + aoiPoint[0]),
-                                                                min(768,390 + aoiPoint[1]),
-                                                                'growing rectangle (color:' + col + ')' ))
-            # (color:' + col + ')
-            # 
-            tracker.sendMessage(
-                '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                2, 512 + (9.2 * R - 230 - 25),
-                                                                390 + 270,
-                                                                512 + (9.2 * R - 230 + 25),
-                                                                390 + 225,
-                                                                'VAS rating location'))
+            if R != Rbefore:
+                tracker.sendMessage(
+                    '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                    1, max(0,512 - aoiPoint[0]),
+                                                                    max(0,390 - aoiPoint[1]),
+                                                                    min(1024,512 + aoiPoint[0]),
+                                                                    min(768,390 + aoiPoint[1]),
+                                                                    'growing rectangle (color:' + col + ')' ))
+                tracker.sendMessage(
+                    '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                    2, 512 + (9.2 * R - 230 - 25),
+                                                                    390 + 270,
+                                                                    512 + (9.2 * R - 230 + 25),
+                                                                    390 + 225,
+                                                                    'VAS rating location'))
             # Eyelink AOI record (end)
             rect.size = rect.size + 0.0216
             aoiPoint += aoiDiff
             rect.draw()
             fixationCross.draw()
             win.flip()
-            aoiTimeStart = aoiTimeEnd
+
+            if R != Rbefore:
+                aoiTimeStart = aoiTimeEnd
+                Rbefore = R
 
             if col is not 'gray':
                 BehavFile(globalClock.getTime(),block+1,trial+1,color,globalClock.getTime()-trialStart,"square",globalClock.getTime()-phaseStart,ratings.getRating())
@@ -553,7 +557,7 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
             newKeys = event.getKeys(keyList=['q','escape'],timeStamped=globalClock)
             # check each keypress for escape keys
             if len(newKeys)>0:
-                for thisKey in newKeys: 
+                for thisKey in newKeys:
                     if thisKey[0] in ['q','escape']: # escape keys
                         CoolDown() # exit gracefully
         print(time.time())
@@ -607,7 +611,7 @@ def SetPort(color, size, block):
 # Handle end of a session
 
 def RunVas(questions,options,pos=(0.,-0.25),scaleTextPos=[0.,0.25],questionDur=params['questionDur'],isEndedByKeypress=params['questionSelectAdvances'],name='Vas'):
-    
+
     # wait until it's time
     WaitForFlipTime()
 
@@ -624,7 +628,7 @@ def RunVas(questions,options,pos=(0.,-0.25),scaleTextPos=[0.,0.25],questionDur=p
         isEndedByKeypress=isEndedByKeypress, textColor=params['vasTextColor'], name=name, pos=pos,\
         scaleTextPos=scaleTextPos, labelYPos=pos[1]-params['vasLabelYDist'], markerSize=params['vasMarkerSize'],\
         tickHeight=1,tickLabelWidth = 0.9)
-    
+
     # Update next stim time
     if isEndedByKeypress:
         SetFlipTimeToNow() # no duration specified, so timing creep isn't an issue
@@ -632,8 +636,8 @@ def RunVas(questions,options,pos=(0.,-0.25),scaleTextPos=[0.,0.25],questionDur=p
         AddToFlipTime(questionDur*len(questions)) # add question duration * # of questions
 
 
-def PersistentScale(question, options, win, name='Question', textColor='black',pos=(0.,0.),stepSize=1., scaleTextPos=[0.,0.45], 
-                  labelYPos=-0.27648, markerSize=0.1, tickHeight=0.0, tickLabelWidth=0.0, questionDur=float('inf'), isEndedByKeypress=True, 
+def PersistentScale(question, options, win, name='Question', textColor='black',pos=(0.,0.),stepSize=1., scaleTextPos=[0.,0.45],
+                  labelYPos=-0.27648, markerSize=0.1, tickHeight=0.0, tickLabelWidth=0.0, questionDur=float('inf'), isEndedByKeypress=True,
                   downKey='down',upKey='up',selectKey='enter', hideMouse=True, repeatDelay=0.5,params=params):
     # import packages
     from psychopy import visual # for ratingScale
@@ -662,13 +666,13 @@ def PersistentScale(question, options, win, name='Question', textColor='black',p
     for iQ in range(nQuestions):
         # Make triangle
         markerStim = visual.ShapeStim(win,lineColor=textColor,fillColor=textColor,vertices=((-markerSize/2.,markerSize*np.sqrt(5./4.)),(markerSize/2.,markerSize*np.sqrt(5./4.)),(0,0)),units='norm',closeShape=True,name='triangle');
-        
+
         tickMarks = np.linspace(0,100,len(options[iQ])).tolist()
         if tickLabelWidth==0.0: # if default value, determine automatically to fit all tick mark labels
           tickWrapWidth = (tickMarks[1]-tickMarks[0])*0.9/100 # *.9 for extra space, /100 for norm units
         else: # use user-specified value
           tickWrapWidth = tickLabelWidth;
-        
+
         # Create ratingScale
         ratingScale = visual.RatingScale(win, scale=question[iQ], \
           low=0., high=100., markerStart=50., precision=1., labels=options[iQ], tickMarks=tickMarks, tickHeight=tickHeight, \
@@ -749,9 +753,9 @@ def PersistentScale(question, options, win, name='Question', textColor='black',p
             logging.log(level=logging.DATA,msg='RatingScale %s: rating RT=%g'%(ratingScale.name,decisionTime[iQ]))
             logging.log(level=logging.DATA,msg='RatingScale %s: history=%s'%(ratingScale.name,choiceHistory[iQ]))
 
-    
+
     return ratingScale
-    
+
 def RunMoodVas(questions,options,name='MoodVas'):
 
     ####### Eyelink: Let's do some scales #####################
@@ -804,29 +808,28 @@ def RunMoodVas(questions,options,name='MoodVas'):
         # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
         # win.saveMovieFrames('img/' + imgName + '.jpg')
     # RunVas(questions,options,questionDur=float("inf"), isEndedByKeypress=True,name=name)
-    
+
     BasicPromptTools.RunPrompts(["For the next minute or so, we're just going to get some baseline measures."],["You can rest during this time."],win,message1,message2)
     tNextFlip[0] = globalClock.getTime()
 
     # Save Screenshot
     # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
     # win.saveMovieFrames('img/' + imgName + '.jpg')
-    tracker.sendMessage('TRIAL_RESULT 0')
-    tracker.sendMessage('TRIALID %d' % 0)
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-        'img/ForTheNextMinute.jpg', 1024 / 2, 768 / 2, 1024, 768))
+    if params['eyeLinkSupport']:
+        tracker.sendMessage('TRIAL_RESULT 0')
+        tracker.sendMessage('TRIALID %d' % 0)
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            'img/ForTheNextMinute.jpg', 1024 / 2, 768 / 2, 1024, 768))
 
     # display fixation before first stimulus
     fixation.draw()
     win.logOnFlip(level=logging.EXP, msg='Display Fixation')
 
-    tracker.sendMessage('TRIAL_RESULT 0')
-    tracker.sendMessage('TRIALID %d' % 0)
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-        'img/SafeOnly.jpg', 1024 / 2, 768 / 2, 1024, 768))
-
-    win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
-    win.saveMovieFrames('img/SafeOnly.jpg')
+    if params['eyeLinkSupport']:
+        tracker.sendMessage('TRIAL_RESULT 0')
+        tracker.sendMessage('TRIALID %d' % 0)
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            'img/SafeOnly.jpg', 1024 / 2, 768 / 2, 1024, 768))
 
     # wait until it's time to show screen
     WaitForFlipTime()
@@ -835,7 +838,7 @@ def RunMoodVas(questions,options,name='MoodVas'):
     AddToFlipTime(60)
 
 def CoolDown(tracker,params):
-    
+
     # Stop drawing ratingScale (if it exists)
     try:
         anxSlider.setAutoDraw(False)
@@ -846,14 +849,14 @@ def CoolDown(tracker,params):
         fixationCross.autoDraw = False
     except:
         print('fixation cross does not exist.')
-    
+
     df=pd.DataFrame(listlist,columns=['Absolute Time','Block','Trial','Color','Trial Time', 'Phase', 'Phase Time', 'Rating'])
     df.to_csv('avgFile%s.csv'%expInfo['subject'])
 
-    # display cool-down message
-    tracker.sendMessage('TRIAL_RESULT 0')
-    tracker.sendMessage('TRIALID %d' % 0)
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('img/end.jpg', 1024 / 2, 768 / 2, 1024, 768))
+    # # display cool-down message
+    # tracker.sendMessage('TRIAL_RESULT 0')
+    # tracker.sendMessage('TRIALID %d' % 0)
+    # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('img/end.jpg', 1024 / 2, 768 / 2, 1024, 768))
 
     message1.setText("That's the end! ")
     message2.setText("Press 'q' or 'escape' to end the session.")
@@ -866,13 +869,13 @@ def CoolDown(tracker,params):
     message2.draw()
     win.flip()
 
-    # Eyelink FINISH recording
-    if params['eyeLinkSupport']:
-        outEDF = "test.EDF"
-        eyeLinkFinishRecording(tracker, outEDF)
+    # # Eyelink FINISH recording
+    # if params['eyeLinkSupport']:
+    #     outEDF = "test.EDF"
+    #     eyeLinkFinishRecording(tracker, outEDF)
 
     thisKey = event.waitKeys(keyList=['q','escape'])
-    
+
     # exit
     core.quit()
 
@@ -949,17 +952,17 @@ def BehavFile(absTime, block, trial, color, trialTime, phase, phaseTime, rating)
     list = [absTime, block, trial, color, trialTime, phase, phaseTime, rating]
     listlist.append(list)
 
-def MakePersistentVAS(question, options, win, name='Question', textColor='black',pos=(0.,-0.70),stepSize=1., scaleTextPos=[0.,-0.50], 
+def MakePersistentVAS(question, options, win, name='Question', textColor='black',pos=(0.,-0.70),stepSize=1., scaleTextPos=[0.,-0.50],
                   labelYPos=-0.75, markerSize=0.1, tickHeight=0.0, tickLabelWidth=0.0, downKey=params['questionDownKey'],upKey=params['questionUpKey'],selectKey=[],hideMouse=True):
     # Make triangle
     markerStim = visual.ShapeStim(win,lineColor=textColor,fillColor=textColor,vertices=((-markerSize/2.,markerSize*np.sqrt(5./4.)),(markerSize/2.,markerSize*np.sqrt(5./4.)),(0,0)),units='norm',closeShape=True,name='triangle');
-    
+
     tickMarks = np.linspace(0,50,len(options)).tolist()
     if tickLabelWidth==0.0: # if default value, determine automatically to fit all tick mark labels
       tickWrapWidth = (tickMarks[1]-tickMarks[0])*0.9/100 # *.9 for extra space, /100 for norm units
     else: # use user-specified value
       tickWrapWidth = tickLabelWidth;
-    
+
     # Create ratingScale
     ratingScale = visual.RatingScale(win, scale=question, \
       low=0., high=50., markerStart=25., precision=1., labels=options, tickMarks=tickMarks, tickHeight=tickHeight, \
@@ -976,10 +979,10 @@ def MakePersistentVAS(question, options, win, name='Question', textColor='black'
       ratingScale.labels[iLabel].alignHoriz = 'center'
     # Move main text
     ratingScale.scaleDescription.pos = scaleTextPos
-    
+
     # Make it persistent by setting autoDraw to True
     ratingScale.autoDraw = True;
-    
+
     # Display until time runs out (or key is pressed, if specified)
     win.logOnFlip(level=logging.EXP, msg='Display %s'%name)
     win.flip()
@@ -988,7 +991,7 @@ def MakePersistentVAS(question, options, win, name='Question', textColor='black'
     # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
     # win.saveMovieFrames('img/'+str(params['screenIdx'])+'.jpg')
     # params['screenIdx'] += 1
-    
+
     return ratingScale
 
 # =========================== #
@@ -997,16 +1000,16 @@ def MakePersistentVAS(question, options, win, name='Question', textColor='black'
 def RunPrompts():
     BasicPromptTools.RunPrompts(["Let's practice with the rating scale you'll be using today."],["Press the space bar to continue."],win,message1,message2)
 
-    pracScale = PersistentScale(questions_prac, options_prac, win,name='pracScale',pos=(0.,-0.70),scaleTextPos=[0.,-0.50], 
+    pracScale = PersistentScale(questions_prac, options_prac, win,name='pracScale',pos=(0.,-0.70),scaleTextPos=[0.,-0.50],
                                     textColor=params['textColor'],stepSize=params['vasStepSize'],
-                                    labelYPos=-0.75, markerSize=0.1, tickHeight=0.0, tickLabelWidth=0.0, 
+                                    labelYPos=-0.75, markerSize=0.1, tickHeight=0.0, tickLabelWidth=0.0,
                                     downKey=params['questionDownKey'],upKey=params['questionUpKey'],selectKey=params['questionSelectKey'],
                                     hideMouse=True,params=params)
-    
+
         # display prompts
     if not params['skipPrompts']:
         BasicPromptTools.RunPrompts(["You are about to see a set of growing squares of a certain color. When the color fills up the screen you will feel the heat pain on your arm."],["Press any button to continue and see an example."],win,message1,message2)
-        
+
         tNextFlip[0] = globalClock.getTime() + 10
         fixation.autoDraw = True
         win.logOnFlip(level=logging.EXP, msg='Display Fixation')
@@ -1038,23 +1041,23 @@ def RunPrompts():
         fixationReady.autoDraw = False # stop  drawing fixation cross
         trialStart = GrowingSquare(5,0,0,pracScale,params,"")
         event.waitKeys()
-        
-        WaitForFlipTime()   
+
+        WaitForFlipTime()
         AddToFlipTime(180)
         stimImage.setImage(promptImage)
-        stimImage.autoDraw = True; 
+        stimImage.autoDraw = True;
         win.flip()
         # Save Screenshot
         # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
         # win.saveMovieFrames('img/' + str(params['screenIdx']) + '.jpg')
         # params['screenIdx'] += 1
-        
+
         key = event.waitKeys()
         stimImage.autoDraw = False;
-        
+
         tNextFlip[0] = globalClock.getTime()
         WaitForFlipTime()
-        
+
         BasicPromptTools.RunPrompts(topPrompts,bottomPrompts,win,message1,message2)
         thisKey = event.waitKeys() # use if need to repeat instructions
         if thisKey[0] == 'r':
@@ -1074,21 +1077,18 @@ import time
 # Eyelink support (only if version is 2)
 params['eyeLinkSupport'] = True if expInfo['Version'] == 2 else False
 
-if params['eyeLinkSupport']:
-    from EyeTrackerCalibration import EyeTrackerCalibration, eyeLinkFinishRecording
-    # Eyelink Calibration
-    # tracker,trackerIO = EyeTrackerCalibration(win,[1024,768])
-    tracker = EyeTrackerCalibration()
-    win.winHandle.activate()
-
 # log experiment start and set up
 logging.log(level=logging.EXP, msg='---START EXPERIMENT---')
 tStimVec = np.zeros(params['nTrials'])
 
-
 avgArray = []
 
 for block in range(0, params['nBlocks']):
+    if params['eyeLinkSupport']:
+        # Eyelink Calibration
+        tracker,io = EyeTrackerCalibration(win)
+        win.winHandle.activate()
+
     if block == 3:
         anxSlider.autoDraw = False
         fixation.autoDraw = False
@@ -1230,6 +1230,20 @@ for block in range(0, params['nBlocks']):
 
         trialStart, phaseStart = GrowingSquare(color_list[trial], block, trial, anxSlider,params,tracker)
 
+        # Safe screen showed up (issue exists)
+        tracker.sendMessage('TRIAL_RESULT 0')
+        tracker.sendMessage('TRIALID %d' % 0)
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            "img/safe.jpg", 1024 / 2, 768 / 2, 1024, 768))
+        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+            1, 512 - 130, 384 - 40, 512 + 140, 384 + 40,
+            'SAFE text'))
+        # poss = [[-300,-300],[300,-210],[300,-300],[-300,-210]] # VAS
+        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+            2, 512 - 300, 384 + 300, 512 + 300, 384 + 210,
+            'VAS'))
+        # aoiTimeStart = time.time() * 1000
+
         tNextFlip[0] = globalClock.getTime() + (painISI[painITI])
         painITI += 1
         fixationCross.autodraw = False
@@ -1238,11 +1252,33 @@ for block in range(0, params['nBlocks']):
         win.logOnFlip(level=logging.EXP, msg='Display Fixation')
 
         phaseStart = globalClock.getTime()
+        aoiTimeRecord = []
+        print("Safe")
         aoiTimeStart = time.time() * 1000
+        Rbefore = anxSlider.getRating()
         while (globalClock.getTime()<tNextFlip[0]):
             R = anxSlider.getRating()
             aoiTimeEnd = time.time() * 1000
+            # print("aoiTime")
+            # print(aoiTimeEnd-aoiTimeStart)
             # VAS AOI Eyelink
+            if R != Rbefore:
+                tracker.sendMessage(
+                    '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                    3, 512 + (9.2 * Rbefore - 230 - 25),
+                                                                    390 + 270,
+                                                                    512 + (9.2 * Rbefore - 230 + 25),
+                                                                    390 + 225,
+                                                                    'VAS rating location'))
+            win.flip() # to update ratingScale
+
+            if R != Rbefore:
+                aoiTimeStart = aoiTimeEnd
+                Rbefore = R
+            BehavFile(globalClock.getTime(),block+1,trial+1,color_list[trial],globalClock.getTime()-trialStart,"safe",
+                      globalClock.getTime()-phaseStart,anxSlider.getRating())
+
+        if aoiTimeEnd != aoiTimeStart:
             tracker.sendMessage(
                 '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
                                                                 3, 512 + (9.2 * R - 230 - 25),
@@ -1250,9 +1286,6 @@ for block in range(0, params['nBlocks']):
                                                                 512 + (9.2 * R - 230 + 25),
                                                                 390 + 225,
                                                                 'VAS rating location'))
-            win.flip() # to update ratingScale
-            aoiTimeStart = aoiTimeEnd
-            BehavFile(globalClock.getTime(),block+1,trial+1,color_list[trial],globalClock.getTime()-trialStart,"safe",globalClock.getTime()-phaseStart,anxSlider.getRating())
 
 
         fixation.autoDraw = False # stop  drawing fixation cross
@@ -1262,25 +1295,44 @@ for block in range(0, params['nBlocks']):
 
         print("get ready")
         ####eyelink: Get Ready screen####
-        if params['eyeLinkSupport']:
-            tracker.sendMessage('TRIAL_RESULT 0')
-            tracker.sendMessage('TRIALID %d' % 0)
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-                "img/ready.jpg", 1024 / 2, 768 / 2, 1024, 768))
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-                1, 512 - 300, 384 - 40, 512 + 300, 384 + 40,
-                'Get Ready text'))
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-                2, 512 - 300, 384 + 300, 512 + 300, 384 + 210,
-                'VAS'))
-            aoiTimeStart = time.time() * 1000
+        tracker.sendMessage('TRIAL_RESULT 0')
+        tracker.sendMessage('TRIALID %d' % 0)
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            "img/ready.jpg", 1024 / 2, 768 / 2, 1024, 768))
+        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+            1, 512 - 300, 384 - 40, 512 + 300, 384 + 40,
+            'Get Ready text'))
+        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+            2, 512 - 300, 384 + 300, 512 + 300, 384 + 210,
+            'VAS'))
+        # aoiTimeStart = time.time() * 1000
 
         phaseStart = globalClock.getTime()
+        aoiTimeStart = time.time() * 1000
+        Rbefore = anxSlider.getRating()
         while (globalClock.getTime()<tNextFlip[0]):
             fixationReady.draw()
             R = anxSlider.getRating()
             aoiTimeEnd = time.time() * 1000
             # VAS AOI Eyelink
+            # print("aoiTime")
+            # print(aoiTimeEnd-aoiTimeStart)
+            if R != Rbefore:
+                tracker.sendMessage(
+                    '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                    3, 512 + (9.2 * Rbefore - 230 - 25),
+                                                                    390 + 270,
+                                                                    512 + (9.2 * Rbefore - 230 + 25),
+                                                                    390 + 225,
+                                                                    'VAS rating location'))
+            win.flip() # to update ratingScale
+            if R != Rbefore:
+                aoiTimeStart = aoiTimeEnd
+                Rbefore = R
+
+            BehavFile(globalClock.getTime(),block+1,trial+1,color_list[trial],globalClock.getTime()-trialStart,"ready",globalClock.getTime()-phaseStart,anxSlider.getRating())
+
+        if aoiTimeEnd != aoiTimeStart:
             tracker.sendMessage(
                 '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
                                                                 3, 512 + (9.2 * R - 230 - 25),
@@ -1288,11 +1340,6 @@ for block in range(0, params['nBlocks']):
                                                                 512 + (9.2 * R - 230 + 25),
                                                                 390 + 225,
                                                                 'VAS rating location'))
-            win.flip() # to update ratingScale
-            aoiTimeStart = aoiTimeEnd
-
-            BehavFile(globalClock.getTime(),block+1,trial+1,color_list[trial],globalClock.getTime()-trialStart,"ready",globalClock.getTime()-phaseStart,anxSlider.getRating())
-
 
         fixationReady.autoDraw = False # stop  drawing fixation cross
 
@@ -1306,7 +1353,7 @@ for block in range(0, params['nBlocks']):
 
     # Log anxiety responses manually
     logging.log(level=logging.DATA,msg='RatingScale %s: history=%s'%(anxSlider.name,anxSlider.getHistory()))
-    
+
     # Randomize order of colors for next block
 
     if params['eyeLinkSupport']:
@@ -1321,13 +1368,20 @@ for block in range(0, params['nBlocks']):
         random.shuffle(painISI)
     logging.log(level=logging.EXP,msg='==== END BLOCK %d/%d ===='%(block+1,params['nBlocks']))
 
+    # finish recording
+    # Eyelink FINISH recording
+    if params['eyeLinkSupport']:
+        outEDF = "EDF/" + filename + "_block" + str(block) + ".edf"
+        eyeLinkFinishRecording(tracker, outEDF,io)
     #EveryHalf(anxSlider)
 
 anxSlider.autoDraw = False
 WaitForFlipTime()
+
+params['eyeLinkSupport'] = False
 RunMoodVas(questions_vas3,options_vas3,name='PostRun')
 
-# questions = questions_vas3
+# questions = questions_vFas3
 # options = options_vas3
 # name = 'PostRun'
 # def RunMoodVas(questions,options,name='MoodVas')
