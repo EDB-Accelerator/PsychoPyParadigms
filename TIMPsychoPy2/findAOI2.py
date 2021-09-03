@@ -20,10 +20,12 @@ params = {
 screenRes = [1024,768]
 # win = visual.Window((1024,768), monitor="testMonitor",color="white",winType='pyglet')
 win = visual.Window(screenRes, allowGUI=False, monitor='testMonitor', units='deg', name='win',color=(217,217,217),colorSpace='rgb255')
-img = visual.ImageStim(win=win, image="img/10.jpg", units="pix", opacity=1)
+# img = visual.ImageStim(win=win, image="img/10.jpg", units="pix", opacity=1)
                         # size=screenRes)
 
-fixation = visual.TextStim(win, pos = [0,0], text = 'SAFE', font = 'Helvetica Bold', color = 'skyblue', alignHoriz = 'center', bold = True, height = 3)
+fixation = visual.TextStim(win, pos = [0,5], text = 'SAFE', font = 'Helvetica Bold', color = 'skyblue', alignHoriz = 'center', bold = True, height = 3.5)
+fixationReady = visual.TextStim(win, pos = [0,5], text = 'GET READY', font = 'Helvetica Bold', color = 'gray', alignHoriz = 'center', bold = True, height = 3.5,wrapWidth=500)
+
 
 # Create ratingScale
 name='Question'
@@ -69,9 +71,12 @@ ratingScale = visual.RatingScale(win, scale=question, \
 # poss = [[-240,-260],[-240,-270],[-220,-260],[-220,-270]] # VAS (left)
 
 
-
+fixationReady.draw()
 ratingScale.draw()
 win.flip()
+
+win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+win.saveMovieFrames('img/ready.jpg')
 
 while ratingScale .noResponse:
     ratingScale.draw()

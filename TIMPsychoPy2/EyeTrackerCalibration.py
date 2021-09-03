@@ -52,7 +52,7 @@ def eyeTrkCalib(el, sp, cd):
     pl.closeGraphics()
     # el.setOfflineMode()
 
-def EyeTrackerCalibration(win):
+def EyeTrackerCalibration(win,eyeLocation):
     import sys
     import pickle
     sys_backup = sys.path[:]
@@ -76,7 +76,7 @@ def EyeTrackerCalibration(win):
                         {'name': 'tracker',
                          'model_name': 'EYELINK 1000 DESKTOP',
                          'runtime_settings': {'sampling_rate': 500,
-                                              'track_eyes': 'LEFT'}
+                                              'track_eyes': eyeLocation}
                          }
                     }
     import subprocess

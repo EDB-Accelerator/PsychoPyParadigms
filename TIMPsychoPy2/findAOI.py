@@ -14,15 +14,16 @@ import numpy as np
 screenRes = [1024,768]
 # win = visual.Window((1024,768), monitor="testMonitor",color="white",winType='pyglet')
 win = visual.Window(screenRes, allowGUI=False, monitor='testMonitor', units='deg', name='win',color=(217,217,217),colorSpace='rgb255')
-img = visual.ImageStim(win=win, image="img/10.jpg", units="pix", opacity=1)
+# img = visual.ImageStim(win=win, image="img/10.jpg", units="pix", opacity=1)
                         # size=screenRes)
 
-fixation = visual.TextStim(win, pos = [0,0], text = 'SAFE', font = 'Helvetica Bold', color = 'skyblue', alignHoriz = 'center', bold = True, height = 3)
-# fixationReady = visual.TextStim(win, pos = [0,0], text = 'GET READY', font = 'Helvetica Bold', color = 'gray', alignHoriz = 'center', bold = True, height = 3,wrapWidth=500)
+# fixation = visual.TextStim(win, pos = [0,5], text = 'SAFE', font = 'Helvetica Bold', color = 'skyblue', alignHoriz = 'center', bold = True, height = 3.5)
+fixationReady = visual.TextStim(win, pos = [0,5], text = 'GET READY', font = 'Helvetica Bold', color = 'gray', alignHoriz = 'center', bold = True, height = 3.5,wrapWidth=500)
 # fixationCross = visual.ShapeStim(win,lineColor='#000000',lineWidth=5.0,vertices=((fCP[0]-fCS/2,fCP[1]),(fCP[0]+fCS/2,fCP[1]),(fCP[0],fCP[1]),(fCP[0],fCP[1]+fCS/2),(fCP[0],fCP[1]-fCS/2)),units='pix',closeShape=False,name='fixCross');
 
-# fixationReady.draw()
-img.draw()
+fixationReady.draw()
+# fixation.draw()
+# img.draw()
 # rect = visual.Rect(win=win, units='norm', size=0.1, fillColor='red', lineColor='red', lineWidth=20)
 poss = [[-40,40],[40,40],[40,-40],[-40,-40]] # VAS
 for pos in poss:
@@ -49,4 +50,4 @@ sizeDiff2 = circle2.pos * 0.216
 #     win.flip()
 #     core.wait(0.06)
 
-win.close()
+# win.close()

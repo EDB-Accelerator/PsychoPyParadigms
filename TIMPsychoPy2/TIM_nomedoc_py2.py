@@ -39,8 +39,8 @@ newParamsFilename = 'GalbraithHeatParams.psydat'
 params = {
 # Declare stimulus and response parameters
     'screenIdx': 0,
-    'nTrials': 1,            # number of trials in each block (sets of squares)
-    'nBlocks': 1,             # number of blocks - need time to move electrode in between
+    'nTrials': 8,            # number of trials in each block (sets of squares)
+    'nBlocks': 6,             # number of blocks - need time to move electrode in between
     'stimDur': 4,             # time when stimulus is presented (in seconds)
     'painDur': 10,             # time of heat sensation (in seconds)
     'ISI': 0,                 # time between when one stimulus disappears and the next appears (in seconds)
@@ -166,6 +166,14 @@ for key in sorted(params.keys()): # in alphabetical order
 
 logging.log(level=logging.INFO, msg='---END PARAMETERS---')
 
+def UserInputPlayTwoThree():
+    userInput = gui.Dlg(title="Eyetracker Eye")
+    userInput.addField('Eye:', choices=['LEFT','RIGHT','BOTH'])
+
+    return userInput.show()
+
+inputEye = UserInputPlayTwoThree()
+params['Eye'] = inputEye[0]
 
 # ========================== #
 # ===== GET SCREEN RES ===== #
@@ -218,8 +226,8 @@ win.setMouseVisible(False)
 # create fixation cross
 fCS = params['fixCrossSize'] # size (for brevity)
 fCP = params['fixCrossPos'] # position (for brevity)
-fixation = visual.TextStim(win, pos = [0,0], text = 'SAFE', font = 'Helvetica Bold', color = 'skyblue', alignHoriz = 'center', bold = True, height = 3)
-fixationReady = visual.TextStim(win, pos = [0,0], text = 'GET READY', font = 'Helvetica Bold', color = 'gray', alignHoriz = 'center', bold = True, height = 3,wrapWidth=500)
+fixation = visual.TextStim(win, pos = [0,5], text = 'SAFE', font = 'Helvetica Bold', color = 'skyblue', alignHoriz = 'center', bold = True, height = 3.5)
+fixationReady = visual.TextStim(win, pos = [0,5], text = 'GET READY', font = 'Helvetica Bold', color = 'gray', alignHoriz = 'center', bold = True, height = 3.5,wrapWidth=500)
 fixationCross = visual.ShapeStim(win,lineColor='#000000',lineWidth=5.0,vertices=((fCP[0]-fCS/2,fCP[1]),(fCP[0]+fCS/2,fCP[1]),(fCP[0],fCP[1]),(fCP[0],fCP[1]+fCS/2),(fCP[0],fCP[1]-fCS/2)),units='pix',closeShape=False,name='fixCross');
 # create text stimuli
 message1 = visual.TextStim(win, pos=[0,+.5], wrapWidth=1.5, color='#000000', alignHoriz='center', name='topMsg', text="aaa",units='norm')
@@ -369,21 +377,21 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
             # Eyelink AOI record (start)
             aoiTimeEnd = time.time() * 1000
             R = anxSlider.getRating()
-            if R != Rbefore:
-                tracker.sendMessage(
-                    '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                    1, max(0,512 - aoiPoint[0]),
-                                                                    max(0,390 - aoiPoint[1]),
-                                                                    min(1024,512 + aoiPoint[0]),
-                                                                    min(768,390 + aoiPoint[1]),
-                                                                    'growing rectangle (color:' + col + ')' ))
-                tracker.sendMessage(
-                    '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                    2, 512 + (9.2 * R - 230 - 25),
-                                                                    390 + 270,
-                                                                    512 + (9.2 * R - 230 + 25),
-                                                                    390 + 225,
-                                                                    'VAS rating location'))
+            # if R != Rbefore:
+            tracker.sendMessage(
+                '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                1, max(0,512 - aoiPoint[0]),
+                                                                max(0,390 - aoiPoint[1]),
+                                                                min(1024,512 + aoiPoint[0]),
+                                                                min(768,390 + aoiPoint[1]),
+                                                                'growing square (color:' + col + ')' ))
+            tracker.sendMessage(
+                '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                2, 512 + (9.2 * R - 230 - 25),
+                                                                390 + 270,
+                                                                512 + (9.2 * R - 230 + 25),
+                                                                390 + 225,
+                                                                'VAS rating location'))
             # Eyelink AOI record (end)
             rect.size = rect.size + 0.0216
             aoiPoint += aoiDiff
@@ -391,50 +399,16 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
             fixationCross.draw()
             win.flip()
 
-            if R != Rbefore:
-                aoiTimeStart = aoiTimeEnd
-                Rbefore = R
+            # if R != Rbefore:
+            aoiTimeStart = aoiTimeEnd
+            Rbefore = R
 
             if col is not 'gray':
                 BehavFile(globalClock.getTime(),block+1,trial+1,color,globalClock.getTime()-trialStart,"square",globalClock.getTime()-phaseStart,ratings.getRating())
             ++i
 
-    # else:
-    #     for i in range (4):
-    #         timer = core.Clock()
-    #         timer.add(params['stimDur'])
-    #         while timer.getTime() < 0:
-    #             rect.draw()
-    #             fixationCross.draw()
-    #             win.flip()
-    #             if col is not 'gray':
-    #                 BehavFile(globalClock.getTime(),block+1,trial+1,color,globalClock.getTime()-trialStart,"square",globalClock.getTime()-phaseStart,ratings.getRating())
-    #
-    #             # get new keys
-    #             newKeys = event.getKeys(keyList=['q','escape'],timeStamped=globalClock)
-    #             # check each keypress for escape keys
-    #             if len(newKeys)>0:
-    #                 for thisKey in newKeys:
-    #                     if thisKey[0] in ['q','escape']: # escape keys
-    #                         CoolDown() # exit gracefully
-    #         rect.size = rect.size + 0.972
-    #         print("rect size:")
-    #         print(rect.size)
-    #         rect.draw()
-    #         fixationCross.draw()
-    #         win.flip()
-    #         # Save Screenshot
-    #         # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
-    #         # win.saveMovieFrames('img/' + str(params['screenIdx']) + '.jpg')
-    #         # params['screenIdx'] += 1
-    #         ++i
-
-    # if params['eyeLinkSupport']:
-    #     outEDF = "test.EDF"
-    #     tracker = eyeLinkFinishRecording(tracker, outEDF)
-
     if col is not 'gray':
-        print(time.time())
+        # print(time.time())
         #SetPort(color, 2, block)
         phaseStart = globalClock.getTime()
         tNextFlip[0] = globalClock.getTime() + (params['painDur'])
@@ -454,7 +428,7 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
                                                                 max(0,390 - aoiPoint[1]),
                                                                 min(1024,512 + aoiPoint[0]),
                                                                 min(768,390 + aoiPoint[1]),
-                                                                'growing rectangle (color:' + col + ')' ))
+                                                                'growing square (color:' + col + ')' ))
             tracker.sendMessage(
                 '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
                                                                 2, 512 + (9.2 * R - 230 - 25),
@@ -494,7 +468,7 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
                                                                 max(0,390 - aoiPoint[1]),
                                                                 min(1024,512 + aoiPoint[0]),
                                                                 min(768,390 + aoiPoint[1]),
-                                                                'growing rectangle (color:' + col + ')' ))
+                                                                'growing square (color:' + col + ')' ))
             tracker.sendMessage(
                 '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
                                                                 2, 512 + (9.2 * R - 230 - 25),
@@ -536,7 +510,7 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
                                                                 max(0,390 - aoiPoint[1]),
                                                                 min(1024,512 + aoiPoint[0]),
                                                                 min(768,390 + aoiPoint[1]),
-                                                                'growing rectangle (color:' + col + ')' ))
+                                                                'growing square (color:' + col + ')' ))
             tracker.sendMessage(
                 '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
                                                                 2, 512 + (9.2 * R - 230 - 25),
@@ -560,7 +534,7 @@ def GrowingSquare(color, block, trial, ratings,params,tracker):
                 for thisKey in newKeys:
                     if thisKey[0] in ['q','escape']: # escape keys
                         CoolDown() # exit gracefully
-        print(time.time())
+        # print(time.time())
     return trialStart, phaseStart
 
 
@@ -831,10 +805,13 @@ def RunMoodVas(questions,options,name='MoodVas'):
         tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
             'img/SafeOnly.jpg', 1024 / 2, 768 / 2, 1024, 768))
 
+
     # wait until it's time to show screen
     WaitForFlipTime()
     # show screen and update next flip time
     win.flip()
+    # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+    # win.saveMovieFrames('img/SafeOnly.jpg')
     AddToFlipTime(60)
 
 def CoolDown(tracker,params):
@@ -1084,10 +1061,11 @@ tStimVec = np.zeros(params['nTrials'])
 avgArray = []
 
 for block in range(0, params['nBlocks']):
-    if params['eyeLinkSupport']:
-        # Eyelink Calibration
-        tracker,io = EyeTrackerCalibration(win)
-        win.winHandle.activate()
+    if block == 0 or block == 3:
+        if params['eyeLinkSupport']:
+            # Eyelink Calibration
+            tracker,io = EyeTrackerCalibration(win,params['Eye'])
+            win.winHandle.activate()
 
     if block == 3:
         anxSlider.autoDraw = False
@@ -1126,7 +1104,7 @@ for block in range(0, params['nBlocks']):
         tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
         "img/safe.jpg", 1024 / 2, 768 / 2, 1024, 768))
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-            1, 512-130, 384-40, 512+140,384+40,
+            1, 355, 167, 673,270,
             'SAFE text'))
         # poss = [[-300,-300],[300,-210],[300,-300],[-300,-210]] # VAS
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
@@ -1159,15 +1137,19 @@ for block in range(0, params['nBlocks']):
                                                             390 + 225,
                                                             'VAS rating location'))
 
-
     fixation.autoDraw = False # stop  drawing fixation cross
     fixationReady.autoDraw = True
     tNextFlip[0] = globalClock.getTime() + 5
     win.logOnFlip(level=logging.EXP, msg='Display Get Ready')
 
+    # kk = 0
+    # if kk == 0:
+    #     win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+    #     win.saveMovieFrames('img/ready.jpg')
+    #     kk += 1
+
     # End Eyelink Trial label
     # if params['eyeLinkSupport']:
-
 
     ####eyelink: READY & VAS showed up (READY)####
     # Start Eyelink Trial label
@@ -1177,7 +1159,7 @@ for block in range(0, params['nBlocks']):
         tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
         "img/ready.jpg", 1024 / 2, 768 / 2, 1024, 768))
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-            1, 512-300, 384-40, 512+300,384+40,
+            1, 167, 157,867,276,
             'Get Ready text'))
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             2, 512-300, 384+300, 512+300,384+210,
@@ -1185,6 +1167,13 @@ for block in range(0, params['nBlocks']):
         aoiTimeStart = time.time() * 1000
     else:
         tracker = ""
+
+    # kk = 0
+    #
+    # if kk == 0:
+    #     win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+    #     win.saveMovieFrames('img/ready.jpg')
+    #     kk += 1
 
     while (globalClock.getTime()<tNextFlip[0]):
         # VAS AOI eyelink
@@ -1205,6 +1194,12 @@ for block in range(0, params['nBlocks']):
                                                             512 + (9.2 * R - 230 + 25),
                                                             390 + 225,
                                                             'VAS rating location'))
+
+    # if kk == 0:
+    #     win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+    #     win.saveMovieFrames('img/ready.jpg')
+    #     kk += 1
+
     fixationReady.autoDraw = False
     arrayLength = 1
     painITI = 0
@@ -1223,7 +1218,7 @@ for block in range(0, params['nBlocks']):
 
     for trial in range(params['nTrials']):
 
-        ####eyelink: Growing Rectangle. ####
+        ####eyelink: growing square. ####
         color = color_list[trial]
         ratings = anxSlider
         # GrowingSquare(color, block, trial, ratings, params)
@@ -1236,7 +1231,7 @@ for block in range(0, params['nBlocks']):
         tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
             "img/safe.jpg", 1024 / 2, 768 / 2, 1024, 768))
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-            1, 512 - 130, 384 - 40, 512 + 140, 384 + 40,
+            1, 356, 156, 671, 268,
             'SAFE text'))
         # poss = [[-300,-300],[300,-210],[300,-300],[-300,-210]] # VAS
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
@@ -1256,8 +1251,15 @@ for block in range(0, params['nBlocks']):
         print("Safe")
         aoiTimeStart = time.time() * 1000
         Rbefore = anxSlider.getRating()
+        kk = 0
         while (globalClock.getTime()<tNextFlip[0]):
             R = anxSlider.getRating()
+
+            # if kk == 0:
+            #     win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+            #     win.saveMovieFrames('img/safe.jpg')
+            #     k = 0
+
             aoiTimeEnd = time.time() * 1000
             # print("aoiTime")
             # print(aoiTimeEnd-aoiTimeStart)
@@ -1293,6 +1295,11 @@ for block in range(0, params['nBlocks']):
         tNextFlip[0] = globalClock.getTime() + 5
         win.logOnFlip(level=logging.EXP, msg='Display Get Ready')
 
+        # if kk == 0:
+        #     win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+        #     win.saveMovieFrames('img/ready.jpg')
+        #     kk += 1
+
         print("get ready")
         ####eyelink: Get Ready screen####
         tracker.sendMessage('TRIAL_RESULT 0')
@@ -1300,19 +1307,27 @@ for block in range(0, params['nBlocks']):
         tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
             "img/ready.jpg", 1024 / 2, 768 / 2, 1024, 768))
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-            1, 512 - 300, 384 - 40, 512 + 300, 384 + 40,
+            1, 167, 156, 862, 270,
             'Get Ready text'))
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             2, 512 - 300, 384 + 300, 512 + 300, 384 + 210,
             'VAS'))
         # aoiTimeStart = time.time() * 1000
 
+
         phaseStart = globalClock.getTime()
         aoiTimeStart = time.time() * 1000
         Rbefore = anxSlider.getRating()
+        kk = 0
         while (globalClock.getTime()<tNextFlip[0]):
             fixationReady.draw()
             R = anxSlider.getRating()
+
+            # if kk == 0:
+            #     win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+            #     win.saveMovieFrames('img/ready.jpg')
+            #     kk += 1
+
             aoiTimeEnd = time.time() * 1000
             # VAS AOI Eyelink
             # print("aoiTime")
@@ -1370,9 +1385,11 @@ for block in range(0, params['nBlocks']):
 
     # finish recording
     # Eyelink FINISH recording
-    if params['eyeLinkSupport']:
-        outEDF = "EDF/" + filename + "_block" + str(block) + ".edf"
-        eyeLinkFinishRecording(tracker, outEDF,io)
+    if block == 2 or block == 5:
+        if params['eyeLinkSupport']:
+            blockName = "123" if block == 2 else "456"
+            outEDF = "EDF/" + filename + "_block" + blockName + ".edf"
+            eyeLinkFinishRecording(tracker, outEDF,io)
     #EveryHalf(anxSlider)
 
 anxSlider.autoDraw = False
