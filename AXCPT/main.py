@@ -103,6 +103,25 @@ for timingFile in timingFiles:
     # Load a Timing File.
     dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between Letters', 'Delay Between Trials'])
 
+    ### 10 seconds long delay ###
+    if timingFileCount != 0:
+        startTime = datetime.datetime.now()
+        message = visual.TextStim(win, text="Please wait", wrapWidth=2, units='norm', color="white")
+        if params['debug']:
+            message2 = visual.TextStim(win, text="10 Seconds Delay",
+                                       units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
+            message2.draw()
+        message.draw()
+        win.flip()
+        c = ['']
+        # Wait for 8 seconds.
+        WaitAndGetUserInput(c, 8)
+
+        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",
+                  timingCount=timingFileCount, trialType="",
+                  event="10 Seconds Delay", timingFile=timingFile, userResponse="", rightAnswer="",
+                  userResponseTime="", userResponseOffset=0, cueLetter="", probeLetter="", correctness="")
+
     ### wait section (wait for "space bar") ###
     startTime = datetime.datetime.now()
     message = visual.TextStim(win, text="Press Wait for the Task to Start\n\n"
@@ -149,6 +168,23 @@ for timingFile in timingFiles:
 
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="ITI (waiting for 5)", timingFile=timingFile, userResponse="5", rightAnswer="5",
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+
+    ### Get Ready Screen (for 8 seconds) ###
+    startTime = datetime.datetime.now()
+    message = visual.TextStim(win, text="Get Ready", wrapWidth=2,units='norm',color="white")
+    if params['debug']:
+        message2 = visual.TextStim(win, text="Get Ready Screen (8 seconds)",
+                                  units='norm', wrapWidth=1000, color="red",pos=[0,0.5])
+        message2.draw()
+    message.draw()
+    win.flip()
+    c = ['']
+    # Wait for 8 seconds.
+    WaitAndGetUserInput(c, 8)
+
+    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
+              event="Get Ready (8 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
               userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
 
     ### ITI section (end) ###
