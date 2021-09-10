@@ -112,6 +112,8 @@ def SelectEgocenticLocation(df,dfRaw,params,dict,dictRaw,win,imgFolder):
         if my_mouse.getPressed()[0] == 1:
             if dict["User Answer"] != "" and imgButton.contains(my_mouse):
                 DictWriteRaw(dfRaw, dictRaw, params, "User Answered:" + dict["User Answer"])
+                dict["User Answer"] = str(dict["User Answer"])
+                rightAnswer = str(rightAnswer)
                 ResponseRecord(params, dict, dict["User Answer"], rightAnswer)
                 clicked = True
 

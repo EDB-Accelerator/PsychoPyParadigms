@@ -32,7 +32,7 @@ def waitUserSpaceAndC():
     return c[0]
 
 def EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params,tracker,win):
-    import time, random, datetime
+    import time, datetime
     from DictWrite import DictWrite, DictWriteRaw
 
     c = 'c'
@@ -50,7 +50,6 @@ def EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params,tracker,win):
         # Eyetracker Calibration
         r = tracker.runSetupProcedure()
         # win.close()
-        # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
         win.winHandle.activate()
         win.mouseVisible = False
         message = visual.TextStim(win,
@@ -69,5 +68,5 @@ def EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params,tracker,win):
     DictWriteRaw(dfRaw, dictRaw, params)
     DictWrite(df, params, dict)
 
-    return win,tracker
+    return tracker
 

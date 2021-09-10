@@ -64,7 +64,7 @@ params = PlayUserInputGUI()
 
 # Psychopy Window Initialization
 win = visual.Window(monitor="testMonitor", color="black", size=[1024,768],winType='pyglet')
-# win.mouseVisible = False
+win.mouseVisible = False
 # winType='pyglet',
 # Start Session
 startTime = datetime.datetime.now()
@@ -81,7 +81,6 @@ df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
 
 # Display Welcome Screen / Introduction
-win.winHandle.maximize()
 win.winHandle.activate()
 win.flip()
 # win.winHandle.maximize()
