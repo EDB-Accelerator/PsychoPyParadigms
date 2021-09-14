@@ -1110,6 +1110,13 @@ for block in range(0, params['nBlocks']):
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             2, 512-300, 384+300, 512+300,384+210,
             'VAS'))
+        aoiPoint = np.array([26, 19.5])
+        tracker.sendMessage(
+            '!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, max(0, 512 - aoiPoint[0]),
+                                                            max(0, 390 - aoiPoint[1]),
+                                                            min(1024, 512 + aoiPoint[0]),
+                                                            min(768, 390 + aoiPoint[1]),
+                                                            'square'))
         aoiTimeStart = time.time() * 1000
     else:
         tracker = ""
@@ -1164,6 +1171,13 @@ for block in range(0, params['nBlocks']):
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             2, 512-300, 384+300, 512+300,384+210,
             'VAS'))
+        aoiPoint = np.array([26, 19.5])
+        tracker.sendMessage(
+            '!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, max(0, 512 - aoiPoint[0]),
+                                                            max(0, 390 - aoiPoint[1]),
+                                                            min(1024, 512 + aoiPoint[0]),
+                                                            min(768, 390 + aoiPoint[1]),
+                                                            'square'))
         aoiTimeStart = time.time() * 1000
     else:
         tracker = ""
@@ -1237,6 +1251,13 @@ for block in range(0, params['nBlocks']):
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
             2, 512 - 300, 384 + 300, 512 + 300, 384 + 210,
             'VAS'))
+        aoiPoint = np.array([26, 19.5])
+        tracker.sendMessage(
+            '!V IAREA RECTANGLE %d %d %d %d %d %s' % (4, max(0, 512 - aoiPoint[0]),
+                                                            max(0, 390 - aoiPoint[1]),
+                                                            min(1024, 512 + aoiPoint[0]),
+                                                            min(768, 390 + aoiPoint[1]),
+                                                            'square'))
         # aoiTimeStart = time.time() * 1000
 
         tNextFlip[0] = globalClock.getTime() + (painISI[painITI])
@@ -1313,7 +1334,13 @@ for block in range(0, params['nBlocks']):
             2, 512 - 300, 384 + 300, 512 + 300, 384 + 210,
             'VAS'))
         # aoiTimeStart = time.time() * 1000
-
+        aoiPoint = np.array([26, 19.5])
+        tracker.sendMessage(
+            '!V IAREA RECTANGLE %d %d %d %d %d %s' % (4, max(0, 512 - aoiPoint[0]),
+                                                            max(0, 390 - aoiPoint[1]),
+                                                            min(1024, 512 + aoiPoint[0]),
+                                                            min(768, 390 + aoiPoint[1]),
+                                                            'square'))
 
         phaseStart = globalClock.getTime()
         aoiTimeStart = time.time() * 1000
