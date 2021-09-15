@@ -38,7 +38,7 @@ Created on Wed Feb  3 13:49:20 EST 2021
 import datetime,time,re
 
 Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","User Answer","User Answer Correctness", "Image Group","Image Count",
+          "Response Time","User Answer","Correct Answer","User Answer Correctness", "Image Group","Image Count",
           "Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4","Image Displayed #5",
           "Image Displayed #6"]
 entryList = ["Image Displayed #1", "Image Displayed #2", "Image Displayed #3", "Image Displayed #4",
@@ -67,6 +67,7 @@ def SectionStart(df,dfRaw,params,dict,dictRaw,sectionName):
 def ResponseRecord(params,dict,userAnswer,Answer):
     dict["Response Time"] = time.time() - params["StartTime"]
     dict["User Answer"] = userAnswer
+    dict["Correct Answer"] = Answer
     if userAnswer != "" and userAnswer != "Continue Clicked":
         dict["User Answer Correctness"] = "Correct" if userAnswer == Answer else "Incorrect"
 
@@ -104,6 +105,7 @@ def SectionEnd(df,dfRaw,params,dict,dictRaw,sectionName):
     if "User Answer" or "User Answer Correctness":
         del dict["User Answer"]
         del dict["User Answer Correctness"]
+        del dict["Correct Answer"]
 
     # Section Ended.
     DictWriteRaw(dfRaw, dictRaw, params, sectionName+ " "+str(dict["Image Count"]) + " ended")

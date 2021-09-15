@@ -58,7 +58,7 @@ def PlayTest(df,dfRaw,params,dict,dictRaw,win):
         [1, 5, 8, 4, 6, 7],
         [1, 8, 6, 5, 4, 7],
         [1, 5, 4, 8, 7, 6],
-        [1, 8, 5, 6, 4, 3],
+        [1, 8, 5, 6, 4, 7],
         [1, 6, 8, 5, 7, 4],
         [1, 5, 4, 7, 6, 8],
     ]
@@ -66,7 +66,8 @@ def PlayTest(df,dfRaw,params,dict,dictRaw,win):
         imgOrder = imgOrders[i%8]
         if i>=8:
             imgOrder[0] += 1
-        DrawImageTest(df, dfRaw, params, dict, dictRaw, win, imgGroup[i%8], imgOrder, i+1, imgOrder[0]+3);
+        # DrawImageTest(df, dfRaw, params, dict, dictRaw, win, imgGroup[i%8], imgOrder, i+1, imgOrder[0]+3);
+        DrawImageTest(df, dfRaw, params, dict, dictRaw, win, imgGroup[i % 8], imgOrder, i + 1, imgOrder.index(imgOrder[0]+3));
         core.wait(0.5)
 
 
