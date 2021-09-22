@@ -113,8 +113,8 @@ for timingFile in timingFiles:
         message.draw()
         win.flip()
         c = ['']
-        # Wait for 8 seconds.
-        WaitAndGetUserInput(c, 8)
+        # Wait for 10 seconds.
+        WaitAndGetUserInput(c, 10)
 
         DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",
                   timingCount=timingFileCount, trialType="",
@@ -169,21 +169,38 @@ for timingFile in timingFiles:
               event="ITI (waiting for 5)", timingFile=timingFile, userResponse="5", rightAnswer="5",
               userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
 
-    ### Get Ready Screen (for 8 seconds) ###
+    ### Get Ready Screen (for 5 seconds) ###
     startTime = datetime.datetime.now()
     message = visual.TextStim(win, text="Get Ready", wrapWidth=2,units='norm',color="white")
     if params['debug']:
-        message2 = visual.TextStim(win, text="Get Ready Screen (8 seconds)",
+        message2 = visual.TextStim(win, text="Get Ready Screen (5 seconds)",
                                   units='norm', wrapWidth=1000, color="red",pos=[0,0.5])
         message2.draw()
     message.draw()
     win.flip()
     c = ['']
     # Wait for 8 seconds.
-    WaitAndGetUserInput(c, 8)
+    WaitAndGetUserInput(c, 5)
 
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
-              event="Get Ready (8 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
+              event="Get Ready (5 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+
+    ### Fixation Cross (for 3 seconds) ###
+    startTime = datetime.datetime.now()
+    message = visual.TextStim(win, text="+", units='pix',height=params['plusSize'],color="white")
+    if params['debug']:
+        message2 = visual.TextStim(win, text="Fixation Cross (3 seconds)",
+                                  units='norm', wrapWidth=1000, color="red",pos=[0,0.5])
+        message2.draw()
+    message.draw()
+    win.flip()
+    c = ['']
+    # Wait for 8 seconds.
+    WaitAndGetUserInput(c, 3)
+
+    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
+              event="Fixation Cross (3 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
               userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
 
     ### ITI section (end) ###
