@@ -64,12 +64,14 @@ from MakeAOI import MakeAOI
 # from StartMusic import playMusic,pauseMusic,stopMusic
 from WaitUserSpace import WaitUserSpace
 from MusicControl import PauseMusic,UnpauseMusic,StopMusic
+from DictWrite import DictWrite,DictWriteRaw
 import os
 import pandas as pd
 import pickle
 import asyncio
 import threading
 import subprocess
+import time
 from psychopy import prefs
 
 # # Audio library configuration.
@@ -163,9 +165,10 @@ if resumeOkay == 'no':
         'eyeIdx' : 0,
     }
 
-    userInputBank2 = UserInputPlayTwoThree()
-    params["Section"] = "Week" + str(userInputBank2[0])
-    week = userInputBank2[0]
+    if params['Version'] != 2:
+        userInputBank2 = UserInputPlayTwoThree()
+        params["Section"] = "Week" + str(userInputBank2[0])
+        week = userInputBank2[0]
 
     # The number of trials configuration
     if "default" in params['numTrial']:
@@ -296,7 +299,6 @@ if os.path.isfile('.tmp/params.pkl') == False:
 
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
 
-
 # while section < 3:
 if params['Version'] == 2:
     while section < params['RunNum']:
@@ -325,7 +327,18 @@ if params['Version'] == 2:
         core.wait(8)
 
         # Start recording
+        dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        sectionStartTime = time.time()
+        dict["Section"] = "Start Recording"
+        dict["Image Displayed"] = "Recording started"
+        dictRaw["Event"] = "Recording started"
+        DictWriteRaw(dfRaw, dictRaw, params)
+
         tracker.setRecordingState(True)
+
+        dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        dict["Duration"] = time.time() - sectionStartTime
+        DictWrite(df, params, dict)
 
         # for trial in range(params['numTrial']):
         if os.path.isfile('.tmp/params.pkl') == False:
@@ -336,7 +349,7 @@ if params['Version'] == 2:
             img = (params['ImgList'])[trial+section*params['numTrial']]
 
             # Get emotion labels.
-            emotion,labels = GetEmotionLabelsThreeFour(dfLabel,img)
+            emotion, labels = GetEmotionLabels(dfLabel, img)
 
             # Fixation cross section (Version 2 only)
             DisplayFixationCross(df=df,dfRaw=dfRaw,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker)
@@ -352,7 +365,19 @@ if params['Version'] == 2:
             trial += 1
 
         # Stop Recording
+        dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        sectionStartTime = time.time()
+        dict["Section"] = "Recording Ended"
+        dict["Image Displayed"] = "Recording ended"
+        dictRaw["Event"] = "Recording ended"
+        DictWriteRaw(dfRaw, dictRaw, params)
+
         tracker.setRecordingState(False)
+
+        dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        dict["Duration"] = time.time() - sectionStartTime
+        DictWrite(df, params, dict)
+
 
         # Import the result (from eyetracker)
         trackerIO = pylink.EyeLink('100.1.1.1')
@@ -383,7 +408,18 @@ else:
     core.wait(8)
 
     # Start recording
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    sectionStartTime = time.time()
+    dict["Section"] = "Start Recording"
+    dict["Image Displayed"] = "Recording started"
+    dictRaw["Event"] = "Recording started"
+    DictWriteRaw(dfRaw, dictRaw, params)
+
     tracker.setRecordingState(True)
+
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Duration"] = time.time() - sectionStartTime
+    DictWrite(df, params, dict)
 
     # Start Music
     UnpauseMusic()
@@ -404,7 +440,18 @@ else:
                       labels=labels,emotion=emotion)
 
     # Stop Recording
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    sectionStartTime = time.time()
+    dict["Section"] = "Recording Ended"
+    dict["Image Displayed"] = "Recording ended"
+    dictRaw["Event"] = "Recording ended"
+    DictWriteRaw(dfRaw, dictRaw, params)
+
     tracker.setRecordingState(False)
+
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Duration"] = time.time() - sectionStartTime
+    DictWrite(df, params, dict)
 
     # Import the result (from eyetracker)
     trackerIO = pylink.EyeLink('100.1.1.1')
