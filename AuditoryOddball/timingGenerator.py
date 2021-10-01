@@ -47,17 +47,19 @@ for numFile in range(6):
     numTrials = 100
     headers = ['Time Stamp (start)','Duration','Stimuli']
     delays = np.arange(1, 3.25, 0.25).tolist()
-    delays = delays * 12
+    delays = delays * 17
+    random.shuffle(delays[len(np.arange(1, 3.25, 0.25).tolist())*16:])
+    delays = delays[:151]
     random.shuffle(delays)
 
     numStandards = [3,4,5]
-    numStandards = numStandards * 7
+    numStandards = numStandards * 10
     random.shuffle(numStandards)
     numStandards.pop()
     print(len(numStandards))
 
     novelDeviants = ['n','d']
-    novelDeviants = novelDeviants * 20
+    novelDeviants = novelDeviants * 14
     random.shuffle(novelDeviants)
 
     # Pandas dataframe Initialization
@@ -66,15 +68,26 @@ for numFile in range(6):
     timeStamp = 0
     standardCount = 0
     delayCount = 0
-    for i in range(20):
+
+    for j in range(10):
+        df = recordStimuli(df, timeStamp, 0.2, "Standard (" + str(standardCount + 1) + ") presented")
+        standardCount += 1
+        timeStamp += 0.2
+
+        delay = delays.pop() - 0.2
+        df = recordStimuli(df, timeStamp, delay, "interval")
+        timeStamp += delay
+        delayCount += 1
+
+    for i in range(28):
         numStandard = numStandards.pop()
         for j in range(numStandard):
             df = recordStimuli(df, timeStamp, 0.2, "Standard (" + str(standardCount+1) + ") presented")
             standardCount += 1
             timeStamp += 0.2
 
-            delay = delays.pop()
-            df = recordStimuli(df, timeStamp, delay, "delay")
+            delay = delays.pop() - 0.2
+            df = recordStimuli(df, timeStamp, delay, "interval")
             timeStamp += delay
             delayCount += 1
         novelDeviant = novelDeviants.pop()
@@ -84,8 +97,8 @@ for numFile in range(6):
         else:
             df = recordStimuli(df, timeStamp, 0.2, "Deviant presented")
             timeStamp += 0.2
-        delay = delays.pop()
-        df = recordStimuli(df, timeStamp, delay, "delay")
+        delay = delays.pop() - 0.2
+        df = recordStimuli(df, timeStamp, delay, "interval")
         timeStamp += delay
         delayCount += 1
 
