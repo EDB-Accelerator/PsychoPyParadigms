@@ -40,7 +40,6 @@ def recordStimuli(df,timestamp,duration,stimuli):
     df = df.append(df2, ignore_index=True)
     return df
 
-
 for numFile in range(6):
 
     numOfSets = 6
@@ -49,13 +48,13 @@ for numFile in range(6):
     delays = np.arange(1, 3.25, 0.25).tolist()
     delays = delays * 17
     random.shuffle(delays[len(np.arange(1, 3.25, 0.25).tolist())*16:])
-    delays = delays[:151]
+    delays = delays[:152]
     random.shuffle(delays)
 
     numStandards = [3,4,5]
     numStandards = numStandards * 10
     random.shuffle(numStandards)
-    numStandards.pop()
+    # numStandards.pop()
     print(len(numStandards))
 
     novelDeviants = ['n','d']
@@ -68,6 +67,10 @@ for numFile in range(6):
     timeStamp = 0
     standardCount = 0
     delayCount = 0
+
+    # 20 seconds no sound
+    df = recordStimuli(df, 0, 20, "No sound (20 seconds)")
+    timeStamp += 20
 
     for j in range(10):
         df = recordStimuli(df, timeStamp, 0.2, "Standard (" + str(standardCount + 1) + ") presented")
@@ -101,6 +104,21 @@ for numFile in range(6):
         df = recordStimuli(df, timeStamp, delay, "interval")
         timeStamp += delay
         delayCount += 1
+
+    # 10 standards after each run.
+    for j in range(10):
+        df = recordStimuli(df, timeStamp, 0.2, "Standard (" + str(standardCount + 1) + ") presented")
+        standardCount += 1
+        timeStamp += 0.2
+
+        delay = delays.pop() - 0.2
+        df = recordStimuli(df, timeStamp, delay, "interval")
+        timeStamp += delay
+        delayCount += 1
+
+    # 20 seconds no sound
+    df = recordStimuli(df, 0, 20, "No sound (20 seconds)")
+    timeStamp += 20
 
 
     df.to_csv("./timing/" + str(numFile) + ".csv", mode='w', sep=',', encoding='utf-8')
