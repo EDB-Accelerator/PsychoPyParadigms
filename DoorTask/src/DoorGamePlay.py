@@ -230,7 +230,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                                   390 - height * 155 / 768,
                                                                                   512 - width * 130 / 1024,
                                                                                   390 + height * 200 / 768,
-                                                                                  'Reward Bar (Green bar)'))
+                                                                                  'Reward Bar (Green bar)' + str(r)))
 
                     # Punishment bar
                     tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd-aoiTimeStart),0,
@@ -238,7 +238,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                                   390 - height * 155 / 768,
                                                                                   512 + width * 130 / 1024,
                                                                                   390 + height * 200 / 768,
-                                                                                  'Punishment Bar (Red bar)'))
+                                                                                  'Punishment Bar (Red bar)'+ str(p)))
 
                     aoiTimeStart = aoiTimeEnd
 
@@ -262,14 +262,14 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                                 390-height*155/768,
                                                                                 512-width*130/1024,
                                                                                 390+height*200/768,
-                                                                                'Reward Bar (Green bar)'))
+                                                                                'Reward Bar (Green bar)' + str(r)))
 
             # Punishment bar
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, 512+width*220/1024,
                                                                                 390-height*155/768,
                                                                                 512+width*130/1024,
                                                                                 390+height*200/768,
-                                                                                'Punishment Bar (Red bar)'))
+                                                                                'Punishment Bar (Red bar)'+ str(p)))
 
             ELstartTime = time.time()
 
