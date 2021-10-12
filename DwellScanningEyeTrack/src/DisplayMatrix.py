@@ -63,6 +63,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
     imgStim.draw()
 
     angryRectangles = []
+    neutralRectangles = []
     for i in range(len(rectangles)):
         if labels[i]==True:
             angryRectangles.append(rectangles[i])
@@ -70,6 +71,8 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
                 angryRectangles[-1].lineColor = 'red'
                 # rectangles[i].lineColor = 'red'
                 # rectangles[i].draw()
+        else:
+            neutralRectangles.append(rectangles[i])
 
     circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
                            radius=10)
@@ -147,19 +150,24 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
             circle.draw()
 
         if params['musicMode'] == 'onlyWhenStareAt':
-            eyeOnAngryFace = False
-            for rectangle in angryRectangles:
+            # eyeOnAngryFace = False
+            # for rectangle in angryRectangles:
+            #     if rectangle.contains(circle.pos):
+            #         # sound1 = pauseMusic(sound1)
+            #         PauseMusic()
+            #         eyeOnAngryFace = True
+            #         # musicPause = True
+            eyeOnNeutralFace = False
+            for rectangle in neutralRectangles:
                 if rectangle.contains(circle.pos):
                     # sound1 = pauseMusic(sound1)
-                    PauseMusic()
-                    eyeOnAngryFace = True
+                    UnpauseMusic()
+                    eyeOnNeutralFace = True
                     # musicPause = True
             # if not eyeOnAngryFace and musicPause:
-            if not eyeOnAngryFace:
-                # sound1 = playMusic(sound1,params)
-                UnpauseMusic()
-                # resumeMusic(sound)
-                # musicPause = False
+            if not eyeOnNeutralFace:
+                # UnpauseMusic()
+                PauseMusic()
 
             # if rectangles[0].contains(circle.pos):
             #     UnpauseMusic()
