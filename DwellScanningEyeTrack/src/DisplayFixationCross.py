@@ -44,11 +44,130 @@ sys.path.insert(1, './src')
 # from TableWrite import TableWrite,TableWriteRaw
 from DictWrite import DictWrite,DictWriteRaw
 from GetKeyPress import GetKeyPress
+from MusicControl import StopMusic
+from psychopy.visual import ShapeStim
+import os.path
 
 def pointFromCenter(n,center,standard):
     return int(center+n*(center*2)/standard)
 
 def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
+    # After Calibration before fixation cross
+    tracker.sendMessage('TRIAL_RESULT 0')
+
+    # Initialization
+    r = 1000
+    dict["Section"] = "DisplayFixationArrow"
+
+    # Get the random seed:
+    bold = (params['fixationOrder']).pop()
+
+    if bold == 'l':
+        bold = 'Left Arrow'
+    elif bold == 'r':
+        bold = 'Right Arrow'
+    else:
+        bold = 'Line'
+
+
+    if bold is 'Left Arrow':
+        arrowLeft = [(-0.2 * r, 0.05 * r), (-0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (0.2 * r, 0),
+                     (0, 0.1 * r),(0, 0.05 * r)]
+        arrowStim = ShapeStim(win, vertices=arrowLeft, units='pix', fillColor='black', size=.5, lineColor='black',
+                           pos=[0,0])
+        imgScreenShot = 'img/FixationCross/left.jpg'
+    elif bold is 'Right Arrow':
+        arrowRight = [(0.2 * r, 0.05 * r), (0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (-0.2 * r, 0),
+                      (0, 0.1 * r),(0, 0.05 * r)]
+        arrowStim = ShapeStim(win, vertices=arrowRight, units='pix', fillColor='black', size=.5, lineColor='black',
+                           pos=[0,0])
+        imgScreenShot = 'img/FixationCross/right.jpg'
+    else: # Line
+        arrowLine = [(-0.2 * r, 0.05 * r), (-0.2 * r, -0.05 * r), (.2 * r, -.05 * r), (.2 * r, 0.05 * r)]
+        arrowStim = ShapeStim(win, vertices=arrowLine, units='pix', fillColor='black', size=.5, lineColor='black',
+                              pos=[0,0])
+        imgScreenShot = 'img/FixationCross/line.jpg'
+
+    # Flip Window (display FixationCross image)
+    arrowStim.draw()
+    win.flip()
+
+    if os.path.exists(imgScreenShot) == False:
+        win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+        win.saveMovieFrames(imgScreenShot)
+
+    # Eyetracker label (start)
+    resolution = params['screenSize']
+    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    params["eyeIdx"] += 1
+    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+    # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
+    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgScreenShot, params['screenSize'][0] / 2,
+                                                        params['screenSize'][1] / 2))
+    tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+    1, pointFromCenter(-100, params['screenSize'][0] / 2, params['screenSize'][0]),
+    pointFromCenter(-60, params['screenSize'][1] / 2, params['screenSize'][1]),
+    pointFromCenter(100, params['screenSize'][0] / 2, params['screenSize'][0]),
+    pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation:'+bold))
+
+    dictRaw["Event"] = bold + " shown (start)"
+    DictWriteRaw(dfRaw,dictRaw,params)
+
+    # Show scale and measure the elapsed wall-clock time.
+    startTime = time.time()
+    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    # core.wait(0.15)
+    # c = event.getKeys()
+    circle = visual.Circle(win=win, units="pix", fillColor='black', lineColor='white', edges=1000, pos=(0,0),
+                           radius=10)
+    if params['circle']:
+        circle.draw()
+    arrowStim.draw()
+
+    # while time.time() - startTime < 1:
+    #     core.wait(1 / 120)
+
+    # Get user input.
+    c = []
+    event.clearEvents()
+    while time.time() - startTime < 1:
+        core.wait(1 / 120)
+        if c == []:
+            # c = GetKeyPress()
+            # event.clearEvents()
+            c = event.getKeys()
+        if len(c) >= 1:
+            dictRaw["Event"] = "User Response:" + c[0]
+            DictWriteRaw(dfRaw, dictRaw, params)
+
+
+    if c == ['q'] or c == ['Q']:
+        print('Q pressed. Forced Exit.')
+        StopMusic()
+        core.quit()
+    if len(c) >= 1:
+        c = c[0]
+    else:
+        c = "No Response"
+
+    # Record Result
+    dictRaw["Event"] = bold + " shown (end)"
+    DictWriteRaw(dfRaw, dictRaw, params)
+    dict["Image Displayed"] = bold
+    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+    dict["Duration"] = time.time() - startTime
+    dict["User Response"] = c
+    DictWrite(df, params, dict)
+    dict["User Response"] = ""
+
+    # End Eyetracker
+    # Eyetracker label (end and new start)
+    tracker.sendMessage('TRIAL_RESULT 0')
+    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    params["eyeIdx"] += 1
+
+def DisplayFixationOld(df,dfRaw,params,dict,dictRaw,win,tracker):
     # UnpauseMusic()
 
     # After Calibration before fixation cross
@@ -95,10 +214,10 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-    1, pointFromCenter(-70, params['screenSize'][0] / 2, params['screenSize'][0]),
-    pointFromCenter(-70, params['screenSize'][1] / 2, params['screenSize'][1]),
-    pointFromCenter(70, params['screenSize'][0] / 2, params['screenSize'][0]),
-    pointFromCenter(70, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation Cross'))
+    1, pointFromCenter(-100, params['screenSize'][0] / 2, params['screenSize'][0]),
+    pointFromCenter(-60, params['screenSize'][1] / 2, params['screenSize'][1]),
+    pointFromCenter(100, params['screenSize'][0] / 2, params['screenSize'][0]),
+    pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation Cross'))
 
     dictRaw["Event"] = bold + " shown (start)"
     DictWriteRaw(dfRaw,dictRaw,params)
@@ -115,9 +234,31 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     fixation1.draw()
     fixation2.draw()
 
+    # while time.time() - startTime < 1:
+    #     core.wait(1 / 120)
+
+    # Get user input.
+    c = []
+    event.clearEvents()
     while time.time() - startTime < 1:
         core.wait(1 / 120)
+        if c == []:
+            # c = GetKeyPress()
+            # event.clearEvents()
+            c = event.getKeys()
+        if len(c) >= 1:
+            dictRaw["Event"] = "User Response:" + c[0]
+            DictWriteRaw(dfRaw, dictRaw, params)
 
+
+    if c == ['q'] or c == ['Q']:
+        print('Q pressed. Forced Exit.')
+        StopMusic()
+        core.quit()
+    if len(c) >= 1:
+        c = c[0]
+    else:
+        c = "No Response"
     # while (c != ['space']):
     #     # print(c)
     #     core.wait(1 / 120)
@@ -172,7 +313,9 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     dict["Image Displayed"] = bold
     dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - startTime
+    dict["User Response"] = c
     DictWrite(df, params, dict)
+    dict["User Response"] = ""
 
     # End Eyetracker
     # Eyetracker label (end and new start)

@@ -57,7 +57,8 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
     if params['Version'] != 2:
 
         message = visual.TextStim(win,
-                                  text="Let's rest for a bit.  \n\n Press the spacebar when you are ready to keep playing.",
+                                  # text="Let's rest for a bit.  \n\n Press the spacebar when you are ready to keep playing.",
+                                  text="Please rest",
                                   units='norm', wrapWidth=2,color='black')
         message.draw()
         win.mouseVisible = False
@@ -72,7 +73,17 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
                                   text="Let's rest for a bit.",
                                   units='norm', wrapWidth=2,color='black')
         message.draw()
-        core.wait(10)
+        win.flip()
+        # core.wait(10)
+        startTime = time.time()
+        while time.time() - startTime < 10:
+            core.wait(1 / 60)
+            c = event.getKeys()
+
+            if c == ['q'] or c == ['Q']:
+                print('Q pressed. Forced Exit.')
+                StopMusic()
+                core.quit()
 
     # Record status
     dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]

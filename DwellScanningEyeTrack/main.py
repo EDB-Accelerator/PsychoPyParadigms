@@ -65,6 +65,7 @@ from MakeAOI import MakeAOI
 from WaitUserSpace import WaitUserSpace
 from MusicControl import PauseMusic,UnpauseMusic,StopMusic
 from DictWrite import DictWrite,DictWriteRaw
+from DisplayIntroduction import DisplayIntroduction
 import os
 import pandas as pd
 import pickle
@@ -73,6 +74,7 @@ import threading
 import subprocess
 import time
 from psychopy import prefs
+
 
 # # Audio library configuration.
 # prefs.hardware['audioLib'] = ['PTB']
@@ -91,7 +93,8 @@ pd.set_option('display.max_columns', None)
 
 # Output Summary Header Initialization
 Header = ["Start Time","End Time","Duration","expName","Version","subjectID","Session","Section",'timingFile',"TrialCount",
-          "Image Displayed","Emotion Image Group","The number of neutral faces","The number of emotional faces"]
+          "Image Displayed","Emotion Image Group","The number of neutral faces","The number of emotional faces",
+          "User Response"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
@@ -241,13 +244,13 @@ if resumeOkay == 'no':
     # Decide the name of output files.
     timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
     params['outFile'] = "./result/CSV/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-              timeLabel + ".csv"
+              "_" + timeLabel + ".csv"
     params['outFileRaw'] = "./result/CSV/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-              timeLabel + "_raw.csv"
+              "_" + timeLabel + "_raw.csv"
     params["edfFile"] = "./result/EDF/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-              timeLabel + "_"
+              "_" + timeLabel + "_"
     params['outMusicSelection'] = "./result/CSV/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-              timeLabel + "_music_selection.csv"
+              "_" + timeLabel + "_music_selection.csv"
 
     # Instance result initialization
     dict,dictRaw = DictInitialize(params)
@@ -309,22 +312,62 @@ if params['Version'] == 2:
         tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
 
         # If version is 2, '5' needs to be pressed to continue.
-        message = visual.TextStim(win,text="Please press 5 to continue.\n ",
+        message = visual.TextStim(win,text="Waiting for scanner…\n ",
                                   units='norm', wrapWidth=2, color="black")
         message.draw()
         win.flip()
         c = ''
+
+        # Record (start)
+        dictRaw["Event"] = "Message: Waiting for scanner (start)"
+        DictWriteRaw(dfRaw, dictRaw, params)
+        startTime = time.time()
+        dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+
         while (c != ['5']):
             core.wait(1 / 120)
             c = event.getKeys()
 
-        # Wait for 8 seconds. (Get Ready Screen)
+        # Record (end)
+        dictRaw["Event"] = "Message: Waiting for scanner (end)"
+        DictWriteRaw(dfRaw, dictRaw, params)
+        dict["Image Displayed"] = "Message: Waiting for scanner"
+        dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        dict["Duration"] = time.time() - startTime
+        DictWrite(df, params, dict)
+
+        # Instruction Slide (waiting for 'space')
+        # img = 'img/instruction.png'
+        # imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1,
+        #                            size=(params['screenSize'][0]*0.8, params['screenSize'][0]*0.351*0.8))
+        # imgStim.draw()
+        # win.flip()
+        # core.wait(5)
+        # WaitUserSpace()
+        DisplayIntroduction(df, dfRaw, params, dict, dictRaw, win, tracker)
+
+        # Wait for 5 seconds. (Get Ready Screen)
         message = visual.TextStim(win,
                                   text="Get Ready\n ",
                                   units='norm', wrapWidth=2, color="black")
         message.draw()
         win.flip()
-        core.wait(8)
+        # core.wait(8)
+
+        # Record Result (raw start)
+        dictRaw["Event"] = "Message: Get Ready (start)"
+        DictWriteRaw(dfRaw, dictRaw, params)
+        startTime = time.time()
+        dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+
+        core.wait(5)
+        # Record result
+        dictRaw["Event"] = "Message: Get Ready (end)"
+        DictWriteRaw(dfRaw, dictRaw, params)
+        dict["Image Displayed"] = "Message: Get Ready"
+        dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        dict["Duration"] = time.time() - startTime
+        DictWrite(df, params, dict)
 
         # Start recording
         dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
@@ -343,6 +386,11 @@ if params['Version'] == 2:
         # for trial in range(params['numTrial']):
         if os.path.isfile('.tmp/params.pkl') == False:
             trial = 0
+
+        # Fixation Line randomization
+        fixationOrder = ['l','r','c']*20
+        random.shuffle(fixationOrder)
+        params['fixationOrder'] = fixationOrder
 
         while trial < params['numTrial']:
             params["TrialCount"] = trial
@@ -378,7 +426,6 @@ if params['Version'] == 2:
         dict["Duration"] = time.time() - sectionStartTime
         DictWrite(df, params, dict)
 
-
         # Import the result (from eyetracker)
         trackerIO = pylink.EyeLink('100.1.1.1')
         trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
@@ -386,9 +433,9 @@ if params['Version'] == 2:
         # Stop the ioHub Server
         io.quit()
         trackerIO.close()
-        # if section != 2:
-        #     # Rest between each section. (ITI duration)
-        #     DisplayRest(df, dfRaw, params, dict, dictRaw, win)
+        if section != 2:
+            # Rest between each section. (ITI duration)
+            DisplayRest(df, dfRaw, params, dict, dictRaw, win)
         section += 1
         trial = 0
         # Save the current status.
