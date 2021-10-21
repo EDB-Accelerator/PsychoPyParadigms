@@ -311,6 +311,9 @@ if params['Version'] == 2:
         win,io,tracker = EyeTrackerIntialization(params,win)
         tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
 
+        # Instruction Slide
+        DisplayIntroduction(df, dfRaw, params, dict, dictRaw, win, tracker)
+
         # If version is 2, '5' needs to be pressed to continue.
         message = visual.TextStim(win,text="Waiting for scanner…\n ",
                                   units='norm', wrapWidth=2, color="black")
@@ -336,7 +339,7 @@ if params['Version'] == 2:
         dict["Duration"] = time.time() - startTime
         DictWrite(df, params, dict)
 
-        # Instruction Slide (waiting for 'space')
+        #  (waiting for 'space')
         # img = 'img/instruction.png'
         # imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1,
         #                            size=(params['screenSize'][0]*0.8, params['screenSize'][0]*0.351*0.8))
@@ -344,7 +347,6 @@ if params['Version'] == 2:
         # win.flip()
         # core.wait(5)
         # WaitUserSpace()
-        DisplayIntroduction(df, dfRaw, params, dict, dictRaw, win, tracker)
 
         # Wait for 5 seconds. (Get Ready Screen)
         message = visual.TextStim(win,

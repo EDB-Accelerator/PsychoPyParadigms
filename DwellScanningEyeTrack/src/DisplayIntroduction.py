@@ -60,16 +60,18 @@ def DisplayIntroduction(df,dfRaw,params,dict,dictRaw,win,tracker):
     messageC = visual.TextStim(win, text="Do not press a \nbutton",
                                units='pix', wrapWidth=200, color="black", pos=[0.3 * r, -.06 * r], height=30)
 
+    message = visual.TextStim(win,text="Press space bar to proceed.",units='pix', wrapWidth=1000, color='black',pos=[0,-200],height=40)
     arrowL.draw()
     arrowR.draw()
     arrowLine.draw()
     messageR.draw()
     messageL.draw()
     messageC.draw()
+    message.draw()
     win.flip()
 
     # Record (start)
-    dictRaw["Event"] = "Introduction Image (arrow) displayed (start)"
+    dictRaw["Event"] = "Instruction Image (arrow) displayed (start)"
     DictWriteRaw(dfRaw, dictRaw, params)
     startTime = time.time()
     dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
@@ -77,9 +79,9 @@ def DisplayIntroduction(df,dfRaw,params,dict,dictRaw,win,tracker):
     WaitUserSpace()
 
     # Record (end)
-    dictRaw["Event"] = "Introduction Image (arrow) displayed (end)"
+    dictRaw["Event"] = "Instruction Image (arrow) displayed (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
-    dict["Image Displayed"] = "Introduction Image (arrow) displayed"
+    dict["Image Displayed"] = "Instruction Image (arrow) displayed"
     dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - startTime
     DictWrite(df, params, dict)

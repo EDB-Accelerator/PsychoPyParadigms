@@ -23,7 +23,7 @@ def EyeTrackerIntialization(params,win):
     # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
     win.mouseVisible = False
     message = visual.TextStim(win,
-                              text="Eyetracker Calibration will start.  \n\nPress the space bar when you are ready.",
+                              text="Eyetracker Calibration will start.  \n\nPress space bar to proceed.",
                               units='norm', wrapWidth=2, color="black")
     message.draw();
     win.flip();
