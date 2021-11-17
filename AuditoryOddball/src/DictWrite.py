@@ -23,89 +23,62 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-"""
-DisplayFixationCross.py
+import time,re
+import datetime,os
+import pandas as pd
 
-DwellTask Psychopy3 Sub function.
+Header = ["Start Time", "End Time", "Duration", "expName", "Version", "subjectID", 'timingFile',"Session", "Event",
+          "Sound Type"]
 
-This function is for writing Table.
+HeaderRaw = ["TimeStamp", "expName", "Version", "subjectID", "Session", "Event"]
 
-Created on Wed Feb  3 13:49:20 EST 2021
-
-@author: Kyunghun Lee
-- Created on Wed Feb  3 13:34:46 EST 2021 by KL
-"""
-import datetime,time,re
-
-Header = ["SubjectID","expName","Session","Section","Section Start Time","Section End Time","Section Time",
-          "Response Time","User Answer","Correct Answer","User Answer Correctness", "Image Group","Image Count",
-          "Image Displayed #1","Image Displayed #2","Image Displayed #3","Image Displayed #4","Image Displayed #5",
-          "Image Displayed #6"]
-entryList = ["Image Displayed #1", "Image Displayed #2", "Image Displayed #3", "Image Displayed #4",
-             "Image Displayed #5", "Image Displayed #6"]
-# HeaderRaw = ["TimeStamp","expName","subjectID","Session","Event"]
-def DictWriteRaw(dfRaw,dictRaw,params,event):
-    # Move data in Dict into Df.
+def DictWriteRaw(params,event):
+    print(event)
+    dictRaw = {}
+    dictRaw["TimeStamp"] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    dictRaw["expName"] = params['expName']
+    dictRaw["Version"] = params['Version']
+    dictRaw["subjectID"] = params['subjectID']
+    dictRaw["Session"] = params["Session"]
     dictRaw["Event"] = event
-    # dictRaw["TimeStamp"] = datetime.datetime.utcnow().strftime("%m%d%Yyyyy-MM-dd HH:mm:ss_%H:%M:%S.%f")[:-4] # Record Timestamp.
-    dictRaw["TimeStamp"] = time.strftime('%m-%d-%Y %H:%M:%S')
+    dfRaw = pd.DataFrame(columns=HeaderRaw)
     dfRaw = dfRaw.append(dictRaw, ignore_index=True)
-    dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
-    # dfRaw = dfRaw[:-1] # Drop the last row.
+    if not os.path.isfile(params['outFileRaw']):
+        dfRaw.to_csv(params['outFileRaw'],sep=',',encoding='utf-8',index=False,header=HeaderRaw)
+    else:  # else it exists so append without writing the header
+        dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
+    # dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
 
-def SectionStart(df,dfRaw,params,dict,dictRaw,sectionName):
-    if sectionName != dict["Section"]:
-        dict["Section"] = sectionName
-        dict["Image Count"] = 0
+def DictWriteStart(params):
+    params["Start Time"] = datetime.datetime.now()
+
+def DictWriteEnd(params,event):
+    params["End Time"] = datetime.datetime.now()
+
+    dict = {}
+    dict["Start Time"] = params["Start Time"].strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    dict["End Time"] = params["End Time"].strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    dict["Duration"] = (params["End Time"] - params["Start Time"]).total_seconds()
+    dict["expName"] = params['expName']
+    dict["Version"] = params['Version']
+    dict["subjectID"] = params['subjectID']
+    dict['timingFile'] = 'timing/' + str(params['TimingFile'])+ '.csv'
+    dict["Session"] = params["Session"]
+    dict["Event"] = event
+
+    if "PO500HZ.WAV" in event:
+        dict["Sound Type"] = 'Standard'
+    elif 'PN650HZ.WAV' in event:
+        dict["Sound Type"] = 'Deviant'
+    elif 'No sound' in event or 'Interval' in event:
+        dict["Sound Type"] = 'None'
     else:
-        dict["Image Count"] += 1
-    # dict["Section Start Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    dict["Section Start Time"] = time.strftime('%m-%d-%Y %H:%M:%S')
-    params["StartTime"] = time.time()
-    DictWriteRaw(dfRaw, dictRaw, params, sectionName + " "+str(dict["Image Count"]) + " started")
+        dict["Sound Type"] = 'Novel'
 
-def ResponseRecord(params,dict,userAnswer,Answer):
-    dict["Response Time"] = time.time() - params["StartTime"]
-    dict["User Answer"] = userAnswer
-    dict["Correct Answer"] = Answer
-    if userAnswer != "" and userAnswer != "Continue Clicked":
-        dict["User Answer Correctness"] = "Correct" if userAnswer == Answer else "Incorrect"
+    df = pd.DataFrame(columns=Header)
+    df = df.append(dict, ignore_index=True)
 
-
-def SectionEnd(df,dfRaw,params,dict,dictRaw,sectionName):
-    # dict["Section End Time"] = datetime.datetime.utcnow().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    dict["Section End Time"] = time.strftime('%m-%d-%Y %H:%M:%S')
-    dict["Section Time"] = time.time() - params["StartTime"]
-    if "Response Time" not in dict:
-        dict["Response Time"] = ""
-
-    # Extract Image Group Name from Image file
-    if "Image Displayed #1" in dict:
-        dict["Image Group"] = re.findall('([a-zA-Z ]*)\d*.*', dict["Image Displayed #1"].split('/')[-1])[0]
-
-    # for entry in entryList:
-    #     if entry in dict:
-    #         dict[entry] = (dict[entry]).split("./img/")[-1].split(".jpg")[0]
-
-    # Move data in Dict into Df.
-    for key in Header:
-        if key not in dict.keys():
-            dict[key] = ""
-
-    df = df.append(dict,ignore_index=True)
-    df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
-    del dict["Response Time"]
-
-    params["Image Displayed #1"] = dict["Image Displayed #1"]
-    for entry in entryList:
-        if entry in dict:
-            del dict[entry]
-    if "Image Group" in dict:
-        del dict["Image Group"]
-    if "User Answer" or "User Answer Correctness":
-        del dict["User Answer"]
-        del dict["User Answer Correctness"]
-        del dict["Correct Answer"]
-
-    # Section Ended.
-    DictWriteRaw(dfRaw, dictRaw, params, sectionName+ " "+str(dict["Image Count"]) + " ended")
+    if not os.path.isfile(params['outFile']):
+        df.to_csv(params['outFile'],sep=',',encoding='utf-8',index=False,header=Header)
+    else:  # else it exists so append without writing the header
+        df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header=False)

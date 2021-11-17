@@ -1,0 +1,67 @@
+Start Time,End Time,Duration,expName,Version,subjectID,timingFile,Session,Event,Sound Type
+2021-11-17 15:30:02.643,2021-11-17 15:30:22.647,20.004,Auditory Oddball Task,1.0,1,timing/0.csv,1,No sound,None
+2021-11-17 15:30:22.707,2021-11-17 15:30:22.709,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:22.716,2021-11-17 15:30:25.662,2.946,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:25.669,2021-11-17 15:30:25.672,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:25.680,2021-11-17 15:30:28.182,2.502,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:28.189,2021-11-17 15:30:28.192,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:28.199,2021-11-17 15:30:30.191,1.992,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:30.198,2021-11-17 15:30:30.200,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:30.208,2021-11-17 15:30:32.462,2.254,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:32.469,2021-11-17 15:30:32.472,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:32.479,2021-11-17 15:30:33.730,1.251,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:33.737,2021-11-17 15:30:33.740,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:33.747,2021-11-17 15:30:36.489,2.742,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:36.497,2021-11-17 15:30:36.499,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:36.507,2021-11-17 15:30:37.752,1.245,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:37.759,2021-11-17 15:30:37.762,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:37.769,2021-11-17 15:30:40.521,2.752,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:40.528,2021-11-17 15:30:40.531,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:40.539,2021-11-17 15:30:43.037,2.498,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:43.044,2021-11-17 15:30:43.047,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:43.053,2021-11-17 15:30:44.301,1.248,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:44.308,2021-11-17 15:30:44.311,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:44.318,2021-11-17 15:30:46.062,1.744,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:46.069,2021-11-17 15:30:46.072,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:46.079,2021-11-17 15:30:48.581,2.502,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:48.587,2021-11-17 15:30:48.590,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:48.597,2021-11-17 15:30:50.096,1.499,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:50.103,2021-11-17 15:30:50.106,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:50.113,2021-11-17 15:30:51.852,1.739,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:51.859,2021-11-17 15:30:51.862,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:51.869,2021-11-17 15:30:53.366,1.497,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:53.374,2021-11-17 15:30:53.376,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PN650HZ.WAV,Deviant
+2021-11-17 15:30:53.382,2021-11-17 15:30:56.385,3.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:56.392,2021-11-17 15:30:56.395,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:56.402,2021-11-17 15:30:59.403,3.001,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:30:59.410,2021-11-17 15:30:59.413,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:30:59.420,2021-11-17 15:31:01.417,1.997,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:01.424,2021-11-17 15:31:01.427,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:01.433,2021-11-17 15:31:03.175,1.742,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:03.182,2021-11-17 15:31:03.185,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:03.192,2021-11-17 15:31:06.192,3.0,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:06.199,2021-11-17 15:31:06.202,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:06.210,2021-11-17 15:31:08.704,2.494,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:08.711,2021-11-17 15:31:08.714,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PN650HZ.WAV,Deviant
+2021-11-17 15:31:08.720,2021-11-17 15:31:11.717,2.997,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:11.724,2021-11-17 15:31:11.726,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:11.732,2021-11-17 15:31:13.487,1.755,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:13.495,2021-11-17 15:31:13.498,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:13.507,2021-11-17 15:31:16.247,2.74,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:16.254,2021-11-17 15:31:16.257,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:16.264,2021-11-17 15:31:18.009,1.745,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:18.016,2021-11-17 15:31:18.019,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PN650HZ.WAV,Deviant
+2021-11-17 15:31:18.026,2021-11-17 15:31:20.527,2.501,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:20.534,2021-11-17 15:31:20.537,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:20.545,2021-11-17 15:31:21.792,1.247,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:21.799,2021-11-17 15:31:21.802,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:21.809,2021-11-17 15:31:23.800,1.991,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:23.807,2021-11-17 15:31:23.810,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:23.816,2021-11-17 15:31:26.057,2.241,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:26.064,2021-11-17 15:31:26.067,0.003,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:26.074,2021-11-17 15:31:28.080,2.006,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:28.087,2021-11-17 15:31:28.089,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard
+2021-11-17 15:31:28.096,2021-11-17 15:31:29.349,1.253,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:29.358,2021-11-17 15:31:29.360,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound\ANSEALIO.WAV,Novel
+2021-11-17 15:31:29.368,2021-11-17 15:31:32.360,2.992,Auditory Oddball Task,1.0,1,timing/0.csv,1,Interval,None
+2021-11-17 15:31:32.367,2021-11-17 15:31:32.369,0.002,Auditory Oddball Task,1.0,1,timing/0.csv,1,Sound played:sound/PO500HZ.WAV,Standard

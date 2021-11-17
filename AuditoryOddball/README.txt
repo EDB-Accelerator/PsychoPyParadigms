@@ -1,0 +1,1 @@
+Psychopy Environment: Please use Psychopy 2021.1.4. (Windows version)

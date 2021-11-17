@@ -46,9 +46,9 @@ for numFile in range(6):
     numTrials = 100
     headers = ['Time Stamp (start)','Duration','Stimuli']
     delays = np.arange(1, 3.25, 0.25).tolist()
-    delays = delays * 17
-    random.shuffle(delays[len(np.arange(1, 3.25, 0.25).tolist())*16:])
-    delays = delays[:152]
+    delays = delays * 18
+    random.shuffle(delays[len(np.arange(1, 3.25, 0.25).tolist())*17:])
+    # delays = delays[:165]
     random.shuffle(delays)
 
     numStandards = [3,4,5]

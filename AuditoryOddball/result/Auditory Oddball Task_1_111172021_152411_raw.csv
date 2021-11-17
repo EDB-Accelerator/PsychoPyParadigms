@@ -1,0 +1,445 @@
+TimeStamp,expName,Version,subjectID,Session,Event
+2021-11-17 15:24:11.669,Auditory Oddball Task,1,1,1,task started
+2021-11-17 15:24:12.622,Auditory Oddball Task,1,1,1,Message: Press 5 to continue
+2021-11-17 15:24:13.711,Auditory Oddball Task,1,1,1,5 pressed
+2021-11-17 15:24:13.718,Auditory Oddball Task,1,1,1,No sound (start)
+2021-11-17 15:24:33.722,Auditory Oddball Task,1,1,1,No sound (end)
+2021-11-17 15:24:33.984,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:33.990,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:34.000,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:36.735,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:36.748,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:36.752,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:36.763,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:39.248,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:39.260,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:39.265,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:39.276,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:41.261,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:41.273,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:41.277,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:41.288,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:43.522,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:43.534,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:43.539,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:43.550,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:44.784,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:44.796,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:44.801,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:44.812,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:47.547,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:47.559,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:47.563,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:47.574,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:48.809,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:48.820,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:48.825,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:48.836,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:51.570,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:51.582,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:51.588,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:51.599,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:54.082,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:54.094,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:54.098,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:54.109,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:55.344,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:55.355,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:55.359,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:55.370,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:57.106,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:57.119,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:57.124,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:57.135,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:24:59.619,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:24:59.630,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:24:59.635,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:24:59.646,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:01.131,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:01.143,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:01.147,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:01.157,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:02.893,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:02.904,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:02.909,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:02.920,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:04.404,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:04.416,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:25:04.421,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:25:04.432,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:07.416,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:07.427,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:07.432,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:07.443,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:10.427,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:10.439,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:10.446,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:10.458,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:12.438,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:12.451,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:12.456,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:12.467,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:14.202,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:14.213,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:14.218,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:14.229,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:17.214,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:17.226,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:17.231,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:17.242,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:19.727,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:19.739,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:25:19.744,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:25:19.754,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:22.739,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:22.751,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:22.755,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:22.766,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:24.501,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:24.514,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:24.518,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:24.529,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:27.265,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:27.277,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:27.281,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:27.293,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:29.027,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:29.039,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:25:29.044,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:25:29.053,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:31.539,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:31.550,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:31.555,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:31.565,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:32.800,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:32.812,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:32.817,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:32.828,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:34.812,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:34.825,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:34.829,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:34.840,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:37.074,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:37.086,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:37.091,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:37.102,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:39.087,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:39.099,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:39.104,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:39.116,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:40.349,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:40.363,Auditory Oddball Task,1,1,1,Sound played (start):sound\NNTHUD.WAV
+2021-11-17 15:25:40.368,Auditory Oddball Task,1,1,1,Sound played (end):sound\NNTHUD.WAV
+2021-11-17 15:25:40.379,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:43.361,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:43.373,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:43.378,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:43.388,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:44.872,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:44.884,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:44.889,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:44.900,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:45.884,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:45.896,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:45.901,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:45.912,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:47.396,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:47.409,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:47.413,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:47.426,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:50.158,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:50.171,Auditory Oddball Task,1,1,1,Sound played (start):sound\BOROYAL2.WAV
+2021-11-17 15:25:50.176,Auditory Oddball Task,1,1,1,Sound played (end):sound\BOROYAL2.WAV
+2021-11-17 15:25:50.186,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:52.170,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:52.182,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:52.187,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:52.197,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:53.182,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:53.193,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:53.198,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:53.210,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:55.443,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:55.455,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:55.460,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:55.471,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:58.455,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:58.467,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:25:58.472,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:25:58.483,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:25:59.968,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:25:59.979,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:25:59.984,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:25:59.994,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:02.479,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:02.491,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:02.496,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:02.506,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:04.741,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:04.754,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:04.758,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:04.770,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:06.004,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:06.015,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:06.020,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:06.032,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:07.266,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:07.279,Auditory Oddball Task,1,1,1,Sound played (start):sound\NNHELICO.WAV
+2021-11-17 15:26:07.284,Auditory Oddball Task,1,1,1,Sound played (end):sound\NNHELICO.WAV
+2021-11-17 15:26:07.295,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:08.277,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:08.289,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:08.294,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:08.304,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:10.789,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:10.800,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:10.805,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:10.816,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:13.300,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:13.312,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:13.317,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:13.328,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:14.563,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:14.574,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:26:14.579,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:26:14.590,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:17.325,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:17.338,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:17.343,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:17.354,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:20.088,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:20.100,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:20.105,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:20.115,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:22.350,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:22.361,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:22.366,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:22.377,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:23.861,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:23.873,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:23.878,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:23.889,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:26.124,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:26.138,Auditory Oddball Task,1,1,1,Sound played (start):sound\HNCOUGH2.WAV
+2021-11-17 15:26:26.142,Auditory Oddball Task,1,1,1,Sound played (end):sound\HNCOUGH2.WAV
+2021-11-17 15:26:26.153,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:27.386,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:27.398,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:27.403,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:27.414,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:30.149,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:30.161,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:30.166,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:30.176,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:31.662,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:31.673,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:31.678,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:31.689,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:33.673,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:33.686,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:33.691,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:33.701,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:35.936,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:35.947,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:35.953,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:35.966,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:38.949,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:38.962,Auditory Oddball Task,1,1,1,Sound played (start):sound\BNLIMPKN.WAV
+2021-11-17 15:26:38.968,Auditory Oddball Task,1,1,1,Sound played (end):sound\BNLIMPKN.WAV
+2021-11-17 15:26:38.978,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:40.960,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:40.972,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:40.977,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:40.986,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:43.472,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:43.483,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:43.488,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:43.498,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:46.483,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:46.496,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:46.501,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:46.511,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:47.996,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:48.008,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:48.012,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:48.022,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:50.257,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:50.272,Auditory Oddball Task,1,1,1,Sound played (start):sound\VNGAME1.WAV
+2021-11-17 15:26:50.279,Auditory Oddball Task,1,1,1,Sound played (end):sound\VNGAME1.WAV
+2021-11-17 15:26:50.291,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:53.022,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:53.034,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:53.039,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:53.050,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:56.034,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:56.046,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:56.050,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:56.061,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:58.296,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:58.308,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:58.314,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:58.324,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:26:59.809,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:26:59.821,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:26:59.826,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:26:59.836,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:02.571,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:02.582,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:02.587,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:02.598,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:04.583,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:04.597,Auditory Oddball Task,1,1,1,Sound played (start):sound\NNCAR.WAV
+2021-11-17 15:27:04.602,Auditory Oddball Task,1,1,1,Sound played (end):sound\NNCAR.WAV
+2021-11-17 15:27:04.612,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:07.594,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:07.607,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:07.612,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:07.623,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:09.857,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:09.869,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:09.874,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:09.884,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:11.370,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:11.382,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:11.387,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:11.397,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:14.132,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:14.143,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:14.148,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:14.159,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:15.894,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:15.907,Auditory Oddball Task,1,1,1,Sound played (start):sound\HNCLAP.WAV
+2021-11-17 15:27:15.912,Auditory Oddball Task,1,1,1,Sound played (end):sound\HNCLAP.WAV
+2021-11-17 15:27:15.924,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:17.156,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:17.168,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:17.173,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:17.184,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:19.668,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:19.680,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:19.685,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:19.696,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:21.180,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:21.192,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:21.197,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:21.207,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:22.692,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:22.706,Auditory Oddball Task,1,1,1,Sound played (start):sound\HNBELCH2.WAV
+2021-11-17 15:27:22.710,Auditory Oddball Task,1,1,1,Sound played (end):sound\HNBELCH2.WAV
+2021-11-17 15:27:22.722,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:24.204,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:24.215,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:24.220,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:24.231,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:26.216,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:26.227,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:26.232,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:26.242,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:27.227,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:27.239,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:27.244,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:27.254,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:29.989,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:30.001,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:27:30.005,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:27:30.016,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:32.501,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:32.512,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:32.518,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:32.530,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:34.762,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:34.774,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:34.778,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:34.789,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:36.524,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:36.535,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:36.540,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:36.551,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:39.535,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:39.547,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:39.551,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:39.562,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:40.797,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:40.808,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:40.813,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:40.823,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:42.059,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:42.070,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:27:42.075,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:27:42.086,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:43.821,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:43.833,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:43.838,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:43.848,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:46.582,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:46.594,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:46.599,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:46.610,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:49.595,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:49.607,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:49.612,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:49.623,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:50.608,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:50.620,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:50.625,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:50.635,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:53.370,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:53.382,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:27:53.387,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:27:53.398,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:55.882,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:55.895,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:55.899,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:55.910,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:56.895,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:56.906,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:56.911,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:56.922,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:27:58.657,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:27:58.670,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:27:58.675,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:27:58.686,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:01.171,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:01.182,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:28:01.187,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:28:01.198,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:03.182,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:03.194,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:03.199,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:03.209,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:04.195,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:04.206,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:04.211,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:04.222,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:05.456,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:05.468,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:05.474,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:05.484,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:06.469,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:06.480,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:06.485,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:06.496,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:07.730,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:07.744,Auditory Oddball Task,1,1,1,Sound played (start):sound\VNGADGET.WAV
+2021-11-17 15:28:07.749,Auditory Oddball Task,1,1,1,Sound played (end):sound\VNGADGET.WAV
+2021-11-17 15:28:07.759,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:10.742,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:10.754,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:10.759,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:10.771,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:12.754,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:12.766,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:12.771,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:12.781,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:13.766,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:13.777,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:13.782,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:13.793,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:16.278,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:16.290,Auditory Oddball Task,1,1,1,Sound played (start):sound/PN650HZ.WAV
+2021-11-17 15:28:16.295,Auditory Oddball Task,1,1,1,Sound played (end):sound/PN650HZ.WAV
+2021-11-17 15:28:16.306,Auditory Oddball Task,1,1,1,Interval (start)
+2021-11-17 15:28:17.790,Auditory Oddball Task,1,1,1,Interval (end)
+2021-11-17 15:28:17.803,Auditory Oddball Task,1,1,1,Sound played (start):sound/PO500HZ.WAV
+2021-11-17 15:28:17.809,Auditory Oddball Task,1,1,1,Sound played (end):sound/PO500HZ.WAV
+2021-11-17 15:28:17.820,Auditory Oddball Task,1,1,1,Interval (start)
