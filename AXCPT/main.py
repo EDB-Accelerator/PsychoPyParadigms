@@ -71,14 +71,11 @@ startTime = datetime.datetime.now()
 
 # Make Empty output files Construct pandas dataframe structure.
 Header = ["expName", "subjectID", "Session", "TrialCount", "TimingCount", "Trial Type", "Event", "Start Time",
-          "End Time",
-          "Duration (sec)",
-          'Timing File', "User Response", "Right Answer", "Correct or Incorrect", "User Response TimeStamp",
-          "User Response Time (the amount of time that passes from time the letter was shown)", "Cue Letter",
-          "Probe Letter"]
+          "End Time","Duration (sec)", 'Timing File', "User Response", "Right Answer", "Correct or Incorrect",
+          "User Response TimeStamp", "User Response Time (the amount of time that passes from time"
+          + " the letter was shown)", "Cue Letter","Probe Letter"]
 df = pd.DataFrame(columns=Header)
 df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-
 
 # Display Welcome Screen / Introduction
 win.winHandle.activate()
@@ -207,8 +204,8 @@ for timingFile in timingFiles:
     for i in range(params['numTrial']):
         # Extract Timing Information
         trialLetter = dfTiming.iloc[i]['Trial Type']
-        delayBetweenLetters = dfTiming.iloc[i]['Delay Between Letters'] / 1000
-        delayBetweenTrials = dfTiming.iloc[i]['Delay Between Trials'] / 1000
+        delayBetweenLetters = dfTiming.iloc[i]['Delay Between Letters'] / 1000 - 2.5
+        delayBetweenTrials = dfTiming.iloc[i]['Delay Between Trials'] / 1000 - 2.5
 
         # Display the first letter (cue)
         startCueTime = datetime.datetime.now()
@@ -249,11 +246,12 @@ for timingFile in timingFiles:
 
         if c != "":
             correctness = "Correct" if c == rightAnswer else "Incorrect"
-            # c = "Already answered"
-            # core.wait(1.5)
-            waitForSeconds(1.5)
+            # waitForSeconds(1.5)
+            waitForSeconds(2)
         else:
-            c,responseTime = WaitAndGetUserInput(c,1.5)
+            # c,responseTime = WaitAndGetUserInput(c,1.5)
+            c, responseTime = WaitAndGetUserInput(c, 2)
+
             if responseTime == "":
                 responseTime = "No response"
                 c = "No response"
@@ -317,11 +315,11 @@ for timingFile in timingFiles:
 
         if c != "":
             correctness = "Correct" if c == rightAnswer else "Incorrect"
-            # c = "Already answered"
-            # core.wait(1.5)
-            waitForSeconds(1.5)
+            # waitForSeconds(1.5)
+            waitForSeconds(2)
         else:
-            c,responseTime = WaitAndGetUserInput(c,1.5)
+            # c,responseTime = WaitAndGetUserInput(c,1.5)
+            c, responseTime = WaitAndGetUserInput(c, 2)
             if responseTime == "":
                 responseTime = "No response"
                 c = "No response"
