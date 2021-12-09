@@ -50,12 +50,12 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
     dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     startTime = time.time()
     dict["Section"] = "DisplayRestScreen"
-    dict["Image Displayed"] = "Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing."
+    # dict["Image Displayed"] = "Message: Let's rest for a bit.  Press the spacebar when you are ready to keep playing."
     dictRaw["Event"] = "Rest message shown (start)"
     DictWriteRaw(dfRaw, dictRaw, params)
 
     if params['Version'] != 2:
-
+        dict["Image Displayed"] = "Message: Please rest"
         message = visual.TextStim(win,
                                   # text="Let's rest for a bit.  \n\n Press the spacebar when you are ready to keep playing.",
                                   text="Please rest",
@@ -69,6 +69,7 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
         # sound1 = playMusic(sound1, params)
         UnpauseMusic()
     else:
+        dict["Image Displayed"] = "Message: Let's rest for a bit."
         message = visual.TextStim(win,
                                   text="Let's rest for a bit.",
                                   units='norm', wrapWidth=2,color='black')
