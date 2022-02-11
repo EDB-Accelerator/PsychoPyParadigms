@@ -13,6 +13,7 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Updated 09/3/2020 Tue by KL (Trigger)
 - Updated 09/15/2020 Tue by KL (Major Updates)
 - Updated 4/21/2021 Wed by KL (Eyetracker update - major updates)
+- Updated Fri, Oct  8, 2021  1:42:55 PM by KL (Reward/punishment score display on AOIs)
 - Save result when exit 10/26/2020 Mon by KL
 
 To-do: 1. reward screen fix 2. joystick sensitivty option (done) 3. 190=>220 (Done) 4. screen resolution (right one 768) => Done.
@@ -44,10 +45,6 @@ def shutdown_key():
 # Receive User input from User input window.
 userInputBank = userInputPlay()
 
-# Audio library configuration.
-# prefs.hardware['audioLib'] = ['PTB']
-# prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
-
 # Declare primary task parameters.
 params = {
 # Declare stimulus and response parameters
@@ -66,6 +63,7 @@ params = {
     'EyeTrackerSupport': userInputBank[8],
     'FullScreen': userInputBank[9],
     'sensitivity': userInputBank[10],
+    'soundMode' : userInputBank[11],
     # 'eyeTrackCircle': userInputBank[11],
     'eyeTrackCircle': True,
     'portAddress': int("0xE050", 16), # Port Address
@@ -84,6 +82,13 @@ params = {
     'idxTR': 0,
     'idxImg': 0,
 }
+
+# Audio library configuration.
+if params['soundMode'] == 'PTB':
+    prefs.hardware['audioLib'] = ['PTB']
+else:
+    prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
+
 
 # Define Output file names.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
