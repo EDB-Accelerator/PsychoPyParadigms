@@ -14,6 +14,7 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Updated 09/15/2020 Tue by KL (Major Updates)
 - Updated 4/21/2021 Wed by KL (Eyetracker update - major updates)
 - Updated Fri, Oct  8, 2021  1:42:55 PM by KL (Reward/punishment score display on AOIs)
+- Updated Fri, Mar 11, 2022  4:13:50 PM by KL (Instruction updated)
 - Save result when exit 10/26/2020 Mon by KL
 
 To-do: 1. reward screen fix 2. joystick sensitivty option (done) 3. 190=>220 (Done) 4. screen resolution (right one 768) => Done.
