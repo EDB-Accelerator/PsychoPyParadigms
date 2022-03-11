@@ -1,0 +1,53 @@
+Index,subjectID,Session,Version,Section,Subtrial,Event,Reward,Punishment,Duration(ms)
+1,,1,1,Practice,,After Calibration Before Door Practice Game,,,2935.0972175598145
+2,,1,1,Practice,0,Playing Door Game (Before lock).,,,4259.690284729004
+3,,1,1,Practice,0,After lock: Door Anticipation Time.,,,2040.4019355773926
+4,,1,1,Practice,0,Reward screen displayed.,,,2775.477170944214
+5,,1,1,Practice,0,ITI screen displayed.,,,1504.4784545898438
+6,,1,1,Practice,1,Playing Door Game (Before lock).,,,3133.104085922241
+7,,1,1,Practice,1,After lock: Door Anticipation Time.,,,3087.1386528015137
+8,,1,1,Practice,1,Reward screen displayed.,,,2773.4012603759766
+9,,1,1,Practice,1,ITI screen displayed.,,,915.5454635620117
+10,,1,1,Practice,2,Playing Door Game (Before lock).,,,1757.768154144287
+11,,1,1,Practice,2,After lock: Door Anticipation Time.,,,3118.9162731170654
+12,,1,1,Practice,2,Reward screen displayed.,,,2772.6449966430664
+13,,1,1,Practice,2,ITI screen displayed.,,,2250.7896423339844
+1,,1,1,TaskRun1,,After Calibration Before Door Practice Game,,,1001.4450550079346
+2,,1,1,TaskRun1,0,Playing Door Game (Before lock).,5,6,2573.876142501831
+3,,1,1,TaskRun1,0,After lock: Door Anticipation Time.,5,6,3055.169105529785
+4,,1,1,TaskRun1,0,Reward screen (score:5) displayed.,5,6,296.14877700805664
+5,,1,1,TaskRun1,0,ITI screen displayed.,,,41313.84325027466
+6,,1,1,TaskRun1,1,Playing Door Game (Before lock).,2,5,3372.911214828491
+7,,1,1,TaskRun1,1,After lock: Door Anticipation Time.,2,5,2768.2087421417236
+8,,1,1,TaskRun1,1,Punishment screen (score:5) displayed.,2,5,371.01197242736816
+9,,1,1,TaskRun1,1,ITI screen displayed.,,,2893.145799636841
+10,,1,1,TaskRun1,2,Playing Door Game (Before lock).,3,7,1723.5565185546875
+11,,1,1,TaskRun1,2,After lock: Door Anticipation Time.,3,7,3304.0969371795654
+12,,1,1,TaskRun1,2,Punishment screen (score:7) displayed.,3,7,365.6127452850342
+13,,1,1,TaskRun1,2,ITI screen displayed.,,,11057.326793670654
+1,,1,1,TaskRun2,,After Calibration Before Door Practice Game,,,459.5158100128174
+2,,1,1,TaskRun2,0,Playing Door Game (Before lock).,2,3,1390.695333480835
+3,,1,1,TaskRun2,0,After lock: Door Anticipation Time.,2,3,3669.975996017456
+4,,1,1,TaskRun2,0,Reward screen (score:2) displayed.,2,3,294.83938217163086
+5,,1,1,TaskRun2,0,ITI screen displayed.,,,2998.0170726776123
+6,,1,1,TaskRun2,1,Playing Door Game (Before lock).,3,3,1523.6144065856934
+7,,1,1,TaskRun2,1,After lock: Door Anticipation Time.,3,3,2045.5989837646484
+8,,1,1,TaskRun2,1,Punishment screen (score:3) displayed.,3,3,372.59507179260254
+9,,1,1,TaskRun2,1,ITI screen displayed.,,,3127.8514862060547
+10,,1,1,TaskRun2,2,Playing Door Game (Before lock).,6,6,1059.0078830718994
+11,,1,1,TaskRun2,2,After lock: Door Anticipation Time.,6,6,3746.1822032928467
+12,,1,1,TaskRun2,2,Reward screen (Door not opened) displayed.,6,6,9.060144424438477
+13,,1,1,TaskRun2,2,ITI screen displayed.,,,3494.577646255493
+1,,1,1,TaskRun3,,After Calibration Before Door Practice Game,,,564.0339851379395
+2,,1,1,TaskRun3,0,Playing Door Game (Before lock).,3,6,2551.954984664917
+3,,1,1,TaskRun3,0,After lock: Door Anticipation Time.,3,6,3928.0121326446533
+4,,1,1,TaskRun3,0,Punishment screen (score:6) displayed.,3,6,369.417667388916
+5,,1,1,TaskRun3,0,ITI screen displayed.,,,3610.9886169433594
+6,,1,1,TaskRun3,1,Playing Door Game (Before lock).,2,2,2915.358781814575
+7,,1,1,TaskRun3,1,After lock: Door Anticipation Time.,2,2,2750.2546310424805
+8,,1,1,TaskRun3,1,Punishment screen (score:2) displayed.,2,2,400.7759094238281
+9,,1,1,TaskRun3,1,ITI screen displayed.,,,3855.7229042053223
+10,,1,1,TaskRun3,2,Playing Door Game (Before lock).,5,4,2194.3211555480957
+11,,1,1,TaskRun3,2,After lock: Door Anticipation Time.,5,4,2050.3318309783936
+12,,1,1,TaskRun3,2,Punishment screen (score:4) displayed.,5,4,378.9525032043457
+13,,1,1,TaskRun3,2,ITI screen displayed.,,,8333.156824111938

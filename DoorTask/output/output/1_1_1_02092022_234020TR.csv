@@ -1,0 +1,22 @@
+Index,subjectID,Session,Version,Section,Subtrial,Event,Reward,Punishment,Duration(ms)
+1,1,1,1,Practice,,After Calibration Before Door Practice Game,,,2787.8775596618652
+1,1,1,1,Practice,,After Calibration Before Door Practice Game,,,2787.8775596618652
+2,1,1,1,Practice,0,Playing Door Game (Before lock).,,,10000.396490097046
+1,1,1,1,Practice,,After Calibration Before Door Practice Game,,,2787.8775596618652
+2,1,1,1,Practice,0,Playing Door Game (Before lock).,,,10000.396490097046
+3,1,1,1,Practice,0,After lock: Door Anticipation Time.,,,2166.417121887207
+1,1,1,1,Practice,,After Calibration Before Door Practice Game,,,2787.8775596618652
+2,1,1,1,Practice,0,Playing Door Game (Before lock).,,,10000.396490097046
+3,1,1,1,Practice,0,After lock: Door Anticipation Time.,,,2166.417121887207
+4,1,1,1,Practice,0,Reward screen displayed.,,,2799.267053604126
+1,1,1,1,Practice,,After Calibration Before Door Practice Game,,,2787.8775596618652
+2,1,1,1,Practice,0,Playing Door Game (Before lock).,,,10000.396490097046
+3,1,1,1,Practice,0,After lock: Door Anticipation Time.,,,2166.417121887207
+4,1,1,1,Practice,0,Reward screen displayed.,,,2799.267053604126
+5,1,1,1,Practice,0,ITI screen displayed.,,,5516.54839515686
+1,1,1,1,Practice,,After Calibration Before Door Practice Game,,,2787.8775596618652
+2,1,1,1,Practice,0,Playing Door Game (Before lock).,,,10000.396490097046
+3,1,1,1,Practice,0,After lock: Door Anticipation Time.,,,2166.417121887207
+4,1,1,1,Practice,0,Reward screen displayed.,,,2799.267053604126
+5,1,1,1,Practice,0,ITI screen displayed.,,,5516.54839515686
+1,1,1,1,TaskRun1,,After Calibration Before Door Practice Game,,,708.2979679107666

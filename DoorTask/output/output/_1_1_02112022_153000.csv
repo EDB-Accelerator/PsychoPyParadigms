@@ -1,0 +1,29 @@
+ExperimentName,SessionStartDateTime,Subject,Session,Version,Section,Subtrial,DistanceFromDoor_SubTrial,Distance_lock,Distance_start,Distance_min,Distance_max,Door_anticipation_time,Door_opened,Door_outcome,Reward_magnitude,Punishment_magnitude,DoorAction_RT,ITI_duration,Total_coins,VAS_type,VAS_score,VAS_RT,Q_type,Q_score,Q_RT
+Doors_AA_v8.py,02/11/22 15:30:08,,1,1,VAS pre,,,,,,,,,,,,,,,Anxiety,35,1707.6170444488525,,,
+Doors_AA_v8.py,02/11/22 15:30:11,,1,1,VAS pre,,,,,,,,,,,,,,,Avoidance,47,525.9063243865967,,,
+Doors_AA_v8.py,02/11/22 15:30:12,,1,1,VAS pre,,,,,,,,,,,,,,,Tired,39,743.8087463378906,,,
+Doors_AA_v8.py,02/11/22 15:30:12,,1,1,VAS pre,,,,,,,,,,,,,,,Mood,66,560.0137710571289,,,
+Doors_AA_v8.py,02/11/22 15:30:13,,1,1,Instructions,,,,,,,,,,,,,,,,,,,,
+Doors_AA_v8.py,02/11/22 15:30:25,,1,1,Practice,,100,1,50,21,100,2971.7577318903077,,,,,5961.7719650268555,1.7675049304962158,,,,,,,
+Doors_AA_v8.py,02/11/22 15:30:51,,1,1,TaskRun1,1,98,1,50,4,98,2352.6656866279855,opened,punishment,1,4,2380.8629512786865,2.2859504222869873,-4,,,,,,
+Doors_AA_v8.py,02/11/22 15:31:01,,1,1,TaskRun1,2,100,1,50,15,100,2381.1350366960023,opened,reward,1,6,2602.3828983306885,2.214643955230713,-3,,,,,,
+Doors_AA_v8.py,02/11/22 15:31:14,,1,1,VAS 1,,,,,,,,,,,,,,,Anxiety,36,2606.884479522705,,,
+Doors_AA_v8.py,02/11/22 15:31:17,,1,1,VAS 1,,,,,,,,,,,,,,,Avoidance,50,509.54723358154297,,,
+Doors_AA_v8.py,02/11/22 15:31:18,,1,1,VAS 1,,,,,,,,,,,,,,,Tired,29,509.89580154418945,,,
+Doors_AA_v8.py,02/11/22 15:31:18,,1,1,VAS 1,,,,,,,,,,,,,,,Mood,62,493.5283660888672,,,
+Doors_AA_v8.py,02/11/22 15:31:33,,1,1,TaskRun2,1,96,1,50,28,96,2550.64330309888,opened,reward,4,3,2876.7900466918945,2.923468589782715,4,,,,,,
+Doors_AA_v8.py,02/11/22 15:31:48,,1,1,VAS mid,,,,,,,,,,,,,,,Anxiety,37,2859.8148822784424,,,
+Doors_AA_v8.py,02/11/22 15:31:52,,1,1,VAS mid,,,,,,,,,,,,,,,Avoidance,55,543.3704853057861,,,
+Doors_AA_v8.py,02/11/22 15:31:52,,1,1,VAS mid,,,,,,,,,,,,,,,Tired,36,743.5131072998047,,,
+Doors_AA_v8.py,02/11/22 15:31:53,,1,1,VAS mid,,,,,,,,,,,,,,,Mood,65,742.6631450653076,,,
+Doors_AA_v8.py,02/11/22 15:32:21,,1,1,TaskRun3,1,100,1,50,17,100,3355.925702828637,opened,punishment,5,5,5545.412302017212,6.000209093093872,-5,,,,,,
+Doors_AA_v8.py,02/11/22 15:32:45,,1,1,VAS post,,,,,,,,,,,,,,,Anxiety,27,2692.4357414245605,,,
+Doors_AA_v8.py,02/11/22 15:32:49,,1,1,VAS post,,,,,,,,,,,,,,,Avoidance,57,544.4080829620361,,,
+Doors_AA_v8.py,02/11/22 15:32:50,,1,1,VAS post,,,,,,,,,,,,,,,Tired,42,893.4319019317627,,,
+Doors_AA_v8.py,02/11/22 15:32:51,,1,1,VAS post,,,,,,,,,,,,,,,Mood,73,592.4921035766602,,,
+Doors_AA_v8.py,02/11/22 15:32:51,,1,1,Question,,,,,,,,,,,,,,,,,,Won,34,1275.4852771759033
+Doors_AA_v8.py,02/11/22 15:32:53,,1,1,Question,,,,,,,,,,,,,,,,,,Lost,87,1110.1996898651123
+Doors_AA_v8.py,02/11/22 15:32:54,,1,1,Question,,,,,,,,,,,,,,,,,,Before,47,826.596736907959
+Doors_AA_v8.py,02/11/22 15:32:55,,1,1,Question,,,,,,,,,,,,,,,,,,Monster,73,643.8894271850586
+Doors_AA_v8.py,02/11/22 15:32:55,,1,1,Question,,,,,,,,,,,,,,,,,,Coins,36,1177.7300834655762
+Doors_AA_v8.py,02/11/22 15:32:56,,1,1,Question,,,,,,,,,,,,,,,,,,Performance,72,592.249870300293
