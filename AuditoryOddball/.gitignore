@@ -1,2 +1,5 @@
 *.zip
 timing/**
+result/**
+test.mp3
+test.py

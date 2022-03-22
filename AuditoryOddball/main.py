@@ -35,6 +35,7 @@ Created on Wed, Oct  6, 2021  3:39:42 PM
 
 # Import standard python libraries
 from psychopy import visual, prefs, core, event, sound,gui
+from pygame import mixer
 import os, glob,datetime
 import pandas as pd
 import pickle
@@ -43,6 +44,7 @@ import time,sys
 import random
 sys.path.insert(1, './src')
 from DictWrite import DictWriteRaw,DictWriteStart,DictWriteEnd
+from StartMusic import playSound
 
 # Make empty output directory if it does not exist.
 directory = './result'
@@ -78,6 +80,7 @@ def userInputPlay():
 
     return params
 params = userInputPlay()
+mixer.init()
 
 # Read timing File
 df = pd.read_csv('timing/' + str(params['TimingFile'])+ '.csv')
@@ -151,9 +154,10 @@ for i in range(len(df)):
     elif 'Novel' in stimuli:
         soundFile = novelSoundFiles.pop()
     startTime = time.time()
-    sound1 = sound.Sound(soundFile)
+    # sound1 = sound.Sound(soundFile)
     DictWriteRaw(params, event="Sound played (start):" + soundFile)
     DictWriteStart(params)
-    sound1.play()
+    playSound(mixer, soundFile)
+    # sound1.play()
     DictWriteRaw(params, event="Sound played (end):" + soundFile)
     DictWriteEnd(params, "Sound played:" + soundFile)
