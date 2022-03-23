@@ -45,6 +45,7 @@ import random
 sys.path.insert(1, './src')
 from DictWrite import DictWriteRaw,DictWriteStart,DictWriteEnd
 from StartMusic import playSound
+import serial
 
 # Make empty output directory if it does not exist.
 directory = './result'
@@ -68,6 +69,7 @@ def userInputPlay():
     userInput.addField('Session:',)
     userInput.addField('Version:', choices=[1])
     userInput.addField('Timing File:', choices=[0,1,2,3,4,5])
+    userInput.addField('Serial Port support', choices=[True,False])
     UserInputBank = userInput.show()
 
     params = {
@@ -76,11 +78,31 @@ def userInputPlay():
         'Session': UserInputBank[1],  # Session ID
         'Version': UserInputBank[2],  # Version
         'TimingFile': UserInputBank[3], # Timing File
+        'SerialPortSupport': UserInputBank[4], # Serial Port Support7
     }
-
     return params
 params = userInputPlay()
 mixer.init()
+
+# Serial Port Initialization
+if params['SerialPortSupport']:
+    import serial
+    userInput = gui.Dlg(title="Serial Port Configuration")
+    userInput.addField('Port:', "COM4", choices=['COM1','COM2','COM3','COM4'])
+    userInput.addField('baudrate',19200)
+    userInput.addField('timeout', 0.01)
+    userInput.addField('bytesize',8)
+    UserInputBank = userInput.show()
+
+    params['port'] = UserInputBank[0]
+    params['baudrate'] = UserInputBank[1]
+    params['timeout'] = UserInputBank[2]
+    params['bytesize'] = UserInputBank[3]
+
+    # serialPort = serial.Serial(port="COM3", baudrate=9600,
+    #                            bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
+    serialPort = serial.Serial(port=params['port'], baudrate=params['baudrate'],
+                               bytesize=params['bytesize'], timeout=params['timeout'], stopbits=serial.STOPBITS_ONE)
 
 # Read timing File
 df = pd.read_csv('timing/' + str(params['TimingFile'])+ '.csv')
@@ -128,6 +150,11 @@ while (c != ['5']):
     core.wait(1 / 120)
     c = event.getKeys()
 DictWriteRaw(params,event="5 pressed")
+
+if params['SerialPortSupport']:
+    serialPort.write("5")
+    serialPort.write(5)
+    print("serial port write: 5")
 
 for i in range(len(df)):
     duration = df.loc[i]['Duration']
