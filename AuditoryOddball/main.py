@@ -29,6 +29,7 @@ mainV1.py
 Auditory Oddball Task Main Driver File (Version 1).
 
 Created on Wed, Oct  6, 2021  3:39:42 PM
+Updated on Wed, Mar 23, 2022  9:58:32 AM: Serial Port Support
 
 @author: Kyunghun Lee
 """
