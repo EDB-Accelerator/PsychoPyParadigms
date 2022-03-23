@@ -5,259 +5,124 @@ Base: Python3, Psychopy3
 - Created Wed Mar 16 08:58:05 EDT 2022 by Kyunghun Lee
 """
 
-# Import developer-defined functions
-import sys
-sys.path.insert(1, './src')
-import datetime
+# Import standard python libraries
+from psychopy import visual, prefs, core, event, sound,gui
+from pygame import mixer
+import os, glob,datetime
 import pandas as pd
-from psychopy import visual,core
-from Helper import Questionplay,waitUserSpace
-from Helper import waitUserInput, waitAnyKeys,ResolutionIntialization
+import pickle
+import subprocess
+import time,sys
+import random
+sys.path.insert(1, './src')
+# from DictWrite import DictWriteRaw,DictWriteStart,DictWriteEnd
+# from StartMusic import playSound
+import serial
 
-from userInputPlay import userInputPlay
-from VASplay import VASplay
-from InstructionPlay import InstructionPlay
-from PracticeGamePlay import PracticeGamePlay
-from DoorGamePlay import DoorGamePlay
-from psychopy import parallel
-from psychopy import prefs
+# Make empty output directory if it does not exist.
+directory = './result'
+if not os.path.exists(directory):
+    os.makedirs(directory)
 
-def shutdown_key():
-    core.quit()
+# Pandas configuration (debugging options)
+pd.set_option('display.max_columns', None)
 
-# Receive User input from User input window.
-userInputBank = userInputPlay()
+# Output Summary Header Initialization
+Header = ["Start Time", "End Time", "Duration", "expName", "Version", "subjectID", 'timingFile',"Session", "Event",
+          "Sound Type"]
 
-# Declare primary task parameters.
-params = {
-# Declare stimulus and response parameters
-    'expName' : "Doors_AA_v8.py", # The name of the experiment
-    'subjectID' : userInputBank[0],      # Subject ID
-    'DistanceStart' : 50,
-    'DistanceLockWaitTime' : 10, # Distance lock wait time.
-    'Session' : userInputBank[1], # Session ID
-    'Version' : userInputBank[2], # Version
-    'numPractice' : userInputBank[3], # The number of Trials in Practice.
-    'numTaskRun1': userInputBank[4],  # The number of Trials in TaskRun1.
-    'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
-    'numTaskRun3': userInputBank[6],  # The number of Trials in TaskRun2.
-    'JoyStickSupport' : True, # Check if joystick option is checked or not.
-    'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
-    'EyeTrackerSupport': userInputBank[8],
-    'FullScreen': userInputBank[9],
-    'sensitivity': userInputBank[10],
-    'soundMode' : userInputBank[11],
-    # 'eyeTrackCircle': userInputBank[11],
-    'eyeTrackCircle': True,
-    'portAddress': int("0xE050", 16), # Port Address
-    'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
-    'imageSuffix': '*.jpg',   # DOOR image extension.
-    'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
+# Output Raw Header Initialization
+HeaderRaw = ["TimeStamp", "expName", "Version", "subjectID", "Session", "Event"]
 
-# declare output file location
-    'outFolder': './output', # the location of output file.
+# Function to get user inputs.
+def userInputPlay():
+    userInput = gui.Dlg(title="Flanker Task Information")
+    userInput.addField('Version:', choices=[1])
+    userInput.addField('Subject ID (SDAN):',)
+    userInput.addField('Session:',)
+    UserInputBank = userInput.show()
 
-# declare display parameters
-    'screenSize' : (1024,768),
-    'volume' : 0.8,
-    'resolutionMode' : True,
-    'subTrialCounter': 0,
-    'idxTR': 0,
-    'idxImg': 0,
-}
+    params = {
+        'expName': 'FlankerTask',  # The name of the experiment
+        'Version': UserInputBank[0],  # Version
+        'subjectID': UserInputBank[1],  # Subject ID
+        'Session': UserInputBank[2],  # Session ID
+    }
+    return params
+params = userInputPlay()
+mixer.init()
 
-# Audio library configuration.
-if params['soundMode'] == 'PTB':
-    prefs.hardware['audioLib'] = ['PTB']
-else:
-    prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
-
-
-# Define Output file names.
+# Decide the name of output files.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
-params['outFile'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + ".csv"
-params['outFileTrackerLog'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR.csv"
-params['Practice'] =  params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "PR.EDF"
-params['TaskRun1'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR1.EDF"
-params['TaskRun2'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR2.EDF"
-params['TaskRun3'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR3.EDF"
+params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+              timeLabel + ".csv"
+params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
+              timeLabel + "_raw.csv"
 
-prefs.general['fullscr'] = params['FullScreen']
+# Dictionary Intialization
+dict = {}
+Raw = {}
 
-if userInputBank[3]!= 1:
-    params['imageDir'] = './img/doors2/'
+def waitTime(startTime, duration):
+    elapsedTime = time.time() - startTime
+    core.wait(duration - elapsedTime)
 
-## Setup Psychopy Window.
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1, size=(params[ 'screenSize'][0], params['screenSize'][1]))
 
-# Trigger Initialization
-port = 0
-if params['triggerSupport']:
-    port = parallel.ParallelPort(address=params['portAddress'])
-    port.setData(0) # initialize to all zeroscv
+novelSoundFiles = glob.glob('sound/*.WAV')
+novelSoundFiles = [x for x in novelSoundFiles if 'PN650HZ' not in x and 'PO500HZ' not in x]
+random.shuffle(novelSoundFiles)
 
-# ====================== #
-# ==== Title Screen ==== #
-# ====================== #
-img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
-win.mouseVisible = False
-img1.draw();win.flip();
-waitAnyKeys()
+startTime = time.time()
+DictWriteRaw(params,event="task started")
 
-# ======================== #
-# Dataframe Initialization #
-# ======================== #
-params['Header'] = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
-          "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
-          "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
-          "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
-params['HeaderTR'] = ["Index", "subjectID", "Session", "Version", "Section", "Subtrial", "Event", "Reward", "Punishment",
-            "Duration(ms)"]
 
-# Pandas dataframe Initialization
-Df = pd.DataFrame(columns=params['Header'])
-if params['EyeTrackerSupport']:
-    DfTR = pd.DataFrame(columns=params['HeaderTR'])
-else:
-    DfTR = ""
+win = visual.Window([1024,768], monitor="testMonitor", color="white", winType='pyglet')
+message = visual.TextStim(win,text="Press 5 to continue\n ",
+                                  units='norm', wrapWidth=2, color="black")
+message.draw()
+win.flip()
+DictWriteRaw(params,event="Message: Press 5 to continue")
 
-# Make Empty output files.
-Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-if params['EyeTrackerSupport']:
-    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
+c = ''
+while (c != ['5']):
+    core.wait(1 / 120)
+    c = event.getKeys()
+DictWriteRaw(params,event="5 pressed")
 
-# ====================== #
-# ======== VAS pre ========= #
-# ====================== #
-win.mouseVisible = True
-Df = VASplay(Df,win,params,"VAS pre")
-win.mouseVisible = False
+if params['SerialPortSupport']:
+    serialPort.write("5")
+    serialPort.write(5)
+    print("serial port write: 5")
 
-# ====================== #
-# ===== Instruction ==== #
-# ====================== #
-Df = InstructionPlay(Df,win,params)
+for i in range(len(df)):
+    duration = df.loc[i]['Duration']
+    stimuli = df.loc[i]['Stimuli']
+    if 'No sound' in stimuli:
+        DictWriteRaw(params, event="No sound (start)")
+        DictWriteStart(params)
+        waitTime(time.time(),20)
+        DictWriteRaw(params, event="No sound (end)")
+        DictWriteEnd(params, "No sound")
+        continue
+    elif 'interval' in stimuli:
+        DictWriteRaw(params, event="Interval (start)")
+        DictWriteStart(params)
+        waitTime(startTime,duration+0.2)
+        DictWriteRaw(params, event="Interval (end)")
+        DictWriteEnd(params, "Interval")
+        continue
 
-# ========================================== #
-# ==== Screen Resolution Initialization ==== #
-# ========================================== #
-ResolutionIntialization(params,size_diff=1/65)
-
-# ========================================== #
-# ==== Eyetracker Initialization =========== #
-# ========================================== #
-tracker = ""
-# if params['EyeTrackerSupport']:
-
-# ====================== #
-# ===== Practice ======= #
-# ====================== #
-win.mouseVisible = False
-iterNum = params['numPractice']
-SectionName = "Practice"
-
-# Df,DfTR,win = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
-Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
-win.mouseVisible = True
-
-# ====================== #
-# ===== TaskRun1 ======= #
-# ====================== #
-win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
-win.mouseVisible = True
-
-# ====================== #
-# ======== VAS 1 ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS 1")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-# ====================== #
-# ===== TaskRun2 ======= #
-# ====================== #
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
-
-# ====================== #
-# ======== VAS mid ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS mid")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-# win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-# ====================== #
-# ===== TaskRun3 ======= #
-# ====================== #
-win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
-win.mouseVisible = True
-
-# ====================== #
-# ======== VAS post ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit.  when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS post")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-# win.mouseVisible = False
-# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-# waitUserInput(Df,img1, win, params,'pyglet')
-# win.flip();
-
-# ====================== #
-# ======== Question ========= #
-# ====================== #
-win.mouseVisible = True
-Df = Questionplay(Df, win, params, "Question")
-
-Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-if params['EyeTrackerSupport']:
-    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
-
-# Close the psychopy window.
-win.close()
+    if 'Standard' in stimuli:
+        soundFile = 'sound/PO500HZ.WAV'
+    elif 'Deviant' in stimuli:
+        soundFile = 'sound/PN650HZ.WAV'
+    elif 'Novel' in stimuli:
+        soundFile = novelSoundFiles.pop()
+    startTime = time.time()
+    # sound1 = sound.Sound(soundFile)
+    DictWriteRaw(params, event="Sound played (start):" + soundFile)
+    DictWriteStart(params)
+    playSound(mixer, soundFile)
+    # sound1.play()
+    DictWriteRaw(params, event="Sound played (end):" + soundFile)
+    DictWriteEnd(params, "Sound played:" + soundFile)
