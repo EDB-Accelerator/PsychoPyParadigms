@@ -16,6 +16,8 @@ import time,sys
 import random
 sys.path.insert(1, './src')
 # from DictWrite import DictWriteRaw,DictWriteStart,DictWriteEnd
+from DictInitialize import DictInitialize
+from InstructionPlay import InstructionPlay
 # from StartMusic import playSound
 import serial
 
@@ -47,26 +49,32 @@ def userInputPlay():
         'Version': UserInputBank[0],  # Version
         'subjectID': UserInputBank[1],  # Subject ID
         'Session': UserInputBank[2],  # Session ID
+        'screenSize': [1024, 768], # Screen Resolution
     }
     return params
 params = userInputPlay()
-mixer.init()
 
 # Decide the name of output files.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
-params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-              timeLabel + ".csv"
-params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-              timeLabel + "_raw.csv"
+params['outFile'] = ''.join(["./result/",params["expName"],"_",str(params["subjectID"]),"_",str(params["Session"]),
+                            timeLabel,".csv"])
+params['outFileRaw'] = ''.join(["./result/",params["expName"],"_",str(params["subjectID"]),"_",str(params["Session"]),
+                            timeLabel,"_raw.csv"])
 
-# Dictionary Intialization
-dict = {}
-Raw = {}
+# Dictionary and dataframe Initialization
+Header = ["Start Time","End Time","Duration","expName","Version","subjectID","Session","Section","TrialCount",
+          "Image Displayed","User Response"]
+HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
+dict,dictRaw = DictInitialize(params)
+df,dfRaw = pd.DataFrame(columns=Header),pd.DataFrame(columns=HeaderRaw)
+
+# Instruction +Presentation
+win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
+df = InstructionPlay(df,win,params)
 
 def waitTime(startTime, duration):
     elapsedTime = time.time() - startTime
     core.wait(duration - elapsedTime)
-
 
 novelSoundFiles = glob.glob('sound/*.WAV')
 novelSoundFiles = [x for x in novelSoundFiles if 'PN650HZ' not in x and 'PO500HZ' not in x]
