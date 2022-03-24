@@ -35,8 +35,9 @@ def InstructionPlay(df, win, params):
 
     # Introduction
     while (userInput[0].upper() == 'Y'):
-        # Introduction Slide 2
-        message = visual.TextStim(win, text="Please press the button that matches the direction of the middle arrow.\n" +
+        # Introduction Slide 1
+        message = visual.TextStim(win, text="Please press the button that matches\n"
+                                            "the direction of the middle arrow.\n" +
                                             "\n"
                                             "For < press the left button\n" +
                                             "For > press the right button.\n\n\n\n\n" +
@@ -46,7 +47,7 @@ def InstructionPlay(df, win, params):
         win.flip()
         WaitUserSpace(win)
 
-        # Introduction Slide 3
+        # Introduction Slide 2
         message = visual.TextStim(win, text="Are you ready to start the task?\n\n"
                                             "or\n\n"
                                             "should we review the instructions again?\n\n\n"
@@ -65,4 +66,4 @@ def InstructionPlay(df, win, params):
                 core.quit()
 
     # Log the dict result on pandas dataFrame.
-    return tableWrite(df, params,Dict)
+    # return tableWrite(df, params,Dict)

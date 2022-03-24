@@ -72,65 +72,31 @@ df,dfRaw = pd.DataFrame(columns=Header),pd.DataFrame(columns=HeaderRaw)
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
 df = InstructionPlay(df,win,params)
 
-def waitTime(startTime, duration):
-    elapsedTime = time.time() - startTime
-    core.wait(duration - elapsedTime)
-
-novelSoundFiles = glob.glob('sound/*.WAV')
-novelSoundFiles = [x for x in novelSoundFiles if 'PN650HZ' not in x and 'PO500HZ' not in x]
-random.shuffle(novelSoundFiles)
-
-startTime = time.time()
-DictWriteRaw(params,event="task started")
-
-
-win = visual.Window([1024,768], monitor="testMonitor", color="white", winType='pyglet')
-message = visual.TextStim(win,text="Press 5 to continue\n ",
-                                  units='norm', wrapWidth=2, color="black")
+# Waiting for scanner screen.
+message = visual.TextStim(win, text="Waiting for scanner \n\n(Please press 5 when it is ready.)",
+                          units='norm', wrapWidth=1000, color="white")
 message.draw()
 win.flip()
-DictWriteRaw(params,event="Message: Press 5 to continue")
-
-c = ''
-while (c != ['5']):
+userInput = ['']
+# Wait for user types "y" or "n".
+while (userInput[0].upper() != "5"):
     core.wait(1 / 120)
-    c = event.getKeys()
-DictWriteRaw(params,event="5 pressed")
+    userInput = event.waitKeys()  # read a characters
+    # print(userInput)
+    if userInput == ['q'] or userInput == ['Q']:
+        print('Q pressed. Forced Exit.')
+        core.quit()
 
-if params['SerialPortSupport']:
-    serialPort.write("5")
-    serialPort.write(5)
-    print("serial port write: 5")
+# Show the flanker image.
+img = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+img1.draw();win.flip();
 
-for i in range(len(df)):
-    duration = df.loc[i]['Duration']
-    stimuli = df.loc[i]['Stimuli']
-    if 'No sound' in stimuli:
-        DictWriteRaw(params, event="No sound (start)")
-        DictWriteStart(params)
-        waitTime(time.time(),20)
-        DictWriteRaw(params, event="No sound (end)")
-        DictWriteEnd(params, "No sound")
-        continue
-    elif 'interval' in stimuli:
-        DictWriteRaw(params, event="Interval (start)")
-        DictWriteStart(params)
-        waitTime(startTime,duration+0.2)
-        DictWriteRaw(params, event="Interval (end)")
-        DictWriteEnd(params, "Interval")
-        continue
 
-    if 'Standard' in stimuli:
-        soundFile = 'sound/PO500HZ.WAV'
-    elif 'Deviant' in stimuli:
-        soundFile = 'sound/PN650HZ.WAV'
-    elif 'Novel' in stimuli:
-        soundFile = novelSoundFiles.pop()
-    startTime = time.time()
-    # sound1 = sound.Sound(soundFile)
-    DictWriteRaw(params, event="Sound played (start):" + soundFile)
-    DictWriteStart(params)
-    playSound(mixer, soundFile)
-    # sound1.play()
-    DictWriteRaw(params, event="Sound played (end):" + soundFile)
-    DictWriteEnd(params, "Sound played:" + soundFile)
+
+
+
+
+
+
+
+
