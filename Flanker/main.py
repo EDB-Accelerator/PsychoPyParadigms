@@ -7,6 +7,7 @@ Base: Python3, Psychopy3
 
 # Import standard python libraries
 from psychopy import visual,core, event,gui
+import numpy as np
 import os, glob,datetime
 import pandas as pd
 import glob,sys
@@ -71,12 +72,14 @@ dict,dictRaw = DictInitialize(params)
 df,dfRaw = pd.DataFrame(columns=Header),pd.DataFrame(columns=HeaderRaw)
 
 # Timing File load
-timingFiles = glob.glob('timing/*.csv')
-random.shuffle(timingFiles)
-timingFile = timingFiles[0]
+# timingFiles = glob.glob('timing/*.csv')
+# random.shuffle(timingFiles)
+# timingFile = timingFiles[0]
+timingFile = "timing/iti.csv"
 
 # Load a Timing File.
-dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between Letters', 'Delay Between Trials'])
+dfTiming = pd.read_csv(timingFile,header=None,names=['ITI'])
+ITIs = np.array(dfTiming['ITI'])
 
 # Instruction +Presentation
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
@@ -107,24 +110,25 @@ WaitSeconds(8)
 # Show the flanker image.
 orderMat = [0,1,2,3]*9
 random.shuffle(orderMat)
+random.shuffle(ITIs)
 
 for i in range(params['nTrials']):
     n = orderMat[i]
     if n == 0:
-        FlankerPlay(df,dict,dictRaw,"CONGL",win,params)
+        FlankerPlay(df,ITIs[i],dict,dictRaw,"CL",win,params)
     elif n == 1:
-        FlankerPlay(df,dict,dictRaw,"CONGR",win,params)
+        FlankerPlay(df,ITIs[i],dict,dictRaw,"CR",win,params)
     elif n == 2:
-        FlankerPlay(df,dict,dictRaw,"INCONGR",win,params)
+        FlankerPlay(df,ITIs[i],dict,dictRaw,"IR",win,params)
     elif n == 3:
-        FlankerPlay(df,dict,dictRaw,"INCONGL",win,params)
+        FlankerPlay(df,ITIs[i],dict,dictRaw,"IL",win,params)
 
 # imgCONGL = 'img/CONGL.jpg'
 #
 # messageCONGL= visual.TextStim(win, text="<<<<<",units='norm', wrapWidth=1000, color="white",height=0.3)
 # messageCONGR= visual.TextStim(win, text=">>>>>",units='norm', wrapWidth=1000, color="white",height=0.3)
 # messageINCONGR= visual.TextStim(win, text="<<><<",units='norm', wrapWidth=1000, color="white",height=0.3)
-# messageINCONGL= visual.TextStim(win, text=">><>>",units='norm', wrapWidth=1000, color="white",height=0.3)
+# messageINCONGL= visu*al.TextStim(win, text=">><>>",units='norm', wrapWidth=1000, color="white",height=0.3)
 #
 # messageCONGL.draw()
 # win.flip()
