@@ -5,6 +5,17 @@ from psychopy.hardware import joystick
 import pygame
 from sys import exit
 
+def WaitSeconds(waitTime):
+    startTime = time.time()
+    c = []
+    while time.time()-startTime < waitTime:
+        if c == []:
+            c = event.getKeys()
+            if c == ['q'] or c == ['Q']:
+                print('Q pressed. Forced Exit.')
+                core.quit()
+        core.wait(1/120)
+
 def shutdown_key():
     core.quit()
 

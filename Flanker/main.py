@@ -6,18 +6,18 @@ Base: Python3, Psychopy3
 """
 
 # Import standard python libraries
-from psychopy import visual, prefs, core, event, sound,gui
-from pygame import mixer
+from psychopy import visual,core, event,gui
 import os, glob,datetime
 import pandas as pd
-import pickle
-import subprocess
-import time,sys
+import glob,sys
 import random
+import time
 sys.path.insert(1, './src')
 # from DictWrite import DictWriteRaw,DictWriteStart,DictWriteEnd
 from DictInitialize import DictInitialize
 from InstructionPlay import InstructionPlay
+from Helper import WaitSeconds
+from FlankerPlay import FlankerPlay
 # from StartMusic import playSound
 import serial
 
@@ -42,6 +42,7 @@ def userInputPlay():
     userInput.addField('Version:', choices=[1])
     userInput.addField('Subject ID (SDAN):',)
     userInput.addField('Session:',)
+    userInput.addField('The number of Trials',45,choices=[45,5,1])
     UserInputBank = userInput.show()
 
     params = {
@@ -49,6 +50,7 @@ def userInputPlay():
         'Version': UserInputBank[0],  # Version
         'subjectID': UserInputBank[1],  # Subject ID
         'Session': UserInputBank[2],  # Session ID
+        'nTrials': UserInputBank[3],  # Session ID
         'screenSize': [1024, 768], # Screen Resolution
     }
     return params
@@ -68,11 +70,19 @@ HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
 dict,dictRaw = DictInitialize(params)
 df,dfRaw = pd.DataFrame(columns=Header),pd.DataFrame(columns=HeaderRaw)
 
+# Timing File load
+timingFiles = glob.glob('timing/*.csv')
+random.shuffle(timingFiles)
+timingFile = timingFiles[0]
+
+# Load a Timing File.
+dfTiming = pd.read_csv(timingFile,header=None,names=['Trial Type','Delay Between Letters', 'Delay Between Trials'])
+
 # Instruction +Presentation
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
 df = InstructionPlay(df,win,params)
 
-# Waiting for scanner screen.
+# Waiting for scanner (press 5).
 message = visual.TextStim(win, text="Waiting for scanner \n\n(Please press 5 when it is ready.)",
                           units='norm', wrapWidth=1000, color="white")
 message.draw()
@@ -87,9 +97,58 @@ while (userInput[0].upper() != "5"):
         print('Q pressed. Forced Exit.')
         core.quit()
 
+# Get Ready screen.
+message = visual.TextStim(win, text="Get Ready",
+                          units='norm', wrapWidth=1000, color="white")
+message.draw()
+win.flip()
+WaitSeconds(8)
+
 # Show the flanker image.
-img = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-img1.draw();win.flip();
+orderMat = [0,1,2,3]*9
+random.shuffle(orderMat)
+
+for i in range(params['nTrials']):
+    n = orderMat[i]
+    if n == 0:
+        FlankerPlay(df,dict,dictRaw,"CONGL",win,params)
+    elif n == 1:
+        FlankerPlay(df,dict,dictRaw,"CONGR",win,params)
+    elif n == 2:
+        FlankerPlay(df,dict,dictRaw,"INCONGR",win,params)
+    elif n == 3:
+        FlankerPlay(df,dict,dictRaw,"INCONGL",win,params)
+
+# imgCONGL = 'img/CONGL.jpg'
+#
+# messageCONGL= visual.TextStim(win, text="<<<<<",units='norm', wrapWidth=1000, color="white",height=0.3)
+# messageCONGR= visual.TextStim(win, text=">>>>>",units='norm', wrapWidth=1000, color="white",height=0.3)
+# messageINCONGR= visual.TextStim(win, text="<<><<",units='norm', wrapWidth=1000, color="white",height=0.3)
+# messageINCONGL= visual.TextStim(win, text=">><>>",units='norm', wrapWidth=1000, color="white",height=0.3)
+#
+# messageCONGL.draw()
+# win.flip()
+#
+# # Response Window
+# # Get user input.
+# c = []
+# startTime = time.time()
+# dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+# event.clearEvents()
+# while time.time() - startTime < 1.7:
+#     core.wait(1 / 120)
+#     if c == []:
+#         c = event.getKeys()
+#     if len(c) >= 1:
+#         dictRaw["Event"] = "User Response:" + c[0]
+#         # DictWriteRaw(dfRaw, dictRaw, params)
+# if c == ['q'] or c == ['Q']:
+#     print('Q pressed. Forced Exit.')
+#     core.quit()
+# if len(c) >= 1:
+#     c = c[0]
+# else:
+#     c = "No Response"
 
 
 
