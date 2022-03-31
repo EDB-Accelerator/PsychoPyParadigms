@@ -1,77 +1,100 @@
 import sys
 sys.path.insert(1, './src')
 
-from psychopy import core, visual, event
-import time
-from Helper import WaitSeconds
-# from Helper import ,tableWrite,get_keypress
-from Helper import get_keypress,WaitUserSpace
+from psychopy import core, visual
+from Helper import WaitSeconds,WaitAndGetUserInput
+from DictWrite import DictWrite
 import datetime
 
-def FlankerPlay(df,iti,dict,dictRaw,TrialType,win,params):
-    Dict = {
-        "ExperimentName": params['expName'],
-        "Subject": params['subjectID'],
-        "Session": params["Session"],
-        "Version": params["Version"],
-        "Trial Type": TrialType,
-        "Section": "Flanker play",
-        "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
-    }
-
-    imgCONGL = 'img/CONGL.jpg'
+def FlankerPlay(df,dict,TrialType,win,params,blockCount,trialCount):
+    startTimeStr = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = datetime.datetime.now()
 
     if TrialType == "CL":
-        displayedStr = "<<<<<"
-        flanker = "Congruent"
+        displayedStr,flanker,direction = "<<<<<","Congruent","Left"
+        correctAnswer,cellNumber = 4,4
     elif TrialType == "CR":
-        displayedStr = ">>>>>"
-        flanker = "Congruent"
+        displayedStr,flanker,direction = ">>>>>","Congruent","Right"
+        correctAnswer,cellNumber = 2,4
     elif TrialType == "IR":
-        displayedStr = "<<><<"
-        flanker = "Incongruent"
+        displayedStr,flanker,direction = "<<><<","Incongruent","Right"
+        correctAnswer,cellNumber = 2,5
     elif TrialType == "IL":
-        displayedStr = ">><>>"
-        flanker = "Incongruent"
+        displayedStr,flanker,direction = ">><>>","Incongruent","Left"
+        correctAnswer,cellNumber = 4,5
     else:
         displayedStr = "Error"
-        print('imageType error at Flankerplay. Exit')
+        print('Image Type error at FlankerPlay.py. Exit')
         core.quit()
-    Dict[displayedStr] = displayedStr
-    Dict[flanker] = flanker
 
+    # Display flanker image
     message = visual.TextStim(win, text=displayedStr,units='norm', wrapWidth=1000, color="white",height=0.3)
     message.draw()
     win.flip()
-    core.wait(0.2)
+    # WaitSeconds(0.2)
+    c, userResponseTimeStamp = WaitAndGetUserInput([], 0.2)
+    if userResponseTimeStamp == "":
+        userResponse = "No response"
+        correctness = ""
+        userResponseTime = ""
+    else:
+        userResponse = c[0] if len(c) >= 0 else c
+        correctness = "Correct" if userResponse == str(correctAnswer) else "Incorrect"
+        userResponseTime = (userResponseTimeStamp - startTime).total_seconds()
+
+
+    # Section Termination
+    dict["Section"] = "Flanker Image Shown (0.2 sec)"
+    dict["Start Time"] = startTimeStr
+    dict["End Time"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    dict["Duration"] = datetime.datetime.now() - startTime
+    dict["Trial Count"] = str(trialCount)
+    dict["Image Displayed"] = displayedStr
+    dict["Flanker"] = flanker
+    dict["Direction"] = direction
+    dict["Correct Answer"] = correctAnswer
+    dict["Cell Number"] = cellNumber
+    dict["User Response"] = userResponse
+    dict["Correct or Incorrect"] = correctness
+    dict["User Response TimeStamp"] = userResponseTimeStamp
+    dict["User Response Time"] = userResponseTime
+    df,dict = DictWrite(df, dict, params)
 
     # Display User input Window (1.7 second)
-    c = []
-    startTime = time.time()
-    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    event.clearEvents()
-    while time.time() - startTime < 1.7:
-        core.wait(1 / 120)
-        if c == []:
-            c = event.getKeys()
-        if len(c) >= 1:
-            dictRaw["Event"] = "User Response:" + c[0]
-    if c == ['q'] or c == ['Q']:
-        print('Q pressed. Forced Exit.')
-        core.quit()
-    if len(c) >= 1:
-        c = c[0]
-    else:
-        c = "No Response"
-
-    ### Fixation Cross (for 1.9 seconds) ###
+    startTimeStr = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = datetime.datetime.now()
-    message = visual.TextStim(win, text="+", units='pix',height=params['plusSize'],color="white")
-    if params['debug']:
-        message2 = visual.TextStim(win, text="Fixation Cross (1.9 seconds)",
-                                  units='norm', wrapWidth=1000, color="red",pos=[0,0.5])
-        message2.draw()
-    message.draw()
-    win.flip()
-    c = ['']
-    WaitSeconds(1.9)    # Wait for 1.9 seconds.
+
+    if userResponseTimeStamp == "":
+        c, userResponseTimeStamp = WaitAndGetUserInput([], 1.7)
+        if userResponseTimeStamp == "":
+            userResponse = "No response"
+            correctness = ""
+            userResponseTime = ""
+        else:
+            userResponse = c[0] if len(c)>=0 else c
+            correctness = "Correct" if userResponse == str(correctAnswer) else "Incorrect"
+            userResponseTime = (userResponseTimeStamp - startTime).total_seconds()
+    else:
+        userResponse = "Already Responded"
+        correctness = ""
+        userResponseTime = ""
+
+    # Section Termination
+    dict["Section"] = "Response Window (1.7 sec)"
+    dict["Start Time"] = startTimeStr
+    dict["End Time"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    dict["Duration"] = datetime.datetime.now() - startTime
+    dict["Trial Count"] = str(trialCount)
+    dict["Image Displayed"] = displayedStr
+    dict["Flanker"] = flanker
+    dict["Direction"] = direction
+    dict["Correct Answer"] = correctAnswer
+    dict["Cell Number"] = cellNumber
+    dict["User Response"] = userResponse
+    dict["Correct or Incorrect"] = correctness
+    dict["User Response TimeStamp"] = userResponseTimeStamp
+    dict["User Response Time"] = userResponseTime
+
+    df,dict = DictWrite(df, dict, params)
+
+    return df,dict

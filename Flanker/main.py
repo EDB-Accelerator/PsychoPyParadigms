@@ -1,3 +1,28 @@
+# Python3-based package
+"""
+MIT License
+
+Copyright (c) 2022 NIMH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 """
 Flanker Psychopy Game (Conversion from E-prime)
 Base: Python3, Psychopy3
@@ -6,21 +31,20 @@ Base: Python3, Psychopy3
 """
 
 # Import standard python libraries
-from psychopy import visual,core, event,gui
+from psychopy import visual,core, event
 import numpy as np
-import os, glob,datetime
+import os, datetime,sys
 import pandas as pd
-import glob,sys
 import random
-import time
 sys.path.insert(1, './src')
-# from DictWrite import DictWriteRaw,DictWriteStart,DictWriteEnd
 from DictInitialize import DictInitialize
 from InstructionPlay import InstructionPlay
-from Helper import WaitSeconds
+from Helper import WaitSeconds,WaitAndGetUserInput
 from FlankerPlay import FlankerPlay
-# from StartMusic import playSound
-import serial
+from UserInputPlay import UserInputPlay
+from FixationPlay import FixationPlay
+from ReadyPlay import ReadyPlay
+from BlankPlay import BlankPlay
 
 # Make empty output directory if it does not exist.
 directory = './result'
@@ -30,136 +54,72 @@ if not os.path.exists(directory):
 # Pandas configuration (debugging options)
 pd.set_option('display.max_columns', None)
 
-# Output Summary Header Initialization
-Header = ["Start Time", "End Time", "Duration", "expName", "Version", "subjectID", 'timingFile',"Session", "Event",
-          "Sound Type"]
+# header = ["expName","Version","subjectID","Session Number","Section","Start Time","End Time","Duration","Trial Count",
+#           "Image Displayed","Flanker","Direction","Correct Answer","Cell Number","User Response","Correct or Incorrect",
+#           "User Response TimeStamp","User Response Time"]
+# headerRaw = ["TimeStamp", "expName", "Version", "subjectID", "Session", "Event"]
 
-# Output Raw Header Initialization
-HeaderRaw = ["TimeStamp", "expName", "Version", "subjectID", "Session", "Event"]
-
-# Function to get user inputs.
-def userInputPlay():
-    userInput = gui.Dlg(title="Flanker Task Information")
-    userInput.addField('Version:', choices=[1])
-    userInput.addField('Subject ID (SDAN):',)
-    userInput.addField('Session:',)
-    userInput.addField('The number of Trials',45,choices=[45,5,1])
-    UserInputBank = userInput.show()
-
-    params = {
-        'expName': 'FlankerTask',  # The name of the experiment
-        'Version': UserInputBank[0],  # Version
-        'subjectID': UserInputBank[1],  # Subject ID
-        'Session': UserInputBank[2],  # Session ID
-        'nTrials': UserInputBank[3],  # Session ID
-        'screenSize': [1024, 768], # Screen Resolution
-    }
-    return params
-params = userInputPlay()
-
-# Decide the name of output files.
+# Get input from a user window and setup the name of output files.
+params = UserInputPlay()
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
 params['outFile'] = ''.join(["./result/",params["expName"],"_",str(params["subjectID"]),"_",str(params["Session"]),
                             timeLabel,".csv"])
 params['outFileRaw'] = ''.join(["./result/",params["expName"],"_",str(params["subjectID"]),"_",str(params["Session"]),
                             timeLabel,"_raw.csv"])
 
-# Dictionary and dataframe Initialization
-Header = ["Start Time","End Time","Duration","expName","Version","subjectID","Session","Section","TrialCount",
-          "Image Displayed","User Response"]
-HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
-dict,dictRaw = DictInitialize(params)
-df,dfRaw = pd.DataFrame(columns=Header),pd.DataFrame(columns=HeaderRaw)
+# Output Summary header Initialization
+params["header"] = ["expName","Version","subjectID","Session Number","Section","Start Time","End Time","Duration",
+                    "Block Count",
+                    "Trial Count","Image Displayed","Flanker","Direction","Correct Answer","Cell Number",
+                    "User Response","Correct or Incorrect","User Response TimeStamp","User Response Time"]
 
-# Timing File load
-# timingFiles = glob.glob('timing/*.csv')
-# random.shuffle(timingFiles)
-# timingFile = timingFiles[0]
-timingFile = "timing/iti.csv"
+# Dictionary and dataframe Initialization
+dict = DictInitialize(params)
+df = pd.DataFrame(columns=params["header"])
+# dfRaw = pd.DataFrame(columns=headerRaw)
+
+# Make empty output file frames.
+df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
 # Load a Timing File.
+timingFile = "timing/iti.csv"
 dfTiming = pd.read_csv(timingFile,header=None,names=['ITI'])
 ITIs = np.array(dfTiming['ITI'])
 
-# Instruction +Presentation
+# Instruction Section
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
-df = InstructionPlay(df,win,params)
+df,dict = InstructionPlay(df,dict,win,params)
+# df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
-# Waiting for scanner (press 5).
-message = visual.TextStim(win, text="Waiting for scanner \n\n(Please press 5 when it is ready.)",
-                          units='norm', wrapWidth=1000, color="white")
-message.draw()
-win.flip()
-userInput = ['']
-# Wait for user types "y" or "n".
-while (userInput[0].upper() != "5"):
-    core.wait(1 / 120)
-    userInput = event.waitKeys()  # read a characters
-    # print(userInput)
-    if userInput == ['q'] or userInput == ['Q']:
-        print('Q pressed. Forced Exit.')
-        core.quit()
+for blockCount in range(params['nBlocks']):
+    # Waiting for scanner (press 5) and display Get Ready screen.
+    df,dict = ReadyPlay(df,dict,win,params,blockCount)
 
-# Get Ready screen.
-message = visual.TextStim(win, text="Get Ready",
-                          units='norm', wrapWidth=1000, color="white")
-message.draw()
-win.flip()
-WaitSeconds(8)
+    # Random order generations
+    orderMat = [0,1,2,3] * 9
+    random.shuffle(orderMat)
+    random.shuffle(ITIs)
+    for trialCount in range(params['nTrials']):
 
-# Show the flanker image.
-orderMat = [0,1,2,3]*9
-random.shuffle(orderMat)
-random.shuffle(ITIs)
+        # Fixation Screen
+        df, dict = FixationPlay(df, dict, win, params,blockCount,trialCount)
 
-for i in range(params['nTrials']):
-    n = orderMat[i]
-    if n == 0:
-        FlankerPlay(df,ITIs[i],dict,dictRaw,"CL",win,params)
-    elif n == 1:
-        FlankerPlay(df,ITIs[i],dict,dictRaw,"CR",win,params)
-    elif n == 2:
-        FlankerPlay(df,ITIs[i],dict,dictRaw,"IR",win,params)
-    elif n == 3:
-        FlankerPlay(df,ITIs[i],dict,dictRaw,"IL",win,params)
+        # Present Flanker
+        n = orderMat[trialCount]
+        if n == 0:
+            df,dict = FlankerPlay(df,dict,"CL",win,params,blockCount,trialCount)
+        elif n == 1:
+            df,dict = FlankerPlay(df,dict,"CR",win,params,blockCount,trialCount)
+        elif n == 2:
+            df,dict = FlankerPlay(df,dict,"IR",win,params,blockCount,trialCount)
+        elif n == 3:
+            df,dict = FlankerPlay(df,dict,"IL",win,params,blockCount,trialCount)
 
-# imgCONGL = 'img/CONGL.jpg'
-#
-# messageCONGL= visual.TextStim(win, text="<<<<<",units='norm', wrapWidth=1000, color="white",height=0.3)
-# messageCONGR= visual.TextStim(win, text=">>>>>",units='norm', wrapWidth=1000, color="white",height=0.3)
-# messageINCONGR= visual.TextStim(win, text="<<><<",units='norm', wrapWidth=1000, color="white",height=0.3)
-# messageINCONGL= visu*al.TextStim(win, text=">><>>",units='norm', wrapWidth=1000, color="white",height=0.3)
-#
-# messageCONGL.draw()
-# win.flip()
-#
-# # Response Window
-# # Get user input.
-# c = []
-# startTime = time.time()
-# dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-# event.clearEvents()
-# while time.time() - startTime < 1.7:
-#     core.wait(1 / 120)
-#     if c == []:
-#         c = event.getKeys()
-#     if len(c) >= 1:
-#         dictRaw["Event"] = "User Response:" + c[0]
-#         # DictWriteRaw(dfRaw, dictRaw, params)
-# if c == ['q'] or c == ['Q']:
-#     print('Q pressed. Forced Exit.')
-#     core.quit()
-# if len(c) >= 1:
-#     c = c[0]
-# else:
-#     c = "No Response"
+        # Blank Screen
+        df, dict = BlankPlay(df,ITIs[trialCount]/1000,dict, win, params,blockCount,trialCount)
+
+    # Save the result.
+    df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
 
-
-
-
-
-
-
-
-
+win.close()

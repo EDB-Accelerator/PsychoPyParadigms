@@ -2,19 +2,13 @@ import sys
 sys.path.insert(1, './src')
 
 from psychopy import core, visual, event
-# from Helper import ,tableWrite,get_keypress
-from Helper import get_keypress,WaitUserSpace
+from Helper import WaitUserSpace
+from DictWrite import DictWrite
 import datetime
 
-def InstructionPlay(df, win, params):
-    Dict = {
-        "ExperimentName": params['expName'],
-        "Subject": params['subjectID'],
-        "Session": params["Session"],
-        "Version": params["Version"],
-        "Section": "Instructions",
-        "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S"),
-    }
+def InstructionPlay(df,dict,win,params):
+    startTimeStr = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = datetime.datetime.now()
 
     # Display Instruction
     message = visual.TextStim(win, text="Do you want to see the instruction?\n\n(y: Yes, n: No)",
@@ -28,7 +22,6 @@ def InstructionPlay(df, win, params):
     while (userInput[0].upper() != "Y" and userInput[0].upper() != "N"):
         core.wait(1 / 120)
         userInput = event.waitKeys()  # read a characters
-        # print(userInput)
         if userInput == ['q'] or userInput == ['Q']:
             print('Q pressed. Forced Exit.')
             core.quit()
@@ -65,5 +58,11 @@ def InstructionPlay(df, win, params):
                 print('Q pressed. Forced Exit.')
                 core.quit()
 
-    # Log the dict result on pandas dataFrame.
-    # return tableWrite(df, params,Dict)
+    # Section Termination
+    dict["Section"] = "Instruction"
+    dict["Start Time"] = startTimeStr
+    dict["End Time"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    dict["Duration"] = datetime.datetime.now() - startTime
+    df,dict = DictWrite(df,dict,params)
+
+    return df,dict

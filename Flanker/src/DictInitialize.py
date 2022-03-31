@@ -1,11 +1,13 @@
-def DictInitialize(params):
+# Header = ["expName","Version","subjectID","Session Number","Start Time","End Time","Duration","timingFile","Event",
+          # "User Response", "Right Answer", "Correct or Incorrect","User Response TimeStamp","User Response Time"]
 
-    dict = {'expName' : params['expName'],
+def DictInitialize(params):
+    dict = {'expName': params['expName'],
             'Version': params['Version'],
             "subjectID": params['subjectID'],
-            "Session": params['Session'],
+            "Session Number": params['Session'],
             "User Response": "",
-    }
-    dictRaw = dict.copy()
-
-    return dict,dictRaw
+            }
+    for h in params["header"]:
+        if h not in dict: dict[h]=""
+    return dict

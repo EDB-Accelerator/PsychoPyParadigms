@@ -4,6 +4,32 @@ import pandas as pd
 from psychopy.hardware import joystick
 import pygame
 from sys import exit
+def WaitAndGetUserInput(c,waitTime):
+    startTime = time.time()
+    responseTime = ""
+    c = []
+    while time.time()-startTime < waitTime:
+        if c == []:
+            c = event.getKeys()
+            responseTime = datetime.datetime.now()
+
+            if c == ['q'] or c == ['Q']:
+                print('Q pressed. Forced Exit.')
+                core.quit()
+            # print(c)
+        core.wait(1/120)
+
+    if c == []:
+        responseTime = ""
+        c = ""
+    else:
+        try:
+            c = c[0].upper()
+        except:
+            pass
+
+    return c,responseTime
+
 
 def WaitSeconds(waitTime):
     startTime = time.time()
