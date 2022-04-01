@@ -31,6 +31,7 @@ def ReadyPlay(df,dict,win,params,blockCount):
     dict["Start Time"] = startTimeStr
     dict["End Time"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     dict["Duration"] = datetime.datetime.now() - startTime
+    dict["Block Count"] = str(blockCount)
     df,dict = DictWrite(df,dict,params)
 
     # Initialization
@@ -49,6 +50,7 @@ def ReadyPlay(df,dict,win,params,blockCount):
     dict["Start Time"] = startTimeStr
     dict["End Time"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     dict["Duration"] = datetime.datetime.now() - startTime
+    dict["Block Count"] = str(blockCount)
     df,dict = DictWrite(df, dict, params)
 
     return df,dict

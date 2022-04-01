@@ -6,7 +6,7 @@ from Helper import WaitSeconds
 from DictWrite import DictWrite
 import datetime
 
-def BlankPlay(df,iti,dict,win,params,blockCount,trialCount):
+def BlankPlay(df,dict,win,params,blockCount,trialCount):
     # Initialization
     startTimeStr = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = datetime.datetime.now()
@@ -15,7 +15,7 @@ def BlankPlay(df,iti,dict,win,params,blockCount,trialCount):
     message = visual.TextStim(win, text="", wrapWidth=2,units='norm',color="white")
     message.draw()
     win.flip()
-    WaitSeconds(iti)
+    WaitSeconds(0.5)
 
     # Section Termination
     dict["Section"] = "Blank Screen"
@@ -23,6 +23,7 @@ def BlankPlay(df,iti,dict,win,params,blockCount,trialCount):
     dict["Trial Count"] = trialCount
     dict["End Time"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     dict["Duration"] = datetime.datetime.now() - startTime
+    dict["Block Count"] = str(blockCount)
     df,dict = DictWrite(df, dict, params)
 
     return df,dict

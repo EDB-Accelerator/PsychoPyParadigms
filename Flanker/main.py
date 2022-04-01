@@ -31,7 +31,7 @@ Base: Python3, Psychopy3
 """
 
 # Import standard python libraries
-from psychopy import visual,core, event
+from psychopy import visual,prefs
 import numpy as np
 import os, datetime,sys
 import pandas as pd
@@ -53,11 +53,6 @@ if not os.path.exists(directory):
 
 # Pandas configuration (debugging options)
 pd.set_option('display.max_columns', None)
-
-# header = ["expName","Version","subjectID","Session Number","Section","Start Time","End Time","Duration","Trial Count",
-#           "Image Displayed","Flanker","Direction","Correct Answer","Cell Number","User Response","Correct or Incorrect",
-#           "User Response TimeStamp","User Response Time"]
-# headerRaw = ["TimeStamp", "expName", "Version", "subjectID", "Session", "Event"]
 
 # Get input from a user window and setup the name of output files.
 params = UserInputPlay()
@@ -87,9 +82,9 @@ dfTiming = pd.read_csv(timingFile,header=None,names=['ITI'])
 ITIs = np.array(dfTiming['ITI'])
 
 # Instruction Section
+prefs.general['fullscr'] = params['FullScreen']
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
 df,dict = InstructionPlay(df,dict,win,params)
-# df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
 for blockCount in range(params['nBlocks']):
     # Waiting for scanner (press 5) and display Get Ready screen.
@@ -102,7 +97,7 @@ for blockCount in range(params['nBlocks']):
     for trialCount in range(params['nTrials']):
 
         # Fixation Screen
-        df, dict = FixationPlay(df, dict, win, params,blockCount,trialCount)
+        df, dict = FixationPlay(df, dict, win, params,blockCount,trialCount,ITIs[trialCount]/1000)
 
         # Present Flanker
         n = orderMat[trialCount]
@@ -116,10 +111,9 @@ for blockCount in range(params['nBlocks']):
             df,dict = FlankerPlay(df,dict,"IL",win,params,blockCount,trialCount)
 
         # Blank Screen
-        df, dict = BlankPlay(df,ITIs[trialCount]/1000,dict, win, params,blockCount,trialCount)
+        df, dict = BlankPlay(df,dict, win, params,blockCount,trialCount)
 
     # Save the result.
     df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-
 
 win.close()

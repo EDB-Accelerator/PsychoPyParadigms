@@ -31,7 +31,7 @@ def FlankerPlay(df,dict,TrialType,win,params,blockCount,trialCount):
     message = visual.TextStim(win, text=displayedStr,units='norm', wrapWidth=1000, color="white",height=0.3)
     message.draw()
     win.flip()
-    # WaitSeconds(0.2)
+    WaitSeconds(0.2)
     c, userResponseTimeStamp = WaitAndGetUserInput([], 0.2)
     if userResponseTimeStamp == "":
         userResponse = "No response"
@@ -48,6 +48,7 @@ def FlankerPlay(df,dict,TrialType,win,params,blockCount,trialCount):
     dict["Start Time"] = startTimeStr
     dict["End Time"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     dict["Duration"] = datetime.datetime.now() - startTime
+    dict["Block Count"] = str(blockCount)
     dict["Trial Count"] = str(trialCount)
     dict["Image Displayed"] = displayedStr
     dict["Flanker"] = flanker
@@ -63,6 +64,9 @@ def FlankerPlay(df,dict,TrialType,win,params,blockCount,trialCount):
     # Display User input Window (1.7 second)
     startTimeStr = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
     startTime = datetime.datetime.now()
+    message = visual.TextStim(win, text="", units='norm', wrapWidth=1000, color="white", height=0.3)
+    message.draw()
+    win.flip()
 
     if userResponseTimeStamp == "":
         c, userResponseTimeStamp = WaitAndGetUserInput([], 1.7)
