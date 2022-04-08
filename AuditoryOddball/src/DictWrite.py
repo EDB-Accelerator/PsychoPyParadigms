@@ -27,12 +27,12 @@ import time,re
 import datetime,os
 import pandas as pd
 
-Header = ["Start Time", "End Time", "Duration", "expName", "Version", "subjectID", 'timingFile',"Session", "Event",
+Header = ["Start Time", "End Time", "Duration", "Accumulated Time","expName", "Version", "subjectID", 'timingFile',"Session", "Event",
           "Sound Type"]
 
 HeaderRaw = ["TimeStamp", "expName", "Version", "subjectID", "Session", "Event"]
 
-def DictWriteRaw(params,event):
+def DictWriteRaw(dfRaw,params,event):
     print(event)
     dictRaw = {}
     dictRaw["TimeStamp"] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
@@ -41,24 +41,26 @@ def DictWriteRaw(params,event):
     dictRaw["subjectID"] = params['subjectID']
     dictRaw["Session"] = params["Session"]
     dictRaw["Event"] = event
-    dfRaw = pd.DataFrame(columns=HeaderRaw)
     dfRaw = dfRaw.append(dictRaw, ignore_index=True)
-    if not os.path.isfile(params['outFileRaw']):
-        dfRaw.to_csv(params['outFileRaw'],sep=',',encoding='utf-8',index=False,header=HeaderRaw)
-    else:  # else it exists so append without writing the header
-        dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
-    # dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
+    # if not os.path.isfile(params['outFileRaw']):
+    #     dfRaw.to_csv(params['outFileRaw'],sep=',',encoding='utf-8',index=False,header=HeaderRaw)
+    # else:  # else it exists so append without writing the header
+    #     dfRaw.to_csv(params['outFileRaw'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
+
+    return dfRaw
 
 def DictWriteStart(params):
     params["Start Time"] = datetime.datetime.now()
 
-def DictWriteEnd(params,event):
+def DictWriteEnd(df,params,event):
     params["End Time"] = datetime.datetime.now()
 
     dict = {}
     dict["Start Time"] = params["Start Time"].strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
     dict["End Time"] = params["End Time"].strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
     dict["Duration"] = (params["End Time"] - params["Start Time"]).total_seconds()
+    dict["Accumulated Time"] = (params["End Time"] - params['gameStartTime']).total_seconds()
+
     dict["expName"] = params['expName']
     dict["Version"] = params['Version']
     dict["subjectID"] = params['subjectID']
@@ -75,10 +77,11 @@ def DictWriteEnd(params,event):
     else:
         dict["Sound Type"] = 'Novel'
 
-    df = pd.DataFrame(columns=Header)
     df = df.append(dict, ignore_index=True)
 
-    if not os.path.isfile(params['outFile']):
-        df.to_csv(params['outFile'],sep=',',encoding='utf-8',index=False,header=Header)
-    else:  # else it exists so append without writing the header
-        df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
+    # if not os.path.isfile(params['outFile']):
+    #     df.to_csv(params['outFile'],sep=',',encoding='utf-8',index=False,header=Header)
+    # else:  # else it exists so append without writing the header
+    #     df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header=False)
+
+    return df

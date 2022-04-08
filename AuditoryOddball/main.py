@@ -30,6 +30,7 @@ Auditory Oddball Task Main Driver File (Version 1).
 
 Created on Wed, Oct  6, 2021  3:39:42 PM
 Updated on Wed, Mar 23, 2022  9:58:32 AM: Serial Port Support
+Updated on Fri, Apr  8, 2022  3:03:17 PM: Optimization (speed)
 
 @author: Kyunghun Lee
 """
@@ -44,7 +45,7 @@ import subprocess
 import time,sys
 import random
 sys.path.insert(1, './src')
-from DictWrite import DictWriteRaw,DictWriteStart,DictWriteEnd
+from DictWrite import DictWriteStart,DictWriteEnd
 from StartMusic import playSound
 import serial
 
@@ -57,7 +58,7 @@ if not os.path.exists(directory):
 pd.set_option('display.max_columns', None)
 
 # Output Summary Header Initialization
-Header = ["Start Time", "End Time", "Duration", "expName", "Version", "subjectID", 'timingFile',"Session", "Event",
+Header = ["Start Time", "End Time", "Duration", "Accumulated Time","expName", "Version", "subjectID", 'timingFile',"Session", "Event",
           "Sound Type"]
 
 # Output Raw Header Initialization
@@ -99,14 +100,16 @@ if params['SerialPortSupport']:
     params['baudrate'] = UserInputBank[1]
     params['timeout'] = UserInputBank[2]
     params['bytesize'] = UserInputBank[3]
-
+    # Serial port testing
     # serialPort = serial.Serial(port="COM3", baudrate=9600,
     #                            bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
+    # serialPort.write("2")
+
     serialPort = serial.Serial(port=params['port'], baudrate=params['baudrate'],
                                bytesize=params['bytesize'], timeout=params['timeout'], stopbits=serial.STOPBITS_ONE)
 
 # Read timing File
-df = pd.read_csv('timing/' + str(params['TimingFile'])+ '.csv')
+dfTiming = pd.read_csv('timing/' + str(params['TimingFile'])+ '.csv')
 
 # Decide the name of output files.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
@@ -115,10 +118,11 @@ params['outFile'] = "./result/" + params["expName"] + "_" + str(params["subjectI
 params['outFileRaw'] = "./result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
               timeLabel + "_raw.csv"
 
-
 # Dictionary Intialization
 dict = {}
 Raw = {}
+df = pd.DataFrame(columns=Header)
+dfRaw = pd.DataFrame(columns=HeaderRaw)
 
 def waitTime(startTime, duration):
     # while time.time() - startTime < duration:
@@ -129,63 +133,81 @@ def waitTime(startTime, duration):
     #     core.wait(1 / 120)
     elapsedTime = time.time() - startTime
     core.wait(duration - elapsedTime)
-
+    # time.sleep(duration - elapsedTime)
 
 novelSoundFiles = glob.glob('sound/*.WAV')
 novelSoundFiles = [x for x in novelSoundFiles if 'PN650HZ' not in x and 'PO500HZ' not in x]
 random.shuffle(novelSoundFiles)
 
 startTime = time.time()
-DictWriteRaw(params,event="task started")
-
+# dfRaw = DictWriteRaw(dfRaw,params,event="task started")
+print("task started")
 
 win = visual.Window([1024,768], monitor="testMonitor", color="white", winType='pyglet')
 message = visual.TextStim(win,text="Press 5 to continue\n ",
                                   units='norm', wrapWidth=2, color="black")
 message.draw()
 win.flip()
-DictWriteRaw(params,event="Message: Press 5 to continue")
+# dfRaw = DictWriteRaw(dfRaw,params,event="Message: Press 5 to continue")
+print("Message: Press 5 to continue")
 
 c = ''
 while (c != ['5']):
     core.wait(1 / 120)
     c = event.getKeys()
-DictWriteRaw(params,event="5 pressed")
+# dfRaw = DictWriteRaw(dfRaw,params,event="5 pressed")
+print("5 pressed")
+
+params['gameStartTime'] = datetime.datetime.now()
 
 if params['SerialPortSupport']:
-    serialPort.write("5")
+    # dfRaw = DictWriteRaw(dfRaw,params, event="Serial Port Sent message (start)")
+    DictWriteStart(params)
     serialPort.write(5)
-    print("serial port write: 5")
+    # dfRaw = DictWriteRaw(dfRaw,params, event="Serial Port Sent message (end)")
+    df = DictWriteEnd(df,params,"Serial Port Sent message")
 
-for i in range(len(df)):
-    duration = df.loc[i]['Duration']
-    stimuli = df.loc[i]['Stimuli']
+for i in range(len(dfTiming)):
+    duration = dfTiming.loc[i]['Duration']
+    stimuli = dfTiming.loc[i]['Stimuli']
     if 'No sound' in stimuli:
-        DictWriteRaw(params, event="No sound (start)")
+        # dfRaw = DictWriteRaw(dfRaw,params, event="No sound (start)")
+        print("No sound (start)")
         DictWriteStart(params)
         waitTime(time.time(),20)
-        DictWriteRaw(params, event="No sound (end)")
-        DictWriteEnd(params, "No sound")
+        # dfRaw = DictWriteRaw(dfRaw,params, event="No sound (end)")
+        print("No sound (end)")
+        df = DictWriteEnd(df,params, "No sound")
         continue
     elif 'interval' in stimuli:
-        DictWriteRaw(params, event="Interval (start)")
+        # dfRaw = DictWriteRaw(dfRaw,params, event="Interval (start)")
+        print("Interval (start)")
         DictWriteStart(params)
-        waitTime(startTime,duration+0.2)
-        DictWriteRaw(params, event="Interval (end)")
-        DictWriteEnd(params, "Interval")
+        # waitTime(time.time(),duration+0.2)
+        waitTime(time.time(), duration)
+        # dfRaw = DictWriteRaw(dfRaw,params, event="Interval (end)")
+        print("Interval (end)")
+        df = DictWriteEnd(df,params, "Interval")
         continue
+    else:
+        if 'Standard' in stimuli:
+            soundFile = 'sound/PO500HZ.WAV'
+        elif 'Deviant' in stimuli:
+            soundFile = 'sound/PN650HZ.WAV'
+        elif 'Novel' in stimuli:
+            soundFile = novelSoundFiles.pop()
+        # startTime = time.time()
+        # sound1 = sound.Sound(soundFile)
+        # dfRaw = DictWriteRaw(dfRaw,params, event="Sound played (start):" + soundFile)
+        print("Sound played (start):" + soundFile)
+        DictWriteStart(params)
+        playSound(mixer, soundFile,duration)
+        # sound1.play()
+        # dfRaw = DictWriteRaw(dfRaw,params, event="Sound played (end):" + soundFile)
+        print("Sound played (end):" + soundFile)
+        df = DictWriteEnd(df,params, "Sound played:" + soundFile)
 
-    if 'Standard' in stimuli:
-        soundFile = 'sound/PO500HZ.WAV'
-    elif 'Deviant' in stimuli:
-        soundFile = 'sound/PN650HZ.WAV'
-    elif 'Novel' in stimuli:
-        soundFile = novelSoundFiles.pop()
-    startTime = time.time()
-    # sound1 = sound.Sound(soundFile)
-    DictWriteRaw(params, event="Sound played (start):" + soundFile)
-    DictWriteStart(params)
-    playSound(mixer, soundFile)
-    # sound1.play()
-    DictWriteRaw(params, event="Sound played (end):" + soundFile)
-    DictWriteEnd(params, "Sound played:" + soundFile)
+# Save the result
+df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False,header=Header)
+# dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False,header=HeaderRaw)
+win.close()
