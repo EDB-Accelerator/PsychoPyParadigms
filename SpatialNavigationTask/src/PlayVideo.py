@@ -30,6 +30,7 @@ import os
 import platform
 import random
 import subprocess
+from psychopy import visual
 
 
 def PlayVideo(df,dfRaw,params,dict,dictRaw,win,version):
@@ -38,6 +39,9 @@ def PlayVideo(df,dfRaw,params,dict,dictRaw,win,version):
 
     # Starting Screen
     SectionStart(df, dfRaw, params, dict, dictRaw, dict["Section"])
+
+    # Close the window
+    win.close()
 
     # Play Video
     DictWriteRaw(dfRaw, dictRaw, params, "Video Play (Started): Version" + str(version))
@@ -52,3 +56,6 @@ def PlayVideo(df,dfRaw,params,dict,dictRaw,win,version):
     DictWriteRaw(dfRaw, dictRaw, params, "Video Play (Ended): Version" + str(version))
 
     SectionEnd(df,dfRaw,params,dict,dictRaw,dict["Section"])
+
+    win = visual.Window(params['screenSize'],monitor="testMonitor",color="white",winType='pyglet')
+    return win

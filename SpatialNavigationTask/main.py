@@ -120,7 +120,7 @@ PlayScale1(df,dfRaw,params,dict,dictRaw,win)
 PlayInstruction(df,dfRaw,params,dict,dictRaw,win)
 
 # Play Video
-PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
+win = PlayVideo(df,dfRaw,params,dict,dictRaw,win,params['Version'])
 
 # Play Subtask1
 PlaySubTask1(df,dfRaw,params,dict,dictRaw,win,params['Version'])

@@ -41,10 +41,20 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win):
     stims = [txt1]
     txts = []
     if dict["Language"] == "English":
-        txts.append("The experiment is about to begin.")
-        txts.append("You are an astronaut, sent to an unfamiliar planet. It is your job to explore the planet. You are about to walk a route through a forest where you will encounter various objects. You will see a video of this exploration. ")
-        txts.append("It is your mission to memorize as much information about the environment as you can. You will be asked questions about this later.")
-        txts.append("Pay attention! When the video starts you cannot pause or restart it.")
+        if params['Version'] == 1:
+            txts.append("The experiment is about to begin.")
+            txts.append(
+                "You are an astronaut sent to a newly discovered planet. Your job is to explore the planet and return to your spaceship. You will walk a route through a forest where you will encounter various objects.")
+            txts.append(
+                "You will see a video of this exploration. Your mission is to remember as much information about the environment as possible. You will get questions about this later.")
+            txts.append("Pay attention! When the video starts you cannot pause or restart it.")
+        elif params['Version'] == 2:
+            txts.append("The experiment is about to begin.")
+            txts.append(
+                "You are an astronaut sent to a hostile, scary planet. Your job is to explore this dangerous planet and return safely to your spaceship.")
+            txts.append(
+                ". You will walk a route through a forest where you will encounter various objects. You will see a video of this exploration. Your mission is to remember as much information about the environment as possible. You will get questions about this later.")
+            txts.append("Pay attention! When the video starts you cannot pause or restart it.")
     else:
         txts.append("Het experiment gaat nu beginnen.")
         txts.append(
