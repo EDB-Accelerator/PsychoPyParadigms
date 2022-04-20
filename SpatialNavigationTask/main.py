@@ -32,12 +32,13 @@ Created on Mon Feb 22 12:49:15 EST 2021
 
 @author: Kyunghun Lee
 - Created on Tue Mon Feb 22 12:49:15 EST 2021 by KL
+- Video2 updated (scary movie) and introduction updated on Wed, Apr 20, 2022  3:02:12 PM by KL
 """
 
 # Import standard python libraries
 import datetime,sys
 import pandas as pd
-from psychopy import visual,prefs
+from psychopy import visual,prefs,event
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -88,6 +89,7 @@ params = {
 
 prefs.general['fullscr'] = params['FullScreen']
 prefs.general['shutdownKey'] = 'q'
+event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
 # Decide the name of output files.
 params['outFile'] = "./result/test_" + params["expName"] + "_" + str(params["SubjectID"]) + "_" + str(params["Session"]) +\

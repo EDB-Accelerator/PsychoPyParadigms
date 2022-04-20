@@ -53,7 +53,7 @@ def PlayInstruction(df,dfRaw,params,dict,dictRaw,win):
             txts.append(
                 "You are an astronaut sent to a hostile, scary planet. Your job is to explore this dangerous planet and return safely to your spaceship.")
             txts.append(
-                ". You will walk a route through a forest where you will encounter various objects. You will see a video of this exploration. Your mission is to remember as much information about the environment as possible. You will get questions about this later.")
+                "You will walk a route through a forest where you will encounter various objects. You will see a video of this exploration. Your mission is to remember as much information about the environment as possible. You will get questions about this later.")
             txts.append("Pay attention! When the video starts you cannot pause or restart it.")
     else:
         txts.append("Het experiment gaat nu beginnen.")
