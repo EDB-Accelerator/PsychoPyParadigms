@@ -39,9 +39,11 @@ def PlayIntroduction(win,params,timingFileCount):
             WaitUserSpace(win)
 
         # Introduction Slide 2
-        message = visual.TextStim(win,text="Press the YES (index) key as quickly as you can when you see the\n"+
-                                  "blue letter that completes the target sequence. Press the NO\n"+
-                                  "(middle) key as quickly as you can for all other letters.\n\n\n\n\n"+
+        message = visual.TextStim(win,text="Press the YES (index) key as quickly as you can\n"
+                                           "when you see the blue letter that completes the\n"
+                                           "target sequence.\n\n"
+                                           "Press the NO (middle) key as quickly as you can\n"
+                                           "for all other letters.\n\n\n\n\n"+
                                   "Please SPACE BAR to continue",
                                           units='norm', wrapWidth=1000, color="white")
         message.draw()

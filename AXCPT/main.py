@@ -36,6 +36,7 @@ import glob
 import time
 import datetime
 import random
+import os
 
 # Import developer-defined functions
 sys.path.insert(1, './src')
@@ -51,13 +52,17 @@ def checkUserQuit():
         core.quit()
 
 def waitForSeconds(waitTime):
-    startTime = time.time()
-    while time.time() - startTime < waitTime:
-        c = event.getKeys()
-        if c == ['q'] or c == ['Q']:
-            print('Q pressed. Forced Exit.')
-            core.quit()
-        core.wait(1/120)
+    # startTime = time.time()
+    # while time.time() - startTime < waitTime:
+    #     c = event.getKeys()
+    #     # if c == ['q'] or c == ['Q']:
+    #     #     print('Q pressed. Forced Exit.')
+    #     #     core.quit()
+    #     core.wait(1/120)
+    core.wait(waitTime)
+
+# Global Exit
+event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
 # Receive User input from GUI window
 params = PlayUserInputGUI()
@@ -135,9 +140,9 @@ for timingFile in timingFiles:
     while (c[0]!="space"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
-        if c == ['q'] or c == ['Q']:
-            print('Q pressed. Forced Exit.')
-            core.quit()
+        # if c == ['q'] or c == ['Q']:
+        #     print('Q pressed. Forced Exit.')
+        #     core.quit()
 
     # wait Section Termination
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount, trialType="",
@@ -158,9 +163,9 @@ for timingFile in timingFiles:
     while (c[0]!="5"):
         core.wait(1 / 120)
         c = event.waitKeys()  # read a character
-        if c == ['q'] or c == ['Q']:
-            print('Q pressed. Forced Exit.')
-            core.quit()
+        # if c == ['q'] or c == ['Q']:
+        #     print('Q pressed. Forced Exit.')
+        #     core.quit()
 
     DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="ITI (waiting for 5)", timingFile=timingFile, userResponse="5", rightAnswer="5",
