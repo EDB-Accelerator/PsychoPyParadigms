@@ -1,4 +1,4 @@
-def PlayIntroduction(win,params,timingFileCount):
+def PlayIntroduction(win,params,timingFileCount,df):
 
     from psychopy import visual, core, event
     from WaitAndGetUserInput import WaitUserSpace
@@ -61,17 +61,17 @@ def PlayIntroduction(win,params,timingFileCount):
         userInput = ['']
         # Wait for user types "y" or "n".
         while (userInput[0].upper() != "Y" and userInput[0].upper() != "N"):
-            core.wait(1 / 120)
+            core.wait(1 / 3000)
             userInput = event.waitKeys()  # read a characters
             # print(userInput)
-            if userInput == ['q'] or userInput == ['Q']:
-                print('Q pressed. Forced Exit.')
-                core.quit()
+            # if userInput == ['q'] or userInput == ['Q']:
+            #     print('Q pressed. Forced Exit.')
+            #     core.quit()
 
 
     # Section Termination
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
+    df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="Instruction displayed", timingFile="", userResponse="", rightAnswer="",userResponseTime="",
-              userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+              userResponseOffset=0,cueLetter="",probeLetter="",correctness="",df=df)
 
     return win

@@ -10,18 +10,17 @@ def WaitAndGetUserInput(c,waitTime):
     while time.time()-startTime < waitTime:
         if c == []:
             c = event.getKeys()
-            responseTime = datetime.datetime.now()
-
-            if c == ['q'] or c == ['Q']:
-                print('Q pressed. Forced Exit.')
-                core.quit()
+            # if c == ['q'] or c == ['Q']:
+            #     print('Q pressed. Forced Exit.')
+            #     core.quit()
             # print(c)
-        core.wait(1/120)
+        core.wait(1/3000)
 
     if c == []:
         responseTime = ""
         c = ""
     else:
+        responseTime = datetime.datetime.now()
         try:
             c = c[0].upper()
         except:
@@ -44,10 +43,10 @@ def WaitUserSpace(win):
     # Wait for user types a space key.
     c = ['']
     while (c[0] != 'space'):
-        core.wait(1 / 120)
+        core.wait(1 / 3000)
         c = event.waitKeys()  # read a character
 
-        if c == ['q'] or c == ['Q']:
-
-            print('Q pressed. Forced Exit.')
-            core.quit()
+        # if c == ['q'] or c == ['Q']:
+        #
+        #     print('Q pressed. Forced Exit.')
+        #     core.quit()

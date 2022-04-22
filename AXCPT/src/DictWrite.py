@@ -35,7 +35,7 @@ def DictWriteRaw(dfRaw,dictRaw,params):
     # dfRaw = dfRaw[:-1] # Drop the last row.
 
 def DataWrite(params,startTime,endTime,trialCount,timingCount,trialType,event,timingFile,userResponse,rightAnswer,userResponseTime,
-              userResponseOffset,cueLetter,probeLetter,correctness):
+              userResponseOffset,cueLetter,probeLetter,correctness,df):
 
     dict = {}
     Header = ["expName", "subjectID", "Session", "TrialCount","TimingCount", "Trial Type", "Event", "Start Time", "End Time",
@@ -67,11 +67,6 @@ def DataWrite(params,startTime,endTime,trialCount,timingCount,trialType,event,ti
         dict["User Response"] = userResponse
     dict["Right Answer"] = rightAnswer
 
-    # if dict["Right Answer"] == "":
-    #     dict["Correct or Incorrect"] = ""
-    # else:
-    #     dict["Correct or Incorrect"] = "Correct" if dict["User Response"].upper() == dict["Right Answer"].upper() else "Incorrect"
-
     dict["Correct or Incorrect"] = correctness
 
     if userResponseTime == "No response" or dict["User Response"] == "No response":
@@ -95,6 +90,9 @@ def DataWrite(params,startTime,endTime,trialCount,timingCount,trialType,event,ti
     dict["Cue Letter"] = cueLetter
     dict["Probe Letter"] = probeLetter
 
-    df = pd.DataFrame(columns=Header)
-    df = df.append(dict,ignore_index=True)
-    df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
+    # df = pd.DataFrame(columns=Header)
+    # df = df.append(dict,ignore_index=True)
+    # df.to_csv(params['outFile'],mode='a',sep=',',encoding='utf-8',index=False,header = False)
+
+    df = df.append(dict, ignore_index=True)
+    return df

@@ -51,15 +51,15 @@ def checkUserQuit():
         print('Q pressed. Forced Exit.')
         core.quit()
 
-def waitForSeconds(waitTime):
-    # startTime = time.time()
-    # while time.time() - startTime < waitTime:
-    #     c = event.getKeys()
-    #     # if c == ['q'] or c == ['Q']:
-    #     #     print('Q pressed. Forced Exit.')
-    #     #     core.quit()
-    #     core.wait(1/120)
-    core.wait(waitTime)
+# def waitForSeconds(waitTime):
+#     # startTime = time.time()
+#     # while time.time() - startTime < waitTime:
+#     #     c = event.getKeys()
+#     #     # if c == ['q'] or c == ['Q']:
+#     #     #     print('Q pressed. Forced Exit.')
+#     #     #     core.quit()
+#     #     core.wait(1/120)
+#     core.wait(waitTime)
 
 # Global Exit
 event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
@@ -80,13 +80,13 @@ Header = ["expName", "subjectID", "Session", "TrialCount", "TimingCount", "Trial
           "User Response TimeStamp", "User Response Time (the amount of time that passes from time"
           + " the letter was shown)", "Cue Letter","Probe Letter"]
 df = pd.DataFrame(columns=Header)
-df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+# df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 
 # Display Welcome Screen / Introduction
 win.winHandle.activate()
 win.flip()
 # win.winHandle.maximize()
-win = PlayIntroduction(win,params,"")
+win = PlayIntroduction(win,params,"",df)
 
 # Get a Timing file list
 timingFiles = glob.glob('timing/*.csv')
@@ -118,10 +118,10 @@ for timingFile in timingFiles:
         # Wait for 10 seconds.
         WaitAndGetUserInput(c, 10)
 
-        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",
+        df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",
                   timingCount=timingFileCount, trialType="",
                   event="10 Seconds Delay", timingFile=timingFile, userResponse="", rightAnswer="",
-                  userResponseTime="", userResponseOffset=0, cueLetter="", probeLetter="", correctness="")
+                  userResponseTime="", userResponseOffset=0, cueLetter="", probeLetter="", correctness="",df=df)
 
     ### wait section (wait for "space bar") ###
     startTime = datetime.datetime.now()
@@ -145,9 +145,9 @@ for timingFile in timingFiles:
         #     core.quit()
 
     # wait Section Termination
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount, trialType="",
+    df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount, trialType="",
               event="waiting for spacebar", timingFile=timingFile, userResponse="space bar", rightAnswer="space bar",
-              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="",df=df)
 
     ### ITI section (wait for "5") ###
     startTime = datetime.datetime.now()
@@ -161,15 +161,15 @@ for timingFile in timingFiles:
     c = ['']
     # Wait for user until user types "5".
     while (c[0]!="5"):
-        core.wait(1 / 120)
+        core.wait(1 / 300)
         c = event.waitKeys()  # read a character
         # if c == ['q'] or c == ['Q']:
         #     print('Q pressed. Forced Exit.')
         #     core.quit()
 
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
+    df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="ITI (waiting for 5)", timingFile=timingFile, userResponse="5", rightAnswer="5",
-              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="",df=df)
 
     ### Get Ready Screen (for 5 seconds) ###
     startTime = datetime.datetime.now()
@@ -184,9 +184,9 @@ for timingFile in timingFiles:
     # Wait for 8 seconds.
     WaitAndGetUserInput(c, 5)
 
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
+    df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="Get Ready (5 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
-              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="",df=df)
 
     ### Fixation Cross (for 3 seconds) ###
     startTime = datetime.datetime.now()
@@ -201,16 +201,16 @@ for timingFile in timingFiles:
     # Wait for 8 seconds.
     WaitAndGetUserInput(c, 3)
 
-    DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
+    df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="Fixation Cross (3 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
-              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+              userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="",df=df)
 
     ### ITI section (end) ###
     for i in range(params['numTrial']):
         # Extract Timing Information
         trialLetter = dfTiming.iloc[i]['Trial Type']
-        delayBetweenLetters = dfTiming.iloc[i]['Delay Between Letters'] / 1000 - 2.5
-        delayBetweenTrials = dfTiming.iloc[i]['Delay Between Trials'] / 1000 - 2.5
+        delayBetweenLetters = dfTiming.iloc[i]['Delay Between Letters'] / 1000 - 2
+        delayBetweenTrials = dfTiming.iloc[i]['Delay Between Trials'] / 1000 - 2
 
         # Display the first letter (cue)
         startCueTime = datetime.datetime.now()
@@ -233,11 +233,11 @@ for timingFile in timingFiles:
             responseTime = ""
             c = ""
 
-        DataWrite(params=params, startTime=startCueTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
+        df = DataWrite(params=params, startTime=startCueTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
                   # trialType=trialLetter,event="First Letter Displayed.("+str(trialLetter[0]) + ")",
                   trialType=trialLetter, event="First Letter Displayed.(" + str(CueLetter) + ")",
                   timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
-                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness="")
+                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness="",df=df)
 
         # Display Fixation Cross (response window)
         startResponseFixationTime = datetime.datetime.now()
@@ -251,8 +251,8 @@ for timingFile in timingFiles:
 
         if c != "":
             correctness = "Correct" if c == rightAnswer else "Incorrect"
-            # waitForSeconds(1.5)
-            waitForSeconds(2)
+            # core.wait(1.5)
+            core.wait(2)
         else:
             # c,responseTime = WaitAndGetUserInput(c,1.5)
             c, responseTime = WaitAndGetUserInput(c, 2)
@@ -262,11 +262,11 @@ for timingFile in timingFiles:
                 c = "No response"
             correctness = "Correct" if c == rightAnswer else "Incorrect"
 
-        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
+        df = DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
                   trialType=trialLetter,
                   event="Fixation Displayed (Cue Response Window)",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0.5,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness=correctness)
+                  userResponseOffset=0.5,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness=correctness,df=df)
 
         # Display Fixation Cross (Delay Between Letters)
         startTime = datetime.datetime.now()
@@ -278,11 +278,11 @@ for timingFile in timingFiles:
             message2.draw()
         win.flip()
         # core.wait(delayBetweenLetters)
-        waitForSeconds(delayBetweenLetters)
-        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
+        core.wait(delayBetweenLetters)
+        df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
                   event="Fixation Displayed (Delay Between Letters)",
                   timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
-                  userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+                  userResponseOffset=0,cueLetter="",probeLetter="",correctness="",df=df)
 
         # Display the second letter (probe)
         startProbeTime = datetime.datetime.now()
@@ -302,11 +302,11 @@ for timingFile in timingFiles:
             responseTime = ""
             c = ""
 
-        DataWrite(params=params, startTime=startProbeTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
+        df = DataWrite(params=params, startTime=startProbeTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
                   # event="Second Letter Displayed.("+str(trialLetter[1]) + ")",
                   event="Second Letter Displayed.(" + str(ProbeLetter) + ")",
                   timingFile=timingFile, userResponse=c, rightAnswer="",userResponseTime="",
-                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness="")
+                  userResponseOffset=0,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness="",df=df)
 
         # Display Fixation Cross (response window)
         startResponseFixationTime = datetime.datetime.now()
@@ -320,8 +320,8 @@ for timingFile in timingFiles:
 
         if c != "":
             correctness = "Correct" if c == rightAnswer else "Incorrect"
-            # waitForSeconds(1.5)
-            waitForSeconds(2)
+            # core.wait(1.5)
+            core.wait(2)
         else:
             # c,responseTime = WaitAndGetUserInput(c,1.5)
             c, responseTime = WaitAndGetUserInput(c, 2)
@@ -330,11 +330,11 @@ for timingFile in timingFiles:
                 c = "No response"
             correctness = "Correct" if c == rightAnswer else "Incorrect"
 
-        DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
+        df = DataWrite(params=params, startTime=startResponseFixationTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,
                   trialType=trialLetter,
                   event="Fixation Displayed (Probe Response Window)",
                   timingFile=timingFile, userResponse=c, rightAnswer=rightAnswer,userResponseTime=responseTime,
-                  userResponseOffset=0.5,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness=correctness)
+                  userResponseOffset=0.5,cueLetter=CueLetter,probeLetter=ProbeLetter,correctness=correctness, df=df)
 
         # Display Fixation Cross (Delay Between Trials)
         startTime = datetime.datetime.now()
@@ -346,13 +346,18 @@ for timingFile in timingFiles:
         message.draw()
         win.flip()
         # core.wait(delayBetweenTrials)
-        waitForSeconds(delayBetweenTrials)
-        DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
+        core.wait(delayBetweenTrials)
+        df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount=str(i+1),timingCount=timingFileCount,trialType=trialLetter,
                   event="Fixation Displayed (Delay Between Trials)",
                   timingFile=timingFile, userResponse="", rightAnswer="",userResponseTime="",
-                  userResponseOffset=0,cueLetter="",probeLetter="",correctness="")
+                  userResponseOffset=0,cueLetter="",probeLetter="",correctness="", df=df)
 
     timingFileCount += 1
+
+# Write the final result
+df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False,header=Header)
+
+
 
 message = visual.TextStim(win, text="Thank you!",
                           units='norm', wrapWidth=1000, color="white")
