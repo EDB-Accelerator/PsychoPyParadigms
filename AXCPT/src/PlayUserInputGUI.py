@@ -62,6 +62,18 @@ def PlayUserInputGUI():
     timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
     prefs.general['fullscr'] = params['fullscr']
     params['outFile'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) +\
-              timeLabel + ".csv"
+              "_"+timeLabel + "_all.csv"
+    params['outFile1'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) + \
+                        "_" + timeLabel + "_block1.csv"
+    params['outFile2'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) + \
+                        "_"+ timeLabel + "_block2.csv"
+    params['outFile3'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) + \
+                        "_"+ timeLabel + "_block3.csv"
+    params['outFile4'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) + \
+                        "_"+ timeLabel + "_block4.csv"
+    params['outFile5'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) + \
+                         "_"+ timeLabel + "_block5.csv"
+    params['outFile6'] = "result/" + params["expName"] + "_" + str(params["subjectID"]) + "_" + str(params["Session"]) + \
+                         "_"+ timeLabel + "_block6.csv"
 
     return params

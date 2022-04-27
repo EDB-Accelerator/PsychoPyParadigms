@@ -95,6 +95,7 @@ random.shuffle(timingFiles)
 
 # timingFile = timingFiles[0]
 timingFileCount = 0
+prvDfLen = 0
 for timingFile in timingFiles:
     BList = ['B','C','F','H','I','M','Q','R','T','V','Z']
     YList = ['Y','D','E','G','J','L','N','O','P','S','U','W']
@@ -346,6 +347,9 @@ for timingFile in timingFiles:
               userResponseTime="", userResponseOffset=0, cueLetter="", probeLetter="", correctness="",df=df)
 
     timingFileCount += 1
+    (df.iloc[prvDfLen:]).to_csv(params['outFile' + str(timingFileCount)], sep=',', encoding='utf-8', index=False,
+                                header=Header)
+    prvDfLen = len(df)
 
 # Write the final result
 df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False,header=Header)
