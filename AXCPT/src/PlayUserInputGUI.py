@@ -36,7 +36,8 @@ def PlayUserInputGUI():
     userInput.addField('Debug',False)
     userInput.addField('Font Size (pixel)', 200)
     userInput.addField('+ Size (pixel)', 72)
-
+    userInput.addField('Yes Key', 2)
+    userInput.addField('No Key', 4)
 
     UserInputBank = userInput.show()
 
@@ -50,6 +51,8 @@ def PlayUserInputGUI():
         'debug' : UserInputBank[4], # Debugging mode
         'fontSize': UserInputBank[5],
         'plusSize': UserInputBank[6],
+        'yesKey':str(UserInputBank[7]),
+        'noKey': str(UserInputBank[8]),
 
         'timingFile' : "",
     }

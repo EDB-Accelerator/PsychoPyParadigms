@@ -20,8 +20,8 @@ def PlayIntroduction(win,params,timingFileCount,df):
     WaitUserSpace(win)
 
     # Introduction
-    userInput = ['Y']
-    while (userInput[0].upper()=='Y'):
+    userInput = [params['yesKey']]
+    while (userInput[0].upper()==params['yesKey']):
 
         message = visual.TextStim(win,text="The task sequence looks like:",
                                           units='norm', wrapWidth=1000, color="white",pos=[0,0.5])
@@ -39,10 +39,10 @@ def PlayIntroduction(win,params,timingFileCount,df):
             WaitUserSpace(win)
 
         # Introduction Slide 2
-        message = visual.TextStim(win,text="Press the YES (index) key as quickly as you can\n"
+        message = visual.TextStim(win,text="Press the YES (Right) key as quickly as you can\n"
                                            "when you see the blue letter that completes the\n"
                                            "target sequence.\n\n"
-                                           "Press the NO (middle) key as quickly as you can\n"
+                                           "Press the NO (Left) key as quickly as you can\n"
                                            "for all other letters.\n\n\n\n\n"+
                                   "Please SPACE BAR to continue",
                                           units='norm', wrapWidth=1000, color="white")
@@ -60,7 +60,7 @@ def PlayIntroduction(win,params,timingFileCount,df):
         win.flip()
         userInput = ['']
         # Wait for user types "y" or "n".
-        while (userInput[0].upper() != "Y" and userInput[0].upper() != "N"):
+        while (userInput[0].upper() != params['yesKey'] and userInput[0].upper() != params['noKey']):
             core.wait(1 / 3000)
             userInput = event.waitKeys()  # read a characters
             # print(userInput)

@@ -2,7 +2,7 @@ import time
 from psychopy import event, core
 import datetime
 
-def WaitAndGetUserInput(c,waitTime):
+def WaitAndGetUserInput(c,waitTime,params):
 
     startTime = time.time()
     responseTime = ""
@@ -25,6 +25,11 @@ def WaitAndGetUserInput(c,waitTime):
             c = c[0].upper()
         except:
             pass
+
+    if c == params['noKey']:
+        c = 'N'
+    elif c == params['yesKey']:
+        c = 'Y'
 
     return c,responseTime
 

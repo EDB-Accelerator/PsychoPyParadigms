@@ -158,7 +158,7 @@ for timingFile in timingFiles:
     win.flip()
     c = ['']
     # Wait for 8 seconds.
-    WaitAndGetUserInput(c, 5-(datetime.datetime.now()-startTime).total_seconds())
+    WaitAndGetUserInput(c, 5-(datetime.datetime.now()-startTime).total_seconds(),params)
 
     df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="Get Ready (5 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
@@ -175,7 +175,7 @@ for timingFile in timingFiles:
     win.flip()
     c = ['']
     # Wait for 8 seconds.
-    WaitAndGetUserInput(c, 3-(datetime.datetime.now()-startTime).total_seconds())
+    WaitAndGetUserInput(c, 3-(datetime.datetime.now()-startTime).total_seconds(),params)
 
     df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
               event="Fixation Cross (3 seconds)", timingFile=timingFile, userResponse="", rightAnswer="",
@@ -204,7 +204,7 @@ for timingFile in timingFiles:
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         win.flip()
-        c,responseTime = WaitAndGetUserInput([],0.5-(datetime.datetime.now()-startCueTime).total_seconds())
+        c,responseTime = WaitAndGetUserInput([],0.5-(datetime.datetime.now()-startCueTime).total_seconds(),params)
         if responseTime == "":
             responseTime = ""
             c = ""
@@ -230,7 +230,7 @@ for timingFile in timingFiles:
             core.wait(2-(datetime.datetime.now()-startResponseFixationTime).total_seconds())
         else:
             # c,responseTime = WaitAndGetUserInput(c,1.5)
-            c, responseTime = WaitAndGetUserInput(c, 2-(datetime.datetime.now()-startResponseFixationTime).total_seconds())
+            c, responseTime = WaitAndGetUserInput(c, 2-(datetime.datetime.now()-startResponseFixationTime).total_seconds(),params)
 
             if responseTime == "":
                 responseTime = "No response"
@@ -272,7 +272,7 @@ for timingFile in timingFiles:
                                        units='norm', wrapWidth=1000, color="red", pos=[0, 0.5])
             message2.draw()
         win.flip()
-        c,responseTime = WaitAndGetUserInput([],0.5-(datetime.datetime.now()-startProbeTime).total_seconds())
+        c,responseTime = WaitAndGetUserInput([],0.5-(datetime.datetime.now()-startProbeTime).total_seconds(),params)
         if responseTime == "":
             responseTime = ""
             c = ""
@@ -299,7 +299,7 @@ for timingFile in timingFiles:
             core.wait(2 -(datetime.datetime.now()-startResponseFixationTime).total_seconds())
         else:
             # c,responseTime = WaitAndGetUserInput(c,1.5)
-            c, responseTime = WaitAndGetUserInput(c, 2 -(datetime.datetime.now()-startResponseFixationTime).total_seconds())
+            c, responseTime = WaitAndGetUserInput(c, 2 -(datetime.datetime.now()-startResponseFixationTime).total_seconds(),params)
             if responseTime == "":
                 responseTime = "No response"
                 c = "No response"
@@ -339,7 +339,7 @@ for timingFile in timingFiles:
     win.flip()
     c = ['']
     # Wait for 10 seconds.
-    WaitAndGetUserInput(c, 10)
+    WaitAndGetUserInput(c, 10,params)
 
     df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",
               timingCount=timingFileCount, trialType="",
