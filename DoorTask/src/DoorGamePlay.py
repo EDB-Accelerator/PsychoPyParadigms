@@ -1,9 +1,10 @@
 import sys
+
 sys.path.insert(1, './src')
 
 from psychopy import visual, event, sound
 from pygame import mixer
-from Helper import waitUserSpace,tableWrite,get_keypress,triggerGo,waitUserSpaceAndC
+from Helper import waitUserSpace, tableWrite, get_keypress, triggerGo, waitUserSpaceAndC
 from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
 import pylink
@@ -16,8 +17,7 @@ from psychopy.iohub import launchHubServer
 import shutil
 import os
 
-def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
-
+def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
     params["idxTR"] = 0
 
     width = params["screenSize"][0]
@@ -25,7 +25,8 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
     params['subTrialCounter'] = 0
 
     if SectionName == "TaskRun1":
-        img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,size=(width, height))
+        img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,
+                                size=(width, height))
         img1.draw()
         win.flip()
 
@@ -64,7 +65,8 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             io = launchHubServer(**iohub_config)
         # Get the eye tracker device.
         tracker = io.devices.tracker
-        tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+        tracker.sendCommand(
+            "screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
         # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
         # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
@@ -96,7 +98,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
     height = params["screenSize"][1]
 
     # Read Door Open Chance file provided by Rany.
-    doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv',header=None)).values)
+    doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv', header=None)).values)
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
     totalCoin = 0
 
@@ -104,10 +106,9 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         print("There is no available Joystick.")
         exit()
 
-    # Shuffle image. # https://pynative.com/python-random-shuffle/
-
     if params['EyeTrackerSupport']:
-        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game","","")
+        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, "",
+                           "After Calibration Before Door Practice Game", "", "")
         tracker.sendMessage('TRIAL_RESULT 0')
 
     aoiTimeStart = time.time() * 1000
@@ -120,13 +121,13 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
         params['subTrialCounter'] += 1
         Dict = {
-            "ExperimentName" : params['expName'],
-            "Subject" : params['subjectID'],
-            "Session" : params["Session"],
-            "Version" : params["Version"],
-            "Section" : SectionName,
-            "Subtrial" : params['subTrialCounter'],
-            "SessionStartDateTime" : datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+            "ExperimentName": params['expName'],
+            "Subject": params['subjectID'],
+            "Session": params["Session"],
+            "Version": params["Version"],
+            "Section": SectionName,
+            "Subtrial": params['subTrialCounter'],
+            "SessionStartDateTime": datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
         }
 
         # Pick up random image.
@@ -135,7 +136,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             random.shuffle(imgList)
         imgFile = imgList[i % 49]
 
-        if platform.system() =='Windows':
+        if platform.system() == 'Windows':
             p, r = re.findall(r'\d+', imgFile.split('\\')[-1])
         else:
             p, r = re.findall(r'\d+', imgFile.split('/')[-1])
@@ -149,7 +150,8 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         width = params['width_bank'][level]
         height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-        img1.draw();win.flip();
+        img1.draw();
+        win.flip();
 
         startTime = time.time()
         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
@@ -160,7 +162,7 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         width = params['width_bank'][level]
         height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-        triggerGo(port, params, r, p, 1) # Trigger: Door onset (conflict)
+        triggerGo(port, params, r, p, 1)  # Trigger: Door onset (conflict)
         count = 0
         joy = JoystickInput()
         position = (0, 0)
@@ -190,28 +192,18 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             changed = True
             if joyUserInput < -0.5 and level < 100:
                 level += 2
-                level = min(100,level)
-            elif joyUserInput < -0.1- params['sensitivity']*0.1 and level < 100:
+                level = min(100, level)
+            elif joyUserInput < -0.1 - params['sensitivity'] * 0.1 and level < 100:
                 level += 1
-                level = min(100,level)
+                level = min(100, level)
             elif joyUserInput > 0.5 and level > 0:
                 level -= 2
-                level = max(0,level)
-            elif joyUserInput > 0.1+params['sensitivity']*0.1 and level > 0:
+                level = max(0, level)
+            elif joyUserInput > 0.1 + params['sensitivity'] * 0.1 and level > 0:
                 level -= 1
                 level = max(0, level)
             else:
                 changed = False
-
-            width = params['width_bank'][level]
-            height = params['height_bank'][level]
-            # preInput = joyUserInput
-            Dict["Distance_max"] = max(Dict["Distance_max"], level)
-            Dict["Distance_min"] = min(Dict["Distance_min"], level)
-
-            img1.size = (width, height)
-            img1.draw();win.flip()
-            get_keypress(Df,params)
 
             if params['EyeTrackerSupport']:
 
@@ -223,59 +215,100 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                 aoiTimeEnd = time.time() * 1000
                 # Door
                 if changed == True:
-                    tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd-aoiTimeStart),0,
-                                                                                  1, 512 - width * 105 / 1024,
-                                                                                  390 - height * 160 / 768,
-                                                                                  512 + width * 105 / 1024,
-                                                                                  390 + height * 200 / 768,
-                                                                                  'DOOR'+aoiInfo))
+                    tracker.sendMessage(
+                        '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                        1, 512 - width * 105 / 1024,
+                                                                        390 - height * 160 / 768,
+                                                                        512 + width * 105 / 1024,
+                                                                        390 + height * 200 / 768,
+                                                                        'DOOR' + aoiInfo))
                     # Reward
-                    tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd-aoiTimeStart),0,
-                                                                                    2, 512 - width * 220 / 1024,
-                                                                                  390 - height * 155 / 768,
-                                                                                  512 - width * 130 / 1024,
-                                                                                  390 + height * 200 / 768,
-                                                                                  # 'Punishment Bar (Red bar)' + str(p)))
-                                                                                  'Punishment Bar (Red bar) ' +str(p)+aoiInfo))
+                    tracker.sendMessage(
+                        '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                        2, 512 - width * 220 / 1024,
+                                                                        390 - height * 155 / 768,
+                                                                        512 - width * 130 / 1024,
+                                                                        390 + height * 200 / 768,
+                                                                        # 'Punishment Bar (Red bar)' + str(p)))
+                                                                        'Punishment Bar (Red bar) ' + str(p) + aoiInfo))
 
                     # Punishment bar
-                    tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd-aoiTimeStart),0,
-                                                                                    3, 512 + width * 220 / 1024,
-                                                                                  390 - height * 155 / 768,
-                                                                                  512 + width * 130 / 1024,
-                                                                                  390 + height * 200 / 768,
-                                                                                  'Reward Bar (Green bar) '+ str(r)+aoiInfo))
-                                                                                # 'Reward Bar (Green bar)' + str(r)))
+                    tracker.sendMessage(
+                        '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                        3, 512 + width * 220 / 1024,
+                                                                        390 - height * 155 / 768,
+                                                                        512 + width * 130 / 1024,
+                                                                        390 + height * 200 / 768,
+                                                                        'Reward Bar (Green bar) ' + str(r) + aoiInfo))
+                    # 'Reward Bar (Green bar)' + str(r)))
                     aoiTimeStart = aoiTimeEnd
 
+            width = params['width_bank'][level]
+            height = params['height_bank'][level]
+            # preInput = joyUserInput
+            Dict["Distance_max"] = max(Dict["Distance_max"], level)
+            Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
-        triggerGo(port, params, r, p, 2) # Trigger: Joystick lock (start anticipation)
+            img1.size = (width, height)
+            img1.draw();
+            win.flip()
+            get_keypress(Df, params)
+
+        triggerGo(port, params, r, p, 2)  # Trigger: Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
 
         if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).",r,p)
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2, 768 / 2, width, height))
-            # Door
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*105/1024,
-                                                                                390-height*160/768,
-                                                                                512+width*105/1024,
-                                                                                390+height*200/768,
-                                                                                'DOOR'+aoiInfo))
+            # Define last dynami AI before ending trial
+            aoiTimeEnd = time.time() * 1000
+            tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                                1, 512 - width * 105 / 1024,
+                                                                                390 - height * 160 / 768,
+                                                                                512 + width * 105 / 1024,
+                                                                                390 + height * 200 / 768,
+                                                                                'DOOR' + aoiInfo))
             # Reward
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (2, 512-width*220/1024,
-                                                                                390-height*155/768,
-                                                                                512-width*130/1024,
-                                                                                390+height*200/768,
-                                                                                'Punishment Bar (Red bar) ' +str(p)+aoiInfo))
+            tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                                2, 512 - width * 220 / 1024,
+                                                                                390 - height * 155 / 768,
+                                                                                512 - width * 130 / 1024,
+                                                                                390 + height * 200 / 768,
+                                                                                # 'Punishment Bar (Red bar)' + str(p)))
+                                                                                'Punishment Bar (Red bar) ' + str(
+                                                                                    p) + aoiInfo))
 
             # Punishment bar
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, 512+width*220/1024,
-                                                                                390-height*155/768,
-                                                                                512+width*130/1024,
-                                                                                390+height*200/768,
-                                                                                'Reward Bar (Green bar) '+str(r)+aoiInfo))
+            tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+                                                                                3, 512 + width * 220 / 1024,
+                                                                                390 - height * 155 / 768,
+                                                                                512 + width * 130 / 1024,
+                                                                                390 + height * 200 / 768,
+                                                                                'Reward Bar (Green bar) ' + str(
+                                                                                    r) + aoiInfo))
+            tracker.sendMessage('TRIAL_RESULT 0')
+            DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+                               "Playing Door Game (Before lock).", r, p)
+            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024 / 2, 768 / 2, width, height))
+            # Door
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
+                                                                          390 - height * 160 / 768,
+                                                                          512 + width * 105 / 1024,
+                                                                          390 + height * 200 / 768,
+                                                                          'DOOR' + aoiInfo))
+            # Reward
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (2, 512 - width * 220 / 1024,
+                                                                          390 - height * 155 / 768,
+                                                                          512 - width * 130 / 1024,
+                                                                          390 + height * 200 / 768,
+                                                                          'Punishment Bar (Red bar) ' + str(
+                                                                              p) + aoiInfo))
+
+            # Punishment bar
+            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, 512 + width * 220 / 1024,
+                                                                          390 - height * 155 / 768,
+                                                                          512 + width * 130 / 1024,
+                                                                          390 + height * 200 / 768,
+                                                                          'Reward Bar (Green bar) ' + str(r) + aoiInfo))
 
             ELstartTime = time.time()
 
@@ -283,31 +316,24 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
-
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.",r,p)
+            DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+                               "After lock: Door Anticipation Time.", r, p)
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('./img/practice/combined.jpg', 1024 / 2, 768 / 2, width, height))
-            # tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*50/1024,
-            #                                                                     390-height*40/768,
-            #                                                                     512+width*50/1024,
-            #                                                                     390+height*50/768,
-            #                                                                     'Reward (Question mark)'))
             ELstartTime = time.time()
 
         Dict["Door_outcome"] = ""
         Dict["Door_opened"] = ""
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
-            img1.draw();win.flip()
+            img1.draw();
+            win.flip()
             triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
-            # event.waitKeys(maxWait=2)
 
             if params['EyeTrackerSupport']:
-                # tracker.sendMessage('TRIAL_RESULT 0')
-                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (Door not opened) displayed.",r,p)
-                # tracker.sendMessage('TRIALID %d' % params["idxTR"])
+                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+                                   "Reward screen (Door not opened) displayed.", r, p)
                 ELstartTime = time.time()
         else:
             Dict["Door_opened"] = "opened"
@@ -320,17 +346,12 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                         size=(width * 0.235, height * 0.464))
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
-                img1.draw();img2.draw();message.draw();win.flip()
-                # img1.draw();
-                # img2.draw();
-                # win.flip()
-                triggerGo(port, params, r, p, 4)  #Door outcome: punishment
-                # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
-                # sound1.play()
-                # event.waitKeys(maxWait=2)
-                # sound1.stop()
+                img1.draw();
+                img2.draw();
+                message.draw();
+                win.flip()
+                triggerGo(port, params, r, p, 4)  # Door outcome: punishment
                 totalCoin -= int(p)
-                # displayText(win, "-" + str(p))
             else:
                 Dict["Door_outcome"] = "reward"
                 awardImg = "./img/outcomes/" + r + "_reward.jpg"
@@ -338,25 +359,26 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                         size=(width * 0.235, height * 0.464))
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
-                img1.draw();img2.draw();win.flip()
+                img1.draw();
+                img2.draw();
+                win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
                 totalCoin += int(r)
             if params['EyeTrackerSupport']:
                 if Dict["Door_outcome"] == "reward":
-                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Reward screen (score:" + str(r) + ") displayed.",r,p)
+                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+                                       "Reward screen (score:" + str(r) + ") displayed.", r, p)
                 else:
-                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "Punishment screen (score:" + str(p) + ") displayed.",r,p)
+                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+                                       "Punishment screen (score:" + str(p) + ") displayed.", r, p)
 
                 ELstartTime = time.time()
 
         if params['EyeTrackerSupport']:
-            # imgScreenShot = './img/outscreenshot/' + str(params['idxImg']) + '.jpg'
-            # imgScreenShot2 = './output/img/outscreenshot/' + str(params['idxImg']) + '.jpg'
-
             if Dict["Door_outcome"] == "reward":
-                resultReward = "reward (" + str(r) + ")" +aoiInfo
+                resultReward = "reward (" + str(r) + ")" + aoiInfo
             elif Dict["Door_outcome"] == "punishment":
-                resultReward = "punishment ("+ str(p) + ")" + aoiInfo
+                resultReward = "punishment (" + str(p) + ")" + aoiInfo
             else:
                 resultReward = "Door closed" + aoiInfo
 
@@ -366,16 +388,17 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             if not os.path.exists('output/img/outscreenshot'):
                 os.makedirs('output/img/outscreenshot')
 
-            imgScreenShot = './img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_'+ Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
-            imgScreenShot2 = './output/img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_'+  Dict["Door_outcome"] + '_'+str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
-
-
+            imgScreenShot = './img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_' + Dict[
+                "Door_outcome"] + '_' + str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+            imgScreenShot2 = './output/img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_' + \
+                             Dict["Door_outcome"] + '_' + str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
 
             win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
             win.saveMovieFrames(imgScreenShot)
             shutil.copyfile(imgScreenShot, imgScreenShot2)
 
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgScreenShot, 1024 / 2, 768 / 2, params["screenSize"][0], params["screenSize"][1]))
+            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            imgScreenShot, 1024 / 2, 768 / 2, params["screenSize"][0], params["screenSize"][1]))
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
                                                                           390 - height * 160 / 768,
                                                                           512 + width * 105 / 1024,
@@ -397,7 +420,6 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             mixer.music.play()
             event.waitKeys(maxWait=2)
             mixer.music.stop()
-
             # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)
@@ -414,27 +436,28 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             startTime = time.time()
             width = params["screenSize"][0]
             height = params["screenSize"][1]
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
+            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width / 2, height / 2))
             tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-            1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
-            'fixation treasure'+aoiInfo))
-            WaitEyeGazed(win, params, tracker,False)
+                1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
+                'fixation treasure' + aoiInfo))
+            WaitEyeGazed(win, params, tracker, False)
             Dict["ITI_duration"] = time.time() - startTime
 
         else:
             width = params["screenSize"][0]
             height = params["screenSize"][1]
             img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
-            img1.draw();win.flip();
+            img1.draw();
+            win.flip();
             Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
             time.sleep(Dict["ITI_duration"] / 1000)
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
+            DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "ITI screen displayed.", "", "")
 
         Dict["Total_coins"] = totalCoin
-        Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+        Df = tableWrite(Df, params, Dict)  # Log the dict result on pandas dataFrame.
 
     # Eyetracker finish recording
     if params['EyeTrackerSupport']:
@@ -449,4 +472,4 @@ def DoorGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         io.quit()
         trackerIO.close()
     win.mouseVisible = True
-    return Df,DfTR,win
+    return Df, DfTR, win
