@@ -29,6 +29,10 @@
 // The constructor for the WinWheel object, a JSON-like array of options can be passed in.
 // By default the wheel is drawn if canvas object exists on the page, but can pass false as second parameter if don't want this to happen.
 // ====================================================================================================================
+randomNum = Math.random();
+function randomFromInterval(min, max) { // min and max included
+    return (Math.random() * (max - min) + min)
+}
 function Winwheel(options, drawWheel)
 {
     defaultOptions = {
@@ -1844,7 +1848,16 @@ Winwheel.prototype.computeAnimation = function()
 
             if (this.animation.stopAngle == null) {
                 // If the stop angle has not been specified then pick random between 0 and 359.
-                this.animation._stopAngle = Math.floor((Math.random() * 359));
+                arr = [0.3,0.31,0.32,0.33,0.34,0.35] //18: 0.3,0.35,0.32,0.31
+                // arr = [0.56,0.57,0.58,0.59,0.60,0.61,0.62,0.63] //16: 0.56,0.63
+                randomAnswer = arr[Math.floor(Math.random()*arr.length)]
+                this.animation._stopAngle = Math.floor((randomAnswer * 359));
+                // this.animation._stopAngle = Math.floor(([0.1].random() * 360)); //0.06, 0.11
+
+                // this.animation._stopAngle = Math.floor((randomNum * 359));
+                // this.animation._stopAngle = 0;
+                // defaultOptions[randomNum] = Math.random();
+                // this.animation._stopAngle = Math.floor(defaultOptions[randomNum] * 359));
             } else {
                 // We need to set the internal to 360 minus what the user entered because the wheel spins past 0 without
                 // this it would indicate the prize on the opposite side of the wheel. We aslo need to take in to account
@@ -1925,6 +1938,8 @@ Winwheel.prototype.computeAnimation = function()
 // Calculates and returns a random stop angle inside the specified segment number. Value will always be 1 degree inside
 // the start and end of the segment to avoid issue with the segment overlap.
 // ====================================================================================================================
+
+
 Winwheel.prototype.getRandomForSegment = function(segmentNumber)
 {
     let stopAngle = 0;
@@ -1937,6 +1952,8 @@ Winwheel.prototype.getRandomForSegment = function(segmentNumber)
 
             if (range > 0) {
                 stopAngle = (startAngle + 1 + Math.floor((Math.random() * range)));
+                // stopAngle = (startAngle + 1 + Math.floor((randomFromInterval(80, 80)/100 * range)));
+                // stopAngle = 30;
             } else {
                console.log('Segment size is too small to safely get random angle inside it');
             }
