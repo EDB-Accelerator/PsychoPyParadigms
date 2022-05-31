@@ -26,12 +26,12 @@
 -->
 <html>
     <head>
-        <title>HTML5 Canvas Winning Wheel</title>
+        <title>Fortune Wheel</title>
         <link rel="stylesheet" href="main.css" type="text/css" />
         <script type="text/javascript" src="Winwheel18.js"></script>
         <script src="TweenMax.min.js"></script>
     </head>
-    <body>
+    <body style="background-color:grey;">
         <div align="center">
 <!--            <h1>Please click the spin button to continue.</h1>-->
 <!--            <p>Here is an example of a basic code drawn wheel which spins to a stop with the prize won alerted to the user.</p>-->
@@ -197,7 +197,8 @@
             function alertPrize(indicatedSegment)
             {
                 // Do basic alert of the segment text. You would probably want to do something more interesting with this information.
-                alert("You have won " + indicatedSegment.text);
+                // alert("You have won " + indicatedSegment.text);
+                alert("Please click to continue.");
                 windowClose();
             }
 

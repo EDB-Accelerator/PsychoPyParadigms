@@ -16,15 +16,12 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Updated Fri, Oct  8, 2021  1:42:55 PM by KL (Reward/punishment score display on AOIs)
 - Updated Fri, Mar 11, 2022  4:13:50 PM by KL (Instruction updated)
 - Save result when exit 10/26/2020 Mon by KL
-
-To-do: 1. reward screen fix 2. joystick sensitivty option (done) 3. 190=>220 (Done) 4. screen resolution (right one 768) => Done.
-5. psychopy screen to check if calibration is good or do again. (done) 6. reward punishment record (done)
-7. send recording
+- Dynamic AOI updated Tue, Apr 12, 2022  3:21:26 PM by Lucrezia
 
 """
 
 # Import developer-defined functions
-import sys
+import sys,os
 sys.path.insert(1, './src')
 import datetime
 import pandas as pd
@@ -68,7 +65,7 @@ params = {
     # 'eyeTrackCircle': userInputBank[11],
     'eyeTrackCircle': True,
     'portAddress': int("0xE050", 16), # Port Address
-    'imageDir': './img/doors1/',    # directory containing DOOR image stimluli (default value)
+    'imageDir': './img/doors1/',    # directory containing DOOR image stimuli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
 
@@ -175,15 +172,27 @@ tracker = ""
 # if params['EyeTrackerSupport']:
 
 # ====================== #
+# ===Fortune Wheel1 ==== #
+# ====================== #
+win.close()
+import subprocess as subp
+subp.check_call("runFortuneWheel.bat", shell=True)
+os.system("runFortuneWheel.bat")
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+# os.system('start FortuneWheel/index16.html')
+
+Df = InstructionPlay(Df,win,params)
+
+# ====================== #
 # ===== Practice ======= #
 # ====================== #
 win.mouseVisible = False
 iterNum = params['numPractice']
 SectionName = "Practice"
 
-# Df,DfTR,win = PracticeGamePlay(Df,DfTR,win,params,params['numPractice'],port,"Practice")
 Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
 win.mouseVisible = True
+
 
 # ====================== #
 # ===== TaskRun1 ======= #
@@ -222,7 +231,6 @@ Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRu
 # ======== VAS mid ========= #
 # ====================== #
 win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
 message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
 message.draw();win.flip();
 waitUserSpace(Df,params)
@@ -232,9 +240,6 @@ win.mouseVisible = False
 # ====================== #
 # ======== Text Slide ========= #
 # ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-# win.mouseVisible = False
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
 waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
@@ -256,16 +261,6 @@ message.draw();win.flip();
 waitUserSpace(Df,params)
 Df = VASplay(Df,win,params,"VAS post")
 win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# message.draw();
-# win.mouseVisible = False
-# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-# waitUserInput(Df,img1, win, params,'pyglet')
-# win.flip();
 
 # ====================== #
 # ======== Question ========= #

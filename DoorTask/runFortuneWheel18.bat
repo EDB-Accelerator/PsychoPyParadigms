@@ -1,0 +1,3 @@
+@echo off
+echo Running the script...
+start /wait /min cmd /C "C:\Program Files\Google\Chrome\Application\chrome.exe" --window-size=1024,768 --force-device-scale-factor=1 --start-fullscreen --app=C:\Users\leek13\Documents\GitHub\PsychoPyParadigms\DoorTask\FortuneWheel\index18.html

@@ -7,3 +7,4 @@ tmp*.py
 *.zip
 output/img/outscreenshot/**
 test.py
+.idea/**
