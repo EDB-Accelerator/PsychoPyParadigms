@@ -17,6 +17,7 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Updated Fri, Mar 11, 2022  4:13:50 PM by KL (Instruction updated)
 - Save result when exit 10/26/2020 Mon by KL
 - Dynamic AOI updated Tue, Apr 12, 2022  3:21:26 PM by Lucrezia
+- Fortune Wheel updated Tue, May 31, 2022 11:29:44 AM by Kyunghun
 
 """
 
@@ -25,7 +26,7 @@ import sys,os
 sys.path.insert(1, './src')
 import datetime
 import pandas as pd
-from psychopy import visual,core
+from psychopy import visual,core,event
 from Helper import Questionplay,waitUserSpace
 from Helper import waitUserInput, waitAnyKeys,ResolutionIntialization
 
@@ -36,6 +37,7 @@ from PracticeGamePlay import PracticeGamePlay
 from DoorGamePlay import DoorGamePlay
 from psychopy import parallel
 from psychopy import prefs
+import subprocess as subp
 
 def shutdown_key():
     core.quit()
@@ -105,6 +107,9 @@ params['TaskRun3'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' +
 
 prefs.general['fullscr'] = params['FullScreen']
 
+# Global Exit
+event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
+
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
 
@@ -172,18 +177,6 @@ tracker = ""
 # if params['EyeTrackerSupport']:
 
 # ====================== #
-# ===Fortune Wheel1 ==== #
-# ====================== #
-win.close()
-import subprocess as subp
-subp.check_call("runFortuneWheel.bat", shell=True)
-os.system("runFortuneWheel.bat")
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-# os.system('start FortuneWheel/index16.html')
-
-Df = InstructionPlay(Df,win,params)
-
-# ====================== #
 # ===== Practice ======= #
 # ====================== #
 win.mouseVisible = False
@@ -193,6 +186,12 @@ SectionName = "Practice"
 Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
 win.mouseVisible = True
 
+# ====================== #
+# ===Fortune Wheel1 ==== #
+# ====================== #
+win.close()
+subp.check_call("runFortuneWheel18.bat", shell=True)
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 # ====================== #
 # ===== TaskRun1 ======= #
@@ -223,6 +222,13 @@ waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
 
 # ====================== #
+# ===Fortune Wheel2 ==== #
+# ====================== #
+win.close()
+subp.check_call("runFortuneWheel16.bat", shell=True)
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+
+# ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
 Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
@@ -243,6 +249,13 @@ win.mouseVisible = False
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
 waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
+
+# ====================== #
+# ===Fortune Wheel3 ==== #
+# ====================== #
+win.close()
+subp.check_call("runFortuneWheel16.bat", shell=True)
+win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 # ====================== #
 # ===== TaskRun3 ======= #
