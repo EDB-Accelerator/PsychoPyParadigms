@@ -35,6 +35,7 @@ from VASplay import VASplay
 from InstructionPlay import InstructionPlay
 from PracticeGamePlay import PracticeGamePlay
 from DoorGamePlay import DoorGamePlay
+from FortuneGamePlay import FortuneGamePlay
 from psychopy import parallel
 from psychopy import prefs
 import subprocess as subp
@@ -189,9 +190,9 @@ win.mouseVisible = True
 # ====================== #
 # ===Fortune Wheel1 ==== #
 # ====================== #
-win.close()
-subp.check_call("runFortuneWheel18.bat", shell=True)
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+# win.close()
+Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
+# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 # ====================== #
 # ===== TaskRun1 ======= #
@@ -224,9 +225,9 @@ win.flip();
 # ====================== #
 # ===Fortune Wheel2 ==== #
 # ====================== #
-win.close()
-subp.check_call("runFortuneWheel16.bat", shell=True)
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+# win.close()
+Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
+# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 # ====================== #
 # ===== TaskRun2 ======= #
@@ -253,9 +254,9 @@ win.flip();
 # ====================== #
 # ===Fortune Wheel3 ==== #
 # ====================== #
-win.close()
-subp.check_call("runFortuneWheel16.bat", shell=True)
-win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+# win.close()
+Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 3",16)
+# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 # ====================== #
 # ===== TaskRun3 ======= #
