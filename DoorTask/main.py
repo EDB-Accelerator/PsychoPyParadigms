@@ -286,5 +286,15 @@ Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 if params['EyeTrackerSupport']:
     DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
 
+# waitUserSpace(Df, params)
+message = visual.TextStim(win,
+                          text="Great job! You collected a lot of coins.\n\nYou're going home with $57.00!\n\nThanks for playing!",
+                          units='norm', wrapWidth=2)
+message.draw();
+win.flip();
+# waitUserSpace(Df, params)
+waitUserSpace(Df,params)
+message.draw();
+
 # Close the psychopy window.
 win.close()

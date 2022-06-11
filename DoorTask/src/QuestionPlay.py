@@ -75,8 +75,9 @@ def QuestionPlay(Df, win, params, SectionName):
     tableWrite(Df, params,Dict)
 
     # Ending Screen
-    img1 = visual.ImageStim(win=win, image="./instruction/end_slide.jpg", units="pix", opacity=1, size=(width, height))
+    # img1 = visual.ImageStim(win=win, image="./instruction/end_slide.jpg", units="pix", opacity=1, size=(width, height))
+
     # waitUserInput(Df,img1, win, params)
-    img1.draw();
-    win.flip()
-    waitUserSpace(Df,params)
+    # img1.draw();
+
+
