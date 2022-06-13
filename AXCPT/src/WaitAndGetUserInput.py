@@ -10,23 +10,25 @@ def WaitAndGetUserInput(c,waitTime,params):
     while time.time()-startTime < waitTime:
         if c == [] or c[0] == '5':
             c = event.getKeys()
-            # if c == ['q'] or c == ['Q']:
-            #     print('Q pressed. Forced Exit.')
-            #     core.quit()
-            # print(c)
-            c = []
-        # print(c)
+            if c == []:
+                continue
+            elif c[0] == '5':
+                c = []
+            else:
+                responseTime = datetime.datetime.now()
+                try:
+                    c = c[0].upper()
+                except:
+                    pass
+                break
+        core.wait(1/3000)
+
+    while time.time()-startTime < waitTime:
         core.wait(1/3000)
 
     if c == []:
         responseTime = ""
         c = ""
-    else:
-        responseTime = datetime.datetime.now()
-        try:
-            c = c[0].upper()
-        except:
-            pass
 
     if c == params['noKey']:
         c = 'N'
