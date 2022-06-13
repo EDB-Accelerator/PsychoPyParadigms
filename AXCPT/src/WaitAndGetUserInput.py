@@ -8,12 +8,13 @@ def WaitAndGetUserInput(c,waitTime,params):
     responseTime = ""
     c = []
     while time.time()-startTime < waitTime:
-        if c == []:
+        if c == [] or c[0] == '5':
             c = event.getKeys()
             # if c == ['q'] or c == ['Q']:
             #     print('Q pressed. Forced Exit.')
             #     core.quit()
             # print(c)
+        print(c)
         core.wait(1/3000)
 
     if c == []:
