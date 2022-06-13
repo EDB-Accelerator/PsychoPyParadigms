@@ -14,6 +14,7 @@ def WaitAndGetUserInput(c,waitTime,params):
             #     print('Q pressed. Forced Exit.')
             #     core.quit()
             # print(c)
+            c = []
         # print(c)
         core.wait(1/3000)
 
