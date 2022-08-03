@@ -133,19 +133,24 @@ for timingFile in timingFiles:
     startTime = datetime.datetime.now()
     message = visual.TextStim(win, text="+", wrapWidth=2,units='norm',color="white")
     if params['debug']:
-        message2 = visual.TextStim(win, text="ITI (waiting for 5)",
+        message2 = visual.TextStim(win, text="ITI (waiting for 5 or ^)",
                                   units='norm', wrapWidth=1000, color="red",pos=[0,0.5])
         message2.draw()
     message.draw()
     win.flip()
     c = ['']
     # Wait for user until user types "5".
-    while (c[0]!="5"):
+    prvInput = ['']
+    while (c[0]!="5" and c[0]!="^"):
         core.wait(1 / 3000)
         c = event.waitKeys()  # read a character
+        if c[0]=="6" and prvInput==['lshift']:
+            c = ['^']
+            break
+        prvInput = c
 
     df = DataWrite(params=params, startTime=startTime, endTime=datetime.datetime.now(), trialCount="",timingCount=timingFileCount,trialType="",
-              event="ITI (waiting for 5)", timingFile=timingFile, userResponse="5", rightAnswer="5",
+              event="ITI (waiting for 5 or ^)", timingFile=timingFile, userResponse="5 or ^", rightAnswer="5 or ^",
               userResponseTime="",userResponseOffset=0,cueLetter="",probeLetter="",correctness="",df=df)
 
     ### Get Ready Screen (for 5 seconds) ###
