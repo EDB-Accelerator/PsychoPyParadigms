@@ -120,7 +120,7 @@ try:  # try to get a previous parameters file
     expInfo['HHeat'] = 46.0
     expInfo['eyeLinkSupport'] = True
     expInfo['painSupport'] = True
-    expInfo['practiceMoodScale'] = False
+    # expInfo['practiceMoodScale'] = False
 except:  # if not there then use a default set
     expInfo = {
         'subject': '1',
@@ -132,7 +132,7 @@ except:  # if not there then use a default set
         'eyeLinkSupport': True,
         'painSupport': True,
         'paramsFile': ['DEFAULT', 'Load...'],
-        'practiceMoodScale': False
+        # 'practiceMoodScale': False
     }
 
 # overwrite params struct if you just saved a new parameter set
@@ -143,7 +143,8 @@ if saveParams:
 # dlg = gui.DlgFromDict(expInfo, title=scriptName,
 #                       order=['subject', 'session', 'LHeat', 'MHeat', 'HHeat', 'skipPrompts', 'paramsFile'])
 dlg = gui.DlgFromDict(expInfo, title=scriptName, order=['subject','session','Version','LHeat','MHeat','HHeat',
-                                                        'skipPrompts','eyeLinkSupport','painSupport','practiceMoodScale','paramsFile'])
+                                                        # 'skipPrompts','eyeLinkSupport','painSupport','practiceMoodScale','paramsFile'])
+'skipPrompts','eyeLinkSupport','painSupport','paramsFile'])
 if not dlg.OK:
     core.quit()  # the user hit cancel, so exit
 
@@ -161,7 +162,7 @@ if expInfo['paramsFile'] not in ['DEFAULT', None]:  # otherwise, just use defaul
 params['eyeLinkSupport'] = expInfo['eyeLinkSupport']
 params['painSupport'] = expInfo['painSupport']
 params['skipPrompts'] = expInfo['skipPrompts']
-params['practiceMoodScale'] = expInfo['practiceMoodScale']
+# params['practiceMoodScale'] = expInfo['practiceMoodScale']
 
 # save experimental info
 toFile('%s-lastExpInfo.psydat' % scriptName, expInfo)  # save params to file for next time
@@ -278,8 +279,26 @@ random.shuffle(painISI)
 [topPrompts, bottomPrompts] = BasicPromptTools.ParsePromptFile(params['promptDir'] + params['promptFile'])
 print('%d prompts loaded from %s' % (len(topPrompts), params['promptFile']))
 
-[topPrompts0, bottomPrompts0] = BasicPromptTools.ParsePromptFile(params['promptDir'] + params['initialpromptFile'])
-print('%d prompts loaded from %s' % (len(topPrompts0), params['initialpromptFile']))
+[topPrompts1, bottomPrompts1] = BasicPromptTools.ParsePromptFile(params['promptDir'] + "InitialSafePrompts1.txt")
+print('%d prompts loaded from %s' % (len(topPrompts1), "InitialSafePrompts1.txt"))
+
+# fixation = visual.TextStim(win, pos=[0, 5], text='SAFE', font='Helvetica Bold', color='skyblue', alignHoriz='center',
+#                            bold=True, height=3.5)
+# fixation.draw()
+# win.flip()
+# thisKey = event.waitKeys(keyList=['space'])  # use space bar to avoid accidental advancing
+
+[topPrompts2, bottomPrompts2] = BasicPromptTools.ParsePromptFile(params['promptDir'] + "InitialSafePrompts2.txt")
+print('%d prompts loaded from %s' % (len(topPrompts2), "InitialSafePrompts2.txt"))
+
+# fixationReady = visual.TextStim(win, pos=[0, 5], text='GET READY', font='Helvetica Bold', color='gray',
+#                                 alignHoriz='center', bold=True, height=3.5, wrapWidth=500)
+# fixationReady.draw()
+# win.flip()
+# thisKey = event.waitKeys(keyList=['space'])  # use space bar to avoid accidental advancing
+
+[topPrompts3, bottomPrompts3] = BasicPromptTools.ParsePromptFile(params['promptDir'] + "InitialSafePrompts3.txt")
+print('%d prompts loaded from %s' % (len(topPrompts3), "InitialSafePrompts3.txt"))
 
 [questions_vas1, options_vas1, answers_vas1] = BasicPromptTools.ParseQuestionFile(params['moodQuestionFile1'])
 print('%d questions loaded from %s' % (len(questions_vas1), params['moodQuestionFile1']))
@@ -1037,7 +1056,11 @@ def MakePersistentVAS(question, options, win, name='Question', textColor='black'
 # ======= RUN PROMPTS ======= #
 # =========================== #
 def RunPrompts():
-    if params['practiceMoodScale']:
+    # if params['practiceMoodScale']:
+
+
+    # display prompts
+    if not params['skipPrompts']:
         BasicPromptTools.RunPrompts(["Let's practice with the rating scale you'll be using today."],
                                     ["Press the space bar to continue."], win, message1, message2)
 
@@ -1049,45 +1072,60 @@ def RunPrompts():
                                     selectKey=params['questionSelectKey'],
                                     hideMouse=True, params=params)
 
-    # display prompts
-    if not params['skipPrompts']:
+        BasicPromptTools.RunPrompts(topPrompts1, bottomPrompts1, win, message1, message2)
+        BasicPromptTools.RunPrompts(topPrompts2, bottomPrompts2, win, message1, message2)
 
-        BasicPromptTools.RunPrompts(topPrompts0, bottomPrompts0, win, message1, message2)
+        fixation = visual.TextStim(win, pos=[0, 5], text='SAFE', font='Helvetica Bold', color='skyblue',
+                                   alignHoriz='center',
+                                   bold=True, height=3.5)
+        fixation.draw()
+        win.flip()
+        thisKey = event.waitKeys(keyList=['space'])  # use space bar to avoid accidental advancing
 
+        BasicPromptTools.RunPrompts(topPrompts3, bottomPrompts3, win, message1, message2)
+
+        fixationReady = visual.TextStim(win, pos=[0, 5], text='GET READY', font='Helvetica Bold', color='gray',
+                                        alignHoriz='center', bold=True, height=3.5, wrapWidth=500)
+        fixationReady.draw()
+        win.flip()
+        thisKey = event.waitKeys(keyList=['space'])  # use space bar to avoid accidental advancing
         # BasicPromptTools.RunPrompts(["You are about to see a set of growing squares of a certain color. When the color fills up the screen you will feel the heat pain on your arm."],["Press any button to continue and see an example."],win,message1,message2)
 
-        tNextFlip[0] = globalClock.getTime() + 15
-        fixation.autoDraw = True # Changed by Jimmy
-        # fixationCross.autoDraw = True
-        win.logOnFlip(level=logging.EXP, msg='Display Fixation')
-
-        # # Save Screenshot
-        # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
-        # win.saveMovieFrames('img/' + str(params['screenIdx']) + '.jpg')
-        # params['screenIdx'] += 1
-
-        while (globalClock.getTime() < tNextFlip[0]):
-            win.flip()  # to update ratingScale
-        fixation.autoDraw = False  # stop  drawing fixation cross
-        # fixationCross.autoDraw = False # Changed by Jimmy
-        tNextFlip[0] = globalClock.getTime() + 7.5
-        fixationReady.autodraw = True
-        win.logOnFlip(level=logging.EXP, msg='Display Get Ready')
+        # tNextFlip[0] = globalClock.getTime() + 15
+        # fixation.autoDraw = True # Changed by Jimmy
+        # # fixationCross.autoDraw = True
+        # win.logOnFlip(level=logging.EXP, msg='Display Fixation')
+        #
+        # # # Save Screenshot
+        # # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+        # # win.saveMovieFrames('img/' + str(params['screenIdx']) + '.jpg')
+        # # params['screenIdx'] += 1
+        #
+        # while (globalClock.getTime() < tNextFlip[0]):
+        #     win.flip()  # to update ratingScale
+        # fixation.autoDraw = False  # stop  drawing fixation cross
+        # # fixationCross.autoDraw = False # Changed by Jimmy
+        # tNextFlip[0] = globalClock.getTime() + 7.5
+        # fixationReady.autodraw = True
+        # win.logOnFlip(level=logging.EXP, msg='Display Get Ready')
 
         # Save Screenshot
         # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
         # win.saveMovieFrames('img/' + str(params['screenIdx']) + '.jpg')
         # params['screenIdx'] += 1
-        while (globalClock.getTime() < tNextFlip[0]):
-            fixationReady.draw()
-            win.flip()  # to update ratingScale
-            # Save Screenshot
-            # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
-            # win.saveMovieFrames('img/' + str(params['screenIdx']) + '.jpg')
-            # params['screenIdx'] += 1
+        # while (globalClock.getTime() < tNextFlip[0]):
+        #     fixationReady.draw()
+        #     win.flip()  # to update ratingScale
+        #     # Save Screenshot
+        #     # win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+        #     # win.saveMovieFrames('img/' + str(params['screenIdx']) + '.jpg')
+        #     # params['screenIdx'] += 1
 
-        fixationReady.autoDraw = False  # stop  drawing fixation cross
-        trialStart = GrowingSquare(5, 0, 0, pracScale, params, tracker)
+        # fixationReady.autoDraw = False  # stop  drawing fixation cross
+        if params['eyeLinkSupport']:
+            trialStart = GrowingSquare(5, 0, 0, pracScale, params, tracker)
+        else:
+            trialStart = GrowingSquare(5, 0, 0, pracScale, params, "")
         event.waitKeys()
 
         WaitForFlipTime()

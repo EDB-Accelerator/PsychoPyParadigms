@@ -56,6 +56,7 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
             gap = 287.5 * 2 / 3 * resolution[1] / 768
             length = 177 * resolution[1] / 768
             oPoint = 287.5 * resolution[1] / 768
+            print(str(-oPoint + j * gap), str(oPoint - i * gap))
             rectangles.append(visual.Rect(win=win, units="pix", width=length, height=length,
                                           pos=(-oPoint + j * gap, oPoint - i * gap), fillColor='null', lineColor='null'))
             # rectangles[-1].draw()
