@@ -5,10 +5,7 @@ from psychopy import visual, event
 from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace,waitUserSpaceAndC
 import random, datetime, glob, time
 from ELIdxRecord import ELIdxRecord
-from JoystickInput import JoystickInput
 from WaitEyeGazed import WaitEyeGazed
-from EyeTrackerCalibration import EyeTrackerCalibration
-from psychopy.iohub import launchHubServer
 import pylink,time
 
 # Debuging
@@ -23,60 +20,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
 
     # Eyetracker start recording
     params["idxTR"] = 0
-    if params['EyeTrackerSupport']:
 
-        message = visual.TextStim(win,
-                                  text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
-                                  units='norm', wrapWidth=2)
-        message.draw();
-        win.flip();
-        waitUserSpace(Df, params)
-
-        iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
-                            {'name': 'tracker',
-                             'model_name': 'EYELINK 1000 DESKTOP',
-                             'runtime_settings': {'sampling_rate': 500,
-                                                  'track_eyes': 'LEFT'}
-                             }
-                        }
-        # Start new ioHub server.
-        import psychopy.iohub.client
-
-        try:
-            io = launchHubServer(**iohub_config)
-        except:
-            q = psychopy.iohub.client.ioHubConnection.getActiveConnection().quit()
-            io = launchHubServer(**iohub_config)
-
-        # Get the eye tracker device.
-        tracker = io.devices.tracker
-
-        tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
-
-        # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
-        # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
-        tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
-
-        # Eyetracker Calibration.
-        c = 'c'
-        while c != 'space':
-            tracker = EyeTrackerCalibration(tracker)
-            win.close()
-            win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
-            message = visual.TextStim(win,
-                                      text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
-                                      units='norm', wrapWidth=2)
-            message.draw();
-            win.flip();
-            c = waitUserSpaceAndC(Df, params)
-        win.close()
-
-        # Eyetracker start recording
-        tracker.setRecordingState(True)
-        ELstartTime = time.time()
-
-    win.close()
-    win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
+    # win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
     win.mouseVisible = False
 
     width = params["screenSize"][0]
@@ -98,19 +43,6 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
     # Read Door Open Chance file provided by Rany.
     imgList = glob.glob("./img/practice/*_door.jpg")
 
-    # Joystick Initialization
-    if JoystickInput() == -1:
-        print("There is no available Joystick.")
-        exit()
-
-
-        # Eyetracker label record
-        # tracker.sendMessage('TRIAL_RESULT 0') # # EDF labeling (end)
-    if params['EyeTrackerSupport']:
-        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time()-ELstartTime,"", "After Calibration Before Door Practice Game","","")
-        tracker.sendMessage('TRIAL_RESULT 0')
-
-    # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
     aoiTimeStart = time.time() * 1000
     for i in range(iterNum):
 

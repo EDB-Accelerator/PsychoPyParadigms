@@ -1,10 +1,8 @@
 from psychopy import core, visual, event
 import datetime, time
 import pandas as pd
-from psychopy.hardware import joystick
-import pygame
+# import pygame
 from sys import exit
-from JoystickInput import JoystickInput
 
 def shutdown_key():
     core.quit()
