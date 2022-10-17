@@ -19,6 +19,7 @@ def get_keypress(Df,params):
 
         print('Q pressed. Forced Exit.')
         core.quit()
+    return keys
 
 def ResolutionIntialization(params,size_diff):
     width_bank = []
@@ -268,3 +269,4 @@ def displayText(win, textString):
     message = visual.TextStim(win, text=textString)
     message.draw()
     win.flip()
+

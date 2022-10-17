@@ -154,7 +154,7 @@ win.mouseVisible = False
 iterNum = params['numPractice']
 SectionName = "Practice"
 
-# Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName)
+Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName)
 win.mouseVisible = True
 
 # # ====================== #
