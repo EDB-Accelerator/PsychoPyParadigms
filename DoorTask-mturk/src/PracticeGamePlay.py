@@ -6,7 +6,7 @@ from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace,waitUserSpace
 import random, datetime, glob, time
 from ELIdxRecord import ELIdxRecord
 from WaitEyeGazed import WaitEyeGazed
-import pylink,time
+import time
 
 # Debuging
 # PracticeGamePlay(Df, win, params, params['numPractice'], port, "Practice")
@@ -33,12 +33,13 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
     img1.draw();win.flip()
 
     # Wait for User input.
-    while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
-        time.sleep(0.001)
-        img1.draw();
-        win.flip()
-    while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
-        time.sleep(0.001)
+    # while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
+    #     time.sleep(0.001)
+    #     img1.draw();
+    #     win.flip()
+    # while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
+    #     time.sleep(0.001)
+    waitUserSpace(Df, params)
 
     # Read Door Open Chance file provided by Rany.
     imgList = glob.glob("./img/practice/*_door.jpg")
@@ -46,10 +47,10 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
     aoiTimeStart = time.time() * 1000
     for i in range(iterNum):
 
-        # EDF labeling (start)
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            ELstartTime = time.time()
+        # # EDF labeling (start)
+        # if params['EyeTrackerSupport']:
+        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
+        #     ELstartTime = time.time()
 
         Dict = {
             "ExperimentName" : params['expName'],
@@ -228,18 +229,18 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
         Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
 
-    # Eyetracker finish recording
-    if params['EyeTrackerSupport']:
-        # Eyetracker stop recording
-        tracker.setRecordingState(False)
-
-        # open a connection to the tracker and download the result file.
-        trackerIO = pylink.EyeLink('100.1.1.1')
-        trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
-        # tracker._eyelink.receiveDataFile("et_data.EDF", params[SectionName])
-        # Stop the ioHub Server
-        io.quit()
-        trackerIO.close()
+    # # Eyetracker finish recording
+    # if params['EyeTrackerSupport']:
+    #     # Eyetracker stop recording
+    #     tracker.setRecordingState(False)
+    #
+    #     # open a connection to the tracker and download the result file.
+    #     trackerIO = pylink.EyeLink('100.1.1.1')
+    #     trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
+    #     # tracker._eyelink.receiveDataFile("et_data.EDF", params[SectionName])
+    #     # Stop the ioHub Server
+    #     io.quit()
+    #     trackerIO.close()
 
     win.mouseVisible = True
     return Df,DfTR,win
