@@ -95,6 +95,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
         # joy = JoystickInput()
 
         kb = keyboard.Keyboard()
+        kb.clock.reset()  # when you want to start the timer from
+        c = kb.getKeys(['1', '2', '3'], waitRelease=False, clear=True)
         while count < 4:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -102,11 +104,11 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
                 c = ["timeisUp"]
                 break
 
-            kb.clock.reset()  # when you want to start the timer from
             # c = event.getKeys(waitRelease=False)
-            c = kb.getKeys(waitRelease=True)
-            # print(c)
-            print(pygame.key.get_pressed())
+            c = kb.getKeys(['1','2','3'],waitRelease=False,clear = False)
+            # clear = False
+            print(c)
+            # print(pygame.key.get_pressed())
             # print(level)
             if c == ['1']:
                 level += 2
