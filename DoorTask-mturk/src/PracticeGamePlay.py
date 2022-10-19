@@ -96,7 +96,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
 
         kb = keyboard.Keyboard()
         kb.clock.reset()  # when you want to start the timer from
-        c = kb.getKeys(['1', '2', '3'], waitRelease=False, clear=True)
+        # c = kb.getKeys(['1', '2', '3'], waitRelease=False, clear=True)
         while count < 4:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
@@ -105,9 +105,13 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
                 break
 
             # c = event.getKeys(waitRelease=False)
-            c = kb.getKeys(['1','2','3'],waitRelease=False,clear = False)
+            # c = kb.getKeys(['1','2','3'],waitRelease=False,clear = False)
+            c = kb.getKeys(waitRelease=True, clear=False)
             # clear = False
-            print(c)
+            print(len(c))
+            # for key in c:
+            #     print(key.name, key.rt, key.duration)
+
             # print(pygame.key.get_pressed())
             # print(level)
             if c == ['1']:
@@ -269,5 +273,5 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
     #     trackerIO.close()
 
     win.mouseVisible = True
-    return Df,DfTR,win
+    return Df,DfTR,win,c
 

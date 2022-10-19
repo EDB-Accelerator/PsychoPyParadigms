@@ -134,13 +134,13 @@ Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 # ======== VAS pre ========= #
 # ====================== #
 win.mouseVisible = True
-Df = VASplay(Df,win,params,"VAS pre")
+# Df = VASplay(Df,win,params,"VAS pre")
 win.mouseVisible = False
 
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
-Df = InstructionPlay(Df,win,params)
+# Df = InstructionPlay(Df,win,params)
 
 # ========================================== #
 # ==== Screen Resolution Initialization ==== #
@@ -154,8 +154,12 @@ win.mouseVisible = False
 iterNum = params['numPractice']
 SectionName = "Practice"
 
-Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName)
+Df,DfTR,win,c = PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName)
 win.mouseVisible = True
+
+
+
+
 
 # # ====================== #
 # # ===Fortune Wheel1 ==== #
