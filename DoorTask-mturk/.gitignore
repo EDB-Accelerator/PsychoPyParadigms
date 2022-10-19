@@ -6,5 +6,4 @@ tmp*.py
 *.EDF
 *.zip
 output/img/outscreenshot/**
-test.py
 .idea/**
