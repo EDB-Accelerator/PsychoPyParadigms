@@ -1,7 +1,33 @@
-# from psychopy.hardware import keyboard
-# from psychopy import core
+from psychopy.hardware import keyboard
+from psychopy import core
 
 # https://stackoverflow.com/questions/24072790/how-to-detect-key-presses
+#
+# kb = keyboard.Keyboard()
+# kp = kb.getKeys(waitRelease=False, clear=False)
+# if len(kp) > 0:
+#     if kp[-1].duration is None:
+#         dur = round(t-kp[-1].rt, 1)
+#         text.text = str(dur)
+
+from psychopy.iohub import launchHubServer
+from psychopy.core import getTime
+
+# Start the ioHub process. 'io' can now be used during the
+# experiment to access iohub devices and read iohub device events.
+io = launchHubServer()
+
+keyboard = io.devices.keyboard
+
+# Check for and print any Keyboard events received for 5 seconds.
+stime = getTime()
+while getTime()-stime < 5.0:
+    for e in keyboard.getEvents():
+        print(e)
+
+# Stop the ioHub Server
+io.quit()
+
 
 # # during your trial
 # kb.clock.reset()  # when you want to start the timer from

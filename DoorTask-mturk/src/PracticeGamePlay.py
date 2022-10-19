@@ -106,9 +106,9 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
 
             # c = event.getKeys(waitRelease=False)
             # c = kb.getKeys(['1','2','3'],waitRelease=False,clear = False)
-            c = kb.getKeys(waitRelease=True, clear=False)
+            c = kb.getKeys(waitRelease=False, clear=True)
             # clear = False
-            print(len(c))
+            # print(len(c))
             # for key in c:
             #     print(key.name, key.rt, key.duration)
 
