@@ -3,19 +3,18 @@ import sys
 sys.path.insert(1, './src')
 
 from psychopy import visual, event, sound
-from pygame import mixer
+# from pygame import mixer
 from Helper import waitUserSpace, tableWrite, get_keypress, waitUserSpaceAndC
-from JoystickInput import JoystickInput
+# from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
-import pylink
 import numpy as np
 import pandas as pd
 from WaitEyeGazed import WaitEyeGazed
-from ELIdxRecord import ELIdxRecord
-from psychopy.iohub import launchHubServer
+# from ELIdxRecord import ELIdxRecord
+# from psychopy.iohub import launchHubServer
 import shutil
 import os
-
+from psychopy.hardware import keyboard
 def DoorGamePlay(Df, DfTR, win, params, iterNum, SectionName):
     params["idxTR"] = 0
 
@@ -30,28 +29,22 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, SectionName):
         win.flip()
 
         # Wait for User input.
-        while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
-            time.sleep(0.001)
-            img1.draw();
-            win.flip()
-        while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
-            time.sleep(0.001)
+        # while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
+        #     time.sleep(0.001)
+        #     img1.draw();
+        #     win.flip()
+        # while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
+        #     time.sleep(0.001)
+        waitUserSpace(Df, params)
 
     win.close()
     win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
     win.mouseVisible = False
 
-    width = params["screenSize"][0]
-    height = params["screenSize"][1]
-
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv', header=None)).values)
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
     totalCoin = 0
-
-    if JoystickInput() == -1:
-        print("There is no available Joystick.")
-        exit()
 
     aoiTimeStart = time.time() * 1000
     for i in range(iterNum):
@@ -99,47 +92,61 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, SectionName):
         width = params['width_bank'][level]
         height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-        count = 0
-        joy = JoystickInput()
-        position = (0, 0)
+        # count = 0
         rewardVSpunishment = "punishment" if random.random() < 0.5 else "reward"
-        if rewardVSpunishment == "punishment":
-            aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
-        else:
-            aoiInfo = " r" + str(r) + "p" + str(p) + "; r"
+        # if rewardVSpunishment == "punishment":
+        #     aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
+        # else:
+        #     aoiInfo = " r" + str(r) + "p" + str(p) + "; r"
 
         # changed = True
-        while count < 3:  # while presenting stimuli
+        # while count < 3:  # while presenting stimuli
+
+        kb = keyboard.Keyboard()
+        kb.clock.reset()  # when you want to start the timer from
+
+        while True:
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
             if Dict["DoorAction_RT"] > MaxTime:
-                c[0] = "timeisUp"
+                c = ["timeisUp"]
                 break
-            # if (sum(joy.getAllButtons()) != 0):
-            if joy['buttons_text'] != ' ':
-                count += 1
-                if count >= 2:
-                    Dict["Distance_lock"] = 1
-                    break
+
+            c = kb.getKeys(waitRelease=False, clear=True)
+            if c == ['1']:
+                level += 2
+                level = min(100,level)
+            elif c == ['2']:
+                level -= 2
+                level = max(0,level)
+            elif c == ['3']:
+                Dict["Distance_lock"] = 1
+                break
+
+            # if joy['buttons_text'] != ' ':
+            #     count += 1
+            #     if count >= 2:
+            #         Dict["Distance_lock"] = 1
+            #         break
 
             # joyUserInput = joy.getY()
-            joy = JoystickInput()
-            joyUserInput = joy['y']
+            # joy = JoystickInput()
+            # joyUserInput = joy['y']
             changed = True
-            if joyUserInput < -0.5 and level < 100:
-                level += 2
-                level = min(100, level)
-            elif joyUserInput < -0.1 - params['sensitivity'] * 0.1 and level < 100:
-                level += 1
-                level = min(100, level)
-            elif joyUserInput > 0.5 and level > 0:
-                level -= 2
-                level = max(0, level)
-            elif joyUserInput > 0.1 + params['sensitivity'] * 0.1 and level > 0:
-                level -= 1
-                level = max(0, level)
-            else:
-                changed = False
+            # if joyUserInput < -0.5 and level < 100:
+            #     level += 2
+            #     level = min(100, level)
+            # elif joyUserInput < -0.1 - params['sensitivity'] * 0.1 and level < 100:
+            #     level += 1
+            #     level = min(100, level)
+            # elif joyUserInput > 0.5 and level > 0:
+            #     level -= 2
+            #     level = max(0, level)
+            # elif joyUserInput > 0.1 + params['sensitivity'] * 0.1 and level > 0:
+            #     level -= 1
+            #     level = max(0, level)
+            # else:
+            #     changed = False
 
             width = params['width_bank'][level]
             height = params['height_bank'][level]
@@ -192,15 +199,15 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, SectionName):
                 img2.draw();
                 win.flip()
                 totalCoin += int(r)
-            if params['EyeTrackerSupport']:
-                if Dict["Door_outcome"] == "reward":
-                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
-                                       "Reward screen (score:" + str(r) + ") displayed.", r, p)
-                else:
-                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
-                                       "Punishment screen (score:" + str(p) + ") displayed.", r, p)
-
-                ELstartTime = time.time()
+            # if params['EyeTrackerSupport']:
+            #     if Dict["Door_outcome"] == "reward":
+            #         DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+            #                            "Reward screen (score:" + str(r) + ") displayed.", r, p)
+            #     else:
+            #         DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+            #                            "Punishment screen (score:" + str(p) + ") displayed.", r, p)
+            #
+            #     ELstartTime = time.time()
 
         if Dict["Door_outcome"] == "reward":
             # mixer.init()

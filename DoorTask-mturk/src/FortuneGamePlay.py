@@ -5,7 +5,6 @@ import datetime,os
 import subprocess as subp
 from psychopy import visual
 from Helper import waitUserSpace, tableWrite
-from JoystickInput import JoystickInput
 import time
 
 def FortuneGamePlay(Df, win,params,SectionName,gameResult):

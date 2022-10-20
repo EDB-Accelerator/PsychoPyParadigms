@@ -8,7 +8,6 @@ import random, datetime, glob, time
 from ELIdxRecord import ELIdxRecord
 from WaitEyeGazed import WaitEyeGazed
 import time
-import pygame
 
 # Debuging
 # PracticeGamePlay(Df, win, params, params['numPractice'], port, "Practice")
@@ -91,13 +90,14 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
 
         win.flip()
 
-        count = 0
+        # count = 0
         # joy = JoystickInput()
 
         kb = keyboard.Keyboard()
         kb.clock.reset()  # when you want to start the timer from
         # c = kb.getKeys(['1', '2', '3'], waitRelease=False, clear=True)
-        while count < 4:  # while presenting stimuli
+        # while count < 4:  # while presenting stimuli
+        while True:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
             if Dict["DoorAction_RT"] > MaxTime:
@@ -124,82 +124,15 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
                 Dict["Distance_lock"] = 1
                 break
 
-
-            # if (sum(joy.getAllButtons()) != 0):
-            # if joy.getButton(0)!=0:
-            # if joy['buttons_text'] != ' ':
-            #     count += 1
-            #
-            # if count >= 4:
-            #     Dict["Distance_lock"] = 1
-            #     break
-
-            # keys = event.getKeys()
-            # joy = JoystickInput()
-            # joyUserInput = joy['y']
-            #
-            # changed = True
-            # if joyUserInput < -0.5 and level < 100:
-            #     level += 2
-            #     level = min(100,level)
-            # elif joyUserInput < -0.1-params['sensitivity']*0.1 and level < 100:
-            #     level += 1
-            #     level = min(100,level)
-            # elif joyUserInput > 0.5 and level > 0:
-            #     level -= 2
-            #     level = max(0,level)
-            # elif joyUserInput > 0.1+params['sensitivity']*0.1 and level > 0:
-            #     level -= 1
-            #     level = max(0, level)
-            # else:
-            #     changed = False
-            # c = get_keypress(Df,params)
-            # print(c)
-
             width = params['width_bank'][level]
             height = params['height_bank'][level]
 
-            # preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
 
             img1.size = (width, height)
             img1.draw()
-
-            # if params['EyeTrackerSupport']:
-            #
-            #     positionTmp = position
-            #     position = tracker.getPosition()
-            #     if position is None:
-            #         position = positionTmp
-            #
-            #     circle.pos = position
-            #     if params['eyeTrackCircle']:
-            #         circle.draw()
-            #
-            #     aoiTimeEnd = time.time() * 1000
-            #     if changed == True:
-            #         tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd-aoiTimeStart),0,
-            #                                                                             1, 512 - width * 105 / 1024,
-            #                                                                             390 - height * 160 / 768,
-            #                                                                             512 + width * 105 / 1024,
-            #                                                                             390 + height * 200 / 768, 'DOOR'))
-            #
-            #         aoiTimeStart = aoiTimeEnd
-
             win.flip()
-
-        # if params['EyeTrackerSupport']:
-        #     tracker.sendMessage('TRIAL_RESULT 0')
-        #     DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Playing Door Game (Before lock).","","")
-        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
-        #     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024/2, 768 / 2, width, height))
-        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*105/1024,
-        #                                                                         390-height*160/768,
-        #                                                                         512+width*105/1024,
-        #                                                                         390+height*200/768,
-        #                                                                         'DOOR'))
-        #     ELstartTime = time.time()
 
         Dict["DistanceFromDoor_SubTrial"] = level
 
@@ -207,42 +140,11 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
         Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
-        # if params['EyeTrackerSupport']:
-        #     tracker.sendMessage('TRIAL_RESULT 0')
-        #     DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "After lock: Door Anticipation Time.","","")
-        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
-        #     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % ('./img/practice/combined.jpg', 1024 / 2, 768 / 2, width, height))
-        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512-width*50/1024,
-        #                                                                         390-height*40/768,
-        #                                                                         512+width*50/1024,
-        #                                                                         390+height*50/768,
-        #                                                                         'Reward (Question mark)'))
-        #     ELstartTime = time.time()
-
         awardImg = "./img/practice/practice_outcome.jpg"
         img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                 size=(width* 0.235, height* 0.464))
         img1.draw();img2.draw();win.flip()
-
         event.waitKeys(maxWait=2)
-        # if params['EyeTrackerSupport']:
-        #     tracker.sendMessage('TRIAL_RESULT 0')
-        #     DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.","","")
-        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
-        #     ELstartTime = time.time()
-
-        # ITI duration
-        # if params['EyeTrackerSupport']:
-        #     startTime = time.time()
-        #     width = params["screenSize"][0]
-        #     height = params["screenSize"][1]
-        #     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
-        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-        #     1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
-        #     'fixation treasure'))
-        #
-        #     WaitEyeGazed(win, params, tracker,'eyeTrackCircle')
-        #     Dict["ITI_duration"] = time.time() - startTime
 
         # else:
         width = params["screenSize"][0]
@@ -252,25 +154,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
         Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
         time.sleep(Dict["ITI_duration"] / 1000)
 
-        # if params['EyeTrackerSupport']:
-        #     tracker.sendMessage('TRIAL_RESULT 0')
-        #     DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
-
         Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
-
-
-    # # Eyetracker finish recording
-    # if params['EyeTrackerSupport']:
-    #     # Eyetracker stop recording
-    #     tracker.setRecordingState(False)
-    #
-    #     # open a connection to the tracker and download the result file.
-    #     trackerIO = pylink.EyeLink('100.1.1.1')
-    #     trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
-    #     # tracker._eyelink.receiveDataFile("et_data.EDF", params[SectionName])
-    #     # Stop the ioHub Server
-    #     io.quit()
-    #     trackerIO.close()
 
     win.mouseVisible = True
     return Df,DfTR,win,c
