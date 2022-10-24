@@ -169,9 +169,9 @@ Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
 # # # ====================== #
 # # # ===== TaskRun1 ======= #
 # # # ====================== #
-# win.mouseVisible = False
-# Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],"TaskRun1")
-# win.mouseVisible = True
+win.mouseVisible = False
+Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],"TaskRun1")
+win.mouseVisible = True
 #
 # # ====================== #
 # # ======== VAS 1 ========= #
