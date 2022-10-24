@@ -97,6 +97,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
         kb.clock.reset()  # when you want to start the timer from
         # c = kb.getKeys(['1', '2', '3'], waitRelease=False, clear=True)
         # while count < 4:  # while presenting stimuli
+        c = [""]
         while True:  # while presenting stimuli
             # If waiting time is longer than 10 sec, exit this loop.
             Dict["DoorAction_RT"] = (time.time() - startTime) * 1000
