@@ -128,8 +128,6 @@ DfTR = ""
 
 # # Make Empty output files.
 Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-# if params['EyeTrackerSupport']:
-#     DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
 
 # ====================== #
 # ======== VAS pre ========= #
@@ -217,46 +215,44 @@ img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=pa
 waitUserInput(Df,img1, win, params,'pyglet')
 win.flip();
 
-# # # ====================== #
-# # # ===Fortune Wheel3 ==== #
-# # # ====================== #
-# # # win.close()
-# # Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 3",16)
-# # # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-# #
-# # ====================== #
-# # ===== TaskRun3 ======= #
-# # ====================== #
-# win.mouseVisible = False
-# Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
-# win.mouseVisible = True
+# ====================== #
+# ===Fortune Wheel3 ==== #
+# ====================== #
+Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 3",16)
+
 #
-# # ====================== #
-# # ======== VAS post ========= #
-# # ====================== #
-# win.mouseVisible = True
-# # message = visual.TextStim(win, text="Let's rest for a bit.  when you are ready to keep playing.", units='norm', wrapWidth=2)
-# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-# message.draw();win.flip();
-# waitUserSpace(Df,params)
-# Df = VASplay(Df,win,params,"VAS post")
-# win.mouseVisible = False
-#
-# # ====================== #
-# # ======== Question ========= #
-# # ====================== #
-# win.mouseVisible = True
-# Df = Questionplay(Df, win, params, "Question")
-# Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-#
-# # waitUserSpace(Df, params)
-# message = visual.TextStim(win,
-#                           text="Great job! You collected a lot of coins.\n\nYou're going home with $57.00!\n\nThanks for playing!",
-#                           units='norm', wrapWidth=2)
-# message.draw();
-# win.flip();
-# waitUserSpace(Df,params)
-# message.draw();
-# #
-# # Close the psychopy window.
-# win.close()
+# ====================== #
+# ===== TaskRun3 ======= #
+# ====================== #
+win.mouseVisible = False
+Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],"TaskRun3")
+win.mouseVisible = True
+
+# ====================== #
+# ======== VAS post ========= #
+# ====================== #
+win.mouseVisible = True
+message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+message.draw();win.flip();
+waitUserSpace(Df,params)
+Df = VASplay(Df,win,params,"VAS post")
+win.mouseVisible = False
+
+# ====================== #
+# ======== Question ========= #
+# ====================== #
+win.mouseVisible = True
+Df = Questionplay(Df, win, params, "Question")
+Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+
+# waitUserSpace(Df, params)
+message = visual.TextStim(win,
+                          text="Great job! You collected a lot of coins.\n\nYou're going home with $57.00!\n\nThanks for playing!",
+                          units='norm', wrapWidth=2)
+message.draw();
+win.flip();
+waitUserSpace(Df,params)
+message.draw();
+
+# Close the psychopy window.
+win.close()

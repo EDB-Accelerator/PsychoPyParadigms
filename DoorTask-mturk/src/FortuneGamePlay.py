@@ -37,11 +37,17 @@ def FortuneGamePlay(Df, win,params,SectionName,videoFileName):
         win=win, name='movie',
         noAudio=False,
         filename='./video/' + str(videoFileName) + '.mp4',
-        ori=0.0, pos=(0, 0), opacity=None,
+        ori=0.0, pos=(-100, 0), opacity=None,
+        size=(488,609), units='pix',
         loop=False,
         depth=0.0,
     )
 
+    message = visual.TextStim(win, text="Press the spacebar when you are ready to keep playing.",
+                              units='norm', wrapWidth=2, pos=(200,0), color='white')
+    message.draw();
+    win.flip();
+    waitUserSpace(Df, params)
     movie.draw()
     win.flip()
     waitUserSpace(Df, params)
