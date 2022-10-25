@@ -19,7 +19,7 @@ import sys  # to get file system encoding
 from psychopy.hardware import keyboard
 from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace
 
-def FortuneGamePlay(Df, win,params,SectionName,gameResult):
+def FortuneGamePlay(Df, win,params,SectionName,videoFileName):
     # Ensure that relative paths start from the same directory as this script
     # _thisDir = os.path.dirname(os.path.abspath(__file__))
     # os.chdir(_thisDir)
@@ -36,7 +36,7 @@ def FortuneGamePlay(Df, win,params,SectionName,gameResult):
     movie = visual.MovieStim3(
         win=win, name='movie',
         noAudio=False,
-        filename='./video/16.mp4',
+        filename='./video/' + str(videoFileName) + '.mp4',
         ori=0.0, pos=(0, 0), opacity=None,
         loop=False,
         depth=0.0,
