@@ -3,6 +3,7 @@ import sys
 sys.path.insert(1, './src')
 
 from psychopy import visual, event, sound
+from psychopy.event import  Mouse
 # from pygame import mixer
 from Helper import waitUserSpace, tableWrite, get_keypress, waitUserSpaceAndC
 # from JoystickInput import JoystickInput
@@ -21,7 +22,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, SectionName):
     width = params["screenSize"][0]
     height = params["screenSize"][1]
     params['subTrialCounter'] = 0
-
+    mouse = Mouse(visible=True)
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,
                                 size=(width, height))
@@ -92,12 +93,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, SectionName):
         width = params['width_bank'][level]
         height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
-        # count = 0
         rewardVSpunishment = "punishment" if random.random() < 0.5 else "reward"
-        # if rewardVSpunishment == "punishment":
-        #     aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
-        # else:
-        #     aoiInfo = " r" + str(r) + "p" + str(p) + "; r"
 
         # changed = True
         # while count < 3:  # while presenting stimuli
@@ -113,15 +109,29 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, SectionName):
                 break
 
             c = kb.getKeys(waitRelease=False, clear=True)
-            if c == ['1']:
-                level += 2
-                level = min(100,level)
-            elif c == ['2']:
-                level -= 2
-                level = max(0,level)
-            elif c == ['3']:
+            if c == ['3']:
                 Dict["Distance_lock"] = 1
                 break
+            if mouse.getPressed()[0] == 1:
+                level += 1
+                level = min(100, level)
+            # elif c == ['2']:
+            elif mouse.getPressed()[2] == 1:
+                level -= 1
+                level = max(0, level)
+
+
+
+            # c = kb.getKeys(waitRelease=False, clear=True)
+            # if c == ['1']:
+            #     level += 2
+            #     level = min(100,level)
+            # elif c == ['2']:
+            #     level -= 2
+            #     level = max(0,level)
+            # elif c == ['3']:
+            #     Dict["Distance_lock"] = 1
+            #     break
 
             # if joy['buttons_text'] != ' ':
             #     count += 1

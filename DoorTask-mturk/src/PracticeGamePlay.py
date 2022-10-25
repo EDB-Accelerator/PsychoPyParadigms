@@ -3,6 +3,7 @@ sys.path.insert(1, './src')
 
 from psychopy import visual, event
 from psychopy.hardware import keyboard
+from psychopy.event import  Mouse
 from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace,waitUserSpaceAndC
 import random, datetime, glob, time
 from ELIdxRecord import ELIdxRecord
@@ -24,7 +25,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
 
     # win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
     win.mouseVisible = False
-
+    mouse = Mouse(visible=True)
     width = params["screenSize"][0]
     height = params["screenSize"][1]
 
@@ -105,25 +106,26 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName):
                 c = ["timeisUp"]
                 break
 
-            # c = event.getKeys(waitRelease=False)
-            # c = kb.getKeys(['1','2','3'],waitRelease=False,clear = False)
             c = kb.getKeys(waitRelease=False, clear=True)
-            # clear = False
-            # print(len(c))
-            # for key in c:
-            #     print(key.name, key.rt, key.duration)
-
-            # print(pygame.key.get_pressed())
-            # print(level)
-            if c == ['1']:
-                level += 2
-                level = min(100,level)
-            elif c == ['2']:
-                level -= 2
-                level = max(0,level)
-            elif c == ['3']:
+            if c == ['3']:
                 Dict["Distance_lock"] = 1
                 break
+
+            # if mouse.getPressed()[0] == 1:  # check if click is within shape
+            #     c = ['1']
+            # elif mouse.getPressed()[2] == 1:
+            #     c = ['2']
+
+            # if c == ['1']:
+            if mouse.getPressed()[0] == 1:
+                level += 1
+                level = min(100,level)
+            # elif c == ['2']:
+            elif mouse.getPressed()[2] == 1:
+                level -= 1
+                level = max(0,level)
+            # elif c == ['3']:
+
 
             width = params['width_bank'][level]
             height = params['height_bank'][level]

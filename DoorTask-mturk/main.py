@@ -135,13 +135,13 @@ Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 # ======== VAS pre ========= #
 # ====================== #
 win.mouseVisible = True
-# Df = VASplay(Df,win,params,"VAS pre")
+Df = VASplay(Df,win,params,"VAS pre")
 win.mouseVisible = False
 
 # ====================== #
 # ===== Instruction ==== #
 # ====================== #
-# Df = InstructionPlay(Df,win,params)
+Df = InstructionPlay(Df,win,params)
 
 # ========================================== #
 # ==== Screen Resolution Initialization ==== #
@@ -154,7 +154,6 @@ ResolutionIntialization(params,size_diff=1/65)
 win.mouseVisible = False
 iterNum = params['numPractice']
 SectionName = "Practice"
-
 Df,DfTR,win,c = PracticeGamePlay(Df, DfTR,win, params, iterNum, SectionName)
 win.mouseVisible = True
 
@@ -176,53 +175,48 @@ win.mouseVisible = True
 # # ====================== #
 # # ======== VAS 1 ========= #
 # # ====================== #
-# win.mouseVisible = True
-# # message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-# message.draw();win.flip();
-# waitUserSpace(Df,params)
-# Df = VASplay(Df,win,params,"VAS 1")
-# win.mouseVisible = False
-#
-# # ====================== #
-# # ======== Text Slide ========= #
-# # ====================== #
-# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
-# # message.draw();
-# win.mouseVisible = False
-# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-# waitUserInput(Df,img1, win, params,'pyglet')
-# win.flip();
-#
-# # # ====================== #
-# # # ===Fortune Wheel2 ==== #
-# # # ====================== #
-# # # win.close()
-# # Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
-# # # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-# #
-# # ====================== #
-# # ===== TaskRun2 ======= #
-# # ====================== #
-# Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],"TaskRun2")
-#
-# # ====================== #
-# # ======== VAS mid ========= #
-# # ====================== #
-# win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-# message.draw();win.flip();
-# waitUserSpace(Df,params)
-# Df = VASplay(Df,win,params,"VAS mid")
-# win.mouseVisible = False
-#
-# # ====================== #
-# # ======== Text Slide ========= #
-# # ====================== #
-# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-# waitUserInput(Df,img1, win, params,'pyglet')
-# win.flip();
-# #
+win.mouseVisible = True
+message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+message.draw();win.flip();
+waitUserSpace(Df,params)
+Df = VASplay(Df,win,params,"VAS 1")
+win.mouseVisible = False
+
+# ====================== #
+# ======== Text Slide ========= #
+# ====================== #
+win.mouseVisible = False
+img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+waitUserInput(Df,img1, win, params,'pyglet')
+win.flip();
+
+# ====================== #
+# ===Fortune Wheel2 ==== #
+# ====================== #
+Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
+
+# ====================== #
+# ===== TaskRun2 ======= #
+# ====================== #
+Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],"TaskRun2")
+
+# ====================== #
+# ======== VAS mid ========= #
+# ====================== #
+win.mouseVisible = True
+message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+message.draw();win.flip();
+waitUserSpace(Df,params)
+Df = VASplay(Df,win,params,"VAS mid")
+win.mouseVisible = False
+
+# ====================== #
+# ======== Text Slide ========= #
+# ====================== #
+img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+waitUserInput(Df,img1, win, params,'pyglet')
+win.flip();
+
 # # # ====================== #
 # # # ===Fortune Wheel3 ==== #
 # # # ====================== #
