@@ -12,5 +12,5 @@ def userInputPlay():
     userInput.addField('# of TaskRun3:', 49)
     userInput.addField('Full Screen', True)
     # userInput.addField('Eyetracker Circle', True)
-    userInput.addField('Sound Mode:',choices=['PTB','Others'])
+    # userInput.addField('Sound Mode:',choices=['PTB','Others'])
     return userInput.show()

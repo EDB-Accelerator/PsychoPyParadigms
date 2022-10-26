@@ -95,35 +95,6 @@ def waitUserSpaceAndC(Df,params):
 
 # Function to wait for any user input.
 def waitUserInput(Df,img,win,params,mode):
-    # if params['JoyStickSupport'] == False:
-    #     event.waitKeys(maxWait=3)
-    # # else:
-    # if mode == 'glfw':
-    #     joystick.backend = 'glfw'  # must match the Window
-    # else:
-    #     joystick.backend = 'pyglet'  # must match the Window
-    # nJoys = joystick.getNumJoysticks()  # to check if we have any
-    # if nJoys == 0:
-    #     print("There is no available Joystick.")
-    #     exit()
-    # joy = joystick.Joystick(0)  # id must be <= nJoys - 1
-    # startTime = time.time()
-    #
-    # count = 0
-    # pygame.joystick.quit()
-    # pygame.joystick.init()
-    # while count < 3:  # while presenting stimuli
-    #     # joy.getButton(0)
-    #     # if sum(joy.getAllButtons())!=0:
-    #     if joy.getButton(0)!=0:
-    #         # print(joy.getAllButtons)
-    #         # break
-    #         count += 1
-    #     if (time.time() - startTime) > 100:
-    #         break
-    #     img.draw();win.flip()
-    #
-    # get_keypress(Df, params)
     img.draw();win.flip()
     while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
         time.sleep(0.001)

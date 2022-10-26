@@ -21,7 +21,7 @@ import pandas as pd
 from psychopy import visual,core,event
 from psychopy.hardware import keyboard
 from Helper import Questionplay,waitUserSpace
-from Helper import waitUserInput, waitAnyKeys,ResolutionIntialization
+from Helper import waitAnyKeys,ResolutionIntialization
 
 from userInputPlay import userInputPlay
 from VASplay import VASplay
@@ -34,8 +34,8 @@ from psychopy import prefs
 # import subprocess as subp
 
 
-def shutdown_key():
-    core.quit()
+# def shutdown_key():
+#     core.quit()
 
 # Receive User input from User input window.
 userInputBank = userInputPlay()
@@ -54,7 +54,7 @@ params = {
     'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
     'numTaskRun3': userInputBank[6],  # The number of Trials in TaskRun2.
     'FullScreen': userInputBank[7],
-    'soundMode' : userInputBank[8],
+    # 'soundMode' : userInputBank[8],
     'imageDir': './img/doors1/',    # directory containing DOOR image stimuli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
@@ -72,30 +72,20 @@ params = {
 }
 
 # Audio library configuration.
-if params['soundMode'] == 'PTB':
-    prefs.hardware['audioLib'] = ['PTB']
-else:
-    prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
+# if params['soundMode'] == 'PTB':
+#     prefs.hardware['audioLib'] = ['PTB']
+# else:
+#     prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 
 # Define Output file names.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
 params['outFile'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  timeLabel + ".csv"
-params['outFileTrackerLog'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR.csv"
-params['Practice'] =  params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "PR.EDF"
-params['TaskRun1'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR1.EDF"
-params['TaskRun2'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR2.EDF"
-params['TaskRun3'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR3.EDF"
 
-prefs.general['fullscr'] = params['FullScreen']
+prefs.general['fullscr'] = False
 
 # Global Exit
-event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
+# event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
 if userInputBank[3]!= 1:
     params['imageDir'] = './img/doors2/'
@@ -185,7 +175,8 @@ win.mouseVisible = False
 # ====================== #
 win.mouseVisible = False
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
+# waitUserInput(Df,img1, win, params,'pyglet')
+waitUserSpace(Df,params)
 win.flip();
 
 # ====================== #
@@ -212,7 +203,8 @@ win.mouseVisible = False
 # ======== Text Slide ========= #
 # ====================== #
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
+# waitUserInput(Df,img1, win, params,'pyglet')
+waitUserSpace(Df,params)
 win.flip();
 
 # ====================== #
