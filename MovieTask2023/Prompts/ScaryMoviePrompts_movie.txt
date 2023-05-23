@@ -1,0 +1,5 @@
+### Page 1 ###
++Now we are going to show you the scary movie. \n\nPay very close attention. We will ask you some questions about the movie after the scan.
+
+ 
+-EXPERIMENTER: Press spacebar to continue.

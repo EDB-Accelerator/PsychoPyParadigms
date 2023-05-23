@@ -1,0 +1,4 @@
+*.mp4
+*.exe
+Logs/**
+*.zip
