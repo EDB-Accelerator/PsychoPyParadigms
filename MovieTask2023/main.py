@@ -76,7 +76,7 @@ params = {
     'codeFinalScan': 8,
     'codeTheEnd': 9,
     # declare display parameters
-    'fullScreen': False,  # run in full screen mode?
+    'fullScreen': True,  # run in full screen mode?
     'screenToShow': 0,  # display on primary screen (0) or secondary (1)?
     'fixCrossSize': 50,  # size of cross, in pixels
     'fixCrossPos': [0, 0],  # (x,y) pos of fixation cross displayed before each stimulus (for gaze drift correction)
@@ -86,16 +86,20 @@ params = {
     'vasTextColor': (1, 1, 1)  # white
 }
 
-# save parameters
-if saveParams:
-    dlgResult = gui.fileSaveDlg(prompt='Save Params...', initFilePath=os.getcwd() + '/Params',
-                                initFileName=newParamsFilename,
-                                allowed="PSYDAT files (*.psydat);;All files (*.*)")
-    newParamsFilename = dlgResult
-    if newParamsFilename is None:  # keep going, but don't save
-        saveParams = False
-    else:
-        toFile(newParamsFilename, params)  # save it!
+# Global Exit
+event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
+
+
+# # save parameters
+# if saveParams:
+#     dlgResult = gui.fileSaveDlg(prompt='Save Params...', initFilePath=os.getcwd() + '/Params',
+#                                 initFileName=newParamsFilename,
+#                                 allowed="PSYDAT files (*.psydat);;All files (*.*)")
+#     newParamsFilename = dlgResult
+#     if newParamsFilename is None:  # keep going, but don't save
+#         saveParams = False
+#     else:
+#         toFile(newParamsFilename, params)  # save it!
 
 # ========================== #
 # ===== SET UP LOGGING ===== #
@@ -106,12 +110,24 @@ except NameError:
     scriptName = 'interactive_console'
 
 scriptName = os.path.splitext(scriptName)[0]  # remove extension
-try:  # try to get a previous parameters file
-    expInfo = fromFile('%s-lastExpInfo.psydat' % scriptName)
-    expInfo['session'] += 1  # automatically increment session number
-    expInfo['paramsFile'] = [expInfo['paramsFile'], 'Load...']
-except:  # if not there then use a default set
-    expInfo = {
+# try:  # try to get a previous parameters file
+#     expInfo = fromFile('%s-lastExpInfo.psydat' % scriptName)
+#     expInfo['session'] += 1  # automatically increment session number
+#     expInfo['paramsFile'] = [expInfo['paramsFile'], 'Load...']
+# except:  # if not there then use a default set
+#     expInfo = {
+#         'SDAN': '1',
+#         'Session': 1,
+#         'doStructurals': True,
+#         'doRest': True,
+#         'doMovie': True,
+#         'doFinalScan': True,
+#         'sendPortEvents': True,
+#         'paramsFile': [newParamsFilename, 'Load...']}
+# # overwrite params struct if you just saved a new parameter set
+# if saveParams:
+#     expInfo['paramsFile'] = [newParamsFilename, 'Load...']
+expInfo = {
         'SDAN': '1',
         'Session': 1,
         'doStructurals': True,
@@ -119,26 +135,24 @@ except:  # if not there then use a default set
         'doMovie': True,
         'doFinalScan': True,
         'sendPortEvents': True,
-        'paramsFile': [newParamsFilename, 'Load...']}
-# overwrite params struct if you just saved a new parameter set
-if saveParams:
-    expInfo['paramsFile'] = [newParamsFilename, 'Load...']
+        # 'paramsFile': [newParamsFilename, 'Load...']
+    }
 
 # present a dialogue to change select params
 dlg = gui.DlgFromDict(expInfo, title=scriptName, order=['SDAN', 'Session', 'doStructurals', 'doRest', \
-                                                        'doMovie', 'doFinalScan', 'sendPortEvents', 'paramsFile'])
+                                                        'doMovie', 'doFinalScan', 'sendPortEvents'])
 if not dlg.OK:
     core.quit()  # the user hit cancel, so exit
 
 # find parameter file
-if expInfo['paramsFile'] == 'Load...':
-    dlgResult = gui.fileOpenDlg(prompt='Select parameters file', tryFilePath=os.getcwd(),
-                                allowed="PSYDAT files (*.psydat);;All files (*.*)")
-    expInfo['paramsFile'] = dlgResult[0]
-# load parameter file
-if expInfo['paramsFile'] not in ['DEFAULT', None]:  # otherwise, just use defaults.
-    # load params file
-    params = fromFile(expInfo['paramsFile'])
+# if expInfo['paramsFile'] == 'Load...':
+#     dlgResult = gui.fileOpenDlg(prompt='Select parameters file', tryFilePath=os.getcwd(),
+#                                 allowed="PSYDAT files (*.psydat);;All files (*.*)")
+#     expInfo['paramsFile'] = dlgResult[0]
+# # load parameter file
+# if expInfo['paramsFile'] not in ['DEFAULT', None]:  # otherwise, just use defaults.
+#     # load params file
+#     params = fromFile(expInfo['paramsFile'])
 
 # transfer experimental flow items from expInfo (gui input) to params (logged parameters)
 for flowItem in ['doStructurals', 'doRest', 'doMovie', 'doFinalScan', 'sendPortEvents']:
@@ -375,6 +389,7 @@ event.globalKeys.add(key='q', modifiers=['ctrl'], func=CoolDown)
 # ============================= #
 
 if params['doStructurals']:
+    print("doStructurals")
     # Log current section
     logging.log(level=logging.EXP, msg='===== START STRUCTURAL BLOCK =====')
 
@@ -384,15 +399,15 @@ if params['doStructurals']:
         BasicPromptTools.RunPrompts(topPrompts_structural, bottomPrompts_structural, win, message1, message2,
                                     name='structuralPrompt', ignoreKeys=[params['triggerKey']])
 
-    # Display VAS
-    win.callOnFlip(SetPortData, data=params['codeVas'])
-    RunVas(questions, options)
-
     # Wait for experimenter and scanner
     win.callOnFlip(SetPortData, data=params['codeWait'])
     WaitForScanner()
 
-    # Draw fixation cross
+    # Display VAS
+    win.callOnFlip(SetPortData, data=params['codeVas'])
+    RunVas(questions, options)
+
+    # Draw fixation cross (Resting phase #1 with a fixation cross displayed for 5 minutes)
     fixation.draw()
     win.callOnFlip(SetPortData, data=params['codeStructural'])
     win.logOnFlip(level=logging.EXP, msg='Display Fixation')
@@ -411,6 +426,7 @@ if params['doStructurals']:
 # ============================= #
 
 if params['doRest']:
+    print("doRest")
     # Log current section
     logging.log(level=logging.EXP, msg='===== START REST BLOCK =====')
 
@@ -453,14 +469,15 @@ if params['doRest']:
 # ============================= #
 
 if params['doMovie']:
+    print('doMovie')
     # Log current section
     logging.log(level=logging.EXP, msg='===== START MOVIE BLOCK =====')
 
-    # Display prompts, pre-movie VAS
-    if not params['skipPrompts']:
-        win.callOnFlip(SetPortData, data=params['codePrompt'])
-        BasicPromptTools.RunPrompts(topPrompts_rating_scale, bottomPrompts_rating_scale, win, message1, message2,
-                                    name='rating_scaleMoviePrompt', ignoreKeys=[params['triggerKey']])
+    # # Display prompts, pre-movie VAS
+    # if not params['skipPrompts']:
+    #     win.callOnFlip(SetPortData, data=params['codePrompt'])
+    #     BasicPromptTools.RunPrompts(topPrompts_rating_scale, bottomPrompts_rating_scale, win, message1, message2,
+    #                                 name='rating_scaleMoviePrompt', ignoreKeys=[params['triggerKey']])
 
     # Display VAS
     win.callOnFlip(SetPortData, data=params['codeVas'])
@@ -514,6 +531,7 @@ if params['doMovie']:
 # ============================= #
 
 if params['doFinalScan']:
+    print('doFinalScan')
     # Log current section
     logging.log(level=logging.EXP, msg='===== START FINAL SCAN BLOCK =====')
 
