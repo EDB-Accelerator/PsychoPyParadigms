@@ -89,18 +89,6 @@ params = {
 # Global Exit
 event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
-
-# # save parameters
-# if saveParams:
-#     dlgResult = gui.fileSaveDlg(prompt='Save Params...', initFilePath=os.getcwd() + '/Params',
-#                                 initFileName=newParamsFilename,
-#                                 allowed="PSYDAT files (*.psydat);;All files (*.*)")
-#     newParamsFilename = dlgResult
-#     if newParamsFilename is None:  # keep going, but don't save
-#         saveParams = False
-#     else:
-#         toFile(newParamsFilename, params)  # save it!
-
 # ========================== #
 # ===== SET UP LOGGING ===== #
 # ========================== #
@@ -110,23 +98,6 @@ except NameError:
     scriptName = 'interactive_console'
 
 scriptName = os.path.splitext(scriptName)[0]  # remove extension
-# try:  # try to get a previous parameters file
-#     expInfo = fromFile('%s-lastExpInfo.psydat' % scriptName)
-#     expInfo['session'] += 1  # automatically increment session number
-#     expInfo['paramsFile'] = [expInfo['paramsFile'], 'Load...']
-# except:  # if not there then use a default set
-#     expInfo = {
-#         'SDAN': '1',
-#         'Session': 1,
-#         'doStructurals': True,
-#         'doRest': True,
-#         'doMovie': True,
-#         'doFinalScan': True,
-#         'sendPortEvents': True,
-#         'paramsFile': [newParamsFilename, 'Load...']}
-# # overwrite params struct if you just saved a new parameter set
-# if saveParams:
-#     expInfo['paramsFile'] = [newParamsFilename, 'Load...']
 expInfo = {
         'SDAN': '1',
         'Session': 1,
@@ -144,25 +115,10 @@ dlg = gui.DlgFromDict(expInfo, title=scriptName, order=['SDAN', 'Session', 'doSt
 if not dlg.OK:
     core.quit()  # the user hit cancel, so exit
 
-# find parameter file
-# if expInfo['paramsFile'] == 'Load...':
-#     dlgResult = gui.fileOpenDlg(prompt='Select parameters file', tryFilePath=os.getcwd(),
-#                                 allowed="PSYDAT files (*.psydat);;All files (*.*)")
-#     expInfo['paramsFile'] = dlgResult[0]
-# # load parameter file
-# if expInfo['paramsFile'] not in ['DEFAULT', None]:  # otherwise, just use defaults.
-#     # load params file
-#     params = fromFile(expInfo['paramsFile'])
-
 # transfer experimental flow items from expInfo (gui input) to params (logged parameters)
 for flowItem in ['doStructurals', 'doRest', 'doMovie', 'doFinalScan', 'sendPortEvents']:
     params[flowItem] = expInfo[flowItem]
 
-# print params to Output
-# print 'params = {'
-# for key in sorted(params.keys()):
-#     print "   '%s': %s"%(key,params[key]) # print each value as-is (no quotes)
-# print '}'
 print('params = {')
 for key in sorted(params.keys()):
     print("   '{}': {}".format(key, params[key]))  # print each value as-is (no quotes)
@@ -190,18 +146,7 @@ logging.log(level=logging.INFO, msg='---END PARAMETERS---')
 # ===== GET SCREEN RES ===== #
 # ========================== #
 
-## kluge for secondary monitor
-# if params['fullScreen']:
-#    screens = AppKit.NSScreen.screens()
-#    screenRes = (int(screens[params['screenToShow']].frame().size.width), int(screens[params['screenToShow']].frame().size.height))
-##    screenRes = [1920, 1200]
-#    if params['screenToShow']>0:
-#        params['fullScreen'] = False
-# else:
-#    screenRes = [800,600]
-
 screenRes = (1024, 768)
-# print "screenRes = [%d,%d]"%screenRes
 print("screenRes = [{},{}]".format(*screenRes))
 
 # ========================== #
@@ -218,7 +163,6 @@ else:
 # ========================== #
 # ===== SET UP STIMULI ===== #
 # ========================== #
-# from psychopy import visual
 
 # Initialize deadline for displaying next frame
 tNextFlip = [0.0]  # put in a list to make it mutable (weird quirk of python variables)
@@ -323,7 +267,6 @@ def RunVas(questions, options):
                                                                  isEndedByKeypress=params['questionSelectAdvances'],
                                                                  textColor=params['vasTextColor'], name='Vas',
                                                                  stepSize=params['vasStepSize'])
-
     # Set screen color back
     win.color = params['screenColor']
     win.flip()  # flip so the color change 'takes' right away
