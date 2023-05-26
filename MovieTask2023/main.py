@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+# Movie Task 2023
+# Tested platform: Psychopy 2021.1.4 (Please use PsychoPy Runner or Psychopy Coder to run this task.)
+# Created Fri May 26 15:36:51 EDT 2023 by KL
+
 from psychopy import visual  # visual must be called first to prevent a bug where the movie doesn't appear.
 from psychopy import core, gui, data, event, logging, parallel  # sound
 from psychopy.tools.filetools import fromFile, toFile  # saving and loading parameter files
