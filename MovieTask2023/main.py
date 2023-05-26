@@ -1,26 +1,11 @@
-"""Display a movie, with VAS ratings of mood before and after.
-Set audio library to pygame to avoid hanging at the end of the experiment."""
-
-# MovieAndVasTask.py
-# Created 8/14-20/18 by DJ.
-# Added VAS prompts before rest and movie VAS by RAAH 09.13.18
-# Updated 9/13/18 by DJ - added ignoreKeys parameter to RunPrompts calls (so prompts won't advance with MRI triggers)
-# Updated 10/1/18 by DJ - added 'q' and 'escape' as escape characters to every part of the experiment.
-# Updated 10/4/18 by RAAH - added ignoreKeys 1,2,3,4 during pre-rest and pre-movie prompts.
-# Updated 10/16/18 by DJ - added pre-final-scan promptsF
-# Updated 12/4/18 by DJ - added year to datestring
-# Updated 1/29/19 by DJ - added global escape key
-# Updated 5/23/23 by KL - python3 conversion. spec updated. (major update)
-
 from psychopy import visual  # visual must be called first to prevent a bug where the movie doesn't appear.
 from psychopy import core, gui, data, event, logging, parallel  # sound
 from psychopy.tools.filetools import fromFile, toFile  # saving and loading parameter files
 import time as ts, numpy as np  # for timing and array operations
 import os, glob  # for monitor size detection, files
 import BasicPromptTools
-# import BasicPromptTools # for loading/presenting prompts and questions
 import RatingScales  # for VAS sliding scale
-
+import time
 # ====================== #
 # ===== PARAMETERS ===== #
 # ====================== #
@@ -33,10 +18,11 @@ params = {
     # Declare stimulus and response parameters
     'preppedKey': 'y',  # key from experimenter that says scanner is prepped and ready
     'triggerKey': '5',  # key from scanner that says scan is starting
-    'structuralDur': 357,  # duration of fixation cross to be displayed during structural/clinical scans
+    'fixationDur': 300,  # duration of fixation cross to be displayed during structural/clinical scans
     'finalScanDur': 140,  # duration of final scan after the movie
-    'tStartup': 19,  # pause time before starting movie
+    'tStartup': 300,  # pause time before starting movie
     'movieDur': 331,  # 3 in seconds, so that rest period matches movie length
+    'movieSintelFile': 'Sintel_edited.mp4',  # FrancisCropped.mp4', # movie stimlulus
     'movieFile': 'FrancisCropped.mp4',  # FrancisCropped.mp4', # movie stimlulus
     'movieSize': (1280.0, 720.0),  # (W,H) in pixels (640*3,360*3) for Boldscreen
     'restDur': 492,  # 480s of rest minus 8s steady-state (4 TRs) plus 20s for noise cancellation
@@ -59,24 +45,27 @@ params = {
     'questionDur': 999.0,  # Max time allowed for a question
     'vasStepSize': 0.5,
     # declare experimental flow parameters
-    'doStructurals': True,  # don't skip the structurals section
-    'doRest': True,  # don't skip the rest section
-    'doMovie': True,  # don't skip the movie section
-    'doFinalScan': True,  # don't skip the final scan
+    'doRestOne': True,  # don't skip the rest#1 scan section
+    'doMovieOne': True,  # don't skip the movie#1 scan section
+    'doRestTwo': True,  # don't skip the rest#2 scan section
+    'doMovieTwo': True,  # don't skip the movie#2 scan section
+    'doRestThree': True,  # don't skip the rest#3 scan section
+
     # parallel port parameters
     'sendPortEvents': True,  # send event markers to biopac computer via parallel port
     'portAddress': 0xD050,  # 0xD050, #  address of parallel port
     'codePrompt': 1,  # port value for start of prompts # ALTERNATE: int("00000011", 2), # set specific pins in binary
     'codeVas': 2,  # VAS
     'codeWait': 3,  # waiting for experimenter/scanner
-    'codeStructural': 4,
-    'codeRest': 5,
-    'codeStartup': 6,
-    'codeMovie': 7,
-    'codeFinalScan': 8,
+    'codeRestOne': 4,
+    'codeMovieOne': 5,
+    'codeRestTwo': 6,
+    'codeMovieTwo': 7,
+    'codeRestThree': 8,
     'codeTheEnd': 9,
     # declare display parameters
-    'fullScreen': True,  # run in full screen mode?
+    'playVideo': True, # check if we want to play video. (False when we want to do quick testing without video)
+    'fullScreen': False,  # run in full screen mode?
     'screenToShow': 0,  # display on primary screen (0) or secondary (1)?
     'fixCrossSize': 50,  # size of cross, in pixels
     'fixCrossPos': [0, 0],  # (x,y) pos of fixation cross displayed before each stimulus (for gaze drift correction)
@@ -101,22 +90,26 @@ scriptName = os.path.splitext(scriptName)[0]  # remove extension
 expInfo = {
         'SDAN': '1',
         'Session': 1,
-        'doStructurals': True,
-        'doRest': True,
-        'doMovie': True,
-        'doFinalScan': True,
+        'doRestOne': True,
+        'doMovieOne': True,
+        'doRestTwo': True,
+        'doMovieTwo': True,
+        'doRestThree': True,
+        'fixationDur': 300,
+        'fullScreen': True,
+        'playVideo': True,
         'sendPortEvents': True,
         # 'paramsFile': [newParamsFilename, 'Load...']
     }
 
 # present a dialogue to change select params
-dlg = gui.DlgFromDict(expInfo, title=scriptName, order=['SDAN', 'Session', 'doStructurals', 'doRest', \
-                                                        'doMovie', 'doFinalScan', 'sendPortEvents'])
+dlg = gui.DlgFromDict(expInfo, title=scriptName, order=['SDAN', 'Session', 'doRestOne', 'doMovieOne', \
+                                                        'doRestTwo', 'doMovieTwo','doRestThree', 'fixationDur','fullScreen','playVideo','sendPortEvents'])
 if not dlg.OK:
     core.quit()  # the user hit cancel, so exit
 
 # transfer experimental flow items from expInfo (gui input) to params (logged parameters)
-for flowItem in ['doStructurals', 'doRest', 'doMovie', 'doFinalScan', 'sendPortEvents']:
+for flowItem in ['doRestOne', 'doMovieOne','doRestTwo', 'doMovieTwo','doRestThree', 'fixationDur','fullScreen','playVideo','sendPortEvents']:
     params[flowItem] = expInfo[flowItem]
 
 print('params = {')
@@ -172,6 +165,7 @@ globalClock = core.Clock()  # to keep track of time
 trialClock = core.Clock()  # to keep track of time
 win = visual.Window(screenRes, fullscr=params['fullScreen'], allowGUI=False, monitor='testMonitor',
                     screen=params['screenToShow'], units='deg', name='win', color=params['screenColor'])
+win.mouseVisible = False
 # create fixation cross
 fCS = params['fixCrossSize']  # size (for brevity)
 fCP = params['fixCrossPos']  # position (for brevity)
@@ -190,6 +184,13 @@ mov = visual.MovieStim3(win, params['movieFile'], size=params['movieSize'],
                         flipVert=False, flipHoriz=False, loop=False, units='pix')
 print('orig movie size=%s' % mov.size)
 print('duration=%.2fs' % mov.duration)
+
+# get stimulus files
+mov2 = visual.MovieStim3(win, params['movieSintelFile'], size=params['movieSize'],
+                        flipVert=False, flipHoriz=False, loop=False, units='pix')
+print('orig movie size=%s' % mov.size)
+print('duration=%.2fs' % mov.duration)
+
 
 # read questions and answers from text files
 [topPrompts_structural, bottomPrompts_structural] = BasicPromptTools.ParsePromptFile(params['structuralPromptFile'])
@@ -238,20 +239,35 @@ def SetPortData(data):
 
 
 # Play movie all the way through
-def PlayMovie():
-    # Play the movie until it's done or a key is pressed
-    while mov.status != visual.FINISHED:
-        mov.draw()
-        win.flip()
-        keyList = event.getKeys(keyList=['q', 'escape', 'space'])
-        # Check for escape characters
-        for key in keyList:
-            if key in ['q', 'escape']:
-                CoolDown()
-            else:  # 'skip' key
-                mov.status = visual.FINISHED  # end the movie early
+def PlayMovie(movie):
+    if movie == "francis":
+        # Play the movie until it's done or a key is pressed
+        while mov.status != visual.FINISHED:
+            mov.draw()
+            win.flip()
+            keyList = event.getKeys(keyList=['q', 'escape', 'space'])
+            # Check for escape characters
+            for key in keyList:
+                if key in ['q', 'escape']:
+                    CoolDown()
+                else:  # 'skip' key
+                    mov.status = visual.FINISHED  # end the movie early
 
-    pass
+        pass
+    elif movie == "sintel":
+        # Play the movie until it's done or a key is pressed
+        while mov2.status != visual.FINISHED:
+            mov2.draw()
+            win.flip()
+            keyList = event.getKeys(keyList=['q', 'escape', 'space'])
+            # Check for escape characters
+            for key in keyList:
+                if key in ['q', 'escape']:
+                    CoolDown()
+                else:  # 'skip' key
+                    mov2.status = visual.FINISHED  # end the movie early
+        pass
+
 
 
 def RunVas(questions, options):
@@ -327,14 +343,12 @@ def CoolDown():
 event.globalKeys.clear()
 event.globalKeys.add(key='q', modifiers=['ctrl'], func=CoolDown)
 
-# ============================= #
-# ==== STRUCTURALS SECTION ==== #
-# ============================= #
-
-if params['doStructurals']:
-    print("doStructurals")
+# =========================== #
+# ======= Resting #1 ======== #
+# =========================== #
+if params['doRestOne']:
     # Log current section
-    logging.log(level=logging.EXP, msg='===== START STRUCTURAL BLOCK =====')
+    logging.log(level=logging.EXP, msg='===== START Rest #1 BLOCK =====')
 
     # Display prompts
     if not params['skipPrompts']:
@@ -346,85 +360,40 @@ if params['doStructurals']:
     win.callOnFlip(SetPortData, data=params['codeWait'])
     WaitForScanner()
 
-    # Display VAS
-    win.callOnFlip(SetPortData, data=params['codeVas'])
-    RunVas(questions, options)
-
-    # Draw fixation cross (Resting phase #1 with a fixation cross displayed for 5 minutes)
+    # Draw fixation cross
     fixation.draw()
-    win.callOnFlip(SetPortData, data=params['codeStructural'])
+    win.callOnFlip(SetPortData, data=params['codeRestOne'])
     win.logOnFlip(level=logging.EXP, msg='Display Fixation')
     win.flip()
 
     # Update time of next stim
-    AddToFlipTime(params['structuralDur'])  # duration of structural/clinical scans
+    AddToFlipTime(params['fixationDur'])  # duration of structural/clinical scans
 
     # Wait until it's time to continue
     while (globalClock.getTime() < tNextFlip[0]):
         if event.getKeys(keyList=['q', 'escape']):
             CoolDown()
 
-# ============================= #
-# ====== RESTING SECTION ====== #
-# ============================= #
-
-if params['doRest']:
-    print("doRest")
-    # Log current section
-    logging.log(level=logging.EXP, msg='===== START REST BLOCK =====')
-
-    # Display prompts, pre-rest VAS
+    # Display prompts, pre-movie VAS
     if not params['skipPrompts']:
         win.callOnFlip(SetPortData, data=params['codePrompt'])
         BasicPromptTools.RunPrompts(topPrompts_rating_scale, bottomPrompts_rating_scale, win, message1, message2,
-                                    name='rating_scaleRestPrompt', ignoreKeys=[params['triggerKey']])
-
+                                    name='rating_scaleMoviePrompt', ignoreKeys=[params['triggerKey']])
     # Display VAS
     win.callOnFlip(SetPortData, data=params['codeVas'])
     RunVas(questions, options)
 
-    # Display prompts
-    if not params['skipPrompts']:
-        win.callOnFlip(SetPortData, data=params['codePrompt'])
-        BasicPromptTools.RunPrompts(topPrompts_rest, bottomPrompts_rest, win, message1, message2, name='restPrompt',
-                                    ignoreKeys=[params['triggerKey'], '1', '2', '3', '4'])
+
+# =========================== #
+# ======= MOVIE #1 ======== #
+# =========================== #
+if params['doMovieOne']:
+    # Log current section
+    logging.log(level=logging.EXP, msg='===== START MOVIE #1 BLOCK =====')
 
     # Wait for experimenter and scanner
     win.callOnFlip(SetPortData, data=params['codeWait'])
     WaitForScanner()
-
-    # Draw fixation cross
-    fixation.draw()
-    win.callOnFlip(SetPortData, data=params['codeRest'])
-    win.logOnFlip(level=logging.EXP, msg='Display Fixation')
-    win.flip()
-
-    # Update time of next stim
-    AddToFlipTime(params['restDur'])  # duration of resting state; see above
-
-    # Wait until it's time to continue
-    while (globalClock.getTime() < tNextFlip[0]):
-        if event.getKeys(keyList=['q', 'escape']):
-            CoolDown()
-
-# ============================= #
-# ======= MOVIE SECTION ======= #
-# ============================= #
-
-if params['doMovie']:
-    print('doMovie')
-    # Log current section
-    logging.log(level=logging.EXP, msg='===== START MOVIE BLOCK =====')
-
-    # # Display prompts, pre-movie VAS
-    # if not params['skipPrompts']:
-    #     win.callOnFlip(SetPortData, data=params['codePrompt'])
-    #     BasicPromptTools.RunPrompts(topPrompts_rating_scale, bottomPrompts_rating_scale, win, message1, message2,
-    #                                 name='rating_scaleMoviePrompt', ignoreKeys=[params['triggerKey']])
-
-    # Display VAS
-    win.callOnFlip(SetPortData, data=params['codeVas'])
-    RunVas(questions, options)
 
     # Display prompts
     if not params['skipPrompts']:
@@ -432,57 +401,94 @@ if params['doMovie']:
         BasicPromptTools.RunPrompts(topPrompts_movie, bottomPrompts_movie, win, message1, message2, name='moviePrompt',
                                     ignoreKeys=[params['triggerKey'], '1', '2', '3', '4'])
 
+    # log experiment start and set up
+    win.callOnFlip(SetPortData, data=params['codeMovieOne'])
+    win.logOnFlip(level=logging.EXP, msg='Display Movie')
+    if params['playVideo']:
+        PlayMovie(movie='sintel')
+
+    # Display prompts
+    if not params['skipPrompts']:
+        win.callOnFlip(SetPortData, data=params['codePrompt'])
+        BasicPromptTools.RunPrompts(topPrompts_rating_scale, bottomPrompts_rating_scale, win, message1, message2,
+                                    name='rating_scaleMoviePrompt', ignoreKeys=[params['triggerKey']])
+
+    # Display VAS
+    win.callOnFlip(SetPortData, data=params['codeVas'])
+    RunVas(questions, options)
+
+# =========================== #
+# ======= Resting #2 ======== #
+# =========================== #
+if params['doRestTwo']:
+    # Log current section
+    logging.log(level=logging.EXP, msg='===== START Rest #2 BLOCK =====')
+
     # Wait for experimenter and scanner
     win.callOnFlip(SetPortData, data=params['codeWait'])
     WaitForScanner()
 
     # Draw fixation cross
     fixation.draw()
-    win.callOnFlip(SetPortData, data=params['codeStartup'])
+    win.callOnFlip(SetPortData, data=params['codeRestTwo'])
     win.logOnFlip(level=logging.EXP, msg='Display Fixation')
     win.flip()
 
     # Update time of next stim
-    AddToFlipTime(params['tStartup'])
+    AddToFlipTime(params['fixationDur'])  # duration of structural/clinical scans
 
     # Wait until it's time to continue
     while (globalClock.getTime() < tNextFlip[0]):
         if event.getKeys(keyList=['q', 'escape']):
             CoolDown()
 
-    # =========================== #
-    # ======= MAIN MOVIE ======== #
-    # =========================== #
-
-    # log experiment start and set up
-    win.callOnFlip(SetPortData, data=params['codeMovie'])
-    win.logOnFlip(level=logging.EXP, msg='Display Movie')
-    PlayMovie()
-
-    # Display prompts
+    # Display prompts, pre-movie VAS
     if not params['skipPrompts']:
         win.callOnFlip(SetPortData, data=params['codePrompt'])
-        BasicPromptTools.RunPrompts(topPrompts_postmovie, bottomPrompts_postmovie, win, message1, message2,
-                                    name='postMoviePrompt', ignoreKeys=[params['triggerKey']])
-
+        BasicPromptTools.RunPrompts(topPrompts_rating_scale, bottomPrompts_rating_scale, win, message1, message2,
+                                    name='rating_scaleMoviePrompt', ignoreKeys=[params['triggerKey']])
     # Display VAS
     win.callOnFlip(SetPortData, data=params['codeVas'])
     RunVas(questions, options)
 
-# ============================= #
-# ===== FINAL SCAN SECTION ==== #
-# ============================= #
-
-if params['doFinalScan']:
-    print('doFinalScan')
+# =========================== #
+# ======= MOVIE #2 ======== #
+# =========================== #
+if params['doMovieTwo']:
     # Log current section
-    logging.log(level=logging.EXP, msg='===== START FINAL SCAN BLOCK =====')
+    logging.log(level=logging.EXP, msg='===== START MOVIE #2 BLOCK =====')
+
+    # Wait for experimenter and scanner
+    win.callOnFlip(SetPortData, data=params['codeWait'])
+    WaitForScanner()
 
     # Display prompts
     if not params['skipPrompts']:
         win.callOnFlip(SetPortData, data=params['codePrompt'])
-        BasicPromptTools.RunPrompts(topPrompts_prefinal, bottomPrompts_prefinal, win, message1, message2,
-                                    name='prefinalPrompt', ignoreKeys=[params['triggerKey']])
+        BasicPromptTools.RunPrompts(topPrompts_movie, bottomPrompts_movie, win, message1, message2, name='moviePrompt',
+                                    ignoreKeys=[params['triggerKey'], '1', '2', '3', '4'])
+
+    # log experiment start and set up
+    win.callOnFlip(SetPortData, data=params['codeMovieTwo'])
+    win.logOnFlip(level=logging.EXP, msg='Display Movie')
+    if params['playVideo']:
+        PlayMovie(movie='francis')
+
+    # Display prompts
+    if not params['skipPrompts']:
+        win.callOnFlip(SetPortData, data=params['codePrompt'])
+        BasicPromptTools.RunPrompts(topPrompts_rating_scale, bottomPrompts_rating_scale, win, message1, message2,
+                                    name='rating_scaleMoviePrompt', ignoreKeys=[params['triggerKey']])
+    # Display VAS
+    win.callOnFlip(SetPortData, data=params['codeVas'])
+    RunVas(questions, options)
+
+# =========================== #
+# ======= Resting #3 ======== #
+# =========================== #
+if params['doRestThree']:
+    # Log current section
+    logging.log(level=logging.EXP, msg='===== START Rest #3 BLOCK =====')
 
     # Wait for experimenter and scanner
     win.callOnFlip(SetPortData, data=params['codeWait'])
@@ -490,12 +496,12 @@ if params['doFinalScan']:
 
     # Draw fixation cross
     fixation.draw()
-    win.callOnFlip(SetPortData, data=params['codeFinalScan'])
+    win.callOnFlip(SetPortData, data=params['codeRestThree'])
     win.logOnFlip(level=logging.EXP, msg='Display Fixation')
     win.flip()
 
     # Update time of next stim
-    AddToFlipTime(params['finalScanDur'])  # duration of movie + time to reach steady-state
+    AddToFlipTime(params['fixationDur'])  # duration of structural/clinical scans
 
     # Wait until it's time to continue
     while (globalClock.getTime() < tNextFlip[0]):
@@ -511,6 +517,7 @@ if params['doFinalScan']:
     # Display VAS
     win.callOnFlip(SetPortData, data=params['codeVas'])
     RunVas(questions, options)
+
 
 # exit experiment
 win.callOnFlip(SetPortData, data=params['codeTheEnd'])
