@@ -90,7 +90,7 @@ mixer.init()
 if params['SerialPortSupport']:
     import serial
     userInput = gui.Dlg(title="Serial Port Configuration")
-    userInput.addField('Port:', "COM4", choices=['COM1','COM2','COM3','COM4'])
+    userInput.addField('Port:', "COM4", choices=['COM1','COM2','COM3','COM4','LPT1','None'])
     userInput.addField('baudrate',19200)
     userInput.addField('timeout', 0.01)
     userInput.addField('bytesize',8)
@@ -104,9 +104,15 @@ if params['SerialPortSupport']:
     # serialPort = serial.Serial(port="COM3", baudrate=9600,
     #                            bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
     # serialPort.write("2")
+    if params['port'] in ['COM1','COM2','COM3','COM4']:
+        serialPort = serial.Serial(port=params['port'], baudrate=params['baudrate'],bytesize=params['bytesize'], timeout=params['timeout'], stopbits=serial.STOPBITS_ONE)
+    elif params['port'] == 'LPT1':
+        import parallel
+        # Create a Parallel instance
+        serialPort = parallel.Parallel()
+    else:
+        serialPort = None
 
-    serialPort = serial.Serial(port=params['port'], baudrate=params['baudrate'],
-                               bytesize=params['bytesize'], timeout=params['timeout'], stopbits=serial.STOPBITS_ONE)
 
 # Read timing File
 dfTiming = pd.read_csv('timing/' + str(params['TimingFile'])+ '.csv')
@@ -163,7 +169,11 @@ params['gameStartTime'] = datetime.datetime.now()
 if params['SerialPortSupport']:
     # dfRaw = DictWriteRaw(dfRaw,params, event="Serial Port Sent message (start)")
     DictWriteStart(params)
-    serialPort.write(5)
+    if params['port'] in ['COM1','COM2','COM3','COM4']:
+        serialPort.write(5)
+    elif params['port'] == 'LPT1':
+        serialPort.setData(0x5)
+
     # dfRaw = DictWriteRaw(dfRaw,params, event="Serial Port Sent message (end)")
     df = DictWriteEnd(df,params,"Serial Port Sent message")
 
