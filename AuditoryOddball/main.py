@@ -107,9 +107,12 @@ if params['SerialPortSupport']:
     if params['port'] in ['COM1','COM2','COM3','COM4']:
         serialPort = serial.Serial(port=params['port'], baudrate=params['baudrate'],bytesize=params['bytesize'], timeout=params['timeout'], stopbits=serial.STOPBITS_ONE)
     elif params['port'] == 'LPT1':
-        import parallel
+        # import parallel
+        from psychopy import parallel
         # Create a Parallel instance
-        serialPort = parallel.Parallel()
+        # serialPort = parallel.Parallel()
+        serialPort = parallel.ParallelPort(address=0x378)
+
     else:
         serialPort = None
 
