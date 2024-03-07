@@ -39,6 +39,7 @@ from FortuneGamePlay import FortuneGamePlay
 from psychopy import parallel
 from psychopy import prefs
 import subprocess as subp
+from devices import Pathway
 
 def shutdown_key():
     core.quit()
@@ -72,8 +73,12 @@ params = {
     'imageDir': './img/doors1/',    # directory containing DOOR image stimuli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
-
-# declare output file location
+    'Heat1': '36.0',
+    'Heat2': '38.0',
+    'Heat3': '40.0',
+    'Heat4': '42.0',
+    'Heat5': '44.0',
+    # declare output file location
     'outFolder': './output', # the location of output file.
 
 # declare display parameters
@@ -150,6 +155,16 @@ if params['EyeTrackerSupport']:
 else:
     DfTR = ""
 
+if params['heatpainSupport']:
+    my_pathway = Pathway(ip='10.150.254.8', port_number=20121)
+    # Check status of medoc connection
+    response = my_pathway.status()
+    print(response)
+    excelTemps = pd.read_excel('tempConv.xlsx')
+else:
+    my_pathway = []
+    excelTemps = []
+
 # Make Empty output files.
 Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 if params['EyeTrackerSupport']:
@@ -199,7 +214,7 @@ Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
 # ===== TaskRun1 ======= #
 # ====================== #
 win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
+Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1",my_pathway,excelTemps)
 win.mouseVisible = True
 
 # ====================== #
@@ -233,7 +248,7 @@ Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
 # ====================== #
 # ===== TaskRun2 ======= #
 # ====================== #
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
+Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2",my_pathway,excelTemps)
 
 # ====================== #
 # ======== VAS mid ========= #
@@ -263,7 +278,7 @@ Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 3",16)
 # ===== TaskRun3 ======= #
 # ====================== #
 win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
+Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3",my_pathway,excelTemps)
 win.mouseVisible = True
 
 # ====================== #

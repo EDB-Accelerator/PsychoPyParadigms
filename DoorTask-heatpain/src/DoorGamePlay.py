@@ -17,7 +17,7 @@ from psychopy.iohub import launchHubServer
 import shutil
 import os
 
-def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
+def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,my_pathway,excelTemps):
     params["idxTR"] = 0
 
     width = params["screenSize"][0]
@@ -143,6 +143,9 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
 
         Dict["Punishment_magnitude"] = p
         Dict["Reward_magnitude"] = r
+        if params['heatpainSupport']:
+            heatLevel = p if p<=5 else 5
+            code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(params['Heat'+str(heatLevel)]))]
 
         # Display the image.
         c = ['']
@@ -152,6 +155,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
         win.flip();
+
 
         startTime = time.time()
         Dict["Distance_max"] = Dict["Distance_min"] = params["DistanceStart"]
@@ -166,7 +170,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
         count = 0
         joy = JoystickInput()
         position = (0, 0)
-        rewardVSpunishment = "punishment" if random.random() < 0.5 else "reward"
+        # rewardVSpunishment = "punishment" if random.random() < 0.5 else "reward"
+        rewardVSpunishment = "reward"
         if rewardVSpunishment == "punishment":
             aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
         else:
@@ -350,6 +355,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
                 img2.draw();
                 message.draw();
                 win.flip()
+
                 triggerGo(port, params, r, p, 4)  # Door outcome: punishment
                 totalCoin -= int(p)
             else:
@@ -364,6 +370,9 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
                 win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
                 totalCoin += int(r)
+
+
+
             if params['EyeTrackerSupport']:
                 if Dict["Door_outcome"] == "reward":
                     DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
@@ -408,8 +417,16 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
             mixer.init()
             mixer.music.load("./img/sounds/reward_sound.wav")
             mixer.music.play()
+            if params['heatpainSupport']:
+                response = my_pathway.program(code.iat[0, 1])
+                my_pathway.start()
+                my_pathway.trigger()
             event.waitKeys(maxWait=2)
             mixer.music.stop()
+            response = my_pathway.stop()
+
+
+
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)
