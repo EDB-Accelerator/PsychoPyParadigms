@@ -421,18 +421,18 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,my_pathway,ex
             mixer.music.play()
             if params['heatpainSupport']:
                 response = my_pathway.program(code.iat[0, 1])
-                print(f"Heat pain (Level:{heatLevel} started.")
+                print(f"Heat pain (Level:{heatLevel}) started.")
                 my_pathway.start()
                 my_pathway.trigger()
             else:
-                print(f"(Simulated) Heat pain (Level:{heatLevel} started.")
+                print(f"(Simulated) Heat pain (Level:{heatLevel}) started.")
             event.waitKeys(maxWait=2)
             mixer.music.stop()
             if params['heatpainSupport']:
                 response = my_pathway.stop()
-                print(f"Heat pain (Level:{heatLevel} ended.")
+                print(f"Heat pain (Level:{heatLevel}) ended.")
             else:
-                print(f"(Simulated) Heat pain (Level:{heatLevel} ended.")
+                print(f"(Simulated) Heat pain (Level:{heatLevel}) ended.")
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)
