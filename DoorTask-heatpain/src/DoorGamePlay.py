@@ -147,7 +147,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,my_pathway,ex
         if params['heatpainSupport']:
             heatLevel = p if p<=5 else 5
             code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(params['Heat'+str(heatLevel)]))]
-
+        else:
+            heatLevel = p if p <= 5 else 5
         # Display the image.
         c = ['']
         level = Dict["Distance_start"] = params["DistanceStart"]
