@@ -23,6 +23,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,my_pathway,ex
     width = params["screenSize"][0]
     height = params["screenSize"][1]
     params['subTrialCounter'] = 0
+    heatLevel = None
 
     if SectionName == "TaskRun1":
         img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,
@@ -419,12 +420,14 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,my_pathway,ex
             mixer.music.play()
             if params['heatpainSupport']:
                 response = my_pathway.program(code.iat[0, 1])
+                print(f"Heat pain (Level:{heatLevel} started.")
                 my_pathway.start()
                 my_pathway.trigger()
             event.waitKeys(maxWait=2)
             mixer.music.stop()
-            response = my_pathway.stop()
-
+            if params['heatpainSupport']:
+                response = my_pathway.stop()
+                print(f"Heat pain (Level:{heatLevel} ended.")
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)
