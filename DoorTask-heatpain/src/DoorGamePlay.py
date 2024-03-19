@@ -425,8 +425,6 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,my_pathway,ex
             mixer.music.stop()
             response = my_pathway.stop()
 
-
-
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)
