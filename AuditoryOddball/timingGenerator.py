@@ -40,7 +40,7 @@ def recordStimuli(df,timestamp,duration,stimuli):
     df = df.append(df2, ignore_index=True)
     return df
 
-for numFile in range(6):
+for numFile in range(7):
 
     numOfSets = 6
     numTrials = 100
@@ -57,9 +57,14 @@ for numFile in range(6):
     # numStandards.pop()
     print(len(numStandards))
 
-    novelDeviants = ['n','d']
-    novelDeviants = novelDeviants * 14
+    if numFile < 6:
+        novelDeviants = ['n','d']
+        novelDeviants = novelDeviants * 14
+    else:
+        novelDeviants = ['d'] * 14 + ['n'] * 12
+
     random.shuffle(novelDeviants)
+    lenNovelDeviants = len(novelDeviants)
 
     # Pandas dataframe Initialization
     df = pd.DataFrame(columns=headers)
@@ -82,7 +87,7 @@ for numFile in range(6):
         timeStamp += delay
         delayCount += 1
 
-    for i in range(28):
+    for i in range(lenNovelDeviants):
         numStandard = numStandards.pop()
         for j in range(numStandard):
             df = recordStimuli(df, timeStamp, 0.2, "Standard (" + str(standardCount+1) + ") presented")
