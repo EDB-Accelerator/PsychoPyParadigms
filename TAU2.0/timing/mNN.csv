@@ -1,4 +1,4 @@
-ID, Weight, Nested, Procedure, FaceTop, FaceBottom, ProbeTop, ProbeBottom, CorrectResponse, ProbeBehind, ProbeType, ProbeLocation, Condition
+ID,Weight,Nested,Procedure,FaceTop,FaceBottom,ProbeTop,ProbeBottom,CorrectResponse,ProbeBehind,ProbeType,ProbeLocation,Condition
 ,1,,,m1n,m1n,left,blank,[leftresp],neutral,left,top,neutral
 ,1,,,m1n,m1n,right,blank,[rightresp],neutral,right,top,neutral
 ,1,,,m1n,m1n,blank,left,[leftresp],neutral,left,bottom,neutral

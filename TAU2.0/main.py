@@ -72,8 +72,72 @@ display_check_scanner(win)
 display_text_and_wait_keys(win,'Waiting for the scanner..', ['4'])
 
 # TrialProc
+import pandas as pd
+import random
+
+# Function to load and concatenate CSV files
+def load_and_concat_csv_files(prefixes, categories, directory='timing'):
+    dataframes = []
+    for prefix in prefixes:
+        for category in categories:
+            df = pd.read_csv(f'{directory}/{prefix}{category}.csv')
+            df['type'] = f'{prefix}{category}'
+            dataframes.append(df)
+    return pd.concat(dataframes, ignore_index=True)
+
+# Prefixes and categories that apply
+prefixes = ['f', 'm']
+categories = ['NTc', 'NN', 'NTi']
+
+# Load and concatenate all files into a single DataFrame
+df_all = load_and_concat_csv_files(prefixes, categories)
+
+# Shuffle the combined DataFrame
+df_all = df_all.sample(frac=1).reset_index(drop=True)
+
+
+# df_f = {
+#     'NTc': pd.read_csv(f'timing/fNTc.csv'),
+#     'NN': pd.read_csv(f'timing/fNN.csv'),
+#     'NTi': pd.read_csv(f'timing/fNTi.csv'),
+# }
+# df_m = {
+#     'NTc': pd.read_csv(f'timing/mNTc.csv'),
+#     'NN': pd.read_csv(f'timing/mNN.csv'),
+#     'NTi': pd.read_csv(f'timing/mNTi.csv'),
+# }
+
+
+
+
+for trial in trials:
+    df_trial = df_trials.iloc[trial]
+    if str(df_trial['Nested']) == 'nan':
+        print('NA')
+        continue
+    if 'NTc' in df_trial['Nested']:
+        trial_type = 'NTc'
+        f_file = 'fNTc'
+        m_file = 'mNTc'
+    elif 'NN' in df_trial['Nested']:
+        trial_type = 'NN'
+        f_file = 'fNN'
+        m_file = 'mNN'
+    elif 'NTi' in df_trial['Nested']:
+        trial_type = 'NTi'
+        f_file = 'fNTi'
+        m_file = 'mNTi'
+    else:
+        "Something Wrong"
+        break
+    df_trial_control = pd.read_csv(f'timing/{trial_type}.csv')
+    df_f = pd.read_csv(f'timing/{f_file}.csv')
+    df_m = pd.read_csv(f'timing/{m_file}.csv')
+
 
 # 1. InitTrial
+
+
 # 'top box coordinates: anchor + jitter
 # Set probe_box_top = CSlideImage(Probe.States(Probe.ActiveState).Objects("top"))
 # probe_box_top.x = (PROBE_TOP_X_ANCHOR - JITTER_RANGE_HORIZONTAL/2) + CInt(random(0,JITTER_RANGE_HORIZONTAL))
@@ -93,7 +157,8 @@ display_text_and_wait_keys(win,'Waiting for the scanner..', ['4'])
 ###################
 
 # 2. Fixation (500ms)
-# 3. Faces
+# 3. Faces (Top image: enlarged_images/[FaceSet]/[FaceTop].BMP
+
 # 4. Probe
 # 5. ITI
 
