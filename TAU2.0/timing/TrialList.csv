@@ -1,0 +1,5 @@
+ID, Weight, Nested, Procedure, FaceSet, FaceTop, FaceBottom, ProbeTop, ProbeBottom, CorrectResponse, TrialType, horizontalJitterTop, VerticalJitterTop, horizontalJitterBottom, VerticalJitterBottom
+1,40,"NTc,ITIList",TrialProc,[Set],[Top],[Bottom],[pTop],[pBottom],[CorrectResponse],NTc,?,?,?,?
+2,40,"NN,ITIList",TrialProc,[Set],[Top],[Bottom],[pTop],[pBottom],[CorrectResponse],NN,?,?,?,?
+3,40,,NullProc,,,,,,,Null,?,?,?,?
+4,40,"NTi,ITIList",TrialProc,[Set],[Top],[Bottom],[pTop],[pBottom],[CorrectResponse],NTi,?,?,?,?

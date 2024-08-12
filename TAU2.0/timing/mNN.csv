@@ -1,0 +1,21 @@
+ID, Weight, Nested, Procedure, FaceTop, FaceBottom, ProbeTop, ProbeBottom, CorrectResponse, ProbeBehind, ProbeType, ProbeLocation, Condition
+,1,,,m1n,m1n,left,blank,[leftresp],neutral,left,top,neutral
+,1,,,m1n,m1n,right,blank,[rightresp],neutral,right,top,neutral
+,1,,,m1n,m1n,blank,left,[leftresp],neutral,left,bottom,neutral
+,1,,,m1n,m1n,blank,right,[rightresp],neutral,right,bottom,neutral
+,1,,,m2n,m2n,left,blank,[leftresp],neutral,left,top,neutral
+,1,,,m2n,m2n,right,blank,[rightresp],neutral,right,top,neutral
+,1,,,m2n,m2n,blank,left,[leftresp],neutral,left,bottom,neutral
+,1,,,m2n,m2n,blank,right,[rightresp],neutral,right,bottom,neutral
+,1,,,m3n,m3n,left,blank,[leftresp],neutral,left,top,neutral
+,1,,,m3n,m3n,right,blank,[rightresp],neutral,right,top,neutral
+,1,,,m3n,m3n,blank,left,[leftresp],neutral,left,bottom,neutral
+,1,,,m3n,m3n,blank,right,[rightresp],neutral,right,bottom,neutral
+,1,,,m4n,m4n,left,blank,[leftresp],neutral,left,top,neutral
+,1,,,m4n,m4n,right,blank,[rightresp],neutral,right,top,neutral
+,1,,,m4n,m4n,blank,left,[leftresp],neutral,left,bottom,neutral
+,1,,,m4n,m4n,blank,right,[rightresp],neutral,right,bottom,neutral
+,1,,,m5n,m5n,left,blank,[leftresp],neutral,left,top,neutral
+,1,,,m5n,m5n,right,blank,[rightresp],neutral,right,top,neutral
+,1,,,m5n,m5n,blank,left,[leftresp],neutral,left,bottom,neutral
+,1,,,m5n,m5n,blank,right,[rightresp],neutral,right,bottom,neutral

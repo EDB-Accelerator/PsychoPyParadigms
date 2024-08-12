@@ -1,0 +1,3 @@
+ID, Weight, Nested, Procedure, Top, Bottom, pTop, pBottom, Correct, PBehind, pType, Gender
+,20,fNTc,,[TopFace],[BottomFace],[ProbeTop],[ProbeBottom],[CorrectResponse],[ProbeBehind],[ProbeType],female
+,20,mNTc,,[TopFace],[BottomFace],[ProbeTop],[ProbeBottom],[CorrectResponse],[ProbeBehind],[ProbeType],male
