@@ -1,6 +1,5 @@
 from psychopy import visual, event, core,gui
 import sys
-
 sys.path.insert(1,'src')
 
 # Function to display the input dialog and return the results
@@ -26,6 +25,8 @@ def display_text_and_wait_keys(win,text,keys):
     # Wait for a key press (specifically the spacebar)
     keys = event.waitKeys(keyList=keys)
 
+    return keys
+
 def display_text_and_wait_given_sec(win,text,wait_time):
     # Create a text stimulus
     hello_text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
@@ -40,16 +41,47 @@ def display_text_and_wait_given_sec(win,text,wait_time):
     user_input = None
     timer = core.Clock()
     while timer.getTime() < wait_time:  # Run for 1 second
+        if user_input == '4' and user_input == '6':
+            continue
         keys = event.getKeys()
         if keys:
             user_input = keys[0]
-            break
-    return user_input
+            print(user_input)
+            continue
+    return user_input if user_input == '4' or user_input == '6' else None
 
 def display_check_scanner(win):
     info = {}
     gui.DlgFromDict(dictionary=info,title='Scanner Prepared?')
     # core.quit()  # the user hit cancel so exit
+
+# Initialization
+# Constants
+PROBE_TOP_X_ANCHOR = 512
+PROBE_TOP_Y_ANCHOR = 185
+PROBE_BOTTOM_X_ANCHOR = 512
+PROBE_BOTTOM_Y_ANCHOR = 485
+JITTER_RANGE_HORIZONTAL = 20
+JITTER_RANGE_VERTICAL = 40
+
+ACC_CHECK_TRIALS = 10  # Number of trials to check for accuracy threshold
+ERROR_THRESHOLD = 0.31  # Subject must do better than this % during ACC_CHECK_TRIALS
+
+# Variables
+face_set = ""  # String equivalent
+probe_box_top = None  # Placeholder for the SlideImage equivalent in Python
+probe_box_bottom = None  # Placeholder for the SlideImage equivalent in Python
+
+trial_count = 0  # Integer equivalent
+error_count = 0  # Integer equivalent
+
+aborted = False  # Boolean equivalent
+
+TR = 0  # Integer equivalent
+leftresp = 0  # Integer equivalent
+rightresp = 0  # Integer equivalent
+triggervalue = 0  # Integer equivalent
+
 
 user_info = get_user_input()
 params = {'sdan' : user_info['Subject Number|0'],
@@ -92,8 +124,135 @@ categories = ['NTc', 'NN', 'NTi']
 # Load and concatenate all files into a single DataFrame
 df_all = load_and_concat_csv_files(prefixes, categories)
 
+# Load ITI files
+df_iti = pd.read_csv("timing/ITIList.csv")
+ITIs = list(df_iti['ITIDur']) * 6
+random.shuffle(ITIs)
+
 # Shuffle the combined DataFrame
 df_all = df_all.sample(frac=1).reset_index(drop=True)
+
+def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time):
+    # Define the positions for the images
+    top_position = [0, 0.4]  # Adjust as needed
+    bottom_position = [0, -0.4]  # Adjust as needed
+
+    # Load and prepare the images
+    top_image = visual.ImageStim(win=win, image=face_top, pos=top_position)
+    bottom_image = visual.ImageStim(win=win, image=face_bottom, pos=bottom_position)
+
+    # Draw the images on the window
+    top_image.draw()
+    bottom_image.draw()
+
+    # Flip the window (i.e., display the stimulus)
+    win.flip()
+
+    # Display the text and check for a key press within the given time
+    timer = core.Clock()
+    response = None
+    response_time = None
+    while timer.getTime() < wait_time:
+        if response == '4' and response == '6':
+            continue
+        keys = event.getKeys(timeStamped=timer)
+        if keys:
+            response, response_time = keys[0]
+            print(response)
+            continue
+    return response, response_time if response == '4' or response == '6' else None
+
+# Initialize a list to hold trial data
+trial_data = []
+
+# for i in range(len(df_all)):
+for i in range(10):
+    trial_id = i + 1
+    df = df_all.iloc[i]
+
+    # 1. Fixation Cross
+    start_time = core.Clock()
+    display_text_and_wait_given_sec(win, "+", 0.5)
+    fixation_duration = start_time.getTime()
+    trial_data.append({
+        'Trial_ID': trial_id,
+        'Step': 'Fixation',
+        'Stimulus': '+',
+        'Response': None,
+        'ResponseTime': None,
+        'Duration': fixation_duration,
+        'CorrectAnswer': None,
+        'Type': None
+    })
+
+    # 2. Display Faces
+    start_time = core.Clock()
+    FaceTop = f"enlarged_images/{params['version']}/{df['FaceTop']}.bmp"
+    FaceBottom = f"enlarged_images/{params['version']}/{df['FaceBottom']}.bmp"
+
+    # top_image = visual.ImageStim(win=win, image=FaceTop, pos=[0, 0.4])
+    # bottom_image = visual.ImageStim(win=win, image=FaceBottom, pos=[0,-0.4])
+    # top_image.draw()
+    # bottom_image.draw()
+    # win.flip()
+    display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5)
+    face_display_duration = start_time.getTime()
+    trial_data.append({
+        'Trial_ID': trial_id,
+        'Step': 'Display Faces',
+        'Stimulus': f'{FaceTop} / {FaceBottom}',
+        'Response': "",
+        'ResponseTime': "",
+        'Duration': face_display_duration,
+        'CorrectAnswer': df['CorrectResponse'][0] if pd.notna(df['CorrectResponse'][0]) else None,
+        'Type': df['type']
+    })
+
+    # Probe
+    start_time = core.Clock()
+    response,response_time = display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 1)
+    face_display_duration = start_time.getTime()
+    trial_data.append({
+        'Trial_ID': trial_id,
+        'Step': 'Display Faces',
+        'Stimulus': f'{FaceTop} / {FaceBottom}',
+        'Response': "",
+        'ResponseTime': "",
+        'Duration': face_display_duration,
+        'CorrectAnswer': df['CorrectResponse'][0] if pd.notna(df['CorrectResponse'][0]) else None,
+        'Type': df['type']
+    })
+
+    # ITI
+    start_time = core.Clock()
+    display_text_and_wait_given_sec(win,"",ITIs[i]/1000)
+    iti_duration = start_time.getTime()
+    trial_data.append({
+        'Trial_ID': trial_id,
+        'Step': 'ITI',
+        'Stimulus': 'ITI',
+        'Response': None,
+        'ResponseTime': None,
+        'Duration': iti_duration,
+        'CorrectAnswer': None,
+        'Type': None
+    })
+
+    # Fixation
+    start_time = core.Clock()
+    display_text_and_wait_given_sec(win, "+", 2.5)
+    fixation_duration = start_time.getTime()
+    trial_data.append({
+        'Trial_ID': trial_id,
+        'Step': 'Fixation',
+        'Stimulus': '+',
+        'Response': None,
+        'ResponseTime': None,
+        'Duration': fixation_duration,
+        'CorrectAnswer': None,
+        'Type': None
+    })
+
 
 
 # df_f = {
@@ -106,55 +265,6 @@ df_all = df_all.sample(frac=1).reset_index(drop=True)
 #     'NN': pd.read_csv(f'timing/mNN.csv'),
 #     'NTi': pd.read_csv(f'timing/mNTi.csv'),
 # }
-
-
-
-
-for trial in trials:
-    df_trial = df_trials.iloc[trial]
-    if str(df_trial['Nested']) == 'nan':
-        print('NA')
-        continue
-    if 'NTc' in df_trial['Nested']:
-        trial_type = 'NTc'
-        f_file = 'fNTc'
-        m_file = 'mNTc'
-    elif 'NN' in df_trial['Nested']:
-        trial_type = 'NN'
-        f_file = 'fNN'
-        m_file = 'mNN'
-    elif 'NTi' in df_trial['Nested']:
-        trial_type = 'NTi'
-        f_file = 'fNTi'
-        m_file = 'mNTi'
-    else:
-        "Something Wrong"
-        break
-    df_trial_control = pd.read_csv(f'timing/{trial_type}.csv')
-    df_f = pd.read_csv(f'timing/{f_file}.csv')
-    df_m = pd.read_csv(f'timing/{m_file}.csv')
-
-
-# 1. InitTrial
-
-
-# 'top box coordinates: anchor + jitter
-# Set probe_box_top = CSlideImage(Probe.States(Probe.ActiveState).Objects("top"))
-# probe_box_top.x = (PROBE_TOP_X_ANCHOR - JITTER_RANGE_HORIZONTAL/2) + CInt(random(0,JITTER_RANGE_HORIZONTAL))
-# probe_box_top.y = (PROBE_TOP_Y_ANCHOR - JITTER_RANGE_VERTICAL/2) + CInt(random(0,JITTER_RANGE_VERTICAL))
-#
-# 'bottom box coordinates: anchor + jitter
-# Set probe_box_bottom = CSlideImage(Probe.States(Probe.ActiveState).Objects("bottom"))
-# probe_box_bottom.x = (PROBE_BOTTOM_X_ANCHOR - JITTER_RANGE_HORIZONTAL/2) + CInt(random(0,JITTER_RANGE_HORIZONTAL))
-# probe_box_bottom.y = (PROBE_BOTTOM_Y_ANCHOR - JITTER_RANGE_VERTICAL/2) + CInt(random(0,JITTER_RANGE_VERTICAL))
-#
-# c.SetAttrib "horizontalJitterTop", PROBE_TOP_X_ANCHOR - probe_box_top.x
-# c.SetAttrib "VerticalJitterTop", PROBE_TOP_Y_ANCHOR - probe_box_top.y
-# c.SetAttrib "horizontalJitterBottom", PROBE_BOTTOM_X_ANCHOR - probe_box_bottom.x
-# c.SetAttrib "VerticalJitterBottom", PROBE_BOTTOM_Y_ANCHOR - probe_box_bottom.y
-#
-# trial_count = trial_count + 1
-###################
 
 # 2. Fixation (500ms)
 # 3. Faces (Top image: enlarged_images/[FaceSet]/[FaceTop].BMP
