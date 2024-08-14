@@ -66,15 +66,21 @@ def display_check_scanner(win):
     gui.DlgFromDict(dictionary=info,title='Scanner Prepared?')
     # core.quit()  # the user hit cancel so exit
 
-def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time):
+def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode="face"):
     # Define the positions for the images
     top_position = [0, 0.4]  # Adjust as needed
     bottom_position = [0, -0.4]  # Adjust as needed
 
     # Load and prepare the images
-    top_image = visual.ImageStim(win=win, image=face_top, pos=top_position)
-    bottom_image = visual.ImageStim(win=win, image=face_bottom, pos=bottom_position)
-
+    if mode == 'face':
+        top_image = visual.ImageStim(win=win, image=face_top, pos=top_position)
+        bottom_image = visual.ImageStim(win=win, image=face_bottom, pos=bottom_position)
+    else:
+        top_position = [0, 0.4]  # Adjust as needed
+        bottom_position = [0, -0.4]  # Adjust as needed
+        top_image = visual.TextStim(win, text=face_top, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0), wrapWidth=2)
+        bottom_image = visual.TextStim(win, text=face_bottom, color=(1, 1, 1), colorSpace='rgb', pos=(0, -0.4),
+                                       wrapWidth=2)
     # Draw the images on the window
     top_image.draw()
     bottom_image.draw()
@@ -198,7 +204,7 @@ for list_idx in range(2):
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
     for i in range(len(df_all)):
-    # for i in range(10):
+    # for i in range(5):
         trial_id = i + 1
         df = df_all.iloc[i]
 
@@ -212,8 +218,19 @@ for list_idx in range(2):
             'Stimulus': '+',
             'Response': None,
             'ResponseTime': None,
+            'Correctness': "",
             'Duration': fixation_duration,
-            'CorrectAnswer': None,
+
+            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+            'Condition': df['Condition'] if 'Condition' in df else None,
+
             'Type': None
         })
 
@@ -233,25 +250,69 @@ for list_idx in range(2):
             'Trial_ID': trial_id,
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
-            'Response': str(response) if response != None else "",
-            'ResponseTime': str(response_time)  if response_time != None else "",
+            'Response': "",
+            'ResponseTime': "",
+            'Correctness' : "",
             'Duration': face_display_duration,
-            'CorrectAnswer': df['CorrectResponse'][0] if pd.notna(df['CorrectResponse'][0]) else None,
+
+            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+            'Condition': df['Condition'] if 'Condition' in df else None,
+
             'Type': df['type']
         })
 
         # Probe
         start_time = core.Clock()
-        response,response_time = display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 1)
+        # Determine the correct probe display based on 'ProbeTop' and 'ProbeBottom' values
+        if df['ProbeTop'] == "blank":
+            ProbeTop = ""
+        elif df['ProbeTop'] == "left":
+            ProbeTop = "<"
+        elif df['ProbeTop'] == "right":
+            ProbeTop = ">"
+        else:
+            ProbeTop = ""  # Default to an empty string if the value is unexpected
+
+        if df['ProbeBottom'] == "blank":
+            ProbeBottom = ""
+        elif df['ProbeBottom'] == "left":
+            ProbeBottom = "<"
+        elif df['ProbeBottom'] == "right":
+            ProbeBottom = ">"
+        else:
+            ProbeBottom = ""  # Default to an empty string if the value is unexpected
+        response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
         face_display_duration = start_time.getTime()
         trial_data.append({
             'Trial_ID': trial_id,
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
-            'Response': "",
-            'ResponseTime': "",
+            'Response': str(response) if response is not None else "",
+            'ResponseTime': str(response_time)  if response_time is not None else "",
+            'Correctness': (
+                "No Response" if response is None else
+                "Correct" if (response == "4" and df["ProbeType"] == "left") or (response == "6" and df["ProbeType"] == "right") else
+                "Incorrect"
+             ),
             'Duration': face_display_duration,
-            'CorrectAnswer': df['CorrectResponse'][0] if pd.notna(df['CorrectResponse'][0]) else None,
+
+            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+            'Condition': df['Condition'] if 'Condition' in df else None,
+
             'Type': df['type']
         })
 
@@ -265,8 +326,19 @@ for list_idx in range(2):
             'Stimulus': 'ITI',
             'Response': None,
             'ResponseTime': None,
+            'Correctness': "",
             'Duration': iti_duration,
-            'CorrectAnswer': None,
+
+            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+            'Condition': df['Condition'] if 'Condition' in df else None,
+
             'Type': None
         })
 
@@ -280,8 +352,19 @@ for list_idx in range(2):
             'Stimulus': '+',
             'Response': None,
             'ResponseTime': None,
+            'Correctness': "",
             'Duration': fixation_duration,
-            'CorrectAnswer': None,
+
+            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+            'Condition': df['Condition'] if 'Condition' in df else None,
+
             'Type': None
         })
 
@@ -295,8 +378,19 @@ for list_idx in range(2):
         'Stimulus': 'Please Rest',
         'Response': None,
         'ResponseTime': None,
+        'Correctness': "",
         'Duration': rest_duration,
-        'CorrectAnswer': None,
+
+        'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+        'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+        'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+        'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+        'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+        'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+        'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+        'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+        'Condition': df['Condition'] if 'Condition' in df else None,
+
         'Type': None
     })
 
