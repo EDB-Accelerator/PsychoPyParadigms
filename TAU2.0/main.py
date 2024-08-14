@@ -203,8 +203,8 @@ for list_idx in range(2):
     # Shuffle the combined DataFrame
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
-    for i in range(len(df_all)):
-    # for i in range(5):
+    # for i in range(len(df_all)):
+    for i in range(5):
         trial_id = i + 1
         df = df_all.iloc[i]
 
@@ -216,15 +216,16 @@ for list_idx in range(2):
             'Trial_ID': trial_id,
             'Step': 'Fixation',
             'Stimulus': '+',
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
             'Duration': fixation_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
             'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
             'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
             'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'Response': None,
+            'ResponseTime': None,
+            'Correctness': "",
+
             'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
             'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
             'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
@@ -250,15 +251,15 @@ for list_idx in range(2):
             'Trial_ID': trial_id,
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
-            'Response': "",
-            'ResponseTime': "",
-            'Correctness' : "",
             'Duration': face_display_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
             'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
             'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
             'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'Response': "",
+            'ResponseTime': "",
+            'Correctness': "",
             'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
             'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
             'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
@@ -294,19 +295,21 @@ for list_idx in range(2):
             'Trial_ID': trial_id,
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
-            'Response': str(response) if response is not None else "",
-            'ResponseTime': str(response_time)  if response_time is not None else "",
-            'Correctness': (
-                "No Response" if response is None else
-                "Correct" if (response == "4" and df["ProbeType"] == "left") or (response == "6" and df["ProbeType"] == "right") else
-                "Incorrect"
-             ),
+
             'Duration': face_display_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
             'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
             'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
             'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'Response': str(response) if response is not None else "",
+            'ResponseTime': str(response_time) if response_time is not None else "",
+            'Correctness': (
+                "No Response" if response is None else
+                "Correct" if (response == "4" and df["ProbeType"] == "left") or (
+                            response == "6" and df["ProbeType"] == "right") else
+                "Incorrect"
+            ),
             'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
             'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
             'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
@@ -324,15 +327,15 @@ for list_idx in range(2):
             'Trial_ID': trial_id,
             'Step': 'ITI',
             'Stimulus': 'ITI',
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
             'Duration': iti_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
             'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
             'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
             'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'Response': None,
+            'ResponseTime': None,
+            'Correctness': "",
             'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
             'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
             'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
@@ -350,15 +353,15 @@ for list_idx in range(2):
             'Trial_ID': trial_id,
             'Step': 'Fixation',
             'Stimulus': '+',
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
             'Duration': fixation_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
             'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
             'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
             'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'Response': None,
+            'ResponseTime': None,
+            'Correctness': "",
             'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
             'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
             'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
@@ -376,15 +379,16 @@ for list_idx in range(2):
         'Trial_ID': None,
         'Step': 'REST',
         'Stimulus': 'Please Rest',
-        'Response': None,
-        'ResponseTime': None,
-        'Correctness': "",
+
         'Duration': rest_duration,
 
         'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
         'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
         'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
         'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+        'Response': None,
+        'ResponseTime': None,
+        'Correctness': "",
         'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
         'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
         'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
