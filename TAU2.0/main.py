@@ -233,8 +233,8 @@ for list_idx in range(2):
             'Trial_ID': trial_id,
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
-            'Response': "",
-            'ResponseTime': "",
+            'Response': str(response) if response != None else "",
+            'ResponseTime': str(response_time)  if response_time != None else "",
             'Duration': face_display_duration,
             'CorrectAnswer': df['CorrectResponse'][0] if pd.notna(df['CorrectResponse'][0]) else None,
             'Type': df['type']
