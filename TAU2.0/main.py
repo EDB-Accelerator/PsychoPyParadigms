@@ -97,10 +97,17 @@ triggervalue = 0  # Integer equivalent
 
 
 user_info = get_user_input()
-params = {'sdan' : user_info['Subject ID'],
-          'session': user_info['Session Number'],
-          'version': user_info['Stimuli Set']
-}
+try:
+    params = {'sdan': user_info[0],
+              'session': user_info[1],
+              'version': user_info[2]
+              }
+except:
+    params = {'sdan': user_info['Subject ID'],
+              'session': user_info['Session Number'],
+              'version': user_info['Stimuli Set']
+              }
+
 win = visual.Window(size=(1024, 768), fullscr=False, color=(0, 0, 0), colorSpace='rgb')
 
 display_text_and_wait_keys(win,'Instructions\n\n'
