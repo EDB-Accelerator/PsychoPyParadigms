@@ -313,44 +313,10 @@ formatted_datetime = now.strftime("%Y%m%d_%H%M%S")
 # Save the DataFrame to a CSV file with date and time in the filename
 df_trials.to_csv(f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv', index=False)
 
+# Thank you screen.
 display_text_and_wait_given_sec(win,"Thank you!",1.0)
-
-# df_f = {
-#     'NTc': pd.read_csv(f'timing/fNTc.csv'),
-#     'NN': pd.read_csv(f'timing/fNN.csv'),
-#     'NTi': pd.read_csv(f'timing/fNTi.csv'),
-# }
-# df_m = {
-#     'NTc': pd.read_csv(f'timing/mNTc.csv'),
-#     'NN': pd.read_csv(f'timing/mNN.csv'),
-#     'NTi': pd.read_csv(f'timing/mNTi.csv'),
-# }
-
-# 2. Fixation (500ms)
-# 3. Faces (Top image: enlarged_images/[FaceSet]/[FaceTop].BMP
-
-# 4. Probe
-# 5. ITI
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Close the window and quit PsychoPy
-# win.close()
-# core.quit()
+win.close()
+core.quit()
