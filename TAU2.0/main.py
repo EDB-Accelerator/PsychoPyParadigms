@@ -1,16 +1,29 @@
 from psychopy import visual, event, core,gui
 import sys
 sys.path.insert(1,'src')
+from PlayUserInputGUI import PlayUserInputGUI
+
+from psychopy import prefs, gui
+import datetime
+
+
 
 # Function to display the input dialog and return the results
 def get_user_input():
-    info = {'Subject Number': '', 'Session Number': '', 'Stimuli Set': ['A', 'B']}
-    order = ['Subject Number', 'Session Number', 'Stimuli Set']
-    dlg = gui.DlgFromDict(dictionary=info, title='Experiment Startup', order=order)
-    if dlg.OK:
-        return info
-    else:
-        core.quit()  # the user hit cancel so exit
+    # info = {'Subject Number': '', 'Session Number': '', 'Stimuli Set': ['A', 'B']}
+    # order = ['Subject Number', 'Session Number', 'Stimuli Set']
+    # dlg = gui.DlgFromDict(dictionary=info, title='Experiment Startup', order=order)
+    # if dlg.OK:
+    #     return info
+    # else:
+    #     core.quit()  # the user hit cancel so exit
+    userInput = gui.Dlg(title="Experiment Startup")
+    userInput.addField('Subject ID:', )
+    userInput.addField('Session Number:', )
+    userInput.addField('Stimuli Set:', choices = ['A','B'])
+    UserInputBank = userInput.show()
+
+    return UserInputBank
 
 def display_text_and_wait_keys(win,text,keys):
     # Create a text stimulus
