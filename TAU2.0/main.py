@@ -149,7 +149,7 @@ try:
               'session': user_info[1],
               'version': user_info[2]
               }
-    prefs.general['fullscr'] = params['FullScreen']
+    prefs.general['fullscr'] = user_info[3]
 
 except:
     params = {'sdan': user_info['Subject ID'],
