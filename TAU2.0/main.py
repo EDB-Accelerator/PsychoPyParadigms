@@ -1,10 +1,11 @@
 from psychopy import visual, event, core,gui
-import sys
+import sys,os
 sys.path.insert(1,'src')
 from psychopy import prefs, gui
 import datetime
 
-
+# Global Exit
+event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
 # Function to display the input dialog and return the results
 def get_user_input():
@@ -19,6 +20,7 @@ def get_user_input():
     userInput.addField('Subject ID', )
     userInput.addField('Session Number', )
     userInput.addField('Stimuli Set', choices = ['A','B'])
+    userInput.addField('Full Screen', True)
     UserInputBank = userInput.show()
 
     return UserInputBank
@@ -98,7 +100,7 @@ def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode=
         keys = event.getKeys(timeStamped=timer)
         if keys:
             response, response_time = keys[0]
-            if response in ['4', '6']:
+            if response in ['2', '4']:
                 print(response)  # Optional: Print the response for debugging
                 break  # Exit the loop after recording the first valid response
 
@@ -108,7 +110,7 @@ def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode=
         core.wait(remaining_time)
 
     # Return the recorded response and response time only if it is valid
-    return (response, response_time) if response in ['4', '6'] else (None, None)
+    return (response, response_time) if response in ['2', '4'] else (None, None)
 
 
 # Initialization
@@ -145,6 +147,8 @@ try:
               'session': user_info[1],
               'version': user_info[2]
               }
+    prefs.general['fullscr'] = params['FullScreen']
+
 except:
     params = {'sdan': user_info['Subject ID'],
               'session': user_info['Session Number'],
@@ -159,12 +163,12 @@ display_text_and_wait_keys(win,'Instructions\n\n'
                 'if the target is <, press the left button.\n'
                 'if the target is >, press the right button.\n\n'
                 'Respond as quickly as you can without making mistakes\n\n'
-                'Press any button to start.', ['4','6'])
+                'Press any button to start.', ['5'])
 
 # Create a window
 key = display_text_and_wait_given_sec(win,"",1.0)
 display_check_scanner(win)
-display_text_and_wait_keys(win,'Waiting for the scanner..', ['4'])
+display_text_and_wait_keys(win,'Waiting for the scanner..', ['5'])
 
 # TrialProc
 import pandas as pd
@@ -175,17 +179,18 @@ def load_and_concat_csv_files(prefixes, categories, directory='timing'):
     dataframes = []
     for prefix in prefixes:
         for category in categories:
-            df = pd.read_csv(f'{directory}/{prefix}{category}.csv')
-            df['type'] = f'{prefix}{category}'
+            if category in ['NTc', 'NN', 'NTi']:
+                df = pd.read_csv(f'{directory}/{prefix}{category}.csv')
+                df['type'] = f'{prefix}{category}'
+            elif category in ['null','baseline']:
+                df = pd.read_csv(f'{directory}/{category}.csv')
+                df['type'] = f'{category}'
             dataframes.append(df)
     return pd.concat(dataframes, ignore_index=True)
 
 # Prefixes and categories that apply
 prefixes = ['f', 'm']
-categories = ['NTc', 'NN', 'NTi']
-
-
-
+categories = ['NTc', 'NN', 'NTi','null','baseline']
 
 # Initialize a list to hold trial data
 trial_data = []
@@ -195,10 +200,9 @@ for list_idx in range(2):
     # Load and concatenate all files into a single DataFrame
     df_all = load_and_concat_csv_files(prefixes, categories)
 
-
     # Load ITI files
     df_iti = pd.read_csv("timing/ITIList.csv")
-    ITIs = list(df_iti['ITIDur']) * 6
+    ITIs = list(df_iti['ITIDur']) * 11
     random.shuffle(ITIs)
 
     # Shuffle the combined DataFrame
@@ -274,23 +278,24 @@ for list_idx in range(2):
         start_time = core.Clock()
         # Determine the correct probe display based on 'ProbeTop' and 'ProbeBottom' values
         if df['ProbeTop'] == "blank":
-            ProbeTop = ""
+            ProbeTop = "enlarged_images/blank.bmp"
         elif df['ProbeTop'] == "left":
-            ProbeTop = "<"
+            ProbeTop = "enlarged_images/left.bmp"
         elif df['ProbeTop'] == "right":
-            ProbeTop = ">"
+            ProbeTop = "enlarged_images/right.bmp"
         else:
             ProbeTop = ""  # Default to an empty string if the value is unexpected
 
         if df['ProbeBottom'] == "blank":
-            ProbeBottom = ""
+            ProbeBottom = "enlarged_images/blank.bmp"
         elif df['ProbeBottom'] == "left":
-            ProbeBottom = "<"
+            ProbeBottom = "enlarged_images/left.bmp"
         elif df['ProbeBottom'] == "right":
-            ProbeBottom = ">"
+            ProbeBottom = "enlarged_images/right.bmp"
         else:
             ProbeBottom = ""  # Default to an empty string if the value is unexpected
-        response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
+        # response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
+        response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1)
         face_display_duration = start_time.getTime()
         trial_data.append({
             'Trial_ID': str(int(trial_id)),
@@ -308,7 +313,7 @@ for list_idx in range(2):
             'Correctness': (
                 "No Response" if response is None else
                 "Correct" if (response == "4" and df["ProbeType"] == "left") or (
-                            response == "6" and df["ProbeType"] == "right") else
+                            response == "2" and df["ProbeType"] == "right") else
                 "Incorrect"
             ),
             'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
@@ -327,7 +332,7 @@ for list_idx in range(2):
         trial_data.append({
             'Trial_ID': str(int(trial_id)),
             'Step': 'ITI',
-            'Stimulus': 'ITI',
+            'Stimulus': 'Blank',
             'Duration': iti_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -346,35 +351,35 @@ for list_idx in range(2):
             'Type': None
         })
 
-        # Fixation
-        start_time = core.Clock()
-        display_text_and_wait_given_sec(win, "+", 2.5)
-        fixation_duration = start_time.getTime()
-        trial_data.append({
-            'Trial_ID': str(int(trial_id)),
-            'Step': 'Fixation',
-            'Stimulus': '+',
-            'Duration': fixation_duration,
+    # Fixation
+    start_time = core.Clock()
+    display_text_and_wait_given_sec(win, "+", 2.5)
+    fixation_duration = start_time.getTime()
+    trial_data.append({
+        'Trial_ID': str(int(trial_id)),
+        'Step': 'Fixation',
+        'Stimulus': '+',
+        'Duration': fixation_duration,
 
-            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
-            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
-            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
-            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
-            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
-            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
-            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
-            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
-            'Condition': df['Condition'] if 'Condition' in df else None,
+        'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+        'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+        'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+        'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+        'Response': None,
+        'ResponseTime': None,
+        'Correctness': "",
+        'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+        'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+        'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+        'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+        'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'Type': None
-        })
+        'Type': None
+    })
 
     # Rest
     start_time = core.Clock()
-    display_text_and_wait_keys(win, 'Please rest', ['4', '6'])
+    display_text_and_wait_keys(win, 'Please rest', ['5'])
     rest_duration = start_time.getTime()
     trial_data.append({
         'Trial_ID': None,
