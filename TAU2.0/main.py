@@ -44,10 +44,16 @@ def display_text_and_wait_keys(win,text,keys):
 
 def display_text_and_wait_given_sec(win,text,wait_time):
     # Create a text stimulus
-    hello_text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
+    if text == "+" or text == "":
+        frame_image = visual.ImageStim(win=win, image="enlarged_images/frame.bmp", pos=[0, 0])
+        original_size = frame_image.size
+        frame_image.size = [dimension * 1.5 for dimension in original_size]
+        frame_image.draw()
+
+    text = visual.TextStim(win, text=text, color=(-1, -1, -1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
 
     # Draw the text stimulus to the window
-    hello_text.draw()
+    text.draw()
 
     # Flip the window (i.e., display the stimulus)
     win.flip()
@@ -76,16 +82,28 @@ def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode=
     bottom_position = [0, -0.4]  # Adjust as needed
 
     # Load and prepare the images
-    if mode == 'face':
-        top_image = visual.ImageStim(win=win, image=face_top, pos=top_position)
-        bottom_image = visual.ImageStim(win=win, image=face_bottom, pos=bottom_position)
-    else:
-        top_position = [0, 0.4]  # Adjust as needed
-        bottom_position = [0, -0.4]  # Adjust as needed
-        top_image = visual.TextStim(win, text=face_top, color=(1, 1, 1), colorSpace='rgb', pos=top_position, wrapWidth=2)
-        bottom_image = visual.TextStim(win, text=face_bottom, color=(1, 1, 1), colorSpace='rgb', pos=bottom_position,
-                                       wrapWidth=2)
+    # if mode == 'face':
+    top_image = visual.ImageStim(win=win, image=face_top, pos=top_position)
+    bottom_image = visual.ImageStim(win=win, image=face_bottom, pos=bottom_position)
+    frame_image = visual.ImageStim(win=win, image="enlarged_images/frame.bmp", pos=[0,0])
+    original_size = frame_image.size
+    frame_image.size = [dimension * 1.5 for dimension in original_size]
+
+    # background_image = visual.ImageStim(win=win, image="enlarged_images/background.bmp", pos=[0, 0])
+    # original_size_bg = background_image.size
+    # background_image.size = [dimension * 5 for dimension in original_size_bg]
+
+
+
+    # else:
+        # top_position = [0, 0.4]  # Adjust as needed
+        # bottom_position = [0, -0.4]  # Adjust as needed
+        # top_image = visual.TextStim(win, text=face_top, color=(1, 1, 1), colorSpace='rgb', pos=top_position, wrapWidth=2)
+        # bottom_image = visual.TextStim(win, text=face_bottom, color=(1, 1, 1), colorSpace='rgb', pos=bottom_position,
+        #                                wrapWidth=2)
     # Draw the images on the window
+    # background_image.draw()
+    frame_image.draw()
     top_image.draw()
     bottom_image.draw()
 
@@ -157,7 +175,8 @@ except:
               'version': user_info['Stimuli Set']
               }
 
-win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(0, 0, 0), colorSpace='rgb')
+# win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(74, 96, 93), colorSpace='rgb255')
+win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(-1, -1, -1), colorSpace='rgb')
 
 display_text_and_wait_keys(win,'Instructions\n\n'
                 'In each trial, a + sign will appear in the center of the screen,\n'
@@ -168,7 +187,7 @@ display_text_and_wait_keys(win,'Instructions\n\n'
                 'Press any button to start.', ['5'])
 
 # Create a window
-key = display_text_and_wait_given_sec(win,"",1.0)
+key = display_text_and_wait_given_sec(win," ",1.0)
 display_check_scanner(win)
 display_text_and_wait_keys(win,'Waiting for the scanner..', ['5'])
 
@@ -244,8 +263,8 @@ for list_idx in range(2):
 
         # 2. Display Faces
         start_time = core.Clock()
-        FaceTop = f"enlarged_images/{params['version']}/{df['FaceTop']}.bmp"
-        FaceBottom = f"enlarged_images/{params['version']}/{df['FaceBottom']}.bmp"
+        FaceTop = f"enlarged_images/{params['version']}/{df['FaceTop']}.bmp" if df['FaceTop']!='blank' else f"enlarged_images/blank.bmp"
+        FaceBottom = f"enlarged_images/{params['version']}/{df['FaceBottom']}.bmp" if df['FaceBottom']!='blank' else f"enlarged_images/blank.bmp"
 
         # top_image = visual.ImageStim(win=win, image=FaceTop, pos=[0, 0.4])
         # bottom_image = visual.ImageStim(win=win, image=FaceBottom, pos=[0,-0.4])
