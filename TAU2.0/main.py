@@ -177,7 +177,7 @@ except:
 
 # win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(74, 96, 93), colorSpace='rgb255')
 win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(-1, -1, -1), colorSpace='rgb')
-
+win.mouseVisible = False
 display_text_and_wait_keys(win,'Instructions\n\n'
                 'In each trial, a + sign will appear in the center of the screen,\n'
                 'followed by a pair of faces, and then by a target: < or >\n\n'
@@ -188,7 +188,9 @@ display_text_and_wait_keys(win,'Instructions\n\n'
 
 # Create a window
 key = display_text_and_wait_given_sec(win," ",1.0)
+win.mouseVisible = True
 display_check_scanner(win)
+win.mouseVisible = False
 display_text_and_wait_keys(win,'Waiting for the scanner..', ['5'])
 
 # TrialProc
