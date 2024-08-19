@@ -188,9 +188,10 @@ display_text_and_wait_keys(win,'Instructions\n\n'
 
 # Create a window
 key = display_text_and_wait_given_sec(win," ",1.0)
-win.mouseVisible = True
-display_check_scanner(win)
-win.mouseVisible = False
+# win.mouseVisible = True
+# display_check_scanner(win)
+# display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
+# win.mouseVisible = False
 display_text_and_wait_keys(win,'Waiting for the scanner..', ['5'])
 
 # TrialProc
