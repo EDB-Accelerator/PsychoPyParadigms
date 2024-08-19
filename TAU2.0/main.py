@@ -157,7 +157,7 @@ except:
               'version': user_info['Stimuli Set']
               }
 
-win = visual.Window(size=(1024, 768), fullscr=False, color=(0, 0, 0), colorSpace='rgb')
+win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(0, 0, 0), colorSpace='rgb')
 
 display_text_and_wait_keys(win,'Instructions\n\n'
                 'In each trial, a + sign will appear in the center of the screen,\n'
