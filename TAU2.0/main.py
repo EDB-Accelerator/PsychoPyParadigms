@@ -78,8 +78,8 @@ def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode=
     else:
         top_position = [0, 0.4]  # Adjust as needed
         bottom_position = [0, -0.4]  # Adjust as needed
-        top_image = visual.TextStim(win, text=face_top, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0), wrapWidth=2)
-        bottom_image = visual.TextStim(win, text=face_bottom, color=(1, 1, 1), colorSpace='rgb', pos=(0, -0.4),
+        top_image = visual.TextStim(win, text=face_top, color=(1, 1, 1), colorSpace='rgb', pos=top_position, wrapWidth=2)
+        bottom_image = visual.TextStim(win, text=face_bottom, color=(1, 1, 1), colorSpace='rgb', pos=bottom_position,
                                        wrapWidth=2)
     # Draw the images on the window
     top_image.draw()
@@ -195,6 +195,7 @@ for list_idx in range(2):
     # Load and concatenate all files into a single DataFrame
     df_all = load_and_concat_csv_files(prefixes, categories)
 
+
     # Load ITI files
     df_iti = pd.read_csv("timing/ITIList.csv")
     ITIs = list(df_iti['ITIDur']) * 6
@@ -203,8 +204,8 @@ for list_idx in range(2):
     # Shuffle the combined DataFrame
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
-    # for i in range(len(df_all)):
-    for i in range(5):
+    for i in range(len(df_all)):
+    # for i in range(5):
         trial_id = i + 1
         df = df_all.iloc[i]
 
@@ -213,7 +214,7 @@ for list_idx in range(2):
         display_text_and_wait_given_sec(win, "+", 0.5)
         fixation_duration = start_time.getTime()
         trial_data.append({
-            'Trial_ID': trial_id,
+            'Trial_ID': str(int(trial_id)),
             'Step': 'Fixation',
             'Stimulus': '+',
             'Duration': fixation_duration,
@@ -248,7 +249,7 @@ for list_idx in range(2):
         display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5)
         face_display_duration = start_time.getTime()
         trial_data.append({
-            'Trial_ID': trial_id,
+            'Trial_ID': str(int(trial_id)),
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
             'Duration': face_display_duration,
@@ -292,7 +293,7 @@ for list_idx in range(2):
         response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
         face_display_duration = start_time.getTime()
         trial_data.append({
-            'Trial_ID': trial_id,
+            'Trial_ID': str(int(trial_id)),
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
 
@@ -324,7 +325,7 @@ for list_idx in range(2):
         display_text_and_wait_given_sec(win,"",ITIs[i]/1000)
         iti_duration = start_time.getTime()
         trial_data.append({
-            'Trial_ID': trial_id,
+            'Trial_ID': str(int(trial_id)),
             'Step': 'ITI',
             'Stimulus': 'ITI',
             'Duration': iti_duration,
@@ -350,7 +351,7 @@ for list_idx in range(2):
         display_text_and_wait_given_sec(win, "+", 2.5)
         fixation_duration = start_time.getTime()
         trial_data.append({
-            'Trial_ID': trial_id,
+            'Trial_ID': str(int(trial_id)),
             'Step': 'Fixation',
             'Stimulus': '+',
             'Duration': fixation_duration,

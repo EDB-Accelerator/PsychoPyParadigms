@@ -1,4 +1,3 @@
-# Python3-based package
 """
 MIT License
 
