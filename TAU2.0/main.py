@@ -37,9 +37,20 @@ def display_text_and_wait_keys(win,text,keys):
     # Flip the window (i.e., display the stimulus)
     win.flip()
 
-    # Wait for a key press (specifically the spacebar)
-    keys = event.waitKeys(keyList=keys)
-
+    if keys != "any":
+        # Wait for a key press (specifically the spacebar)
+        keys = event.waitKeys(keyList=keys)
+    else:
+        # # Continue waiting for key presses until a key other than '2' or '4' is pressed
+        # valid_key = False
+        # pressed_key = None
+        # while not valid_key:
+        #     keys = event.getKeys()
+        #     if keys:
+        #         pressed_key = keys[0]
+        #         if pressed_key not in ['2', '4']:
+        #             valid_key = True
+        keys = event.waitKeys()
     return keys
 
 def display_text_and_wait_given_sec(win,text,wait_time):
@@ -51,6 +62,9 @@ def display_text_and_wait_given_sec(win,text,wait_time):
         frame_image.draw()
 
     text = visual.TextStim(win, text=text, color=(-1, -1, -1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
+    if text == "Thank you for participating!":
+        text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
+
 
     # Draw the text stimulus to the window
     text.draw()
@@ -58,18 +72,18 @@ def display_text_and_wait_given_sec(win,text,wait_time):
     # Flip the window (i.e., display the stimulus)
     win.flip()
 
-    # Display the text and check for a key press within 1 second
+    # Display the text and check for a key press within given second
     user_input = None
     timer = core.Clock()
     while timer.getTime() < wait_time:  # Run for 1 second
-        if user_input == '4' and user_input == '6':
+        if user_input == '2' and user_input == '4':
             continue
         keys = event.getKeys()
         if keys:
             user_input = keys[0]
             # print(user_input)
             continue
-    return user_input if user_input == '4' or user_input == '6' else None
+    return user_input if user_input == '4' or user_input == '2' else None
 
 def display_check_scanner(win):
     info = {}
@@ -184,7 +198,7 @@ display_text_and_wait_keys(win,'Instructions\n\n'
                 'if the target is <, press the left button.\n'
                 'if the target is >, press the right button.\n\n'
                 'Respond as quickly as you can without making mistakes\n\n'
-                'Press any button to start.', ['5'])
+                'Press any button to start.', "any")
 
 # Create a window
 key = display_text_and_wait_given_sec(win," ",1.0)
@@ -233,7 +247,7 @@ for list_idx in range(2):
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
     for i in range(len(df_all)):
-    # for i in range(5):
+    # for i in range(10):
         trial_id = i + 1
         df = df_all.iloc[i]
 
@@ -242,6 +256,9 @@ for list_idx in range(2):
         display_text_and_wait_given_sec(win, "+", 0.5)
         fixation_duration = start_time.getTime()
         trial_data.append({
+            'Subject ID': params['sdan'],
+            'Session Number': params['session'],
+            'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
             'Step': 'Fixation',
             'Stimulus': '+',
@@ -277,6 +294,9 @@ for list_idx in range(2):
         display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5)
         face_display_duration = start_time.getTime()
         trial_data.append({
+            'Subject ID': params['sdan'],
+            'Session Number': params['session'],
+            'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
@@ -322,6 +342,9 @@ for list_idx in range(2):
         response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1)
         face_display_duration = start_time.getTime()
         trial_data.append({
+            'Subject ID': params['sdan'],
+            'Session Number': params['session'],
+            'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
             'Step': 'Display Faces',
             'Stimulus': f'{FaceTop} / {FaceBottom}',
@@ -332,9 +355,9 @@ for list_idx in range(2):
             'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
             'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
             'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-            'Response': str(response) if response is not None else "",
-            'ResponseTime': str(response_time) if response_time is not None else "",
-            'Correctness': (
+            'Response': "" if df["type"] == "null" else str(response) if response is not None else "",
+            'ResponseTime': "" if df["type"] == "null" else str(response_time) if response_time is not None else "",
+            'Correctness': "" if df["type"] == "null" else (
                 "No Response" if response is None else
                 "Correct" if (response == "4" and df["ProbeType"] == "left") or (
                             response == "2" and df["ProbeType"] == "right") else
@@ -354,6 +377,9 @@ for list_idx in range(2):
         display_text_and_wait_given_sec(win,"",ITIs[i]/1000)
         iti_duration = start_time.getTime()
         trial_data.append({
+            'Subject ID': params['sdan'],
+            'Session Number': params['session'],
+            'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
             'Step': 'ITI',
             'Stimulus': 'Blank',
@@ -402,35 +428,38 @@ for list_idx in range(2):
     })
 
     # Rest
-    start_time = core.Clock()
-    display_text_and_wait_keys(win, 'Please rest', ['5'])
-    rest_duration = start_time.getTime()
-    trial_data.append({
-        'Trial_ID': None,
-        'Step': 'REST',
-        'Stimulus': 'Please Rest',
+    if list_idx == 0:
+        start_time = core.Clock()
+        display_text_and_wait_keys(win, 'Please rest', ['5'])
+        rest_duration = start_time.getTime()
+        trial_data.append({
+            'Subject ID': params['sdan'],
+            'Session Number': params['session'],
+            'Stimuli Set': params['version'],
+            'Trial_ID': None,
+            'Step': 'REST',
+            'Stimulus': 'Please Rest',
 
-        'Duration': rest_duration,
+            'Duration': rest_duration,
 
-        'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
-        'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
-        'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
-        'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-        'Response': None,
-        'ResponseTime': None,
-        'Correctness': "",
-        'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
-        'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
-        'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
-        'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
-        'Condition': df['Condition'] if 'Condition' in df else None,
+            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+            'Response': None,
+            'ResponseTime': None,
+            'Correctness': "",
+            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+            'Condition': df['Condition'] if 'Condition' in df else None,
 
-        'Type': None
-    })
+            'Type': None
+        })
 
 # Convert the list of trial data to a DataFrame
 df_trials = pd.DataFrame(trial_data)
-
 
 from datetime import datetime
 
@@ -442,8 +471,7 @@ formatted_datetime = now.strftime("%Y%m%d_%H%M%S")
 df_trials.to_csv(f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv', index=False)
 
 # Thank you screen.
-display_text_and_wait_given_sec(win,"Thank you!",1.0)
-
+display_text_and_wait_given_sec(win,"Thank you for participating!",2.0)
 
 # Close the window and quit PsychoPy
 win.close()
