@@ -1,5 +1,6 @@
 from psychopy import visual, event, core,gui
 import sys,os
+import platform
 sys.path.insert(1,'src')
 from psychopy import prefs, gui
 import datetime
@@ -20,7 +21,8 @@ def get_user_input():
     userInput.addField('Subject ID', )
     userInput.addField('Session Number', )
     userInput.addField('Stimuli Set', choices = ['A','B'])
-    userInput.addField('Full Screen', True)
+    if platform.system() != "Darwin":
+        userInput.addField('FullScreen', True)
     UserInputBank = userInput.show()
 
     return UserInputBank
