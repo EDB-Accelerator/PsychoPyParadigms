@@ -430,7 +430,7 @@ for list_idx in range(2):
     # Rest
     if list_idx == 0:
         start_time = core.Clock()
-        display_text_and_wait_keys(win, 'Please rest', ['5'])
+        display_text_and_wait_keys(win, 'Please rest', "any")
         rest_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
