@@ -215,15 +215,17 @@ import random
 # Function to load and concatenate CSV files
 def load_and_concat_csv_files(prefixes, categories, directory='timing'):
     dataframes = []
-    for prefix in prefixes:
-        for category in categories:
-            if category in ['NTc', 'NN', 'NTi']:
+    for category in categories:
+        if category in ['NTc', 'NN', 'NTi']:
+            for prefix in prefixes:
                 df = pd.read_csv(f'{directory}/{prefix}{category}.csv')
                 df['type'] = f'{prefix}{category}'
-            elif category in ['null','baseline']:
-                df = pd.read_csv(f'{directory}/{category}.csv')
-                df['type'] = f'{category}'
+                dataframes.append(df)
+        elif category in ['null','baseline']:
+            df = pd.read_csv(f'{directory}/{category}.csv')
+            df['type'] = f'{category}'
             dataframes.append(df)
+
     return pd.concat(dataframes, ignore_index=True)
 
 # Prefixes and categories that apply
