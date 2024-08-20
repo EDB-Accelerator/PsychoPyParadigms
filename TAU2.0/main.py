@@ -41,16 +41,16 @@ def display_text_and_wait_keys(win,text,keys):
         # Wait for a key press (specifically the spacebar)
         keys = event.waitKeys(keyList=keys)
     else:
-        # # Continue waiting for key presses until a key other than '2' or '4' is pressed
-        # valid_key = False
-        # pressed_key = None
-        # while not valid_key:
-        #     keys = event.getKeys()
-        #     if keys:
-        #         pressed_key = keys[0]
-        #         if pressed_key not in ['2', '4']:
-        #             valid_key = True
-        keys = event.waitKeys()
+        # Continue waiting for key presses until a key other than '2' or '4' is pressed
+        valid_key = False
+        pressed_key = None
+        while not valid_key:
+            keys = event.getKeys()
+            if keys:
+                pressed_key = keys[0]
+                if pressed_key not in ['2', '4']:
+                    valid_key = True
+        # keys = event.waitKeys()
     return keys
 
 def display_text_and_wait_given_sec(win,text,wait_time):
@@ -248,8 +248,8 @@ for list_idx in range(2):
     # Shuffle the combined DataFrame
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
-    for i in range(len(df_all)):
-    # for i in range(10):
+    # for i in range(len(df_all)):
+    for i in range(10):
         trial_id = i + 1
         df = df_all.iloc[i]
 
@@ -280,7 +280,7 @@ for list_idx in range(2):
             'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
             'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'Type': None
+            'Type': df['type']
         })
 
         # 2. Display Faces
@@ -348,8 +348,8 @@ for list_idx in range(2):
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
-            'Step': 'Display Faces',
-            'Stimulus': f'{FaceTop} / {FaceBottom}',
+            'Step': 'Display Probes',
+            'Stimulus': f'{ProbeTop} / {ProbeBottom}',
 
             'Duration': face_display_duration,
 
@@ -400,7 +400,7 @@ for list_idx in range(2):
             'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
             'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'Type': None
+            'Type': df['type']
         })
 
     # Fixation
@@ -426,7 +426,7 @@ for list_idx in range(2):
         'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
         'Condition': df['Condition'] if 'Condition' in df else None,
 
-        'Type': None
+        'Type': df['type']
     })
 
     # Rest
@@ -457,7 +457,7 @@ for list_idx in range(2):
             'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
             'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'Type': None
+            'Type': df['type']
         })
 
 # Convert the list of trial data to a DataFrame
@@ -469,7 +469,33 @@ from datetime import datetime
 now = datetime.now()
 formatted_datetime = now.strftime("%Y%m%d_%H%M%S")
 
-# Save the DataFrame to a CSV file with date and time in the filename
+import os
+
+# Define the folder name
+folder_name = "results"
+
+# Check if the folder exists, if not, create it
+if not os.path.exists(folder_name):
+    os.makedirs(folder_name)
+    print(f'Folder "{folder_name}" created.')
+else:
+    print(f'Folder "{folder_name}" already exists.')
+
+# Define the desired column order based on the keys
+column_order = [
+    'Subject ID', 'Session Number', 'Stimuli Set', 'Trial_ID', 'Step', 'Stimulus',
+    'Duration', 'FaceTop', 'FaceBottom', 'ProbeTop', 'ProbeBottom',
+    'Response', 'ResponseTime', 'Correctness', 'CorrectResponse',
+    'ProbeBehind', 'ProbeType', 'ProbeLocation', 'Condition', 'Type'
+]
+
+# Identify any additional columns that are not in the specified column order
+additional_columns = [col for col in df_trials.columns if col not in column_order]
+
+# Reorder the DataFrame with the specified columns first, followed by any additional columns
+df_trials = df_trials[column_order + additional_columns]
+
+# Save the DataFrame to a CSV file with the ordered columns
 df_trials.to_csv(f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv', index=False)
 
 # Thank you screen.
