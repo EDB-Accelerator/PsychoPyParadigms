@@ -61,10 +61,11 @@ def display_text_and_wait_given_sec(win,text,wait_time):
         frame_image.size = [dimension * 1.5 for dimension in original_size]
         frame_image.draw()
 
-    text = visual.TextStim(win, text=text, color=(-1, -1, -1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
+    # text = visual.TextStim(win, text=text, color=(-1, -1, -1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
     if text == "Thank you for participating!":
         text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
-
+    else:
+        text = visual.TextStim(win, text=text, color=(-1, -1, -1), colorSpace='rgb', pos=(0, 0), wrapWidth=2)
 
     # Draw the text stimulus to the window
     text.draw()
@@ -248,8 +249,9 @@ for list_idx in range(2):
     # Shuffle the combined DataFrame
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
-    # for i in range(len(df_all)):
-    for i in range(10):
+    trials_length = 10 if params['sdan']=="debug" else len(df_all)
+    for i in range(trials_length):
+    # for i in range(10):
         trial_id = i + 1
         df = df_all.iloc[i]
 
