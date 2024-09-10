@@ -20,7 +20,7 @@ def get_user_input():
     userInput = gui.Dlg(title="Experiment Startup")
     userInput.addField('Subject ID', )
     userInput.addField('Session Number', )
-    userInput.addField('Stimuli Set', choices = ['A','B'])
+    userInput.addField('Stimuli Set', choices = ['B'])
     if platform.system() != "Darwin":
         userInput.addField('FullScreen', True)
     UserInputBank = userInput.show()
@@ -53,7 +53,7 @@ def display_text_and_wait_keys(win,text,keys):
         # keys = event.waitKeys()
     return keys
 
-def display_text_and_wait_given_sec(win,text,wait_time):
+def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black"):
     # Create a text stimulus
     if text == "+" or text == "":
         frame_image = visual.ImageStim(win=win, image="enlarged_images/frame.bmp", pos=[0, 0])
@@ -62,7 +62,8 @@ def display_text_and_wait_given_sec(win,text,wait_time):
         frame_image.draw()
 
     # text = visual.TextStim(win, text=text, color=(-1, -1, -1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
-    if text == "Thank you for participating!":
+    # if text == "Thank you for participating!" or fontcolor == "white":
+    if fontcolor == "white":
         text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
     else:
         text = visual.TextStim(win, text=text, color=(-1, -1, -1), colorSpace='rgb', pos=(0, 0), wrapWidth=2)
@@ -208,6 +209,9 @@ key = display_text_and_wait_given_sec(win," ",1.0)
 # display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
 # win.mouseVisible = False
 display_text_and_wait_keys(win,'Waiting for the scanner..', ['5'])
+
+# Get Ready Windows
+display_text_and_wait_given_sec(win,"Get Ready",4.0,fontcolor="white")
 
 # TrialProc
 import pandas as pd
@@ -378,7 +382,7 @@ for list_idx in range(2):
 
         # ITI
         start_time = core.Clock()
-        display_text_and_wait_given_sec(win,"",ITIs[i]/1000)
+        display_text_and_wait_given_sec(win,"+",ITIs[i]/1000)
         iti_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -462,6 +466,26 @@ for list_idx in range(2):
             'Type': df['type']
         })
 
+        display_text_and_wait_keys(win, 'Instructions\n\n'
+                                        'In each trial, a + sign will appear in the center of the screen,\n'
+                                        'followed by a pair of faces, and then by a target: < or >\n\n'
+                                        'if the target is <, press the left button.\n'
+                                        'if the target is >, press the right button.\n\n'
+                                        'Respond as quickly as you can without making mistakes\n\n'
+                                        'Press any button to start.', "any")
+
+        # Create a window
+        key = display_text_and_wait_given_sec(win, " ", 1.0)
+        # win.mouseVisible = True
+        # display_check_scanner(win)
+        # display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
+        # win.mouseVisible = False
+        display_text_and_wait_keys(win, 'Waiting for the scanner..', ['5'])
+
+        # Get Ready Windows
+        display_text_and_wait_given_sec(win, "Get Ready", 4.0, fontcolor="white")
+
+
 # Convert the list of trial data to a DataFrame
 df_trials = pd.DataFrame(trial_data)
 
@@ -501,7 +525,7 @@ df_trials = df_trials[column_order + additional_columns]
 df_trials.to_csv(f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv', index=False)
 
 # Thank you screen.
-display_text_and_wait_given_sec(win,"Thank you for participating!",2.0)
+display_text_and_wait_given_sec(win,"Thank you for participating!",2.0,fontcolor="white")
 
 # Close the window and quit PsychoPy
 win.close()
