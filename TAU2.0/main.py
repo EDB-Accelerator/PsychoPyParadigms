@@ -270,7 +270,7 @@ for list_idx in range(2):
 
         # 1. Fixation Cross
         start_time = core.Clock()
-        display_text_and_wait_given_sec(win, "+", 0.5,debugtext=f"trial type:{df['type']} / Fixation (+)", debugmode=debugmode)
+        display_text_and_wait_given_sec(win, "+", 0.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)", debugmode=debugmode)
         fixation_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -309,10 +309,10 @@ for list_idx in range(2):
         # bottom_image.draw()
         # win.flip()
         if df['type'] != 'null':
-            display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5,debugtext=f"trial type:{df['type']} / Face",debugmode=debugmode)
+            display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5,debugtext=f"trial type:{df['type']} / Stimuli:Face",debugmode=debugmode)
         else:
             # display_text_and_wait_given_sec(win, "+", 0.5)
-            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Face (+)",debugmode=debugmode)
+            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Face (+)",debugmode=debugmode)
         face_display_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -320,7 +320,7 @@ for list_idx in range(2):
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
             'Step': 'Display Faces' if df['type'] != 'null' else 'Display Face (+ is presented: null trial)',
-            'Stimulus': f'{FaceTop} / {FaceBottom}'  if df['type'] != 'null' else '+',
+            'Stimulus': f'{FaceTop} / Stimuli:{FaceBottom}'  if df['type'] != 'null' else '+',
             'Duration': face_display_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -361,10 +361,10 @@ for list_idx in range(2):
             ProbeBottom = ""  # Default to an empty string if the value is unexpected
         # response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
         if df['type'] != 'null':
-            response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,debugtext=f"trial type:{df['type']} / Probe",debugmode=debugmode)
+            response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,debugtext=f"trial type:{df['type']} / Stimuli:Probe",debugmode=debugmode)
         else:
             # display_text_and_wait_given_sec(win, "+", 0.5)
-            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Probe (+)",debugmode=debugmode)
+            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Probe (+)",debugmode=debugmode)
             response, response_time = None,None
         face_display_duration = start_time.getTime()
         trial_data.append({
@@ -373,7 +373,7 @@ for list_idx in range(2):
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
             'Step': 'Display Probes',
-            'Stimulus': f'{ProbeTop} / {ProbeBottom}',
+            'Stimulus': f'{ProbeTop} / Stimuli:{ProbeBottom}',
 
             'Duration': face_display_duration,
 
@@ -400,7 +400,7 @@ for list_idx in range(2):
 
         # ITI
         start_time = core.Clock()
-        display_text_and_wait_given_sec(win,"+",ITIs[i]/1000,debugtext=f"trial type:{df['type']} / ITI (+)",debugmode=debugmode)
+        display_text_and_wait_given_sec(win,"+",ITIs[i]/1000,debugtext=f"trial type:{df['type']} / Stimuli:ITI (+)",debugmode=debugmode)
         iti_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -429,7 +429,7 @@ for list_idx in range(2):
 
     # Fixation
     start_time = core.Clock()
-    display_text_and_wait_given_sec(win, "+", 2.5,debugtext=f"trial type:{df['type']} / Fixation (+)",debugmode=debugmode)
+    display_text_and_wait_given_sec(win, "+", 2.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)",debugmode=debugmode)
     fixation_duration = start_time.getTime()
     trial_data.append({
         'Trial_ID': str(int(trial_id)),
