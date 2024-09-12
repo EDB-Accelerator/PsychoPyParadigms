@@ -299,15 +299,18 @@ for list_idx in range(2):
         # top_image.draw()
         # bottom_image.draw()
         # win.flip()
-        display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5)
+        if df['type'] != 'null':
+            display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5)
+        else:
+            display_text_and_wait_given_sec(win, "+", 0.5)
         face_display_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
-            'Step': 'Display Faces',
-            'Stimulus': f'{FaceTop} / {FaceBottom}',
+            'Step': 'Display Faces' if df['type'] != 'null' else 'Display Face (+ is presented: null trial)',
+            'Stimulus': f'{FaceTop} / {FaceBottom}'  if df['type'] != 'null' else '+',
             'Duration': face_display_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
