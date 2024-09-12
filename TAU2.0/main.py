@@ -53,7 +53,7 @@ def display_text_and_wait_keys(win,text,keys):
         # keys = event.waitKeys()
     return keys
 
-def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black"):
+def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black",debugtext=None,debugmode=False):
     # Create a text stimulus
     if text == "+" or text == "":
         frame_image = visual.ImageStim(win=win, image="enlarged_images/frame.bmp", pos=[0, 0])
@@ -70,6 +70,9 @@ def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black"):
 
     # Draw the text stimulus to the window
     text.draw()
+    if debugmode:
+        text2 = visual.TextStim(win, text=debugtext, color='red', pos=(0, -0.8), wrapWidth=2)
+        text2.draw()
 
     # Flip the window (i.e., display the stimulus)
     win.flip()
@@ -92,7 +95,8 @@ def display_check_scanner(win):
     gui.DlgFromDict(dictionary=info,title='Scanner Prepared?')
     # core.quit()  # the user hit cancel so exit
 
-def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode="face"):
+# def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode="face"):
+def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time, debugtext=None,debugmode=False):
     # Define the positions for the images
     top_position = [0, 0.4]  # Adjust as needed
     bottom_position = [0, -0.4]  # Adjust as needed
@@ -122,6 +126,10 @@ def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time,mode=
     frame_image.draw()
     top_image.draw()
     bottom_image.draw()
+    # if debugtext != None:
+    if debugmode:
+        text2 = visual.TextStim(win, text=debugtext, color='red', pos=(0, -0.8), wrapWidth=2)
+        text2.draw()
 
     # Flip the window (i.e., display the stimulus)
     win.flip()
@@ -253,15 +261,16 @@ for list_idx in range(2):
     # Shuffle the combined DataFrame
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
-    trials_length = 10 if params['sdan']=="debug" else len(df_all)
-    for i in range(trials_length):
+    # trials_length = 10 if params['sdan']=="debug" else len(df_all)
+    debugmode = False if params['sdan']!="debug" else True
+    for i in range(len(df_all)):
     # for i in range(10):
         trial_id = i + 1
         df = df_all.iloc[i]
 
         # 1. Fixation Cross
         start_time = core.Clock()
-        display_text_and_wait_given_sec(win, "+", 0.5)
+        display_text_and_wait_given_sec(win, "+", 0.5,debugtext=f"trial type:{df['type']} / Fixation (+)", debugmode=debugmode)
         fixation_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -300,9 +309,10 @@ for list_idx in range(2):
         # bottom_image.draw()
         # win.flip()
         if df['type'] != 'null':
-            display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5)
+            display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5,debugtext=f"trial type:{df['type']} / Face",debugmode=debugmode)
         else:
-            display_text_and_wait_given_sec(win, "+", 0.5)
+            # display_text_and_wait_given_sec(win, "+", 0.5)
+            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Face (+)",debugmode=debugmode)
         face_display_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -350,7 +360,12 @@ for list_idx in range(2):
         else:
             ProbeBottom = ""  # Default to an empty string if the value is unexpected
         # response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
-        response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1)
+        if df['type'] != 'null':
+            response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,debugtext=f"trial type:{df['type']} / Probe",debugmode=debugmode)
+        else:
+            # display_text_and_wait_given_sec(win, "+", 0.5)
+            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Probe (+)",debugmode=debugmode)
+            response, response_time = None,None
         face_display_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -385,7 +400,7 @@ for list_idx in range(2):
 
         # ITI
         start_time = core.Clock()
-        display_text_and_wait_given_sec(win,"+",ITIs[i]/1000)
+        display_text_and_wait_given_sec(win,"+",ITIs[i]/1000,debugtext=f"trial type:{df['type']} / ITI (+)",debugmode=debugmode)
         iti_duration = start_time.getTime()
         trial_data.append({
             'Subject ID': params['sdan'],
@@ -414,7 +429,7 @@ for list_idx in range(2):
 
     # Fixation
     start_time = core.Clock()
-    display_text_and_wait_given_sec(win, "+", 2.5)
+    display_text_and_wait_given_sec(win, "+", 2.5,debugtext=f"trial type:{df['type']} / Fixation (+)",debugmode=debugmode)
     fixation_duration = start_time.getTime()
     trial_data.append({
         'Trial_ID': str(int(trial_id)),
