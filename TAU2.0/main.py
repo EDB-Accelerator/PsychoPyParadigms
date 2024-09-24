@@ -8,6 +8,7 @@ import datetime
 # Global Exit
 event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
+
 # Function to display the input dialog and return the results
 def get_user_input():
     # info = {'Subject Number': '', 'Session Number': '', 'Stimuli Set': ['A', 'B']}
@@ -199,6 +200,19 @@ except:
               'version': user_info['Stimuli Set']
               }
 
+from datetime import datetime
+
+# Get the current date and time
+now = datetime.now()
+formatted_datetime = now.strftime("%Y%m%d_%H%M%S")
+
+# Define the filename
+partial_filename = f'results/subject_{params["sdan"]}_session_{params["session"]}_tmp.csv'
+final_filename = f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv'
+
+
+
+
 # win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(74, 96, 93), colorSpace='rgb255')
 win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(-1, -1, -1), colorSpace='rgb')
 win.mouseVisible = False
@@ -263,6 +277,23 @@ for list_idx in range(2):
 
     # trials_length = 10 if params['sdan']=="debug" else len(df_all)
     debugmode = False if params['sdan']!="debug" else True
+
+
+    def save_trial_data():
+        # Convert the list of trial data to a DataFrame
+        df_trials = pd.DataFrame(trial_data)
+
+        # Save the DataFrame to a CSV file
+        df_trials.to_csv(partial_filename, index=False)
+
+
+    def append_and_save_trial_data(new_data):
+        # Append new data to trial_data
+        trial_data.append(new_data)
+
+        # Save the current trial data to a file
+        save_trial_data()
+
     for i in range(len(df_all)):
     # for i in range(10):
         trial_id = i + 1
@@ -272,7 +303,7 @@ for list_idx in range(2):
         start_time = core.Clock()
         display_text_and_wait_given_sec(win, "+", 0.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)", debugmode=debugmode)
         fixation_duration = start_time.getTime()
-        trial_data.append({
+        append_and_save_trial_data({
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
@@ -314,7 +345,7 @@ for list_idx in range(2):
             # display_text_and_wait_given_sec(win, "+", 0.5)
             display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Face (+)",debugmode=debugmode)
         face_display_duration = start_time.getTime()
-        trial_data.append({
+        append_and_save_trial_data({
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
@@ -367,7 +398,7 @@ for list_idx in range(2):
             display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Probe (+)",debugmode=debugmode)
             response, response_time = None,None
         face_display_duration = start_time.getTime()
-        trial_data.append({
+        append_and_save_trial_data({
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
@@ -402,7 +433,7 @@ for list_idx in range(2):
         start_time = core.Clock()
         display_text_and_wait_given_sec(win,"+",ITIs[i]/1000,debugtext=f"trial type:{df['type']} / Stimuli:ITI (+)",debugmode=debugmode)
         iti_duration = start_time.getTime()
-        trial_data.append({
+        append_and_save_trial_data({
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
@@ -431,7 +462,7 @@ for list_idx in range(2):
     start_time = core.Clock()
     display_text_and_wait_given_sec(win, "+", 2.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)",debugmode=debugmode)
     fixation_duration = start_time.getTime()
-    trial_data.append({
+    append_and_save_trial_data({
         'Trial_ID': str(int(trial_id)),
         'Step': 'Fixation',
         'Stimulus': '+',
@@ -458,7 +489,7 @@ for list_idx in range(2):
         start_time = core.Clock()
         display_text_and_wait_keys(win, 'Please rest', "any")
         rest_duration = start_time.getTime()
-        trial_data.append({
+        append_and_save_trial_data({
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
@@ -507,11 +538,8 @@ for list_idx in range(2):
 # Convert the list of trial data to a DataFrame
 df_trials = pd.DataFrame(trial_data)
 
-from datetime import datetime
 
-# Get the current date and time
-now = datetime.now()
-formatted_datetime = now.strftime("%Y%m%d_%H%M%S")
+
 
 import os
 
@@ -540,7 +568,10 @@ additional_columns = [col for col in df_trials.columns if col not in column_orde
 df_trials = df_trials[column_order + additional_columns]
 
 # Save the DataFrame to a CSV file with the ordered columns
-df_trials.to_csv(f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv', index=False)
+df_trials.to_csv(final_filename, index=False)
+
+if os.path.exists(partial_filename):
+    os.remove(partial_filename)
 
 # Thank you screen.
 display_text_and_wait_given_sec(win,"Thank you for participating!",2.0,fontcolor="white")
