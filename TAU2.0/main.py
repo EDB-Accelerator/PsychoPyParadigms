@@ -8,6 +8,10 @@ import datetime
 # Global Exit
 event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
+# Function to get the current time with 0.01-second precision, including the date
+def get_current_time():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]  # Up to milliseconds (0.01s scale)
+
 
 # Function to display the input dialog and return the results
 def get_user_input():
@@ -210,11 +214,8 @@ formatted_datetime = now.strftime("%Y%m%d_%H%M%S")
 partial_filename = f'results/subject_{params["sdan"]}_session_{params["session"]}_tmp.csv'
 final_filename = f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv'
 
-
-
-
 # win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(74, 96, 93), colorSpace='rgb255')
-win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(-1, -1, -1), colorSpace='rgb')
+win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(-1, -1, -1), colorSpace='rgb',waitBlanking=False)
 win.mouseVisible = False
 display_text_and_wait_keys(win,'Instructions\n\n'
                 'In each trial, a + sign will appear in the center of the screen,\n'
@@ -276,12 +277,20 @@ for list_idx in range(2):
     df_all = df_all.sample(frac=1).reset_index(drop=True)
 
     # trials_length = 10 if params['sdan']=="debug" else len(df_all)
-    debugmode = False if params['sdan']!="debug" else True
+    debugmode = False if "debug" not in params['sdan'] else True
 
+    # Define the desired column order
+    column_order = [
+        'Subject ID', 'Session Number', 'Stimuli Set', 'Trial_ID', 'Time Stamp',
+        'Step', 'Stimulus', 'Duration (Spec)', 'Duration', 'FaceTop', 'FaceBottom',
+        'ProbeTop', 'ProbeBottom', 'Response', 'ResponseTime', 'Correctness',
+        'CorrectResponse', 'ProbeBehind', 'ProbeType', 'ProbeLocation', 'Condition', 'Type'
+    ]
 
     def save_trial_data():
         # Convert the list of trial data to a DataFrame
         df_trials = pd.DataFrame(trial_data)
+        df_trials = df_trials[column_order]
 
         # Save the DataFrame to a CSV file
         df_trials.to_csv(partial_filename, index=False)
@@ -294,7 +303,8 @@ for list_idx in range(2):
         # Save the current trial data to a file
         save_trial_data()
 
-    for i in range(len(df_all)):
+    lenTrials = len(df_all) if "short" not in params["sdan"] else 10
+    for i in range(lenTrials):
     # for i in range(10):
         trial_id = i + 1
         df = df_all.iloc[i]
@@ -308,8 +318,10 @@ for list_idx in range(2):
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
+            'Time Stamp': get_current_time(),
             'Step': 'Fixation',
             'Stimulus': '+',
+            'Duration (Spec)': str(0.5),
             'Duration': fixation_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -350,8 +362,10 @@ for list_idx in range(2):
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
+            'Time Stamp': get_current_time(),
             'Step': 'Display Faces' if df['type'] != 'null' else 'Display Face (+ is presented: null trial)',
             'Stimulus': f'{FaceTop} / Stimuli:{FaceBottom}'  if df['type'] != 'null' else '+',
+            'Duration (Spec)': str(0.5),
             'Duration': face_display_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -403,9 +417,10 @@ for list_idx in range(2):
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
+            'Time Stamp': get_current_time(),
             'Step': 'Display Probes',
             'Stimulus': f'{ProbeTop} / Stimuli:{ProbeBottom}',
-
+            'Duration (Spec)': str(0.5),
             'Duration': face_display_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -438,8 +453,10 @@ for list_idx in range(2):
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
             'Trial_ID': str(int(trial_id)),
+            'Time Stamp': get_current_time(),
             'Step': 'ITI',
             'Stimulus': 'Blank',
+            'Duration (Spec)': str(ITIs[i]/1000),
             'Duration': iti_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -463,9 +480,14 @@ for list_idx in range(2):
     display_text_and_wait_given_sec(win, "+", 2.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)",debugmode=debugmode)
     fixation_duration = start_time.getTime()
     append_and_save_trial_data({
+        'Subject ID': params['sdan'],
+        'Session Number': params['session'],
+        'Stimuli Set': params['version'],
         'Trial_ID': str(int(trial_id)),
+        'Time Stamp': get_current_time(),
         'Step': 'Fixation',
         'Stimulus': '+',
+        'Duration (Spec)': str(2.5),
         'Duration': fixation_duration,
 
         'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -494,9 +516,10 @@ for list_idx in range(2):
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
             'Trial_ID': None,
+            'Time Stamp': get_current_time(),
             'Step': 'REST',
             'Stimulus': 'Please Rest',
-
+            'Duration (Spec)': "Up to user Response time",
             'Duration': rest_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
@@ -552,14 +575,6 @@ if not os.path.exists(folder_name):
     print(f'Folder "{folder_name}" created.')
 else:
     print(f'Folder "{folder_name}" already exists.')
-
-# Define the desired column order based on the keys
-column_order = [
-    'Subject ID', 'Session Number', 'Stimuli Set', 'Trial_ID', 'Step', 'Stimulus',
-    'Duration', 'FaceTop', 'FaceBottom', 'ProbeTop', 'ProbeBottom',
-    'Response', 'ResponseTime', 'Correctness', 'CorrectResponse',
-    'ProbeBehind', 'ProbeType', 'ProbeLocation', 'Condition', 'Type'
-]
 
 # Identify any additional columns that are not in the specified column order
 additional_columns = [col for col in df_trials.columns if col not in column_order]
