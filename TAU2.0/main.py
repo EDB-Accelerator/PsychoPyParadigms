@@ -440,12 +440,14 @@ for list_idx in range(2):
         else:
             ProbeBottom = ""  # Default to an empty string if the value is unexpected
         # response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
+        waitTimeProbe = 1
         if df['type'] != 'null':
             response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,debugtext=f"trial type:{df['type']} / Stimuli:Probe",debugmode=debugmode)
         else:
             # display_text_and_wait_given_sec(win, "+", 0.5)
             display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Probe (+)",debugmode=debugmode)
             response, response_time = None,None
+            waitTimeProbe = 0.5
         face_display_duration = start_time.getTime()
         append_and_save_trial_data({
             'Subject ID': params['sdan'],
@@ -456,7 +458,7 @@ for list_idx in range(2):
             'Time Stamp': get_current_time(),
             'Step': 'Display Probes',
             'Stimulus': f'{ProbeTop} / Stimuli:{ProbeBottom}',
-            'Duration (Spec)': str(0.5),
+            'Duration (Spec)': str(waitTimeProbe),
             'Duration': face_display_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
