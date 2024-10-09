@@ -281,7 +281,7 @@ for list_idx in range(2):
 
     # Define the desired column order
     column_order = [
-        'Subject ID', 'Session Number', 'Stimuli Set', 'Trial_ID', 'Time Stamp',
+        'Subject ID', 'Session Number', 'Stimuli Set', 'Run','Trial_ID', 'Time Stamp',
         'Step', 'Stimulus', 'Duration (Spec)', 'Duration', 'FaceTop', 'FaceBottom',
         'ProbeTop', 'ProbeBottom', 'Response', 'ResponseTime', 'Correctness',
         'CorrectResponse', 'ProbeBehind', 'ProbeType', 'ProbeLocation', 'Condition', 'Type'
@@ -305,9 +305,42 @@ for list_idx in range(2):
 
     lenTrials = len(df_all) if "short" not in params["sdan"] else 10
     for i in range(lenTrials):
+
     # for i in range(10):
         trial_id = i + 1
         df = df_all.iloc[i]
+
+        if i != 0:
+            # Intertrial record
+            inter_duration = start_time.getTime()
+            append_and_save_trial_data({
+                'Subject ID': params['sdan'],
+                'Session Number': params['session'],
+                'Stimuli Set': params['version'],
+                'Run': str(list_idx + 1),
+                'Trial_ID': str(int(trial_id)),
+                'Time Stamp': get_current_time(),
+                'Step': 'Intertrial',
+                'Stimulus': '',
+                'Duration (Spec)': "",
+                'Duration': str(inter_duration),
+
+                'FaceTop': None,
+                'FaceBottom': None,
+                'ProbeTop': None,
+                'ProbeBottom': None,
+                'Response': None,
+                'ResponseTime': None,
+                'Correctness': "",
+
+                'CorrectResponse': None,
+                'ProbeBehind': None,
+                'ProbeType': None,
+                'ProbeLocation': None,
+                'Condition': None,
+
+                'Type': None
+            })
 
         # 1. Fixation Cross
         start_time = core.Clock()
@@ -317,6 +350,7 @@ for list_idx in range(2):
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
+            'Run': str(list_idx+1),
             'Trial_ID': str(int(trial_id)),
             'Time Stamp': get_current_time(),
             'Step': 'Fixation',
@@ -361,6 +395,7 @@ for list_idx in range(2):
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
+            'Run': str(list_idx+1),
             'Trial_ID': str(int(trial_id)),
             'Time Stamp': get_current_time(),
             'Step': 'Display Faces' if df['type'] != 'null' else 'Display Face (+ is presented: null trial)',
@@ -416,6 +451,7 @@ for list_idx in range(2):
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
+            'Run': str(list_idx+1),
             'Trial_ID': str(int(trial_id)),
             'Time Stamp': get_current_time(),
             'Step': 'Display Probes',
@@ -452,6 +488,7 @@ for list_idx in range(2):
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
+            'Run': str(list_idx+1),
             'Trial_ID': str(int(trial_id)),
             'Time Stamp': get_current_time(),
             'Step': 'ITI',
@@ -475,6 +512,8 @@ for list_idx in range(2):
             'Type': df['type']
         })
 
+        start_time = core.Clock()
+
     # Fixation
     start_time = core.Clock()
     display_text_and_wait_given_sec(win, "+", 2.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)",debugmode=debugmode)
@@ -483,6 +522,7 @@ for list_idx in range(2):
         'Subject ID': params['sdan'],
         'Session Number': params['session'],
         'Stimuli Set': params['version'],
+        'Run': str(list_idx + 1),
         'Trial_ID': str(int(trial_id)),
         'Time Stamp': get_current_time(),
         'Step': 'Fixation',
@@ -515,6 +555,7 @@ for list_idx in range(2):
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
+            'Run': str(list_idx+1),
             'Trial_ID': None,
             'Time Stamp': get_current_time(),
             'Step': 'REST',
@@ -552,10 +593,73 @@ for list_idx in range(2):
         # display_check_scanner(win)
         # display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
         # win.mouseVisible = False
+
+        start_time = core.Clock()
         display_text_and_wait_keys(win, 'Waiting for the scanner..', ['5'])
+        wait_duration = start_time.getTime()
+        append_and_save_trial_data({
+            'Subject ID': params['sdan'],
+            'Session Number': params['session'],
+            'Stimuli Set': params['version'],
+            'Run': str(list_idx+1),
+            'Trial_ID': str(int(trial_id)),
+            'Time Stamp': get_current_time(),
+            'Step': 'Waiting for the scanner',
+            'Stimulus': 'Text Displayed: Waiting for the scanner..',
+            'Duration (Spec)': "Up to user Response time",
+            'Duration': wait_duration,
+
+            'FaceTop': None,
+            'FaceBottom': None,
+            'ProbeTop': None,
+            'ProbeBottom': None,
+            'Response': None,
+            'ResponseTime': None,
+            'Correctness': "",
+
+            'CorrectResponse': None,
+            'ProbeBehind': None,
+            'ProbeType': None,
+            'ProbeLocation': None,
+            'Condition': None,
+
+            'Type': None
+        })
 
         # Get Ready Windows
+        start_time = core.Clock()
         display_text_and_wait_given_sec(win, "Get Ready", 4.0, fontcolor="white")
+        wait_duration = start_time.getTime()
+        append_and_save_trial_data({
+            'Subject ID': params['sdan'],
+            'Session Number': params['session'],
+            'Stimuli Set': params['version'],
+            'Run': str(list_idx+1),
+            'Trial_ID': str(int(trial_id)),
+            'Time Stamp': get_current_time(),
+            'Step': 'Get Ready',
+            'Stimulus': 'Text Displayed: Get Ready',
+            'Duration (Spec)': "Up to user Response time",
+            'Duration': wait_duration,
+
+            'FaceTop': None,
+            'FaceBottom': None,
+            'ProbeTop': None,
+            'ProbeBottom': None,
+            'Response': None,
+            'ResponseTime': None,
+            'Correctness': "",
+
+            'CorrectResponse': None,
+            'ProbeBehind': None,
+            'ProbeType': None,
+            'ProbeLocation': None,
+            'Condition': None,
+
+            'Type': None
+        })
+
+
 
 
 # Convert the list of trial data to a DataFrame
