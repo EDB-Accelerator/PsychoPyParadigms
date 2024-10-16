@@ -344,7 +344,11 @@ for list_idx in range(2):
 
         # 1. Fixation Cross
         start_time = core.Clock()
-        display_text_and_wait_given_sec(win, "+", 0.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)", debugmode=debugmode)
+        if df['type'] != 'null':
+            display_text_and_wait_given_sec(win, "+", 0.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)", debugmode=debugmode)
+        else:
+            display_text_and_wait_given_sec(win, "+", 2.5, debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)",
+                                        debugmode=debugmode)
         fixation_duration = start_time.getTime()
         append_and_save_trial_data({
             'Subject ID': params['sdan'],
@@ -387,37 +391,37 @@ for list_idx in range(2):
         # win.flip()
         if df['type'] != 'null':
             display_faces_and_wait_given_sec(win, FaceTop, FaceBottom, 0.5,debugtext=f"trial type:{df['type']} / Stimuli:Face",debugmode=debugmode)
-        else:
-            # display_text_and_wait_given_sec(win, "+", 0.5)
-            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Face (+)",debugmode=debugmode)
-        face_display_duration = start_time.getTime()
-        append_and_save_trial_data({
-            'Subject ID': params['sdan'],
-            'Session Number': params['session'],
-            'Stimuli Set': params['version'],
-            'Run': str(list_idx+1),
-            'Trial_ID': str(int(trial_id)),
-            'Time Stamp': get_current_time(),
-            'Step': 'Display Faces' if df['type'] != 'null' else 'Display Face (+ is presented: null trial)',
-            'Stimulus': f'{FaceTop} / Stimuli:{FaceBottom}'  if df['type'] != 'null' else '+',
-            'Duration (Spec)': str(0.5),
-            'Duration': face_display_duration,
+        # else:
+        #     # display_text_and_wait_given_sec(win, "+", 0.5)
+        #     display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Face (+)",debugmode=debugmode)
+            face_display_duration = start_time.getTime()
+            append_and_save_trial_data({
+                'Subject ID': params['sdan'],
+                'Session Number': params['session'],
+                'Stimuli Set': params['version'],
+                'Run': str(list_idx+1),
+                'Trial_ID': str(int(trial_id)),
+                'Time Stamp': get_current_time(),
+                'Step': 'Display Faces' if df['type'] != 'null' else 'Display Face (+ is presented: null trial)',
+                'Stimulus': f'{FaceTop} / Stimuli:{FaceBottom}'  if df['type'] != 'null' else '+',
+                'Duration (Spec)': str(0.5),
+                'Duration': face_display_duration,
 
-            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
-            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
-            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
-            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-            'Response': "",
-            'ResponseTime': "",
-            'Correctness': "",
-            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
-            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
-            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
-            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
-            'Condition': df['Condition'] if 'Condition' in df else None,
+                'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+                'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+                'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+                'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+                'Response': "",
+                'ResponseTime': "",
+                'Correctness': "",
+                'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+                'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+                'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+                'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+                'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'Type': df['type']
-        })
+                'Type': df['type']
+            })
 
         # Probe
         start_time = core.Clock()
@@ -443,78 +447,79 @@ for list_idx in range(2):
         waitTimeProbe = 1
         if df['type'] != 'null':
             response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,debugtext=f"trial type:{df['type']} / Stimuli:Probe",debugmode=debugmode)
-        else:
-            # display_text_and_wait_given_sec(win, "+", 0.5)
-            display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Probe (+)",debugmode=debugmode)
-            response, response_time = None,None
-            waitTimeProbe = 0.5
-        face_display_duration = start_time.getTime()
-        append_and_save_trial_data({
-            'Subject ID': params['sdan'],
-            'Session Number': params['session'],
-            'Stimuli Set': params['version'],
-            'Run': str(list_idx+1),
-            'Trial_ID': str(int(trial_id)),
-            'Time Stamp': get_current_time(),
-            'Step': 'Display Probes',
-            'Stimulus': f'{ProbeTop} / Stimuli:{ProbeBottom}',
-            'Duration (Spec)': str(waitTimeProbe),
-            'Duration': face_display_duration,
+        # else:
+        #     # display_text_and_wait_given_sec(win, "+", 0.5)
+        #     display_text_and_wait_given_sec(win, "+", 0.5, debugtext=f"trial type:{df['type']} / Stimuli:Probe (+)",debugmode=debugmode)
+        #     response, response_time = None,None
+        #     waitTimeProbe = 0.5
+            face_display_duration = start_time.getTime()
+            append_and_save_trial_data({
+                'Subject ID': params['sdan'],
+                'Session Number': params['session'],
+                'Stimuli Set': params['version'],
+                'Run': str(list_idx+1),
+                'Trial_ID': str(int(trial_id)),
+                'Time Stamp': get_current_time(),
+                'Step': 'Display Probes',
+                'Stimulus': f'{ProbeTop} / Stimuli:{ProbeBottom}',
+                'Duration (Spec)': str(waitTimeProbe),
+                'Duration': face_display_duration,
 
-            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
-            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
-            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
-            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-            'Response': "" if df["type"] == "null" else str(response) if response is not None else "",
-            'ResponseTime': "" if df["type"] == "null" else str(response_time) if response_time is not None else "",
-            'Correctness': "" if df["type"] == "null" else (
-                "No Response" if response is None else
-                "Correct" if (response == "4" and df["ProbeType"] == "left") or (
-                            response == "2" and df["ProbeType"] == "right") else
-                "Incorrect"
-            ),
-            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
-            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
-            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
-            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
-            'Condition': df['Condition'] if 'Condition' in df else None,
+                'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+                'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+                'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+                'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+                'Response': "" if df["type"] == "null" else str(response) if response is not None else "",
+                'ResponseTime': "" if df["type"] == "null" else str(response_time) if response_time is not None else "",
+                'Correctness': "" if df["type"] == "null" else (
+                    "No Response" if response is None else
+                    "Correct" if (response == "4" and df["ProbeType"] == "left") or (
+                                response == "2" and df["ProbeType"] == "right") else
+                    "Incorrect"
+                ),
+                'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+                'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+                'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+                'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+                'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'Type': df['type']
-        })
+                'Type': df['type']
+            })
 
         # ITI
-        start_time = core.Clock()
-        display_text_and_wait_given_sec(win,"+",ITIs[i]/1000,debugtext=f"trial type:{df['type']} / Stimuli:ITI (+)",debugmode=debugmode)
-        iti_duration = start_time.getTime()
-        append_and_save_trial_data({
-            'Subject ID': params['sdan'],
-            'Session Number': params['session'],
-            'Stimuli Set': params['version'],
-            'Run': str(list_idx+1),
-            'Trial_ID': str(int(trial_id)),
-            'Time Stamp': get_current_time(),
-            'Step': 'ITI',
-            'Stimulus': 'Blank',
-            'Duration (Spec)': str(ITIs[i]/1000),
-            'Duration': iti_duration,
+        if df['type'] != 'null':
+            start_time = core.Clock()
+            display_text_and_wait_given_sec(win,"+",ITIs[i]/1000,debugtext=f"trial type:{df['type']} / Stimuli:ITI (+)",debugmode=debugmode)
+            iti_duration = start_time.getTime()
+            append_and_save_trial_data({
+                'Subject ID': params['sdan'],
+                'Session Number': params['session'],
+                'Stimuli Set': params['version'],
+                'Run': str(list_idx+1),
+                'Trial_ID': str(int(trial_id)),
+                'Time Stamp': get_current_time(),
+                'Step': 'ITI',
+                'Stimulus': 'Blank',
+                'Duration (Spec)': str(ITIs[i]/1000),
+                'Duration': iti_duration,
 
-            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
-            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
-            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
-            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
-            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
-            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
-            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
-            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
-            'Condition': df['Condition'] if 'Condition' in df else None,
+                'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+                'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+                'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+                'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+                'Response': None,
+                'ResponseTime': None,
+                'Correctness': "",
+                'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+                'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+                'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+                'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+                'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'Type': df['type']
-        })
+                'Type': df['type']
+            })
 
-        start_time = core.Clock()
+            start_time = core.Clock()
 
     # Fixation
     start_time = core.Clock()
