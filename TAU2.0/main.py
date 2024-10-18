@@ -5,6 +5,11 @@ sys.path.insert(1,'src')
 from psychopy import prefs, gui
 import datetime
 # Initialize a list to hold trial data
+
+# TrialProc
+import pandas as pd
+import random
+
 trial_data = []
 
 # Define the desired column order
@@ -378,9 +383,6 @@ append_and_save_trial_data({
     'Condition': None,
     'Type': None,
 })
-# TrialProc
-import pandas as pd
-import random
 
 # Function to load and concatenate CSV files
 def load_and_concat_csv_files(prefixes, categories, directory='timing'):
