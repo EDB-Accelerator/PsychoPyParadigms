@@ -5,6 +5,30 @@ sys.path.insert(1,'src')
 from psychopy import prefs, gui
 import datetime
 
+# Define the desired column order
+column_order = [
+    'Subject ID', 'Session Number', 'Stimuli Set', 'Run', 'Trial_ID', 'Time Stamp',
+    'Step', 'Stimulus', 'Duration (Spec)', 'Duration', 'FaceTop', 'FaceBottom',
+    'ProbeTop', 'ProbeBottom', 'Response', 'ResponseTime', 'Correctness',
+    'CorrectResponse', 'ProbeBehind', 'ProbeType', 'ProbeLocation', 'Condition', 'Type'
+]
+
+
+def save_trial_data():
+    # Convert the list of trial data to a DataFrame
+    df_trials = pd.DataFrame(trial_data)
+    df_trials = df_trials[column_order]
+
+    # Save the DataFrame to a CSV file
+    df_trials.to_csv(partial_filename, index=False)
+
+
+def append_and_save_trial_data(new_data):
+    # Append new data to trial_data
+    trial_data.append(new_data)
+
+    # Save the current trial data to a file
+    save_trial_data()
 # Global Exit
 event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
@@ -217,6 +241,7 @@ final_filename = f'results/subject_{params["sdan"]}_session_{params["session"]}_
 # win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(74, 96, 93), colorSpace='rgb255')
 win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(-1, -1, -1), colorSpace='rgb',waitBlanking=False)
 win.mouseVisible = False
+start_time = core.Clock()
 display_text_and_wait_keys(win,'Instructions\n\n'
                 'In each trial, a + sign will appear in the center of the screen,\n'
                 'followed by a pair of faces, and then by a target: < or >\n\n'
@@ -224,18 +249,133 @@ display_text_and_wait_keys(win,'Instructions\n\n'
                 'if the target is >, press the right button.\n\n'
                 'Respond as quickly as you can without making mistakes\n\n'
                 'Press any button to start.', "any")
+inst_duration = start_time.getTime()
+append_and_save_trial_data({
+    'Subject ID': params['sdan'],
+    'Session Number': params['session'],
+    'Stimuli Set': params['version'],
+    'Run': None,
+    'Trial_ID': None,
+    'Time Stamp': get_current_time(),
+    'Step': 'Instruction',
+    'Stimulus': 'In each trial, a + sign will appear in the center...',
+    'Duration (Spec)': "Up to user response",
+    'Duration': str(inst_duration),
+
+    'FaceTop': None,
+    'FaceBottom': None,
+    'ProbeTop': None,
+    'ProbeBottom': None,
+    'Response': None,
+    'ResponseTime': None,
+    'Correctness': "",
+
+    'CorrectResponse': None,
+    'ProbeBehind': None,
+    'ProbeType': None,
+    'ProbeLocation': None,
+    'Condition': None,
+    'Type': None,
+})
 
 # Create a window
+start_time = core.Clock()
 key = display_text_and_wait_given_sec(win," ",1.0)
+inst_duration = start_time.getTime()
+append_and_save_trial_data({
+    'Subject ID': params['sdan'],
+    'Session Number': params['session'],
+    'Stimuli Set': params['version'],
+    'Run': None,
+    'Trial_ID': None,
+    'Time Stamp': get_current_time(),
+    'Step': 'Blank Screen',
+    'Stimulus': 'Blank',
+    'Duration (Spec)': "1.0",
+    'Duration': str(inst_duration),
+
+    'FaceTop': None,
+    'FaceBottom': None,
+    'ProbeTop': None,
+    'ProbeBottom': None,
+    'Response': None,
+    'ResponseTime': None,
+    'Correctness': "",
+
+    'CorrectResponse': None,
+    'ProbeBehind': None,
+    'ProbeType': None,
+    'ProbeLocation': None,
+    'Condition': None,
+    'Type': None,
+})
+
 # win.mouseVisible = True
 # display_check_scanner(win)
 # display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
 # win.mouseVisible = False
+start_time = core.Clock()
 display_text_and_wait_keys(win,'Waiting for the scanner..', ['5'])
+inst_duration = start_time.getTime()
+append_and_save_trial_data({
+    'Subject ID': params['sdan'],
+    'Session Number': params['session'],
+    'Stimuli Set': params['version'],
+    'Run': None,
+    'Trial_ID': None,
+    'Time Stamp': get_current_time(),
+    'Step': 'Waiting for Scanner',
+    'Stimulus': 'Waiting for the scanner..',
+    'Duration (Spec)': "Up to user response",
+    'Duration': str(inst_duration),
 
+    'FaceTop': None,
+    'FaceBottom': None,
+    'ProbeTop': None,
+    'ProbeBottom': None,
+    'Response': None,
+    'ResponseTime': None,
+    'Correctness': "",
+
+    'CorrectResponse': None,
+    'ProbeBehind': None,
+    'ProbeType': None,
+    'ProbeLocation': None,
+    'Condition': None,
+    'Type': None,
+})
 # Get Ready Windows
-display_text_and_wait_given_sec(win,"Get Ready",4.0,fontcolor="white")
 
+start_time = core.Clock()
+display_text_and_wait_given_sec(win,"Get Ready",4.0,fontcolor="white")
+inst_duration = start_time.getTime()
+append_and_save_trial_data({
+    'Subject ID': params['sdan'],
+    'Session Number': params['session'],
+    'Stimuli Set': params['version'],
+    'Run': None,
+    'Trial_ID': None,
+    'Time Stamp': get_current_time(),
+    'Step': 'Get Ready Screen',
+    'Stimulus': 'Get Ready',
+    'Duration (Spec)': "4.0",
+    'Duration': str(inst_duration),
+
+    'FaceTop': None,
+    'FaceBottom': None,
+    'ProbeTop': None,
+    'ProbeBottom': None,
+    'Response': None,
+    'ResponseTime': None,
+    'Correctness': "",
+
+    'CorrectResponse': None,
+    'ProbeBehind': None,
+    'ProbeType': None,
+    'ProbeLocation': None,
+    'Condition': None,
+    'Type': None,
+})
 # TrialProc
 import pandas as pd
 import random
@@ -279,29 +419,7 @@ for list_idx in range(2):
     # trials_length = 10 if params['sdan']=="debug" else len(df_all)
     debugmode = False if "debug" not in params['sdan'] else True
 
-    # Define the desired column order
-    column_order = [
-        'Subject ID', 'Session Number', 'Stimuli Set', 'Run','Trial_ID', 'Time Stamp',
-        'Step', 'Stimulus', 'Duration (Spec)', 'Duration', 'FaceTop', 'FaceBottom',
-        'ProbeTop', 'ProbeBottom', 'Response', 'ResponseTime', 'Correctness',
-        'CorrectResponse', 'ProbeBehind', 'ProbeType', 'ProbeLocation', 'Condition', 'Type'
-    ]
 
-    def save_trial_data():
-        # Convert the list of trial data to a DataFrame
-        df_trials = pd.DataFrame(trial_data)
-        df_trials = df_trials[column_order]
-
-        # Save the DataFrame to a CSV file
-        df_trials.to_csv(partial_filename, index=False)
-
-
-    def append_and_save_trial_data(new_data):
-        # Append new data to trial_data
-        trial_data.append(new_data)
-
-        # Save the current trial data to a file
-        save_trial_data()
 
     lenTrials = len(df_all) if "short" not in params["sdan"] else 10
     for i in range(lenTrials):
