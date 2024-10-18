@@ -4,6 +4,8 @@ import platform
 sys.path.insert(1,'src')
 from psychopy import prefs, gui
 import datetime
+# Initialize a list to hold trial data
+trial_data = []
 
 # Define the desired column order
 column_order = [
@@ -400,8 +402,6 @@ def load_and_concat_csv_files(prefixes, categories, directory='timing'):
 prefixes = ['f', 'm']
 categories = ['NTc', 'NN', 'NTi','null','baseline']
 
-# Initialize a list to hold trial data
-trial_data = []
 
 for list_idx in range(2):
 
