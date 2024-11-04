@@ -414,6 +414,10 @@ if params['Version'] == 2:
         dict["Duration"] = time.time() - sectionStartTime
         DictWrite(df, params, dict)
 
+        # Start Music
+        if params['Version'] != 2:
+            UnpauseMusic()
+
         # for trial in range(params['numTrial']):
         if os.path.isfile('.tmp/params.pkl') == False:
             trial = 0
@@ -480,77 +484,77 @@ if params['Version'] == 2:
         # Save the current status.
         with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
             pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
-else:
-    # Eyetracker Calibration.
-    win,io,tracker = EyeTrackerIntialization(params,win)
-    tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
-
-    # Wait for 8 seconds. (Get Ready Screen)
-    message = visual.TextStim(win,
-                              text="Get Ready\n ",
-                              units='norm', wrapWidth=2, color="black")
-    message.draw()
-    win.flip()
-    core.wait(8)
-
-    # Start recording
-    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    sectionStartTime = time.time()
-    dict["Section"] = "Start Recording"
-    dict["Image Displayed"] = "Recording started"
-    dictRaw["Event"] = "Recording started"
-    DictWriteRaw(dfRaw, dictRaw, params)
-
-    tracker.setRecordingState(True)
-
-    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    dict["Duration"] = time.time() - sectionStartTime
-    DictWrite(df, params, dict)
-
-    # Start Music
-    UnpauseMusic()
-
-    # If the program has been resumed, start from trial=0.
-    if os.path.isfile('.tmp/params.pkl') == False:
-        trial = 0
-
-    for trial in range(params['numTrial']):
-        params["TrialCount"] = trial
-        img = (params['ImgList'])[trial]
-
-        # Get emotion labels.
-        emotion,labels = GetEmotionLabelsThreeFour(dfLabel,img)
-
-        # Display face matrix
-        DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
-                      labels=labels,emotion=emotion)
-
-    # Stop Recording
-    dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    sectionStartTime = time.time()
-    dict["Section"] = "Recording Ended"
-    dict["Image Displayed"] = "Recording ended"
-    dictRaw["Event"] = "Recording ended"
-    DictWriteRaw(dfRaw, dictRaw, params)
-
-    tracker.setRecordingState(False)
-
-    dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-    dict["Duration"] = time.time() - sectionStartTime
-    DictWrite(df, params, dict)
-
-    # Import the result (from eyetracker)
-    trackerIO = pylink.EyeLink('100.1.1.1')
-    trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
-
-    # Stop the ioHub Server
-    if params['EyeLinkSupport']:
-        io.quit()
-        trackerIO.close()
-    trial = 0
-    # Save the current status.
-    with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
-        pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
+# else:
+#     # Eyetracker Calibration.
+#     win,io,tracker = EyeTrackerIntialization(params,win)
+#     tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
+#
+#     # Wait for 8 seconds. (Get Ready Screen)
+#     message = visual.TextStim(win,
+#                               text="Get Ready\n ",
+#                               units='norm', wrapWidth=2, color="black")
+#     message.draw()
+#     win.flip()
+#     core.wait(8)
+#
+#     # Start recording
+#     dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+#     sectionStartTime = time.time()
+#     dict["Section"] = "Start Recording"
+#     dict["Image Displayed"] = "Recording started"
+#     dictRaw["Event"] = "Recording started"
+#     DictWriteRaw(dfRaw, dictRaw, params)
+#
+#     tracker.setRecordingState(True)
+#
+#     dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+#     dict["Duration"] = time.time() - sectionStartTime
+#     DictWrite(df, params, dict)
+#
+#     # Start Music
+#     UnpauseMusic()
+#
+#     # If the program has been resumed, start from trial=0.
+#     if os.path.isfile('.tmp/params.pkl') == False:
+#         trial = 0
+#
+#     for trial in range(params['numTrial']):
+#         params["TrialCount"] = trial
+#         img = (params['ImgList'])[trial]
+#
+#         # Get emotion labels.
+#         emotion,labels = GetEmotionLabelsThreeFour(dfLabel,img)
+#
+#         # Display face matrix
+#         DisplayMatrix(df=df,dfRaw=dfRaw,img=img,params=params,dict=dict,dictRaw=dictRaw,win=win,tracker=tracker,
+#                       labels=labels,emotion=emotion)
+#
+#     # Stop Recording
+#     dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+#     sectionStartTime = time.time()
+#     dict["Section"] = "Recording Ended"
+#     dict["Image Displayed"] = "Recording ended"
+#     dictRaw["Event"] = "Recording ended"
+#     DictWriteRaw(dfRaw, dictRaw, params)
+#
+#     tracker.setRecordingState(False)
+#
+#     dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+#     dict["Duration"] = time.time() - sectionStartTime
+#     DictWrite(df, params, dict)
+#
+#     # Import the result (from eyetracker)
+#     trackerIO = pylink.EyeLink('100.1.1.1')
+#     trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+#
+#     # Stop the ioHub Server
+#     if params['EyeLinkSupport']:
+#         io.quit()
+#         trackerIO.close()
+#     trial = 0
+#     # Save the current status.
+#     with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+#         pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
 
 
 # Stop music.
@@ -561,15 +565,15 @@ if params['musicMode'] != 'off':
 # Close the psychopy window.
 # win.close()
 
-if params['Version'] == 2:
-    # Move timing file into 'used' folder.
-    try:
-        os.makedirs('timing/used')
-    except:
-        pass
-
-    params['timingFileNew'] = params['timingFile'].replace('notUsed','used')
-    os.rename(params['timingFile'],params['timingFileNew'])
+# if params['Version'] == 2:
+#     # Move timing file into 'used' folder.
+#     try:
+#         os.makedirs('timing/used')
+#     except:
+#         pass
+#
+#     params['timingFileNew'] = params['timingFile'].replace('notUsed','used')
+#     os.rename(params['timingFile'],params['timingFileNew'])
 
 if params['musicMode'] != 'off':
     copyfile(".tmp/userMusicSelection.csv", params['outMusicSelection'])
