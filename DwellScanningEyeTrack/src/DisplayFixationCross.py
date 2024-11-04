@@ -99,18 +99,20 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Eyetracker label (start)
     resolution = params['screenSize']
-    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
-    params["eyeIdx"] += 1
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
-    # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgScreenShot, params['screenSize'][0] / 2,
-                                                        params['screenSize'][1] / 2))
-    tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-    1, pointFromCenter(-100, params['screenSize'][0] / 2, params['screenSize'][0]),
-    pointFromCenter(-60, params['screenSize'][1] / 2, params['screenSize'][1]),
-    pointFromCenter(100, params['screenSize'][0] / 2, params['screenSize'][0]),
-    pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation:'+bold))
+    if params['EyeLinkSupport']:
+
+        tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+        params["eyeIdx"] += 1
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+        # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgScreenShot, params['screenSize'][0] / 2,
+                                                            params['screenSize'][1] / 2))
+        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+        1, pointFromCenter(-100, params['screenSize'][0] / 2, params['screenSize'][0]),
+        pointFromCenter(-60, params['screenSize'][1] / 2, params['screenSize'][1]),
+        pointFromCenter(100, params['screenSize'][0] / 2, params['screenSize'][0]),
+        pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation:'+bold))
 
     dictRaw["Event"] = bold + " shown (start)"
     DictWriteRaw(dfRaw,dictRaw,params)
