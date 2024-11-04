@@ -70,13 +70,13 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         bold = 'Line'
 
 
-    if bold is 'Left Arrow':
+    if bold == 'Left Arrow':
         arrowLeft = [(-0.2 * r, 0.05 * r), (-0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (0.2 * r, 0),
                      (0, 0.1 * r),(0, 0.05 * r)]
         arrowStim = ShapeStim(win, vertices=arrowLeft, units='pix', fillColor='black', size=.5, lineColor='black',
                            pos=[0,0])
         imgScreenShot = 'img/FixationCross/left.jpg'
-    elif bold is 'Right Arrow':
+    elif bold == 'Right Arrow':
         arrowRight = [(0.2 * r, 0.05 * r), (0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (-0.2 * r, 0),
                       (0, 0.1 * r),(0, 0.05 * r)]
         arrowStim = ShapeStim(win, vertices=arrowRight, units='pix', fillColor='black', size=.5, lineColor='black',
@@ -186,14 +186,14 @@ def DisplayFixationOld(df,dfRaw,params,dict,dictRaw,win,tracker):
     randN = random.randint(0,1)
     bold = boldOption[randN]
 
-    if bold is 'Horizontal':
+    if bold == 'Horizontal':
         fixation1 = visual.ShapeStim(win, lineColor='#000000', lineWidth=3.0, vertices=(
         (fCP[0], fCP[1]), (fCP[0], fCP[1] + fCS / 2), (fCP[0], fCP[1] - fCS / 2)), units='height', closeShape=False,
                                      name='fixCross');
         fixation2 = visual.ShapeStim(win, lineColor='#000000', lineWidth=10.0,
                                      vertices=((fCP[0] - fCS / 2, fCP[1]), (fCP[0] + fCS / 2, fCP[1])), units='height',
                                      closeShape=False, name='fixCross');
-    elif bold is 'Vertical':
+    elif bold == 'Vertical':
         fixation1 = visual.ShapeStim(win, lineColor='#000000', lineWidth=10.0, vertices=(
         (fCP[0], fCP[1]), (fCP[0], fCP[1] + fCS / 2), (fCP[0], fCP[1] - fCS / 2)), units='height', closeShape=False,
                                      name='fixCross');
