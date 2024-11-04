@@ -42,7 +42,8 @@ Updated on Thu May  6 14:11:14 EDT 2021 (ITI: always 2 sec. Included rest screen
 # Import standard python libraries
 import datetime,sys,random
 from psychopy import visual,prefs,core,event,sound
-from glob import glob
+# from glob import glob
+import glob
 import pylink
 import numpy as np
 from shutil import copyfile
@@ -243,7 +244,7 @@ if resumeOkay == 'no':
 
     else:
         dfLabel = {}
-        import glob
+        # import glob
         labelFileList = glob.glob("labels/*")
         labelList = []
         for i,labelFile in enumerate(labelFileList):
@@ -295,10 +296,10 @@ if resumeOkay == 'no':
             # elif 'A' in run:
             #     Imgs[run] = glob('img/Anger-Neutral/' + run + '/*.jpeg')
             imgFolderName = "Version_2_Assessment_Dwell" if params['Version'] == 2 else "Version_3_4_Task_Music"
-            ImgsFolder = glob(f'img/{imgFolderName}/' + run)[0]
-            Imgs_Asian = glob(f"{ImgsFolder}/A*/*.jpeg")
-            Imgs_Black = glob(f"{ImgsFolder}/B*/*.jpeg")
-            Imgs_White = glob(f"{ImgsFolder}/W*/*.jpeg")
+            ImgsFolder = glob.glob(f'img/{imgFolderName}/' + run)[0]
+            Imgs_Asian = glob.glob(f"{ImgsFolder}/A*/*.jpeg")
+            Imgs_Black = glob.glob(f"{ImgsFolder}/B*/*.jpeg")
+            Imgs_White = glob.glob(f"{ImgsFolder}/W*/*.jpeg")
 
             # Shuffle
             import random
