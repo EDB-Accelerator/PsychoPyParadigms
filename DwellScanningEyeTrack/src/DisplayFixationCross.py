@@ -53,7 +53,8 @@ def pointFromCenter(n,center,standard):
 
 def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
     # After Calibration before fixation cross
-    tracker.sendMessage('TRIAL_RESULT 0')
+    if params['EyeLinkSupport']:
+        tracker.sendMessage('TRIAL_RESULT 0')
 
     # Initialization
     r = 1000
