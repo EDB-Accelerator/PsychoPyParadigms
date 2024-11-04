@@ -138,12 +138,14 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
                 continue
 
         # Thresholding
-        position[0] = params['screenSize'][0] if position[0] > params['screenSize'][0] else position[0]
-        position[0] = -1 * params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
-        position[1] = params['screenSize'][1] if position[1] > params['screenSize'][1] else position[1]
-        position[1] = -1 * params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
+        if params['EyeLinkSupport']:
+            position[0] = params['screenSize'][0] if position[0] > params['screenSize'][0] else position[0]
+            position[0] = -1 * params['screenSize'][0] if position[0] < -1 * params['screenSize'][0] else position[0]
+            position[1] = params['screenSize'][1] if position[1] > params['screenSize'][1] else position[1]
+            position[1] = -1 * params['screenSize'][1] if position[1] < -1 * params['screenSize'][1] else position[1]
 
-        circle.pos = position
+        if params['EyeLinkSupport']:
+            circle.pos = position
         imgStim.draw()
 
         if params['circle']:
