@@ -94,7 +94,7 @@ pd.set_option('display.max_columns', None)
 # Output Summary Header Initialization
 Header = ["Start Time","End Time","Duration","expName","Version","subjectID","Session","Section",'timingFile',"TrialCount",
           "Image Displayed","Emotion Image Group","The number of neutral faces","The number of emotional faces",
-          "User Response"]
+          "User Respons e"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
@@ -168,6 +168,7 @@ if resumeOkay == 'no':
         'eyeIdx' : 0,
         'EyeLinkSupport': UserInputBank[8],
         'TrialCount': 0,
+        "Emotion Image Group": "",
     }
 
     # if params['Version'] != 2:
@@ -294,6 +295,7 @@ if resumeOkay == 'no':
         idx = 0
         Imgs = {}
         for run in RunList:
+            params["Emotion Image Group"] = run
             # if 'D' in run:
             #     Imgs[run] = glob('img/Disgust-Neutral/' + run + '/*.jpeg')
             # elif 'A' in run:

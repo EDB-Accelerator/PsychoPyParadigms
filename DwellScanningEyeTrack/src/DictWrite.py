@@ -52,14 +52,18 @@ def DictWrite(df,params,dict):
 
     dict["Emotion Image Group"] = dict["The number of neutral faces"] = dict["The number of emotional faces"] = ""
     nums = re.findall(r'\d+', dict["Image Displayed"])
-    if "Disgust-Neutral" in dict["Image Displayed"]:
-        dict["Emotion Image Group"] = "Disgust-Neutral"
-        dict["The number of neutral faces"] = nums[0]
-        dict["The number of emotional faces"] = nums[1]
-    elif "Anger-Neutral" in dict["Image Displayed"]:
-        dict["Emotion Image Group"] = "Anger-Neutral"
-        dict["The number of neutral faces"] = nums[0]
-        dict["The number of emotional faces"] = nums[1]
+    dict["Emotion Image Group"] = params["Emotion Image Group"]
+    dict["The number of neutral faces"] = 8
+    dict["The number of emotional faces"] = 8
+    # if "Disgust-Neutral" in dict["Image Displayed"]:
+    #     # dict["Emotion Image Group"] = "Disgust-Neutral"
+    #     dict["Emotion Image Group"] = params["Emotion Image Group"]
+    #     dict["The number of neutral faces"] = nums[0]
+    #     dict["The number of emotional faces"] = nums[1]
+    # elif "Anger-Neutral" in dict["Image Displayed"]:
+    #     dict["Emotion Image Group"] = "Anger-Neutral"
+    #     dict["The number of neutral faces"] = nums[0]
+    #     dict["The number of emotional faces"] = nums[1]
 
     # Move data in Dict into Df.
     dict["Section"] = params["Section"]
