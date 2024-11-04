@@ -50,8 +50,8 @@ def DictWriteRaw(dfRaw,dictRaw,params):
 def DictWrite(df,params,dict):
     # "Emotion Image Group", "The number of neutral faces", "The number of emotional faces"
 
-    dict["Emotion Image Group"] = dict["The number of neutral faces"] = dict["The number of emotional faces"] = ""
-    nums = re.findall(r'\d+', dict["Image Displayed"])
+    # dict["Emotion Image Group"] = dict["The number of neutral faces"] = dict["The number of emotional faces"] = ""
+    # nums = re.findall(r'\d+', dict["Image Displayed"])
     dict["Emotion Image Group"] = params["Emotion Image Group"]
     dict["The number of neutral faces"] = 8
     dict["The number of emotional faces"] = 8

@@ -343,6 +343,7 @@ if params['Version'] == 2:
     while section < params['RunNum']:
         params["Section"] = section # This block is different from original block.
         run = RunList[section]
+        params["Emotion Image Group"] = run
         # Eyetracker Calibration.
         if params['EyeLinkSupport']:
             win,io,tracker = EyeTrackerIntialization(params,win)
