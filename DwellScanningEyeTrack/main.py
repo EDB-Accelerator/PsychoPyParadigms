@@ -311,7 +311,7 @@ if resumeOkay == 'no':
             # Select 10 imasges from each race categories.
             Imgs[run] = Imgs_Asian[:10] + Imgs_Black[:10] + Imgs_White[:10]
             random.shuffle(Imgs[run])
-
+        random.shuffle(RunList)
         # Load Timing File
         # dfTiming = LoadTimingFile(params['timingFile'])
         # ImgList = []
@@ -338,7 +338,7 @@ win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", 
 if params['Version'] == 2:
     while section < params['RunNum']:
         params["Section"] = section # This block is different from original block.
-
+        run = RunList[section]
         # Eyetracker Calibration.
         if params['EyeLinkSupport']:
             win,io,tracker = EyeTrackerIntialization(params,win)
@@ -423,7 +423,8 @@ if params['Version'] == 2:
 
         while trial < params['numTrial']:
             params["TrialCount"] = trial
-            img = (params['ImgList'])[trial+section*params['numTrial']]
+            # img = (params['ImgList'])[trial+section*params['numTrial']]
+            img = Imgs[run][trial]
 
             # Get emotion labels.
             emotion, labels = GetEmotionLabels(dfLabel, img)
