@@ -60,6 +60,9 @@ def DictWrite(df,params,dict):
         dict["Image Race"] = "Black"
     elif "W_" in dict["Image Displayed"]:
         dict["Image Race"] = "White"
+    else:
+        dict["Image Race"] = ""
+
 
     dict["The number of neutral faces"] = 8
     dict["The number of emotional faces"] = 8
