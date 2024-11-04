@@ -163,15 +163,17 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # End Eyetracker
     # Eyetracker label (end and new start)
-    tracker.sendMessage('TRIAL_RESULT 0')
-    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    if params['EyeLinkSupport']:
+        tracker.sendMessage('TRIAL_RESULT 0')
+        tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
 
 def DisplayFixationOld(df,dfRaw,params,dict,dictRaw,win,tracker):
     # UnpauseMusic()
 
     # After Calibration before fixation cross
-    tracker.sendMessage('TRIAL_RESULT 0')
+    if params['EyeLinkSupport']:
+        tracker.sendMessage('TRIAL_RESULT 0')
 
     # Initialization
     fCS = 0.1 # size (for brevity)
@@ -208,16 +210,17 @@ def DisplayFixationOld(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Eyetracker label (start)
     resolution = params['screenSize']
-    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
-    params["eyeIdx"] += 1
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
-    tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-    1, pointFromCenter(-100, params['screenSize'][0] / 2, params['screenSize'][0]),
-    pointFromCenter(-60, params['screenSize'][1] / 2, params['screenSize'][1]),
-    pointFromCenter(100, params['screenSize'][0] / 2, params['screenSize'][0]),
-    pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation Cross'))
+    if params['EyeLinkSupport']:
+        tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+        params["eyeIdx"] += 1
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
+        tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+        1, pointFromCenter(-100, params['screenSize'][0] / 2, params['screenSize'][0]),
+        pointFromCenter(-60, params['screenSize'][1] / 2, params['screenSize'][1]),
+        pointFromCenter(100, params['screenSize'][0] / 2, params['screenSize'][0]),
+        pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation Cross'))
 
     dictRaw["Event"] = bold + " shown (start)"
     DictWriteRaw(dfRaw,dictRaw,params)
@@ -319,7 +322,8 @@ def DisplayFixationOld(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # End Eyetracker
     # Eyetracker label (end and new start)
-    tracker.sendMessage('TRIAL_RESULT 0')
-    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+    if params['EyeLinkSupport']:
+        tracker.sendMessage('TRIAL_RESULT 0')
+        tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
 

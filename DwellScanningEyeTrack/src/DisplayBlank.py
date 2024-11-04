@@ -69,8 +69,10 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker,blankTime):
     win.flip()
 
     resolution = params['screenSize']
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+    if params['EyeLinkSupport']:
+
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
 
     # core.wait(blankDuration)
     startTime = time.time()

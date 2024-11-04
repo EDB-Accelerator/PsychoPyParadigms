@@ -165,6 +165,7 @@ if resumeOkay == 'no':
         'faceMatrixDuration': 6,
         # 'musicList' : UserInputBank[9],
         'eyeIdx' : 0,
+        'EyeLinkSupport': UserInputBank[8],
     }
 
     # if params['Version'] != 2:
@@ -337,8 +338,11 @@ if params['Version'] == 2:
         params["Section"] = section # This block is different from original block.
 
         # Eyetracker Calibration.
-        win,io,tracker = EyeTrackerIntialization(params,win)
-        tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
+        if params['EyeLinkSupport']:
+            win,io,tracker = EyeTrackerIntialization(params,win)
+            tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
+        else:
+            tracker = None
 
         # Instruction Slide
         DisplayIntroduction(df, dfRaw, params, dict, dictRaw, win, tracker)
@@ -399,7 +403,8 @@ if params['Version'] == 2:
         dictRaw["Event"] = "Recording started"
         DictWriteRaw(dfRaw, dictRaw, params)
 
-        tracker.setRecordingState(True)
+        if params['EyeLinkSupport']:
+            tracker.setRecordingState(True)
 
         dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         dict["Duration"] = time.time() - sectionStartTime
@@ -442,19 +447,24 @@ if params['Version'] == 2:
         dictRaw["Event"] = "Recording ended"
         DictWriteRaw(dfRaw, dictRaw, params)
 
-        tracker.setRecordingState(False)
+        if params['EyeLinkSupport']:
+            tracker.setRecordingState(False)
 
         dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         dict["Duration"] = time.time() - sectionStartTime
         DictWrite(df, params, dict)
 
         # Import the result (from eyetracker)
-        trackerIO = pylink.EyeLink('100.1.1.1')
-        trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+        if params['EyeLinkSupport']:
+
+            trackerIO = pylink.EyeLink('100.1.1.1')
+            trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
 
         # Stop the ioHub Server
-        io.quit()
-        trackerIO.close()
+        if params['EyeLinkSupport']:
+            io.quit()
+        if params['EyeLinkSupport']:
+            trackerIO.close()
         if section != 2:
             # Rest between each section. (ITI duration)
             DisplayRest(df, dfRaw, params, dict, dictRaw, win)
@@ -527,8 +537,9 @@ else:
     trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
 
     # Stop the ioHub Server
-    io.quit()
-    trackerIO.close()
+    if params['EyeLinkSupport']:
+        io.quit()
+        trackerIO.close()
     trial = 0
     # Save the current status.
     with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')

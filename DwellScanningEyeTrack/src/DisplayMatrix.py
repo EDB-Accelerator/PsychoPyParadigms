@@ -86,18 +86,18 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
     # Send message Eyetracker
     faceLocations = params['faceLocations']
 
-    for i in range(len(faceLocations)):
-        x1, y1, x2, y2 = faceLocations[i][0], faceLocations[i][1], faceLocations[i][2], faceLocations[i][3]
-        if labels[i]:
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i) + '(' + emotion + ')'))
-        else:
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i)))
+    if params['EyeLinkSupport']:
+        for i in range(len(faceLocations)):
+            x1, y1, x2, y2 = faceLocations[i][0], faceLocations[i][1], faceLocations[i][2], faceLocations[i][3]
+            if labels[i]:
+                tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i) + '(' + emotion + ')'))
+            else:
+                tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i)))
 
-    resolution = params['screenSize']
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-        "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
-    tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-    img, resolution[0] / 2, resolution[1] / 2, resolution[1], resolution[1]))
+        resolution = params['screenSize']
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+            "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (img, resolution[0] / 2, resolution[1] / 2, resolution[1], resolution[1]))
 
     # Record status
     dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
@@ -132,7 +132,8 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
                 StopMusic()
             core.quit()
 
-        position = tracker.getPosition()
+        if params['EyeLinkSupport']:
+            position = tracker.getPosition()
         if position is None or type(position) == int:
             continue
 
@@ -198,8 +199,11 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
 
     # End Eyetracker
     # Eyetracker label (end and new start)
-    tracker.sendMessage('TRIAL_RESULT 0')
-    tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
+
+    if params['EyeLinkSupport']:
+
+        tracker.sendMessage('TRIAL_RESULT 0')
+        tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
     params["eyeIdx"] += 1
 
     # return sound1
