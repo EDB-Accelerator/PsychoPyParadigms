@@ -53,8 +53,20 @@ def DictWrite(df,params,dict):
     # dict["Emotion Image Group"] = dict["The number of neutral faces"] = dict["The number of emotional faces"] = ""
     # nums = re.findall(r'\d+', dict["Image Displayed"])
     dict["Emotion Image Group"] = params["Emotion Image Group"]
+
+    if "A_" in dict["Image Displayed"]:
+        dict["Image Race"] = "Asian"
+    elif "B_" in dict["Image Displayed"]:
+        dict["Image Race"] = "Black"
+    elif "W_" in dict["Image Displayed"]:
+        dict["Image Race"] = "White"
+
     dict["The number of neutral faces"] = 8
     dict["The number of emotional faces"] = 8
+
+
+
+
     # if "Disgust-Neutral" in dict["Image Displayed"]:
     #     # dict["Emotion Image Group"] = "Disgust-Neutral"
     #     dict["Emotion Image Group"] = params["Emotion Image Group"]
