@@ -245,12 +245,13 @@ if resumeOkay == 'no':
 
     else:
         dfLabel = {}
+        import os
         # import glob
         labelFileList = glob.glob("labels/*")
         labelList = []
         for i,labelFile in enumerate(labelFileList):
             # label = labelFile.split('_')[1]
-            label = labelFile.split('/')[1].split('_map')[0]
+            label = os.path.basename(labelFile).split('_map')[0]
             labelList.append(label)
             dfLabel[label] = pd.read_csv(labelFile)
 
