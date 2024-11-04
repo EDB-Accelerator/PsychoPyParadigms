@@ -134,8 +134,8 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
 
         if params['EyeLinkSupport']:
             position = tracker.getPosition()
-        if position is None or type(position) == int:
-            continue
+            if position is None or type(position) == int:
+                continue
 
         # Thresholding
         position[0] = params['screenSize'][0] if position[0] > params['screenSize'][0] else position[0]
