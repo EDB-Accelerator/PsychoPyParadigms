@@ -167,53 +167,47 @@ if resumeOkay == 'no':
         'eyeIdx' : 0,
     }
 
-    # if params['Version'] != 2:
-    #     userInputBank2 = UserInputPlayTwoThree()
-    #     params["Section"] = "Week" + str(userInputBank2[0])
-    #     week = userInputBank2[0]
+    if params['Version'] != 2:
+        userInputBank2 = UserInputPlayTwoThree()
+        params["Section"] = "Week" + str(userInputBank2[0])
+        week = userInputBank2[0]
 
     # The number of trials configuration
-    # if "default" in params['numTrial']:
-    #     params['numTrial'] = 60 if params['Version'] == 2 else 30
-    # else:
-    #     params["numTrial"] = int(params["numTrial"])
     if "default" in params['numTrial']:
-        params['numTrial'] = 30
+        params['numTrial'] = 60 if params['Version'] == 2 else 30
     else:
         params["numTrial"] = int(params["numTrial"])
 
     # The number of Runs
-    # params['RunNum'] = 3 if params['Version'] == 2 else 1
-    params['RunNum'] = 3
+    params['RunNum'] = 3 if params['Version'] == 2 else 1
 
     # Full screen support
     prefs.general['fullscr'] = params['fullscr']
 
     # Parameter Configuration based on the version.
-    params['faceMatrixDuration'] = 6
     if params['Version'] == 2:
         # params['blankTime'] = [0,2,4]
         params['musicMode'] = 'off'
-
+        params['faceMatrixDuration'] = 6
         # Load Timing File.
-        # timingFileList = glob("timing/notUsed/*.txt")
+        timingFileList = glob("timing/notUsed/*.txt")
 
-        # if len(timingFileList) == 0:
-        #     print("There is no available timing files. Please upload timing file.")
-        #     exit(0)
+        if len(timingFileList) == 0:
+            print("There is no available timing files. Please upload timing file.")
+            exit(0)
 
-        # random.shuffle(timingFileList)
+        random.shuffle(timingFileList)
 
-        # params['timingFile'] = timingFileList[0]
+        params['timingFile'] = timingFileList[0]
         # df1, df2, df3 = LoadTimingFile(params['timingFile'])
     elif params['Version'] == 3:
         # params['blankTime'] = [2]
         params['musicMode'] = 'allTheTime'
-        # params['faceMatrixDuration'] = 24
+        params['faceMatrixDuration'] = 24
     elif params['Version'] == 4:
         # params['blankTime'] = [2]
         params['musicMode'] = 'onlyWhenStareAt'
-        # params['faceMatrixDuration'] = 24
+        params['faceMatrixDuration'] = 24
 
     # Music Selection
     if params['musicMode'] != 'off':
@@ -237,25 +231,14 @@ if resumeOkay == 'no':
         for F in fileList:
             if os.path.exists(F):
                 os.remove(F)
-        # labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
-        # dfLabel = pd.read_csv(labelFile)
+        labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
+        dfLabel = pd.read_csv(labelFile)
 
     else:
         dfLabel = {}
-        import glob
-        labelFileList = glob.glob("labels/*")
-        labelList = []
-        for i,labelFile in enumerate(labelFileList):
-            label = labelFile.split('_')[1]
-            labelList.append(label)
-            dfLabel[label] = pd.read_csv(labelFile)
-
-        # Old one
-        # dfLabel = {}
-        # labelList = ['6N10A','6N10D','8N8A','8N8D','10N6A','10N6D']
-        # for label in labelList:
-        #     dfLabel[label] = pd.read_csv('label_old/' + label + '.csv')
-
+        labelList = ['6N10A','6N10D','8N8A','8N8D','10N6A','10N6D']
+        for label in labelList:
+            dfLabel[label] = pd.read_csv('label/' + label + '.csv')
 
     # Decide the name of output files.
     timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
@@ -282,47 +265,38 @@ if resumeOkay == 'no':
     df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
     dfRaw.to_csv(params['outFileRaw'], sep=',', encoding='utf-8', index=False)
 
-    if params['Version'] == 2 or params['Version'] == 3 or params['Version'] == 4:
-        # RunList = ['6N10D','8N8D','10N6D','6N10A','8N8A','10N6A']
-        # RunList = labelList
-        RunList = ['Angry-Happy','Disgust-Neutral','Sad-Happy']
+    if params['Version'] == 2:
+        RunList = ['6N10D','8N8D','10N6D','6N10A','8N8A','10N6A']
         idx = 0
         Imgs = {}
         for run in RunList:
-            # if 'D' in run:
-            #     Imgs[run] = glob('img/Disgust-Neutral/' + run + '/*.jpeg')
-            # elif 'A' in run:
-            #     Imgs[run] = glob('img/Anger-Neutral/' + run + '/*.jpeg')
-            imgFolderName = "Version_2_Assessment_Dwell" if params['Version'] == 2 else "Version_3_4_Task_Music"
-            ImgsFolder = glob(f'img/{imgFolderName}/' + run)[0]
-            Imgs_Asian = glob(f"{ImgsFolder}/A*/*.jpeg")
-            Imgs_Black = glob(f"{ImgsFolder}/B*/*.jpeg")
-            Imgs_White = glob(f"{ImgsFolder}/W*/*.jpeg")
+            ImgTmp = []
+            if 'D' in run:
+                Imgs[run] = glob('img/Disgust-Neutral/' + run + '/*.jpeg')
+            elif 'A' in run:
+                Imgs[run] = glob('img/Anger-Neutral/' + run + '/*.jpeg')
 
-            # Shuffle
-            import random
-            random.shuffle(Imgs_Asian)
-            random.shuffle(Imgs_Black)
-            random.shuffle(Imgs_White)
-
-            # Select 10 imasges from each race categories.
-            Imgs[run] = Imgs_Asian[:10] + Imgs_Black[:10] + Imgs_White[:10]
+            # Randomization
             random.shuffle(Imgs[run])
 
-        # Load Timing File
-        # dfTiming = LoadTimingFile(params['timingFile'])
-        # ImgList = []
-        # for emotion in dfTiming['class']:
-        #     emotion = emotion[1:-1]
-        #     ImgList.append(Imgs[emotion].pop())
 
-        # params['RestTiming'] = np.array(dfTiming['rest'])
-    # else:
-    #     ImgFolder = 'img_training/Week' + str(week)
-    #     ImgList = glob(ImgFolder + '/*.jpg')
-    #     random.shuffle(ImgList)
-    #
-    # params['ImgList'] = ImgList
+
+
+
+        # Load Timing File
+        dfTiming = LoadTimingFile(params['timingFile'])
+        ImgList = []
+        for emotion in dfTiming['class']:
+            emotion = emotion[1:-1]
+            ImgList.append(Imgs[emotion].pop())
+
+        params['RestTiming'] = np.array(dfTiming['rest'])
+    else:
+        ImgFolder = 'img_training/Week' + str(week)
+        ImgList = glob(ImgFolder + '/*.jpg')
+        random.shuffle(ImgList)
+
+    params['ImgList'] = ImgList
 
 # Run the main task.
 if os.path.isfile('.tmp/params.pkl') == False:
@@ -367,6 +341,15 @@ if params['Version'] == 2:
         dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         dict["Duration"] = time.time() - startTime
         DictWrite(df, params, dict)
+
+        #  (waiting for 'space')
+        # img = 'img/instruction.png'
+        # imgStim = visual.ImageStim(win=win, image=img, units="pix", opacity=1,
+        #                            size=(params['screenSize'][0]*0.8, params['screenSize'][0]*0.351*0.8))
+        # imgStim.draw()
+        # win.flip()
+        # core.wait(5)
+        # WaitUserSpace()
 
         # Wait for 5 seconds. (Get Ready Screen)
         message = visual.TextStim(win,

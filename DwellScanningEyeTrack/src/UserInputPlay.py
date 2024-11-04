@@ -35,7 +35,7 @@ def UserInputPlay():
         userInput.addField('Version:', choices=[2])
     else:
         userInput.addField('Version:',choices=[3,4])
-    userInput.addField('# of trials per block (** there are 3 blocks):', choices=["default (version2: 60, version3 and 4: 30)","5","3","1"])
+    userInput.addField('# of trials per block (** there are 3 blocks):', choices=["default (30)","5","3","1"])
     userInput.addField('Full Screen', True)
     if os.path.isfile('.tmp/version2Lock.txt'):
         userInput.addField('Resolution:', choices=[[1024,768],[1920,1080]])
