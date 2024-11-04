@@ -439,8 +439,10 @@ if params['Version'] == 2:
                           labels=labels,emotion=emotion)
 
             # Display Rest (Blank) (Version 2 only).
+            # DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
+            #                  blankTime=params['RestTiming'][index])
             DisplayBlank(df=df, dfRaw=dfRaw, params=params, dict=dict, dictRaw=dictRaw, win=win, tracker=tracker,
-                             blankTime=params['RestTiming'][index])
+                             blankTime=2.0)
             index += 1
             trial += 1
 
