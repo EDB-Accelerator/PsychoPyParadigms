@@ -2,11 +2,13 @@
 #example: 'img/Anger-Neutral\\6N10A\\Block1Matrix29.jpeg'
 import re
 import os
+import glob
 def GetEmotionLabels(dfLabel,img):
     # for fileName in ['6N10A','8N8A','10N6A','6N10D','8N8D','10N6D']:
     # for fileName in ['A_8H8S', 'W_8H8A', 'A_8N8D', 'B_8H8A', 'B_8N8D', 'A_8H8A', 'W_8H8S', 'B_8H8S', 'W_8N8D']:
     #     if fileName in img:
     #         break
+    img = img.replace('/','\\')
     fileName = os.path.dirname(img)
     dfLabelFile = dfLabel[fileName]
 
