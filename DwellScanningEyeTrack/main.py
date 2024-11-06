@@ -339,7 +339,7 @@ if os.path.isfile('.tmp/params.pkl') == False:
 win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
 
 # while section < 3:
-if params['Version'] == 2:
+if params['Version'] < 5:
     while section < params['RunNum']:
         params["Section"] = section # This block is different from original block.
         run = RunList[section]
