@@ -59,7 +59,8 @@ from DisplayRest import DisplayRest
 from EyeTrackerIntialization import EyeTrackerIntialization
 from EyeTrackerCalibration import EyeTrackerCalibration
 from LoadTimingFile import LoadTimingFile
-from GetEmotionLabels import GetEmotionLabels,GetEmotionLabelsThreeFour
+# from GetEmotionLabels import GetEmotionLabels,GetEmotionLabelsThreeFour
+from GetEmotionLabels import GetEmotionLabels
 from MakeAOI import MakeAOI
 # from StartMusic import playMusic,pauseMusic,stopMusic
 from WaitUserSpace import WaitUserSpace
@@ -244,28 +245,29 @@ if resumeOkay == 'no':
         # labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
         # dfLabel = pd.read_csv(labelFile)
 
-        dfLabel = {}
-        import os
-        # import glob
-        labelFileList = glob.glob("labels/*")
-        labelList = []
-        for i,labelFile in enumerate(labelFileList):
-            # label = labelFile.split('_')[1]
-            label = os.path.basename(labelFile).split('_map')[0]
-            labelList.append(label)
-            dfLabel[label] = pd.read_csv(labelFile)
+    dfLabel = {}
+    import os
+    # import glob
+    labelFileList = glob.glob(f"img/Version_{params['Version']}*/*/*/*.csv")
+    labelList = []
+    for i,labelFile in enumerate(labelFileList):
+        # label = labelFile.split('_')[1]
+        # label = os.path.basename(labelFile).split('_map')[0]
+        label = os.path.dirname(labelFile)
+        labelList.append(label)
+        dfLabel[label] = pd.read_csv(labelFile)
 
-    else:
-        dfLabel = {}
-        import os
-        # import glob
-        labelFileList = glob.glob("labels/*")
-        labelList = []
-        for i,labelFile in enumerate(labelFileList):
-            # label = labelFile.split('_')[1]
-            label = os.path.basename(labelFile).split('_map')[0]
-            labelList.append(label)
-            dfLabel[label] = pd.read_csv(labelFile)
+    # else:
+    #     dfLabel = {}
+    #     import os
+    #     # import glob
+    #     labelFileList = glob.glob("labels/*")
+    #     labelList = []
+    #     for i,labelFile in enumerate(labelFileList):
+    #         # label = labelFile.split('_')[1]
+    #         label = os.path.basename(labelFile).split('_map')[0]
+    #         labelList.append(label)
+    #         dfLabel[label] = pd.read_csv(labelFile)
 
         # Old one
         # dfLabel = {}
