@@ -244,6 +244,17 @@ if resumeOkay == 'no':
         # labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
         # dfLabel = pd.read_csv(labelFile)
 
+        dfLabel = {}
+        import os
+        # import glob
+        labelFileList = glob.glob("labels/*")
+        labelList = []
+        for i,labelFile in enumerate(labelFileList):
+            # label = labelFile.split('_')[1]
+            label = os.path.basename(labelFile).split('_map')[0]
+            labelList.append(label)
+            dfLabel[label] = pd.read_csv(labelFile)
+
     else:
         dfLabel = {}
         import os
@@ -426,7 +437,7 @@ if params['Version'] < 5:
             trial = 0
 
         # Fixation Line randomization
-        fixationOrder = ['l','r','c']*20
+        fixationOrder = ['l','r','c']*10
         random.shuffle(fixationOrder)
         params['fixationOrder'] = fixationOrder
 
