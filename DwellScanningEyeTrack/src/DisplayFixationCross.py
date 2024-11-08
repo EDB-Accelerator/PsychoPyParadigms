@@ -67,30 +67,43 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         bold = 'Left Arrow'
     elif bold == 'r':
         bold = 'Right Arrow'
+    elif bold == 'n':
+        bold = 'Normal'
     else:
         bold = 'Line'
 
 
-    if bold == 'Left Arrow':
-        arrowLeft = [(-0.2 * r, 0.05 * r), (-0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (0.2 * r, 0),
-                     (0, 0.1 * r),(0, 0.05 * r)]
-        arrowStim = ShapeStim(win, vertices=arrowLeft, units='pix', fillColor='black', size=.5, lineColor='black',
-                           pos=[0,0])
-        imgScreenShot = 'img/FixationCross/left.jpg'
-    elif bold == 'Right Arrow':
-        arrowRight = [(0.2 * r, 0.05 * r), (0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (-0.2 * r, 0),
-                      (0, 0.1 * r),(0, 0.05 * r)]
-        arrowStim = ShapeStim(win, vertices=arrowRight, units='pix', fillColor='black', size=.5, lineColor='black',
-                           pos=[0,0])
-        imgScreenShot = 'img/FixationCross/right.jpg'
-    else: # Line
-        arrowLine = [(-0.2 * r, 0.05 * r), (-0.2 * r, -0.05 * r), (.2 * r, -.05 * r), (.2 * r, 0.05 * r)]
-        arrowStim = ShapeStim(win, vertices=arrowLine, units='pix', fillColor='black', size=.5, lineColor='black',
-                              pos=[0,0])
-        imgScreenShot = 'img/FixationCross/line.jpg'
+    # if bold == 'Left Arrow':
+    #     arrowLeft = [(-0.2 * r, 0.05 * r), (-0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (0.2 * r, 0),
+    #                  (0, 0.1 * r),(0, 0.05 * r)]
+    #     arrowStim = ShapeStim(win, vertices=arrowLeft, units='pix', fillColor='black', size=.5, lineColor='black',
+    #                        pos=[0,0])
+    #     imgScreenShot = 'img/FixationCross/left.jpg'
+    # elif bold == 'Right Arrow':
+    #     arrowRight = [(0.2 * r, 0.05 * r), (0.2 * r, -0.05 * r), (0, -0.05 * r), (0, -0.1 * r), (-0.2 * r, 0),
+    #                   (0, 0.1 * r),(0, 0.05 * r)]
+    #     arrowStim = ShapeStim(win, vertices=arrowRight, units='pix', fillColor='black', size=.5, lineColor='black',
+    #                        pos=[0,0])
+    #     imgScreenShot = 'img/FixationCross/right.jpg'
+    # elif bold == 'Normal':
+    fCS = 0.1 # size (for brevity)
+    fCP = [0,0] # position (for brevity)
+    fixation1 = visual.ShapeStim(win, lineColor='#000000', lineWidth=3.0, vertices=(
+        (fCP[0], fCP[1]), (fCP[0], fCP[1] + fCS / 2), (fCP[0], fCP[1] - fCS / 2)), units='height', closeShape=False,
+                                 name='fixCross');
+    fixation2 = visual.ShapeStim(win, lineColor='#000000', lineWidth=3.0,
+                                 vertices=((fCP[0] - fCS / 2, fCP[1]), (fCP[0] + fCS / 2, fCP[1])), units='height',
+                                 closeShape=False, name='fixCross');
+    imgScreenShot = "img/FixationCross/normal.jpg"
+    # else: # Line
+    #     arrowLine = [(-0.2 * r, 0.05 * r), (-0.2 * r, -0.05 * r), (.2 * r, -.05 * r), (.2 * r, 0.05 * r)]
+    #     arrowStim = ShapeStim(win, vertices=arrowLine, units='pix', fillColor='black', size=.5, lineColor='black',
+    #                           pos=[0,0])
+    #     imgScreenShot = 'img/FixationCross/line.jpg'
 
     # Flip Window (display FixationCross image)
-    arrowStim.draw()
+    fixation1.draw()
+    fixation2.draw()
     win.flip()
 
     if os.path.exists(imgScreenShot) == False:
@@ -126,7 +139,8 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
                            radius=10)
     if params['circle']:
         circle.draw()
-    arrowStim.draw()
+    fixation1.draw()
+    fixation2.draw()
 
     # while time.time() - startTime < 1:
     #     core.wait(1 / 120)

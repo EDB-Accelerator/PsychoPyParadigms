@@ -248,7 +248,10 @@ if resumeOkay == 'no':
     dfLabel = {}
     import os
     # import glob
-    labelFileList = glob.glob(f"img/Version_{params['Version']}*/*/*/*.csv")
+    if params['Version'] == 2:
+        labelFileList = glob.glob(f"img/Version_2*/*/*/*.csv")
+    else:
+        labelFileList = glob.glob(f"img/Version_3*/*/*/*.csv")
     labelList = []
     for i,labelFile in enumerate(labelFileList):
         # label = labelFile.split('_')[1]
@@ -368,29 +371,29 @@ if params['Version'] < 5:
         DisplayIntroduction(df, dfRaw, params, dict, dictRaw, win, tracker)
 
         # If version is 2, '5' needs to be pressed to continue.
-        message = visual.TextStim(win,text="Waiting for scanner…\n ",
-                                  units='norm', wrapWidth=2, color="black")
-        message.draw()
-        win.flip()
-        c = ''
+        # message = visual.TextStim(win,text="Waiting for scanner…\n ",
+        #                           units='norm', wrapWidth=2, color="black")
+        # message.draw()
+        # win.flip()
+        # c = ''
 
         # Record (start)
-        dictRaw["Event"] = "Message: Waiting for scanner (start)"
-        DictWriteRaw(dfRaw, dictRaw, params)
-        startTime = time.time()
-        dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-
-        while (c != ['5']):
-            core.wait(1 / 120)
-            c = event.getKeys()
-
-        # Record (end)
-        dictRaw["Event"] = "Message: Waiting for scanner (end)"
-        DictWriteRaw(dfRaw, dictRaw, params)
-        dict["Image Displayed"] = "Message: Waiting for scanner"
-        dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
-        dict["Duration"] = time.time() - startTime
-        DictWrite(df, params, dict)
+        # dictRaw["Event"] = "Message: Waiting for scanner (start)"
+        # DictWriteRaw(dfRaw, dictRaw, params)
+        # startTime = time.time()
+        # dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        #
+        # while (c != ['5']):
+        #     core.wait(1 / 120)
+        #     c = event.getKeys()
+        #
+        # # Record (end)
+        # dictRaw["Event"] = "Message: Waiting for scanner (end)"
+        # DictWriteRaw(dfRaw, dictRaw, params)
+        # dict["Image Displayed"] = "Message: Waiting for scanner"
+        # dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
+        # dict["Duration"] = time.time() - startTime
+        # DictWrite(df, params, dict)
 
         # Wait for 5 seconds. (Get Ready Screen)
         message = visual.TextStim(win,
