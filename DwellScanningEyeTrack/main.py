@@ -368,7 +368,7 @@ if params['Version'] < 5:
             tracker = None
 
         # Instruction Slide
-        DisplayIntroduction(df, dfRaw, params, dict, dictRaw, win, tracker)
+        # DisplayIntroduction(df, dfRaw, params, dict, dictRaw, win, tracker)
 
         # If version is 2, '5' needs to be pressed to continue.
         # message = visual.TextStim(win,text="Waiting for scanner…\n ",
