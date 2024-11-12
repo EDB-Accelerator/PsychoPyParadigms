@@ -83,6 +83,11 @@ def DictWrite(df,params,dict):
     # Move data in Dict into Df.
     dict["Section"] = params["Section"]
     dict["Version"] = params["Version"]
+    if params['Version'] == 3:
+        dict['Version'] = "Green"
+    elif params['Version'] == 4:
+        dict['Version'] = 'Blue'
+
     dict["TrialCount"] = params["TrialCount"]
     if 'timingFile' in params:
         dict["timingFile"] = params['timingFile']

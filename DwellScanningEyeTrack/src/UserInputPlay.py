@@ -34,13 +34,16 @@ def UserInputPlay():
     if os.path.isfile('.tmp/version2Lock.txt'):
         userInput.addField('Version:', choices=[2])
     else:
-        userInput.addField('Version:',choices=[3,4])
+        # userInput.addField('Version:',choices=[3,4])
+        userInput.addField('Version:', choices=['Green', 'Blue'])
     userInput.addField('# of trials per block (** there are 3 blocks):', choices=["default (30)","5","3","1"])
     userInput.addField('Full Screen', True)
     if os.path.isfile('.tmp/version2Lock.txt'):
-        userInput.addField('Resolution:', choices=[[1024,768],[1920,1080]])
+        # userInput.addField('Resolution:', choices=[[1024,768],[1920,1080]])
+        userInput.addField('Resolution:', choices=[[1024, 768]])
     else:
-        userInput.addField('Resolution:', choices=[[1920, 1080],[1024,768]])
+        # userInput.addField('Resolution:', choices=[[1920, 1080],[1024,768]])
+        userInput.addField('Resolution:', choices=[[1024, 768]])
     userInput.addField('Which eye will be used?:', choices=["LEFT","RIGHT","BOTH"])
     userInput.addField('EyeTrack Circle', False)
     userInput.addField('EyeLink Support',True)

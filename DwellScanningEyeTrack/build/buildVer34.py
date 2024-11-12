@@ -28,6 +28,6 @@ def zipdir(path, ziph):
 import datetime
 timeLabel = datetime.datetime.now().strftime("%m%d%Y")
 
-zipf = zipfile.ZipFile('../DwellScanningEyeTrackVer3and4_' + timeLabel +'.zip', 'w', zipfile.ZIP_DEFLATED)
+zipf = zipfile.ZipFile('../DwellScanningEyeTrack_Green_Blue_' + timeLabel +'.zip', 'w', zipfile.ZIP_DEFLATED)
 zipdir('.', zipf)
 zipf.close()

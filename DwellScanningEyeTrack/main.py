@@ -172,6 +172,10 @@ if resumeOkay == 'no':
         "Emotion Image Group": "",
     }
 
+    if params['Version'] == 'Green':
+        params['Version'] = 3
+    elif params['Version'] == 'Blue':
+        params['Version'] = 4
     # if params['Version'] != 2:
     #     userInputBank2 = UserInputPlayTwoThree()
     #     params["Section"] = "Week" + str(userInputBank2[0])
