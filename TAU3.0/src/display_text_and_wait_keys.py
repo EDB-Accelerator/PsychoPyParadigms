@@ -11,5 +11,8 @@ def display_text_and_wait_keys(win,text,keys):
     # Flip the window (i.e., display the stimulus)
     win.flip()
 
-    # Wait for a key press (specifically the spacebar)
-    keys = event.waitKeys(keyList=keys)
+    # Wait for a key press
+    if keys == "any":
+        keys = event.waitKeys()  # Wait for any key press
+    else:
+        keys = event.waitKeys(keyList=keys)  # Wait for specific keys

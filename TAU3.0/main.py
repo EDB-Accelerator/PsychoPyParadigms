@@ -12,6 +12,18 @@ import random
 
 trial_data = []
 
+import os
+
+# Define the folder name
+folder_name = "results"
+
+# Check if the folder exists, if not, create it
+if not os.path.exists(folder_name):
+    os.makedirs(folder_name)
+    print(f'Folder "{folder_name}" created.')
+else:
+    print(f'Folder "{folder_name}" already exists.')
+
 # Define the desired column order
 column_order = [
     'Subject ID', 'Session Number', 'Stimuli Set', 'Run', 'Trial_ID', 'Time Stamp',
@@ -41,7 +53,7 @@ event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
 # Function to get the current time with 0.01-second precision, including the date
 def get_current_time():
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]  # Up to milliseconds (0.01s scale)
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-4]  # Up to milliseconds (0.01s scale)
 
 
 # Function to display the input dialog and return the results
@@ -255,7 +267,7 @@ display_text_and_wait_keys(win,'Instructions\n\n'
                 'if the target is <, press the left button.\n'
                 'if the target is >, press the right button.\n\n'
                 'Respond as quickly as you can without making mistakes\n\n'
-                'Press any button to start.', "any")
+                'Press any button to start.', ['2','4'])
 inst_duration = start_time.getTime()
 append_and_save_trial_data({
     'Subject ID': params['sdan'],
@@ -674,45 +686,46 @@ for list_idx in range(2):
     })
 
     # Rest
+    start_time = core.Clock()
+    display_text_and_wait_keys(win, 'Please rest', ['2', '4', '5'])
+    rest_duration = start_time.getTime()
+    append_and_save_trial_data({
+        'Subject ID': params['sdan'],
+        'Session Number': params['session'],
+        'Stimuli Set': params['version'],
+        'Run': str(list_idx + 1),
+        'Trial_ID': None,
+        'Time Stamp': get_current_time(),
+        'Step': 'REST',
+        'Stimulus': 'Please Rest',
+        'Duration (Spec)': "Up to user Response time",
+        'Duration': rest_duration,
+
+        'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+        'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+        'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+        'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
+        'Response': None,
+        'ResponseTime': None,
+        'Correctness': "",
+        'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+        'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+        'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+        'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+        'Condition': df['Condition'] if 'Condition' in df else None,
+
+        'Type': df['type']
+    })
+
+
     if list_idx == 0:
-        start_time = core.Clock()
-        display_text_and_wait_keys(win, 'Please rest', "any")
-        rest_duration = start_time.getTime()
-        append_and_save_trial_data({
-            'Subject ID': params['sdan'],
-            'Session Number': params['session'],
-            'Stimuli Set': params['version'],
-            'Run': str(list_idx+1),
-            'Trial_ID': None,
-            'Time Stamp': get_current_time(),
-            'Step': 'REST',
-            'Stimulus': 'Please Rest',
-            'Duration (Spec)': "Up to user Response time",
-            'Duration': rest_duration,
-
-            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
-            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
-            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
-            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
-            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
-            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
-            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
-            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
-            'Condition': df['Condition'] if 'Condition' in df else None,
-
-            'Type': df['type']
-        })
-
         display_text_and_wait_keys(win, 'Instructions\n\n'
                                         'In each trial, a + sign will appear in the center of the screen,\n'
                                         'followed by a pair of faces, and then by a target: < or >\n\n'
                                         'if the target is <, press the left button.\n'
                                         'if the target is >, press the right button.\n\n'
                                         'Respond as quickly as you can without making mistakes\n\n'
-                                        'Press any button to start.', "any")
+                                        'Press any button to start.', ['2','4'])
 
         # Create a window
         key = display_text_and_wait_given_sec(win, " ", 1.0)
@@ -795,17 +808,7 @@ df_trials = pd.DataFrame(trial_data)
 
 
 
-import os
 
-# Define the folder name
-folder_name = "results"
-
-# Check if the folder exists, if not, create it
-if not os.path.exists(folder_name):
-    os.makedirs(folder_name)
-    print(f'Folder "{folder_name}" created.')
-else:
-    print(f'Folder "{folder_name}" already exists.')
 
 # Identify any additional columns that are not in the specified column order
 additional_columns = [col for col in df_trials.columns if col not in column_order]
