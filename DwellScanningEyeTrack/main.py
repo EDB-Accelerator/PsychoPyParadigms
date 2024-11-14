@@ -238,16 +238,16 @@ if resumeOkay == 'no':
         params['playlist'] = playlist
         params['musicIdx'] = 0
 
-        # Start Music sub-process
-        p = subprocess.Popen('C:\Program Files\PsychoPy3\python.exe src/StartMusic2.py')
-
-        # Delete music sub-process related files.
-        fileList = ['.tmp/a', '.tmp/b', '.tmp/c']
-        for F in fileList:
-            if os.path.exists(F):
-                os.remove(F)
-        # labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
-        # dfLabel = pd.read_csv(labelFile)
+        # # Start Music sub-process
+        # p = subprocess.Popen('C:\Program Files\PsychoPy3\python.exe src/StartMusic2.py')
+        #
+        # # Delete music sub-process related files.
+        # fileList = ['.tmp/a', '.tmp/b', '.tmp/c']
+        # for F in fileList:
+        #     if os.path.exists(F):
+        #         os.remove(F)
+        # # labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
+        # # dfLabel = pd.read_csv(labelFile)
 
     dfLabel = {}
     import os
@@ -398,6 +398,20 @@ if params['Version'] < 5:
         # dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         # dict["Duration"] = time.time() - startTime
         # DictWrite(df, params, dict)
+
+        # Music Selection
+        if params['musicMode'] != 'off':
+
+            # Start Music sub-process
+            p = subprocess.Popen('C:\Program Files\PsychoPy3\python.exe src/StartMusic2.py')
+
+            # Delete music sub-process related files.
+            fileList = ['.tmp/a', '.tmp/b', '.tmp/c']
+            for F in fileList:
+                if os.path.exists(F):
+                    os.remove(F)
+            # labelFile = glob('img_training/Week' + str(week) + '/*.csv')[0]
+            # dfLabel = pd.read_csv(labelFile)
 
         # Wait for 5 seconds. (Get Ready Screen)
         message = visual.TextStim(win,
