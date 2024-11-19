@@ -687,7 +687,8 @@ for list_idx in range(2):
 
     # Rest
     start_time = core.Clock()
-    display_text_and_wait_keys(win, 'Please rest', ['2', '4', '5'])
+    # display_text_and_wait_keys(win, 'Please rest', ['2', '4', '5'])
+    display_text_and_wait_given_sec(win, "Please rest", 10.0)
     rest_duration = start_time.getTime()
     append_and_save_trial_data({
         'Subject ID': params['sdan'],
