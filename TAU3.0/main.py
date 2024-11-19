@@ -699,7 +699,7 @@ for list_idx in range(2):
         'Time Stamp': get_current_time(),
         'Step': 'REST',
         'Stimulus': 'Please Rest',
-        'Duration (Spec)': "Up to user Response time",
+        'Duration (Spec)': "10",
         'Duration': rest_duration,
 
         'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
