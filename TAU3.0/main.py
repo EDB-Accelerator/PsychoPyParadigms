@@ -478,9 +478,11 @@ for list_idx in range(2):
         start_time = core.Clock()
         if df['type'] != 'null':
             display_text_and_wait_given_sec(win, "+", 0.5,debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)", debugmode=debugmode)
+            specTime = 0.5
         else:
             display_text_and_wait_given_sec(win, "+", 2.5, debugtext=f"trial type:{df['type']} / Stimuli:Fixation (+)",
                                         debugmode=debugmode)
+            specTime = 2.5
         fixation_duration = start_time.getTime()
         append_and_save_trial_data({
             'Subject ID': params['sdan'],
@@ -491,7 +493,8 @@ for list_idx in range(2):
             'Time Stamp': get_current_time(),
             'Step': 'Fixation',
             'Stimulus': '+',
-            'Duration (Spec)': str(0.5),
+            # 'Duration (Spec)': str(0.5),
+            'Duration (Spec)': str(specTime),
             'Duration': fixation_duration,
 
             'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
