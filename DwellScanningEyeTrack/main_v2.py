@@ -94,8 +94,7 @@ pd.set_option('display.max_columns', None)
 
 # Output Summary Header Initialization
 Header = ["Start Time","End Time","Duration","expName","Version","subjectID","Session","Section",'timingFile',"TrialCount",
-          "Image Displayed","Emotion Image Group","Image Race","The number of neutral faces","The number of emotional faces",
-          "User Response"]
+          "Image Displayed","Emotion Image Group","Image Race","The number of neutral faces","The number of emotional faces"]
 
 # Output Raw Header Initialization
 HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
@@ -110,7 +109,7 @@ if os.path.isfile('.tmp/params.pkl'):
     root = Tk()
     # Getting back the objects:
     with open('.tmp/params.pkl', 'rb') as f:  # Python 3: open(..., 'rb')
-        params, prefs, dfLabel, df, dfRaw, index, section, trial, dict, dictRaw = pickle.load(f)
+        params, prefs, dfLabel, df, dfRaw, index, section, trial, RunList, dict, dictRaw = pickle.load(f)
 
     resumeOkay = tkinter.messagebox.askquestion('Resume', 'Do you want to resume your previous section? (subject id:' + params['subjectID'] + ')')
     if resumeOkay == 'yes':
@@ -378,7 +377,7 @@ if params['Version'] < 5:
         # message = visual.TextStim(win,text="Waiting for scanner…\n ",
         #                           units='norm', wrapWidth=2, color="black")
         # message.draw()
-        # win.flip()
+        win.flip()
         # c = ''
 
         # Record (start)
@@ -481,24 +480,19 @@ if params['Version'] < 5:
         dictRaw["Event"] = "Recording ended"
         DictWriteRaw(dfRaw, dictRaw, params)
 
-        if params['EyeLinkSupport']:
-            tracker.setRecordingState(False)
-
         dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
         dict["Duration"] = time.time() - sectionStartTime
         DictWrite(df, params, dict)
 
         # Import the result (from eyetracker)
         if params['EyeLinkSupport']:
-
+            tracker.setRecordingState(False)
             trackerIO = pylink.EyeLink('100.1.1.1')
             trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
-
-        # Stop the ioHub Server
-        if params['EyeLinkSupport']:
+            # Stop the ioHub Server
             io.quit()
-        if params['EyeLinkSupport']:
             trackerIO.close()
+
         if section != 2:
             # Rest between each section. (ITI duration)
             DisplayRest(df, dfRaw, params, dict, dictRaw, win)

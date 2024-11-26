@@ -58,19 +58,19 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
     # Initialization
     r = 1000
-    dict["Section"] = "DisplayFixationArrow"
+    dict["Section"] = "DisplayFixation"
 
     # Get the random seed:
-    bold = (params['fixationOrder']).pop()
+    #bold = (params['fixationOrder']).pop()
 
-    if bold == 'l':
-        bold = 'Left Arrow'
-    elif bold == 'r':
-        bold = 'Right Arrow'
-    elif bold == 'n':
-        bold = 'Normal'
-    else:
-        bold = 'Line'
+    #if bold == 'l':
+    #    bold = 'Left Arrow'
+    #elif bold == 'r':
+    #    bold = 'Right Arrow'
+    #elif bold == 'n':
+    #    bold = 'Normal'
+    #else:
+    #    bold = 'Line'
 
 
     # if bold == 'Left Arrow':
@@ -116,18 +116,18 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
 
         tracker.sendMessage('TRIALID %d' % params["eyeIdx"])
         params["eyeIdx"] += 1
-        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-            "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+        #tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+        #    "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
         # tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/FixationCross/" + bold + ".jpg", params['screenSize'][0] / 2, params['screenSize'][1] / 2))
         tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % (imgScreenShot, params['screenSize'][0] / 2,
                                                             params['screenSize'][1] / 2))
         tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-        1, pointFromCenter(-100, params['screenSize'][0] / 2, params['screenSize'][0]),
+        1, pointFromCenter(-60, params['screenSize'][0] / 2, params['screenSize'][0]),
         pointFromCenter(-60, params['screenSize'][1] / 2, params['screenSize'][1]),
-        pointFromCenter(100, params['screenSize'][0] / 2, params['screenSize'][0]),
-        pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation:'+bold))
+        pointFromCenter(60, params['screenSize'][0] / 2, params['screenSize'][0]),
+        pointFromCenter(60, params['screenSize'][1] / 2, params['screenSize'][1]), 'Fixation cross'))
 
-    dictRaw["Event"] = bold + " shown (start)"
+    dictRaw["Event"] = "fixation shown (start)"
     DictWriteRaw(dfRaw,dictRaw,params)
 
     # Show scale and measure the elapsed wall-clock time.
@@ -154,29 +154,38 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
             # c = GetKeyPress()
             # event.clearEvents()
             c = event.getKeys()
-        if len(c) >= 1:
-            dictRaw["Event"] = "User Response:" + c[0]
-            DictWriteRaw(dfRaw, dictRaw, params)
+    #    if len(c) >= 1:
+    #        dictRaw["Event"] = "User Response:" + c[0]
+    #        DictWriteRaw(dfRaw, dictRaw, params)
 
 
     if c == ['q'] or c == ['Q']:
         print('Q pressed. Forced Exit.')
         StopMusic()
+        if params['EyeLinkSupport']:
+            tracker.setRecordingState(False)
+            trackerIO = pylink.EyeLink('100.1.1.1')
+            trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+            # Stop the ioHub Server
+            io.quit()
+            trackerIO.close()
+            core.wait(2)
         core.quit()
+        
     if len(c) >= 1:
         c = c[0]
     else:
         c = "No Response"
 
     # Record Result
-    dictRaw["Event"] = bold + " shown (end)"
+    dictRaw["Event"] = "fixation shown (end)"
     DictWriteRaw(dfRaw, dictRaw, params)
-    dict["Image Displayed"] = bold
+    dict["Image Displayed"] = 'fixation cross'
     dict["End Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
     dict["Duration"] = time.time() - startTime
-    dict["User Response"] = c
+    #dict["User Response"] = c
     DictWrite(df, params, dict)
-    dict["User Response"] = ""
+    #dict["User Response"] = ""
 
     # End Eyetracker
     # Eyetracker label (end and new start)

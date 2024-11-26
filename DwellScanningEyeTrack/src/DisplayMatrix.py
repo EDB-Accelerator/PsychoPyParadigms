@@ -95,8 +95,8 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
                 tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (i, x1, y1, x2, y2, 'Face' + str(i)))
 
         resolution = params['screenSize']
-        tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-            "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
+        #tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+        #    "./img/FixationCross/blank.jpg", resolution[0] / 2, resolution[1] / 2, resolution[0], resolution[1]))
         tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (img, resolution[0] / 2, resolution[1] / 2, resolution[1], resolution[1]))
 
     # Record status
@@ -130,6 +130,14 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
             if params['musicMode'] != 'off':
                 # sound1 = stopMusic(sound1)
                 StopMusic()
+            if params['EyeLinkSupport']:
+                tracker.setRecordingState(False)
+                trackerIO = pylink.EyeLink('100.1.1.1')
+                trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+                # Stop the ioHub Server
+                io.quit()
+                trackerIO.close()
+                core.wait(2)
             core.quit()
 
         if params['EyeLinkSupport']:
