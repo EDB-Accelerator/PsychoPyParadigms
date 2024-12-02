@@ -101,6 +101,7 @@ HeaderRaw = ["TimeStamp","expName","Version","subjectID","Session","Event"]
 
 # Check if the previous session is not completed.
 resumeOkay = 'no'
+index = 0
 if os.path.isfile('.tmp/params.pkl'):
 
     from tkinter import *
@@ -109,9 +110,13 @@ if os.path.isfile('.tmp/params.pkl'):
     root = Tk()
     # Getting back the objects:
     with open('.tmp/params.pkl', 'rb') as f:  # Python 3: open(..., 'rb')
-        params, prefs, dfLabel, df, dfRaw, index, section, trial, RunList, dict, dictRaw = pickle.load(f)
-
-    resumeOkay = tkinter.messagebox.askquestion('Resume', 'Do you want to resume your previous section? (subject id:' + params['subjectID'] + ')')
+        try:
+            resumegood = True
+            params, prefs, dfLabel, df, dfRaw, index, section, trial, RunList, dict, dictRaw = pickle.load(f)
+        except:
+            resumegood = False
+    if resumegood:
+        resumeOkay = tkinter.messagebox.askquestion('Resume', 'Do you want to resume your previous section? (subject id:' + params['subjectID'] + ')')
     if resumeOkay == 'yes':
         print('resume selected')
         root.destroy()
@@ -155,7 +160,7 @@ if resumeOkay == 'no':
         'expName' : 'DwellTask', # The name of the experiment
         'subjectID' : UserInputBank[0],      # Subject ID
         'Session' : UserInputBank[1], # Session ID
-        'Version': UserInputBank[2],  # Version
+        'Version': 2,  # Version
         # 'BlockNum' : 3, # The number of blocks
         # 'RunNum' : 2, # The number of Runs
         'numTrial': UserInputBank[3],  # The number of Trials.
@@ -502,6 +507,8 @@ if params['Version'] < 5:
         trial = 0
         # Save the current status.
         with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+            params['io'] = None
+            params['tracker'] = None
             pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
 # else:
 #     # Eyetracker Calibration.

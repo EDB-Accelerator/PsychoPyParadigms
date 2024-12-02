@@ -131,11 +131,12 @@ def DisplayMatrix(df,dfRaw,img,params,dict,dictRaw,win,tracker,labels,emotion):
                 # sound1 = stopMusic(sound1)
                 StopMusic()
             if params['EyeLinkSupport']:
+                import pylink
                 tracker.setRecordingState(False)
                 trackerIO = pylink.EyeLink('100.1.1.1')
-                trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+                trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "aborted.edf")
                 # Stop the ioHub Server
-                io.quit()
+                params['io'].quit()
                 trackerIO.close()
                 core.wait(2)
             core.quit()

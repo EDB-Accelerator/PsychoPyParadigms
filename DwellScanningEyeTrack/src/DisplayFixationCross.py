@@ -47,6 +47,7 @@ from GetKeyPress import GetKeyPress
 from MusicControl import StopMusic
 from psychopy.visual import ShapeStim
 import os.path
+import pylink
 
 def pointFromCenter(n,center,standard):
     return int(center+n*(center*2)/standard)
@@ -163,11 +164,12 @@ def DisplayFixationCross(df,dfRaw,params,dict,dictRaw,win,tracker):
         print('Q pressed. Forced Exit.')
         StopMusic()
         if params['EyeLinkSupport']:
+            import pylink
             tracker.setRecordingState(False)
             trackerIO = pylink.EyeLink('100.1.1.1')
-            trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "section" + str(section) +".edf")
+            trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "_aborted.edf")
             # Stop the ioHub Server
-            io.quit()
+            params['io'].quit()
             trackerIO.close()
             core.wait(2)
         core.quit()

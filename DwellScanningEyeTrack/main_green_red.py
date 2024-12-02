@@ -110,9 +110,13 @@ if os.path.isfile('.tmp/params.pkl'):
     root = Tk()
     # Getting back the objects:
     with open('.tmp/params.pkl', 'rb') as f:  # Python 3: open(..., 'rb')
-        params, prefs, dfLabel, df, dfRaw, index, section, trial, dict, dictRaw = pickle.load(f)
-
-    resumeOkay = tkinter.messagebox.askquestion('Resume', 'Do you want to resume your previous section? (subject id:' + params['subjectID'] + ')')
+        try:
+            resumegood = True
+            params, prefs, dfLabel, df, dfRaw, index, section, trial, dict, dictRaw = pickle.load(f)
+        except:
+            resumegood = False
+    if resumegood:
+        resumeOkay = tkinter.messagebox.askquestion('Resume', 'Do you want to resume your previous section? (subject id:' + params['subjectID'] + ')')
     if resumeOkay == 'yes':
         print('resume selected')
         root.destroy()
@@ -522,6 +526,8 @@ if params['Version'] < 5:
         trial = 0
         # Save the current status.
         with open('.tmp/params.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+            params['io'] = None
+            params['tracker'] = None
             pickle.dump([params, prefs, dfLabel, df, dfRaw, index, section, trial,dict, dictRaw], f)
 # else:
 #     # Eyetracker Calibration.
