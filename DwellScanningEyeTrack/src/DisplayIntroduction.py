@@ -76,7 +76,7 @@ def DisplayIntroduction(df,dfRaw,params,dict,dictRaw,win,tracker):
     startTime = time.time()
     dict["Start Time"] = datetime.datetime.now().strftime("%m%d%Y_%H:%M:%S.%f")[:-4]
 
-    WaitUserSpace()
+    WaitUserSpace(params)
 
     # Record (end)
     dictRaw["Event"] = "Instruction Image (arrow) displayed (end)"

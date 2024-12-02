@@ -77,7 +77,7 @@ def DisplayBlank(df,dfRaw,params,dict,dictRaw,win,tracker,blankTime):
     # core.wait(blankDuration)
     startTime = time.time()
     while (time.time() - startTime < blankDuration):
-        GetKeyPress()
+        GetKeyPress(params)
         core.wait(1 / 300)
 
     # Record status

@@ -32,17 +32,18 @@ sys.path.insert(1, './src')
 from DictWrite import DictWrite,DictWriteRaw
 # from StartMusic import playMusic,pauseMusic,stopMusic
 from MusicControl import PauseMusic,UnpauseMusic,StopMusic
+from WaitUserSpace import WaitUserSpace
 
-def waitUserSpace(Df,params):
-    # Wait for user types a space key.
-    c = ['']
-    while (c[0] != 'space'):
-        core.wait(1 / 120)
-        c = event.waitKeys()  # read a character
-
-        if c == ['q'] or c == ['Q'] or c == ['Esc']:
-            print('Q pressed. Forced Exit.')
-            core.quit()
+# def waitUserSpace(Df,params):
+#     # Wait for user types a space key.
+#     c = ['']
+#     while (c[0] != 'space'):
+#         core.wait(1 / 120)
+#         c = event.waitKeys()  # read a character
+#
+#         if c == ['q'] or c == ['Q'] or c == ['Esc']:
+#             print('Q pressed. Forced Exit.')
+#             core.quit()
 
 def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
 
@@ -84,6 +85,16 @@ def DisplayRest(df,dfRaw,params,dict,dictRaw,win):
             if c == ['q'] or c == ['Q']:
                 print('Q pressed. Forced Exit.')
                 StopMusic()
+
+                if params['EyeLinkSupport']:
+                    import pylink
+                    params['tracker'].setRecordingState(False)
+                    trackerIO = pylink.EyeLink('100.1.1.1')
+                    trackerIO.receiveDataFile("et_data.EDF", params["edfFile"] + "_aborted.edf")
+                    # Stop the ioHub Server
+                    params['io'].quit()
+                    trackerIO.close()
+
                 core.quit()
 
     # Record status

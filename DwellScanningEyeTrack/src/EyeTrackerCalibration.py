@@ -8,16 +8,16 @@ sys.path.insert(1, './src')
 from psychopy.iohub import launchHubServer
 import psychopy.iohub.client
 
-def waitUserSpace():
-    # Wait for user types a space key.
-    c = ['']
-    while (c[0] != 'space'):
-        core.wait(1 / 120)
-        c = event.waitKeys()  # read a character
-
-        if c == ['q'] or c == ['Q']:
-            print('Q pressed. Forced Exit.')
-            core.quit()
+# def waitUserSpace():
+#     # Wait for user types a space key.
+#     c = ['']
+#     while (c[0] != 'space'):
+#         core.wait(1 / 120)
+#         c = event.waitKeys()  # read a character
+#
+#         if c == ['q'] or c == ['Q']:
+#             print('Q pressed. Forced Exit.')
+#             core.quit()
 
 def waitUserSpaceAndC():
     # Wait for user types a space key.

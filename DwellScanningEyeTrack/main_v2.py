@@ -366,6 +366,8 @@ if params['Version'] < 5:
         # Eyetracker Calibration.
         if params['EyeLinkSupport']:
             win,io,tracker = EyeTrackerIntialization(params,win)
+            params['tracker'] = tracker
+            params['io'] = io
             tracker = EyeTrackerCalibration(df,dfRaw,dict,dictRaw,params, tracker,win)
         else:
             tracker = None

@@ -7,17 +7,19 @@ from psychopy import visual,core,event
 sys.path.insert(1, './src')
 from psychopy.iohub import launchHubServer
 import psychopy.iohub.client
+from WaitUserSpace import WaitUserSpace
 
-def waitUserSpace():
-    # Wait for user types a space key.
-    c = ['']
-    while (c[0] != 'space'):
-        core.wait(1 / 120)
-        c = event.waitKeys()  # read a character
 
-        if c == ['q'] or c == ['Q']:
-            print('Q pressed. Forced Exit.')
-            core.quit()
+# def waitUserSpace():
+#     # Wait for user types a space key.
+#     c = ['']
+#     while (c[0] != 'space'):
+#         core.wait(1 / 120)
+#         c = event.waitKeys()  # read a character
+#
+#         if c == ['q'] or c == ['Q']:
+#             print('Q pressed. Forced Exit.')
+#             core.quit()
 
 def EyeTrackerIntialization(params,win):
     # win = visual.Window(params['screenSize'], monitor="testMonitor", color="white", winType='pyglet')
@@ -27,7 +29,7 @@ def EyeTrackerIntialization(params,win):
                               units='norm', wrapWidth=2, color="black")
     message.draw();
     win.flip();
-    waitUserSpace()
+    WaitUserSpace()
 
     iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
                         {'name': 'tracker',
