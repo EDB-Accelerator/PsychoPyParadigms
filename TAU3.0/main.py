@@ -75,9 +75,48 @@ def get_user_input():
 
     return UserInputBank
 
-def display_text_and_wait_keys(win,text,keys):
+# def display_text_and_wait_keys(win,text,keys):
+#     # Create a text stimulus
+#     hello_text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
+#
+#     # Draw the text stimulus to the window
+#     hello_text.draw()
+#
+#     # Flip the window (i.e., display the stimulus)
+#     win.flip()
+#
+#     if keys != "any":
+#         # Wait for a key press (specifically the spacebar)
+#         keys = event.waitKeys(keyList=keys)
+#     else:
+#         # Continue waiting for key presses until a key other than '2' or '4' is pressed
+#         valid_key = False
+#         pressed_key = None
+#         while not valid_key:
+#             keys = event.getKeys()
+#             if keys:
+#                 pressed_key = keys[0]
+#                 if pressed_key not in ['2', '4']:
+#                     valid_key = True
+#         # keys = event.waitKeys()
+#     return keys
+
+from psychopy import visual, event, core
+
+def display_text_and_wait_keys(win, text, keys):
+    """
+    Displays text on the screen and waits for a valid key press.
+
+    Parameters:
+    - win: PsychoPy window object.
+    - text: The text to display on the screen.
+    - keys: A list of valid keys to wait for. Example: ['5'].
+
+    Returns:
+    - The pressed key as a string if it matches the allowed keys.
+    """
     # Create a text stimulus
-    hello_text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0),wrapWidth=2)
+    hello_text = visual.TextStim(win, text=text, color=(1, 1, 1), colorSpace='rgb', pos=(0, 0), wrapWidth=2)
 
     # Draw the text stimulus to the window
     hello_text.draw()
@@ -85,23 +124,25 @@ def display_text_and_wait_keys(win,text,keys):
     # Flip the window (i.e., display the stimulus)
     win.flip()
 
-    if keys != "any":
-        # Wait for a key press (specifically the spacebar)
-        keys = event.waitKeys(keyList=keys)
-    else:
-        # Continue waiting for key presses until a key other than '2' or '4' is pressed
-        valid_key = False
-        pressed_key = None
-        while not valid_key:
-            keys = event.getKeys()
-            if keys:
-                pressed_key = keys[0]
-                if pressed_key not in ['2', '4']:
-                    valid_key = True
-        # keys = event.waitKeys()
-    return keys
+    # Ensure `keys` is a valid list
+    if not isinstance(keys, list) or len(keys) == 0:
+        raise ValueError("The `keys` parameter must be a non-empty list of valid key strings.")
 
-def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black",debugtext=None,debugmode=False):
+    # Explicit loop to handle keypresses safely
+    valid_key = None
+    while valid_key is None:
+        pressed_keys = event.getKeys()  # Capture any pressed keys
+        if pressed_keys:  # If any key was pressed
+            for pressed_key in pressed_keys:
+                if pressed_key in keys:  # Check if it's a valid key
+                    valid_key = pressed_key
+                    break  # Exit the loop once a valid key is detected
+
+    return valid_key  # Return the valid key
+
+
+
+def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black",debugtext=None,debugmode=False,WaitMode=False):
     # Create a text stimulus
     if text == "+" or text == "":
         frame_image = visual.ImageStim(win=win, image="enlarged_images/frame.bmp", pos=[0, 0])
@@ -136,6 +177,15 @@ def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black",debugte
             user_input = keys[0]
             # print(user_input)
             continue
+
+    if WaitMode:
+        while True:
+            keys = event.getKeys()
+            if keys:
+                user_input = keys[0]
+                if user_input not in ['1', '2', '3', '4']:
+                    break
+
     return user_input if user_input == '4' or user_input == '2' else None
 
 def display_check_scanner(win):
@@ -363,6 +413,40 @@ append_and_save_trial_data({
     'Condition': None,
     'Type': None,
 })
+
+start_time = core.Clock()
+display_text_and_wait_given_sec(win, 'Scanner prepped?', 0.0,fontcolor="white",WaitMode=True)
+inst_duration = start_time.getTime()
+append_and_save_trial_data({
+    'Subject ID': params['sdan'],
+    'Session Number': params['session'],
+    'Stimuli Set': params['version'],
+    'Run': None,
+    'Trial_ID': None,
+    'Time Stamp': get_current_time(),
+    'Step': 'Scanner prepped?',
+    'Stimulus': 'Scanner prepped?',
+    'Duration (Spec)': "Up to user response",
+    'Duration': str(inst_duration),
+
+    'FaceTop': None,
+    'FaceBottom': None,
+    'ProbeTop': None,
+    'ProbeBottom': None,
+    'Response': None,
+    'ResponseTime': None,
+    'Correctness': "",
+
+    'CorrectResponse': None,
+    'ProbeBehind': None,
+    'ProbeType': None,
+    'ProbeLocation': None,
+    'Condition': None,
+    'Type': None,
+})
+
+
+
 # Get Ready Windows
 
 start_time = core.Clock()
@@ -435,7 +519,7 @@ for list_idx in range(2):
 
 
 
-    lenTrials = len(df_all) if "short" not in params["sdan"] else 10
+    lenTrials = len(df_all) if "short" not in params["sdan"] else 5
     for i in range(lenTrials):
 
     # for i in range(10):
@@ -691,7 +775,7 @@ for list_idx in range(2):
     # Rest
     start_time = core.Clock()
     # display_text_and_wait_keys(win, 'Please rest', ['2', '4', '5'])
-    display_text_and_wait_given_sec(win, "Please rest", 10.0)
+    display_text_and_wait_given_sec(win, "Please rest", 10.0,fontcolor="white",WaitMode=True)
     rest_duration = start_time.getTime()
     append_and_save_trial_data({
         'Subject ID': params['sdan'],
