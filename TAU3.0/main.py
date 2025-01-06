@@ -379,6 +379,38 @@ append_and_save_trial_data({
     'Type': None,
 })
 
+start_time = core.Clock()
+display_text_and_wait_given_sec(win, 'Scanner prepped?', 0.0,fontcolor="white",WaitMode=True)
+inst_duration = start_time.getTime()
+append_and_save_trial_data({
+    'Subject ID': params['sdan'],
+    'Session Number': params['session'],
+    'Stimuli Set': params['version'],
+    'Run': None,
+    'Trial_ID': None,
+    'Time Stamp': get_current_time(),
+    'Step': 'Scanner prepped?',
+    'Stimulus': 'Scanner prepped?',
+    'Duration (Spec)': "Up to user response",
+    'Duration': str(inst_duration),
+
+    'FaceTop': None,
+    'FaceBottom': None,
+    'ProbeTop': None,
+    'ProbeBottom': None,
+    'Response': None,
+    'ResponseTime': None,
+    'Correctness': "",
+
+    'CorrectResponse': None,
+    'ProbeBehind': None,
+    'ProbeType': None,
+    'ProbeLocation': None,
+    'Condition': None,
+    'Type': None,
+})
+
+
 # win.mouseVisible = True
 # display_check_scanner(win)
 # display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
@@ -414,36 +446,6 @@ append_and_save_trial_data({
     'Type': None,
 })
 
-start_time = core.Clock()
-display_text_and_wait_given_sec(win, 'Scanner prepped?', 0.0,fontcolor="white",WaitMode=True)
-inst_duration = start_time.getTime()
-append_and_save_trial_data({
-    'Subject ID': params['sdan'],
-    'Session Number': params['session'],
-    'Stimuli Set': params['version'],
-    'Run': None,
-    'Trial_ID': None,
-    'Time Stamp': get_current_time(),
-    'Step': 'Scanner prepped?',
-    'Stimulus': 'Scanner prepped?',
-    'Duration (Spec)': "Up to user response",
-    'Duration': str(inst_duration),
-
-    'FaceTop': None,
-    'FaceBottom': None,
-    'ProbeTop': None,
-    'ProbeBottom': None,
-    'Response': None,
-    'ResponseTime': None,
-    'Correctness': "",
-
-    'CorrectResponse': None,
-    'ProbeBehind': None,
-    'ProbeType': None,
-    'ProbeLocation': None,
-    'Condition': None,
-    'Type': None,
-})
 
 
 
