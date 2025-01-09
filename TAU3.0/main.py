@@ -142,7 +142,7 @@ def display_text_and_wait_keys(win, text, keys):
 
 
 
-def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black",debugtext=None,debugmode=False,WaitMode=False):
+def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black",debugtext=None,debugmode=False,WaitMode=False,WaitKeys=None):
     # Create a text stimulus
     if text == "+" or text == "":
         frame_image = visual.ImageStim(win=win, image="enlarged_images/frame.bmp", pos=[0, 0])
@@ -183,8 +183,13 @@ def display_text_and_wait_given_sec(win,text,wait_time,fontcolor="black",debugte
             keys = event.getKeys()
             if keys:
                 user_input = keys[0]
-                if user_input not in ['1', '2', '3', '4']:
-                    break
+                print(user_input)
+                if WaitKeys == None:
+                    if user_input not in ['1', '2', '3', '4']:
+                        break
+                else:
+                    if user_input == WaitKeys[0]:
+                        break
 
     return user_input if user_input == '4' or user_input == '2' else None
 
@@ -380,7 +385,7 @@ append_and_save_trial_data({
 })
 
 start_time = core.Clock()
-display_text_and_wait_given_sec(win, 'Scanner prepped?', 0.0,fontcolor="white",WaitMode=True)
+display_text_and_wait_given_sec(win, 'Scanner prepped?', 0.0,fontcolor="white",WaitMode=True,WaitKeys=['space'])
 inst_duration = start_time.getTime()
 append_and_save_trial_data({
     'Subject ID': params['sdan'],
