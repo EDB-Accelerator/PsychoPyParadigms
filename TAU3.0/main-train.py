@@ -1,6 +1,7 @@
 from psychopy import visual, event, core,gui
 import sys,os
 import platform
+isTrainScript = True
 sys.path.insert(1,'src')
 from psychopy import prefs, gui
 import datetime
@@ -261,6 +262,10 @@ def display_faces_and_wait_given_sec(win, face_top, face_bottom, wait_time, debu
 
 
 # Initialization
+correctCount = 0
+incorrectCount = 0
+noresponseCount = 0
+
 # Constants
 PROBE_TOP_X_ANCHOR = 512
 PROBE_TOP_Y_ANCHOR = 185
@@ -310,7 +315,7 @@ formatted_datetime = now.strftime("%Y%m%d_%H%M%S")
 
 # Define the filename
 partial_filename = f'results/subject_{params["sdan"]}_session_{params["session"]}_tmp.csv'
-final_filename = f'results/subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv'
+final_filename = f'results/train_result_subject_{params["sdan"]}_session_{params["session"]}_{formatted_datetime}.csv'
 
 # win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(74, 96, 93), colorSpace='rgb255')
 win = visual.Window(size=(1024, 768), fullscr=prefs.general['fullscr'], color=(-1, -1, -1), colorSpace='rgb',waitBlanking=False)
@@ -525,8 +530,10 @@ for list_idx in range(2):
     debugmode = False if "debug" not in params['sdan'] else True
 
 
-
     lenTrials = len(df_all) if "short" not in params["sdan"] else 5
+    if isTrainScript:
+        lenTrials = 20
+
     for i in range(lenTrials):
 
     # for i in range(10):
@@ -711,6 +718,12 @@ for list_idx in range(2):
 
                 'Type': df['type']
             })
+
+        if isTrainScript:
+            noresponseCount = noresponseCount + 1 if response is None else noresponseCount
+            isCorrectResponse = True if (response == "4" and df["ProbeType"] == "left") or (response == "2" and df["ProbeType"] == "right") else False
+            correctCount = correctCount + 1 if isCorrectResponse else correctCount
+            incorrectCount = incorrectCount + 1 if isCorrectResponse == False else incorrectCount
 
         # ITI
         if df['type'] != 'null':
@@ -933,11 +946,6 @@ for list_idx in range(2):
 # Convert the list of trial data to a DataFrame
 df_trials = pd.DataFrame(trial_data)
 
-
-
-
-
-
 # Identify any additional columns that are not in the specified column order
 additional_columns = [col for col in df_trials.columns if col not in column_order]
 
@@ -953,6 +961,17 @@ if os.path.exists(partial_filename):
 # Thank you screen.
 display_text_and_wait_given_sec(win,"Thank you for participating!",2.0,fontcolor="white")
 
+
+if isTrainScript:
+    totalResultCount = correctCount + incorrectCount + noresponseCount
+    correctPercent = correctCount / totalResultCount * 100
+    incorrectPercent = incorrectCount / totalResultCount * 100
+    noresponsePercent = noresponseCount / totalResultCount * 100
+    display_text_and_wait_keys(win, 'Result:\n\n'
+                                    f'Correct: {correctCount}/{totalResultCount} ({correctPercent}%)\n'
+                                    f'Incorrect: {incorrectCount}/{totalResultCount} ({incorrectPercent}%)\n'
+                                    f'No response: {noresponseCount}/{totalResultCount} ({noresponsePercent}%)\n'
+                                    'Press any button to continue.', ['2', '4'])
 # Close the window and quit PsychoPy
 win.close()
 core.quit()
