@@ -69,7 +69,7 @@ def get_user_input():
     userInput = gui.Dlg(title="Experiment Startup")
     userInput.addField('Subject ID', )
     userInput.addField('Session Number', )
-    userInput.addField('Stimuli Set', choices = ['B'])
+    userInput.addField('Stimuli Set', choices = ['A'])
     if platform.system() != "Darwin":
         userInput.addField('FullScreen', True)
     UserInputBank = userInput.show()
