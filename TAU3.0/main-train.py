@@ -512,8 +512,8 @@ def load_and_concat_csv_files(prefixes, categories, directory='timing'):
 prefixes = ['f', 'm']
 categories = ['NTc', 'NN', 'NTi','null','baseline']
 
-
-for list_idx in range(2):
+numBlock = 1 if isTrainScript else 2
+for list_idx in range(numBlock):
 
     # Load and concatenate all files into a single DataFrame
     df_all = load_and_concat_csv_files(prefixes, categories)
@@ -678,6 +678,7 @@ for list_idx in range(2):
             ProbeBottom = ""  # Default to an empty string if the value is unexpected
         # response,response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,mode="probe")
         waitTimeProbe = 1
+        response = None
         if df['type'] != 'null':
             response, response_time = display_faces_and_wait_given_sec(win, ProbeTop, ProbeBottom, 1,debugtext=f"trial type:{df['type']} / Stimuli:Probe",debugmode=debugmode)
         # else:
@@ -720,10 +721,12 @@ for list_idx in range(2):
             })
 
         if isTrainScript:
-            noresponseCount = noresponseCount + 1 if response is None else noresponseCount
-            isCorrectResponse = True if (response == "4" and df["ProbeType"] == "left") or (response == "2" and df["ProbeType"] == "right") else False
-            correctCount = correctCount + 1 if isCorrectResponse else correctCount
-            incorrectCount = incorrectCount + 1 if isCorrectResponse == False else incorrectCount
+            noresponseCount = noresponseCount + 1 if response ==None else noresponseCount
+            isCorrectResponse = None
+            if response != None:
+                isCorrectResponse = True if (response == "4" and df["ProbeType"] == "left") or (response == "2" and df["ProbeType"] == "right") else False
+                correctCount = correctCount + 1 if isCorrectResponse else correctCount
+                incorrectCount = incorrectCount + 1 if isCorrectResponse == False else incorrectCount
 
         # ITI
         if df['type'] != 'null':
@@ -792,153 +795,154 @@ for list_idx in range(2):
         'Type': df['type']
     })
 
-    # Rest
-    start_time = core.Clock()
-    # display_text_and_wait_keys(win, 'Please rest', ['2', '4', '5'])
-    display_text_and_wait_given_sec(win, "Please rest", 10.0,fontcolor="white",WaitMode=True)
-    rest_duration = start_time.getTime()
-    append_and_save_trial_data({
-        'Subject ID': params['sdan'],
-        'Session Number': params['session'],
-        'Stimuli Set': params['version'],
-        'Run': str(list_idx + 1),
-        'Trial_ID': None,
-        'Time Stamp': get_current_time(),
-        'Step': 'REST',
-        'Stimulus': 'Please Rest',
-        'Duration (Spec)': "10",
-        'Duration': rest_duration,
-
-        'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
-        'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
-        'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
-        'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
-        'Response': None,
-        'ResponseTime': None,
-        'Correctness': "",
-        'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
-        'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
-        'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
-        'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
-        'Condition': df['Condition'] if 'Condition' in df else None,
-
-        'Type': df['type']
-    })
-
-
-    if list_idx == 0:
-        display_text_and_wait_keys(win, 'Instructions\n\n'
-                                        'In each trial, a + sign will appear in the center of the screen,\n'
-                                        'followed by a pair of faces, and then by a target: < or >\n\n'
-                                        'if the target is <, press the left button.\n'
-                                        'if the target is >, press the right button.\n\n'
-                                        'Respond as quickly as you can without making mistakes\n\n'
-                                        'Press any button to start.', ['2','4'])
-
-        # Create a window
-        key = display_text_and_wait_given_sec(win, " ", 1.0)
-        # win.mouseVisible = True
-        # display_check_scanner(win)
-        # display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
-        # win.mouseVisible = False
-
-
+    if isTrainScript == False:
+        # Rest
         start_time = core.Clock()
-        display_text_and_wait_given_sec(win, 'Scanner prepped?', 0.0,fontcolor="white",WaitMode=True,WaitKeys=['space'])
-        inst_duration = start_time.getTime()
+        # display_text_and_wait_keys(win, 'Please rest', ['2', '4', '5'])
+        display_text_and_wait_given_sec(win, "Please rest", 10.0,fontcolor="white",WaitMode=True)
+        rest_duration = start_time.getTime()
         append_and_save_trial_data({
             'Subject ID': params['sdan'],
             'Session Number': params['session'],
             'Stimuli Set': params['version'],
-            'Run': None,
+            'Run': str(list_idx + 1),
             'Trial_ID': None,
             'Time Stamp': get_current_time(),
-            'Step': 'Scanner prepped?',
-            'Stimulus': 'Scanner prepped?',
-            'Duration (Spec)': "Up to user response",
-            'Duration': str(inst_duration),
+            'Step': 'REST',
+            'Stimulus': 'Please Rest',
+            'Duration (Spec)': "10",
+            'Duration': rest_duration,
 
-            'FaceTop': None,
-            'FaceBottom': None,
-            'ProbeTop': None,
-            'ProbeBottom': None,
+            'FaceTop': df['FaceTop'] if 'FaceTop' in df else None,
+            'FaceBottom': df['FaceBottom'] if 'FaceBottom' in df else None,
+            'ProbeTop': df['ProbeTop'] if 'ProbeTop' in df else None,
+            'ProbeBottom': df['ProbeBottom'] if 'ProbeBottom' in df else None,
             'Response': None,
             'ResponseTime': None,
             'Correctness': "",
+            'CorrectResponse': df['CorrectResponse'] if 'CorrectResponse' in df else None,
+            'ProbeBehind': df['ProbeBehind'] if 'ProbeBehind' in df else None,
+            'ProbeType': df['ProbeType'] if 'ProbeType' in df else None,
+            'ProbeLocation': df['ProbeLocation'] if 'ProbeLocation' in df else None,
+            'Condition': df['Condition'] if 'Condition' in df else None,
 
-            'CorrectResponse': None,
-            'ProbeBehind': None,
-            'ProbeType': None,
-            'ProbeLocation': None,
-            'Condition': None,
-            'Type': None,
+            'Type': df['type']
         })
 
 
-        start_time = core.Clock()
-        display_text_and_wait_keys(win, 'Waiting for the scanner..', ['5'])
-        wait_duration = start_time.getTime()
-        append_and_save_trial_data({
-            'Subject ID': params['sdan'],
-            'Session Number': params['session'],
-            'Stimuli Set': params['version'],
-            'Run': str(list_idx+1),
-            'Trial_ID': str(int(trial_id)),
-            'Time Stamp': get_current_time(),
-            'Step': 'Waiting for the scanner',
-            'Stimulus': 'Text Displayed: Waiting for the scanner..',
-            'Duration (Spec)': "Up to user Response time",
-            'Duration': wait_duration,
+        if list_idx == 0:
+            display_text_and_wait_keys(win, 'Instructions\n\n'
+                                            'In each trial, a + sign will appear in the center of the screen,\n'
+                                            'followed by a pair of faces, and then by a target: < or >\n\n'
+                                            'if the target is <, press the left button.\n'
+                                            'if the target is >, press the right button.\n\n'
+                                            'Respond as quickly as you can without making mistakes\n\n'
+                                            'Press any button to start.', ['2','4'])
 
-            'FaceTop': None,
-            'FaceBottom': None,
-            'ProbeTop': None,
-            'ProbeBottom': None,
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
+            # Create a window
+            key = display_text_and_wait_given_sec(win, " ", 1.0)
+            # win.mouseVisible = True
+            # display_check_scanner(win)
+            # display_text_and_wait_keys(win,'Scanner Ready?', ['5'])
+            # win.mouseVisible = False
 
-            'CorrectResponse': None,
-            'ProbeBehind': None,
-            'ProbeType': None,
-            'ProbeLocation': None,
-            'Condition': None,
 
-            'Type': None
-        })
+            start_time = core.Clock()
+            display_text_and_wait_given_sec(win, 'Scanner prepped?', 0.0,fontcolor="white",WaitMode=True,WaitKeys=['space'])
+            inst_duration = start_time.getTime()
+            append_and_save_trial_data({
+                'Subject ID': params['sdan'],
+                'Session Number': params['session'],
+                'Stimuli Set': params['version'],
+                'Run': None,
+                'Trial_ID': None,
+                'Time Stamp': get_current_time(),
+                'Step': 'Scanner prepped?',
+                'Stimulus': 'Scanner prepped?',
+                'Duration (Spec)': "Up to user response",
+                'Duration': str(inst_duration),
 
-        # Get Ready Windows
-        start_time = core.Clock()
-        display_text_and_wait_given_sec(win, "Get Ready", 4.0, fontcolor="white")
-        wait_duration = start_time.getTime()
-        append_and_save_trial_data({
-            'Subject ID': params['sdan'],
-            'Session Number': params['session'],
-            'Stimuli Set': params['version'],
-            'Run': str(list_idx+1),
-            'Trial_ID': str(int(trial_id)),
-            'Time Stamp': get_current_time(),
-            'Step': 'Get Ready',
-            'Stimulus': 'Text Displayed: Get Ready',
-            'Duration (Spec)': "Up to user Response time",
-            'Duration': wait_duration,
+                'FaceTop': None,
+                'FaceBottom': None,
+                'ProbeTop': None,
+                'ProbeBottom': None,
+                'Response': None,
+                'ResponseTime': None,
+                'Correctness': "",
 
-            'FaceTop': None,
-            'FaceBottom': None,
-            'ProbeTop': None,
-            'ProbeBottom': None,
-            'Response': None,
-            'ResponseTime': None,
-            'Correctness': "",
+                'CorrectResponse': None,
+                'ProbeBehind': None,
+                'ProbeType': None,
+                'ProbeLocation': None,
+                'Condition': None,
+                'Type': None,
+            })
 
-            'CorrectResponse': None,
-            'ProbeBehind': None,
-            'ProbeType': None,
-            'ProbeLocation': None,
-            'Condition': None,
 
-            'Type': None
-        })
+            start_time = core.Clock()
+            display_text_and_wait_keys(win, 'Waiting for the scanner..', ['5'])
+            wait_duration = start_time.getTime()
+            append_and_save_trial_data({
+                'Subject ID': params['sdan'],
+                'Session Number': params['session'],
+                'Stimuli Set': params['version'],
+                'Run': str(list_idx+1),
+                'Trial_ID': str(int(trial_id)),
+                'Time Stamp': get_current_time(),
+                'Step': 'Waiting for the scanner',
+                'Stimulus': 'Text Displayed: Waiting for the scanner..',
+                'Duration (Spec)': "Up to user Response time",
+                'Duration': wait_duration,
+
+                'FaceTop': None,
+                'FaceBottom': None,
+                'ProbeTop': None,
+                'ProbeBottom': None,
+                'Response': None,
+                'ResponseTime': None,
+                'Correctness': "",
+
+                'CorrectResponse': None,
+                'ProbeBehind': None,
+                'ProbeType': None,
+                'ProbeLocation': None,
+                'Condition': None,
+
+                'Type': None
+            })
+
+            # Get Ready Windows
+            start_time = core.Clock()
+            display_text_and_wait_given_sec(win, "Get Ready", 4.0, fontcolor="white")
+            wait_duration = start_time.getTime()
+            append_and_save_trial_data({
+                'Subject ID': params['sdan'],
+                'Session Number': params['session'],
+                'Stimuli Set': params['version'],
+                'Run': str(list_idx+1),
+                'Trial_ID': str(int(trial_id)),
+                'Time Stamp': get_current_time(),
+                'Step': 'Get Ready',
+                'Stimulus': 'Text Displayed: Get Ready',
+                'Duration (Spec)': "Up to user Response time",
+                'Duration': wait_duration,
+
+                'FaceTop': None,
+                'FaceBottom': None,
+                'ProbeTop': None,
+                'ProbeBottom': None,
+                'Response': None,
+                'ResponseTime': None,
+                'Correctness': "",
+
+                'CorrectResponse': None,
+                'ProbeBehind': None,
+                'ProbeType': None,
+                'ProbeLocation': None,
+                'Condition': None,
+
+                'Type': None
+            })
 
 
 
