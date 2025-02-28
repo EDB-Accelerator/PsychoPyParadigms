@@ -18,7 +18,7 @@ Bug: not working with AMD Radeon GPU devices. (worked with NVIDA)
 - Save result when exit 10/26/2020 Mon by KL
 - Dynamic AOI updated Tue, Apr 12, 2022  3:21:26 PM by Lucrezia
 - Fortune Wheel updated Tue, May 31, 2022 11:29:44 AM by Kyunghun
-- Heatpain support: Wed Mar  6 13:34:38 EST 2024 xby KL
+
 """
 
 # Import developer-defined functions
@@ -39,7 +39,6 @@ from FortuneGamePlay import FortuneGamePlay
 from psychopy import parallel
 from psychopy import prefs
 import subprocess as subp
-from devices import Pathway
 
 def shutdown_key():
     core.quit()
@@ -60,10 +59,9 @@ params = {
     'numTaskRun1': userInputBank[4],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
     'numTaskRun3': userInputBank[6],  # The number of Trials in TaskRun2.
-    'JoyStickSupport' : True, # Check if joystick option is checked or not.
-    'triggerSupport': userInputBank[7],
-    'heatpainSupport': userInputBank[8],
-    'EyeTrackerSupport': False,
+    'JoyStickSupport' : True if userInputBank[10]<=2 else False, # Check if joystick option is checked or not.
+    'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
+    'EyeTrackerSupport': userInputBank[8],
     'FullScreen': userInputBank[9],
     'sensitivity': userInputBank[10],
     'soundMode' : userInputBank[11],
@@ -73,12 +71,8 @@ params = {
     'imageDir': './img/doors1/',    # directory containing DOOR image stimuli (default value)
     'imageSuffix': '*.jpg',   # DOOR image extension.
     'totalRewardThreshold' : 20, # The total number of coin to get Extra $10 reward.
-    'Heat1': '36.0',
-    'Heat2': '38.0',
-    'Heat3': '40.0',
-    'Heat4': '42.0',
-    'Heat5': '44.0',
-    # declare output file location
+
+# declare output file location
     'outFolder': './output', # the location of output file.
 
 # declare display parameters
@@ -101,16 +95,16 @@ else:
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
 params['outFile'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  timeLabel + ".csv"
-params['outFileTrackerLog'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR.csv"
-params['Practice'] =  params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "PR.EDF"
-params['TaskRun1'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR1.EDF"
-params['TaskRun2'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR2.EDF"
-params['TaskRun3'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
-          str(params['Version']) + '_' +  timeLabel + "TR3.EDF"
+# params['outFileTrackerLog'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+#           str(params['Version']) + '_' +  timeLabel + "TR.csv"
+# params['Practice'] =  params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+#           str(params['Version']) + '_' +  timeLabel + "PR.EDF"
+# params['TaskRun1'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+#           str(params['Version']) + '_' +  timeLabel + "TR1.EDF"
+# params['TaskRun2'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+#           str(params['Version']) + '_' +  timeLabel + "TR2.EDF"
+# params['TaskRun3'] = params['outFolder'] + '/' +str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+#           str(params['Version']) + '_' +  timeLabel + "TR3.EDF"
 
 prefs.general['fullscr'] = params['FullScreen']
 
@@ -124,193 +118,183 @@ if userInputBank[3]!= 1:
 win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1, size=(params[ 'screenSize'][0], params['screenSize'][1]))
 
-# Trigger Initialization
-port = 0
-if params['triggerSupport']:
-    port = parallel.ParallelPort(address=params['portAddress'])
-    port.setData(0) # initialize to all zeroscv
-
-# ====================== #
-# ==== Title Screen ==== #
-# ====================== #
-img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
-win.mouseVisible = False
-img1.draw();win.flip();
-waitAnyKeys()
-
-# ======================== #
-# Dataframe Initialization #
-# ======================== #
-params['Header'] = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
-          "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
-          "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
-          "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
-params['HeaderTR'] = ["Index", "subjectID", "Session", "Version", "Section", "Subtrial", "Event", "Reward", "Punishment",
-            "Duration(ms)"]
-
-# Pandas dataframe Initialization
-Df = pd.DataFrame(columns=params['Header'])
-if params['EyeTrackerSupport']:
-    DfTR = pd.DataFrame(columns=params['HeaderTR'])
-else:
-    DfTR = ""
-
-if params['heatpainSupport']:
-    my_pathway = Pathway(ip='10.150.254.8', port_number=20121)
-    # Check status of medoc connection
-    response = my_pathway.status()
-    print(response)
-    excelTemps = pd.read_excel('tempConv.xlsx')
-else:
-    my_pathway = []
-    excelTemps = []
-
-# Make Empty output files.
-Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-if params['EyeTrackerSupport']:
-    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
-
-# ====================== #
-# ======== VAS pre ========= #
-# ====================== #
-win.mouseVisible = True
-Df = VASplay(Df,win,params,"VAS pre")
-win.mouseVisible = False
-
-# ====================== #
-# ===== Instruction ==== #
-# ====================== #
-Df = InstructionPlay(Df,win,params)
-
-# ========================================== #
-# ==== Screen Resolution Initialization ==== #
-# ========================================== #
-ResolutionIntialization(params,size_diff=1/65)
-
-# ========================================== #
-# ==== Eyetracker Initialization =========== #
-# ========================================== #
-tracker = ""
+# # Trigger Initialization
+# port = 0
+# if params['triggerSupport']:
+#     port = parallel.ParallelPort(address=params['portAddress'])
+#     port.setData(0) # initialize to all zeroscv
+#
+# # ====================== #
+# # ==== Title Screen ==== #
+# # ====================== #
+# img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# win.mouseVisible = False
+# img1.draw();win.flip();
+# waitAnyKeys()
+#
+# # ======================== #
+# # Dataframe Initialization #
+# # ======================== #
+# params['Header'] = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
+#           "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
+#           "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
+#           "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
+# params['HeaderTR'] = ["Index", "subjectID", "Session", "Version", "Section", "Subtrial", "Event", "Reward", "Punishment",
+#             "Duration(ms)"]
+#
+# # Pandas dataframe Initialization
+# Df = pd.DataFrame(columns=params['Header'])
 # if params['EyeTrackerSupport']:
-
-# ====================== #
-# ===== Practice ======= #
-# ====================== #
-win.mouseVisible = False
-iterNum = params['numPractice']
-SectionName = "Practice"
-
-Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
-win.mouseVisible = True
-
-# ====================== #
-# ===Fortune Wheel1 ==== #
-# ====================== #
-# win.close()
-Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
-# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-
-# ====================== #
-# ===== TaskRun1 ======= #
-# ====================== #
-win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1",my_pathway,excelTemps)
-win.mouseVisible = True
-
-# ====================== #
-# ======== VAS 1 ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS 1")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-# message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+#     DfTR = pd.DataFrame(columns=params['HeaderTR'])
+# else:
+#     DfTR = ""
+#
+# # Make Empty output files.
+# Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+# if params['EyeTrackerSupport']:
+#     DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
+#
+# # ====================== #
+# # ======== VAS pre ========= #
+# # ====================== #
+# win.mouseVisible = True
+# Df = VASplay(Df,win,params,"VAS pre")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ===== Instruction ==== #
+# # ====================== #
+# Df = InstructionPlay(Df,win,params)
+#
+# # ========================================== #
+# # ==== Screen Resolution Initialization ==== #
+# # ========================================== #
+# ResolutionIntialization(params,size_diff=1/65)
+#
+# # ========================================== #
+# # ==== Eyetracker Initialization =========== #
+# # ========================================== #
+# tracker = ""
+# # if params['EyeTrackerSupport']:
+#
+# # ====================== #
+# # ===== Practice ======= #
+# # ====================== #
+# win.mouseVisible = False
+# iterNum = params['numPractice']
+# SectionName = "Practice"
+#
+# Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
+# win.mouseVisible = True
+#
+# # ====================== #
+# # ===Fortune Wheel1 ==== #
+# # ====================== #
+# # win.close()
+# Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
+# # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+#
+# # ====================== #
+# # ===== TaskRun1 ======= #
+# # ====================== #
+# win.mouseVisible = False
+# Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
+# win.mouseVisible = True
+#
+# # ====================== #
+# # ======== VAS 1 ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit. Click when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS 1")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# # message = visual.TextStim(win, text="Click when you are ready to continue the game.", units='norm', wrapWidth=3)
+# # message.draw();
+# win.mouseVisible = False
+# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# waitUserInput(Df,img1, win, params,'pyglet')
+# win.flip();
+#
+# # ====================== #
+# # ===Fortune Wheel2 ==== #
+# # ====================== #
+# # win.close()
+# Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
+# # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+#
+# # ====================== #
+# # ===== TaskRun2 ======= #
+# # ====================== #
+# Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
+#
+# # ====================== #
+# # ======== VAS mid ========= #
+# # ====================== #
+# win.mouseVisible = True
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS mid")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Text Slide ========= #
+# # ====================== #
+# img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
+# waitUserInput(Df,img1, win, params,'pyglet')
+# win.flip();
+#
+# # ====================== #
+# # ===Fortune Wheel3 ==== #
+# # ====================== #
+# # win.close()
+# Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 3",16)
+# # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+#
+# # ====================== #
+# # ===== TaskRun3 ======= #
+# # ====================== #
+# win.mouseVisible = False
+# Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
+# win.mouseVisible = True
+#
+# # ====================== #
+# # ======== VAS post ========= #
+# # ====================== #
+# win.mouseVisible = True
+# # message = visual.TextStim(win, text="Let's rest for a bit.  when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
+# message.draw();win.flip();
+# waitUserSpace(Df,params)
+# Df = VASplay(Df,win,params,"VAS post")
+# win.mouseVisible = False
+#
+# # ====================== #
+# # ======== Question ========= #
+# # ====================== #
+# win.mouseVisible = True
+# Df = Questionplay(Df, win, params, "Question")
+#
+# Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+# if params['EyeTrackerSupport']:
+#     DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
+#
+# # waitUserSpace(Df, params)
+# message = visual.TextStim(win,
+#                           text="Great job! You collected a lot of coins.\n\nYou're going home with $57.00!\n\nThanks for playing!",
+#                           units='norm', wrapWidth=2)
 # message.draw();
-win.mouseVisible = False
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-# ====================== #
-# ===Fortune Wheel2 ==== #
-# ====================== #
+# win.flip();
+# # waitUserSpace(Df, params)
+# waitUserSpace(Df,params)
+# message.draw();
+#
+# # Close the psychopy window.
 # win.close()
-Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
-# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-
-# ====================== #
-# ===== TaskRun2 ======= #
-# ====================== #
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2",my_pathway,excelTemps)
-
-# ====================== #
-# ======== VAS mid ========= #
-# ====================== #
-win.mouseVisible = True
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS mid")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Text Slide ========= #
-# ====================== #
-img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
-win.flip();
-
-# ====================== #
-# ===Fortune Wheel3 ==== #
-# ====================== #
-# win.close()
-Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 3",16)
-# win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
-
-# ====================== #
-# ===== TaskRun3 ======= #
-# ====================== #
-win.mouseVisible = False
-Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3",my_pathway,excelTemps)
-win.mouseVisible = True
-
-# ====================== #
-# ======== VAS post ========= #
-# ====================== #
-win.mouseVisible = True
-# message = visual.TextStim(win, text="Let's rest for a bit.  when you are ready to keep playing.", units='norm', wrapWidth=2)
-message = visual.TextStim(win, text="Let's rest for a bit.  Press the spacebar when you are ready to keep playing.", units='norm', wrapWidth=2)
-message.draw();win.flip();
-waitUserSpace(Df,params)
-Df = VASplay(Df,win,params,"VAS post")
-win.mouseVisible = False
-
-# ====================== #
-# ======== Question ========= #
-# ====================== #
-win.mouseVisible = True
-Df = Questionplay(Df, win, params, "Question")
-
-Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-if params['EyeTrackerSupport']:
-    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
-
-# waitUserSpace(Df, params)
-message = visual.TextStim(win,
-                          text="Great job! You collected a lot of coins.\n\nYou're going home with $57.00!\n\nThanks for playing!",
-                          units='norm', wrapWidth=2)
-message.draw();
-win.flip();
-# waitUserSpace(Df, params)
-waitUserSpace(Df,params)
-message.draw();
-
-# Close the psychopy window.
-win.close()

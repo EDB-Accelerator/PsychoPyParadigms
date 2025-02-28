@@ -1,0 +1,12 @@
+pymedoc-0.1.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+pymedoc-0.1.0.dist-info/LICENSE,sha256=qDuqj-a4WWYTfIRTO4fshB5ZhQubvLkLJuuCsWXeQ0M,1080
+pymedoc-0.1.0.dist-info/METADATA,sha256=-HRs-WtFBPGq_7habq01nhMlZk9VW5GtN5vkfPFATbU,871
+pymedoc-0.1.0.dist-info/RECORD,,
+pymedoc-0.1.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+pymedoc-0.1.0.dist-info/WHEEL,sha256=z9j0xAa_JmUKMpmz72K0ZGALSM_n-wQVmGbleXx2VHg,110
+pymedoc-0.1.0.dist-info/direct_url.json,sha256=4S152uEyrpBx7UvyQooI9im_rHLLfKG8nPKflQs17Vk,131
+pymedoc-0.1.0.dist-info/top_level.txt,sha256=uUachLJfT-6GaZMlB-jlTlWV8DE2uzwc1njTnXISb3A,8
+pymedoc/__init__.py,sha256=vVXp8L-4OomUA6IFZx3nPLgzxd4bE1IurHXDUa8fKxI,253
+pymedoc/__pycache__/__init__.cpython-36.pyc,,
+pymedoc/__pycache__/devices.cpython-36.pyc,,
+pymedoc/devices.py,sha256=XBjoc6-xTHfgh3pqsSYlTO2sG3LnKIk827DpPRyTvaw,11462
