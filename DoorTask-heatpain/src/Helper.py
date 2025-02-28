@@ -1,10 +1,10 @@
 from psychopy import core, visual, event
 import datetime, time
 import pandas as pd
-from psychopy.hardware import joystick
+# from psychopy.hardware import joystick
 import pygame
 from sys import exit
-from JoystickInput import JoystickInput
+# from JoystickInput import JoystickInput
 
 def shutdown_key():
     core.quit()
@@ -125,6 +125,11 @@ def waitUserInput(Df,img,win,params,mode):
     #     img.draw();win.flip()
     #
     # get_keypress(Df, params)
+    if params['JoyStickSupport']:
+        from JoystickInput import JoystickInput
+    else:
+        from VirtualJoystickInput import JoystickInput
+
     img.draw();win.flip()
     while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
         time.sleep(0.001)

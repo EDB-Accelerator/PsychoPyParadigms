@@ -5,7 +5,7 @@ sys.path.insert(1, './src')
 from psychopy import visual, event, sound
 from pygame import mixer
 from Helper import waitUserSpace, tableWrite, get_keypress, triggerGo, waitUserSpaceAndC
-from JoystickInput import JoystickInput
+# from JoystickInput import JoystickInput
 import random, re, datetime, glob, time, platform
 import pylink
 import numpy as np
@@ -18,6 +18,11 @@ import shutil
 import os
 
 def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
+    if params['JoyStickSupport']:
+        from JoystickInput import JoystickInput
+    else:
+        from VirtualJoystickInput import JoystickInput
+
     params["idxTR"] = 0
 
     width = params["screenSize"][0]

@@ -11,7 +11,7 @@ def userInputPlay():
     userInput.addField('# of TaskRun2:', 49)
     userInput.addField('# of TaskRun3:', 49)
     userInput.addField('Trigger Support:', True)
-    userInput.addField('Eyetracker Support:', True)
+    userInput.addField('Eyetracker Support:', choices=[False])
     userInput.addField('Full Screen', True)
     userInput.addField('Joystick Sensitivity (0: very sensitive, 1: normal, 2: less sensitive, 3: No joystick support', 2, choices=[0,1,2,3])
     # userInput.addField('Eyetracker Circle', True)
