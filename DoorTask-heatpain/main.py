@@ -90,6 +90,7 @@ if params['soundMode'] == 'PTB':
 else:
     prefs.hardware['audioLib'] = ['pygame', 'pyo', 'sounddevice', 'PTB']
 
+# params['virtualMode'] = False if params['JoyStickSupport'] else True
 
 # Define Output file names.
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
@@ -119,74 +120,74 @@ win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",wi
 img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1, size=(params[ 'screenSize'][0], params['screenSize'][1]))
 
 # # Trigger Initialization
-# port = 0
-# if params['triggerSupport']:
-#     port = parallel.ParallelPort(address=params['portAddress'])
-#     port.setData(0) # initialize to all zeroscv
-#
-# # ====================== #
-# # ==== Title Screen ==== #
-# # ====================== #
-# img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
-# win.mouseVisible = False
-# img1.draw();win.flip();
-# waitAnyKeys()
-#
+port = 0
+if params['triggerSupport']:
+    port = parallel.ParallelPort(address=params['portAddress'])
+    port.setData(0) # initialize to all zeroscv
+
+# ====================== #
+# ==== Title Screen ==== #
+# ====================== #
+img1 = visual.ImageStim(win=win,image="./img/title.jpg",units="pix",size=params['screenSize'],opacity=1) #
+win.mouseVisible = False
+img1.draw();win.flip();
+waitAnyKeys()
+
 # # ======================== #
 # # Dataframe Initialization #
 # # ======================== #
-# params['Header'] = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
-#           "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
-#           "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
-#           "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
-# params['HeaderTR'] = ["Index", "subjectID", "Session", "Version", "Section", "Subtrial", "Event", "Reward", "Punishment",
-#             "Duration(ms)"]
-#
-# # Pandas dataframe Initialization
-# Df = pd.DataFrame(columns=params['Header'])
+params['Header'] = ["ExperimentName","SessionStartDateTime","Subject","Session","Version","Section","Subtrial",
+          "DistanceFromDoor_SubTrial","Distance_lock","Distance_start","Distance_min","Distance_max",
+          "Door_anticipation_time","Door_opened","Door_outcome","Reward_magnitude","Punishment_magnitude",
+          "DoorAction_RT","ITI_duration","Total_coins","VAS_type","VAS_score","VAS_RT","Q_type","Q_score","Q_RT"]
+params['HeaderTR'] = ["Index", "subjectID", "Session", "Version", "Section", "Subtrial", "Event", "Reward", "Punishment",
+            "Duration(ms)"]
+
+# Pandas dataframe Initialization
+Df = pd.DataFrame(columns=params['Header'])
+if params['EyeTrackerSupport']:
+    DfTR = pd.DataFrame(columns=params['HeaderTR'])
+else:
+    DfTR = ""
+
+# Make Empty output files.
+Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
+if params['EyeTrackerSupport']:
+    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
+
+# ====================== #
+# ======== VAS pre ========= #
+# ====================== #
+win.mouseVisible = True
+Df = VASplay(Df,win,params,"VAS pre")
+win.mouseVisible = False
+
+# ====================== #
+# ===== Instruction ==== #
+# ====================== #
+Df = InstructionPlay(Df,win,params)
+
+# ========================================== #
+# ==== Screen Resolution Initialization ==== #
+# ========================================== #
+ResolutionIntialization(params,size_diff=1/65)
+
+# ========================================== #
+# ==== Eyetracker Initialization =========== #
+# ========================================== #
+tracker = ""
 # if params['EyeTrackerSupport']:
-#     DfTR = pd.DataFrame(columns=params['HeaderTR'])
-# else:
-#     DfTR = ""
-#
-# # Make Empty output files.
-# Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-# if params['EyeTrackerSupport']:
-#     DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
-#
-# # ====================== #
-# # ======== VAS pre ========= #
-# # ====================== #
-# win.mouseVisible = True
-# Df = VASplay(Df,win,params,"VAS pre")
-# win.mouseVisible = False
-#
-# # ====================== #
-# # ===== Instruction ==== #
-# # ====================== #
-# Df = InstructionPlay(Df,win,params)
-#
-# # ========================================== #
-# # ==== Screen Resolution Initialization ==== #
-# # ========================================== #
-# ResolutionIntialization(params,size_diff=1/65)
-#
-# # ========================================== #
-# # ==== Eyetracker Initialization =========== #
-# # ========================================== #
-# tracker = ""
-# # if params['EyeTrackerSupport']:
-#
-# # ====================== #
-# # ===== Practice ======= #
-# # ====================== #
-# win.mouseVisible = False
-# iterNum = params['numPractice']
-# SectionName = "Practice"
-#
-# Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
-# win.mouseVisible = True
-#
+
+# ====================== #
+# ===== Practice ======= #
+# ====================== #
+win.mouseVisible = False
+iterNum = params['numPractice']
+SectionName = "Practice"
+
+Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
+win.mouseVisible = True
+
 # # ====================== #
 # # ===Fortune Wheel1 ==== #
 # # ====================== #

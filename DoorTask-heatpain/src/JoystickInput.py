@@ -9,6 +9,8 @@ import winreg
 from ctypes.wintypes import WORD, UINT, DWORD
 from ctypes.wintypes import WCHAR as TCHAR
 
+
+
 def JoystickInput():
 
     # Fetch function pointers

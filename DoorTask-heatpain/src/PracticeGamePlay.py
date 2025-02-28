@@ -5,7 +5,7 @@ from psychopy import visual, event
 from Helper import tableWrite,get_keypress,triggerGo,waitUserSpace,waitUserSpaceAndC
 import random, datetime, glob, time
 from ELIdxRecord import ELIdxRecord
-from JoystickInput import JoystickInput
+
 from WaitEyeGazed import WaitEyeGazed
 from EyeTrackerCalibration import EyeTrackerCalibration
 from psychopy.iohub import launchHubServer
@@ -20,7 +20,10 @@ def newPoint(n,center,ratio):
 
 # Door Game Session Module.
 def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
-
+    if params['JoyStickSupport']:
+        from JoystickInput import JoystickInput
+    else:
+        from VirtualJoystickInput import JoystickInput
     # Eyetracker start recording
     params["idxTR"] = 0
     if params['EyeTrackerSupport']:
