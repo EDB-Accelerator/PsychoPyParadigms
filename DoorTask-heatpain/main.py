@@ -65,6 +65,7 @@
         'FullScreen': userInputBank[9],
         'sensitivity': userInputBank[10],
         'soundMode' : userInputBank[11],
+        'HeatSupport': userInputBank[12],
         # 'eyeTrackCircle': userInputBank[11],
         'eyeTrackCircle': True,
         'portAddress': int("0xE050", 16), # Port Address
@@ -82,7 +83,10 @@
         'subTrialCounter': 0,
         'idxTR': 0,
         'idxImg': 0,
+        'codeFixation': 143,
+
     }
+
 
     # Audio library configuration.
     if params['soundMode'] == 'PTB':
@@ -124,6 +128,77 @@
     if params['triggerSupport']:
         port = parallel.ParallelPort(address=params['portAddress'])
         port.setData(0) # initialize to all zeroscv
+    # Heatpain Initialization
+    my_pathway = None
+    excelTemps = None
+    if params['HeatSupport']:
+        if params['sendPortEvents']:
+            from psychopy import parallel
+
+            port = parallel.ParallelPort(address=params['portAddress'])
+            port.setData(0)  # initialize to all zeros
+        else:
+            print("Parallel port not used.")
+
+        import sys
+        sys.path.append('libs')
+        from pymedoc.devices import Pathway
+
+        # ip and port number from medoc application
+        my_pathway = Pathway(ip='10.150.254.8', port_number=20121)
+
+        # Check status of medoc connection
+        response = my_pathway.status()
+        print(response)
+
+        # excel in the folder to convert from Celsius temp to binary code for the medoc machine
+        excelTemps = pd.read_excel(params['convExcel'])
+
+
+        # use color, size, and block to calculate data for SetPortData
+        # expInfo = {
+        # 'LHeat': 36.0,
+        # 'MHeat': 41.0,
+        # 'HHeat': 46.0,
+        # }
+        # # Send parallel port event
+        # # def SetPortData(data):
+        # #     if params['painSupport'] and params['sendPortEvents']:
+        # #         # logging.log(level=logging.EXP, msg='set port %s to %d' % (format(params['portAddress'], '#04x'), data))
+        # #         port.setData(data)
+        # #         print(data)
+        # #     else:
+        # #         if params['painSupport']:
+        # #             print('Port event: %d' % data)
+        # def SetPort(color, size):
+        #     # SetPortData((color - 1) * 6 ** 2 + (size - 1) * 6 + (block))
+        #     if size == 1:
+        #         if color == 1:
+        #             code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
+        #             # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #         elif color == 2:
+        #             code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
+        #             # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #         elif color == 3:
+        #             code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
+        #             # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #         # elif color == 4:
+        #         #     if randBlack[randBlackCount] == 2:
+        #         #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
+        #         #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #         #         randBlackCount += 1
+        #         #     elif randBlack[randBlackCount] == 1:
+        #         #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
+        #         #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #         #         randBlackCount += 1
+        #         #     elif randBlack[randBlackCount] == 0:
+        #         #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
+        #         #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #         #         randBlackCount += 1
+        #     if params['painSupport']:
+        #         response = my_pathway.program(code.iat[0, 1])
+        #         my_pathway.start()
+        #         my_pathway.trigger()
 
     # ====================== #
     # ==== Title Screen ==== #
@@ -192,7 +267,7 @@
     # ===== TaskRun1 ======= #
     # ====================== #
     win.mouseVisible = False
-    Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1")
+    Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun1'],port,"TaskRun1",excelTemps,my_pathway)
     win.mouseVisible = True
 
     # ====================== #
@@ -225,7 +300,7 @@
     # ====================== #
     # ===== TaskRun2 ======= #
     # ====================== #
-    Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2")
+    Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun2'],port,"TaskRun2",excelTemps,my_pathway)
 
     # ====================== #
     # ======== VAS mid ========= #
@@ -248,7 +323,7 @@
     # ===== TaskRun3 ======= #
     # ====================== #
     win.mouseVisible = False
-    Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3")
+    Df,DfTR,win = DoorGamePlay(Df,DfTR,win,params,params['numTaskRun3'],port,"TaskRun3",excelTemps,my_pathway)
     win.mouseVisible = True
 
     # ====================== #

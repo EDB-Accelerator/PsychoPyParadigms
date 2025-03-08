@@ -17,11 +17,56 @@ from psychopy.iohub import launchHubServer
 import shutil
 import os
 
-def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
+def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my_pathway):
     if params['JoyStickSupport']:
         from JoystickInput import JoystickInput
     else:
         from VirtualJoystickInput import JoystickInput
+
+        expInfo = {
+        'LHeat': 36.0,
+        'MHeat': 41.0,
+        'HHeat': 46.0,
+        }
+        # Send parallel port event
+        # def SetPortData(data):
+        #     if params['painSupport'] and params['sendPortEvents']:
+        #         # logging.log(level=logging.EXP, msg='set port %s to %d' % (format(params['portAddress'], '#04x'), data))
+        #         port.setData(data)
+        #         print(data)
+        #     else:
+        #         if params['painSupport']:
+        #             print('Port event: %d' % data)
+        def SetPort(color, size):
+            # SetPortData((color - 1) * 6 ** 2 + (size - 1) * 6 + (block))
+            if size == 1:
+                if color == 1:
+                    code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
+                    # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+                elif color == 2:
+                    code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
+                    # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+                elif color == 3:
+                    code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
+                    # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+                # elif color == 4:
+                #     if randBlack[randBlackCount] == 2:
+                #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
+                #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+                #         randBlackCount += 1
+                #     elif randBlack[randBlackCount] == 1:
+                #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
+                #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+                #         randBlackCount += 1
+                #     elif randBlack[randBlackCount] == 0:
+                #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
+                #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+                #         randBlackCount += 1
+            if params['painSupport']:
+                response = my_pathway.program(code.iat[0, 1])
+                my_pathway.start()
+                my_pathway.trigger()
+
 
     params["idxTR"] = 0
 
@@ -347,6 +392,18 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
             if rewardVSpunishment == "punishment":
                 Dict["Door_outcome"] = "punishment"
                 awardImg = "./img/outcomes/" + p + "_punishment.jpg"
+
+                if params['HeatSupport']:
+                    if int(p)<=2:
+                        color=1
+                    elif 3<int(p)<=5:
+                        color=2
+                    else:
+                        color=3
+
+                    SetPort(color, 2)
+                    my_pathway.start()
+
                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                         size=(width * 0.235, height * 0.464))
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
@@ -425,6 +482,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName):
             mixer.music.play()
             event.waitKeys(maxWait=2)
             mixer.music.stop()
+            if params['HeatSupport']:
+                my_pathway.trigger()
             # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)

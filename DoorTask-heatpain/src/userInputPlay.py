@@ -16,4 +16,5 @@ def userInputPlay():
     userInput.addField('Joystick Sensitivity (0: very sensitive, 1: normal, 2: less sensitive, 3: No joystick support', 2, choices=[0,1,2,3])
     # userInput.addField('Eyetracker Circle', True)
     userInput.addField('Sound Mode:',choices=['PTB','Others'])
+    userInput.addField('Heat Support:', True)
     return userInput.show()
