@@ -49,7 +49,7 @@
     # Declare primary task parameters.
     params = {
     # Declare stimulus and response parameters
-        'expName' : "Doors_AA_v8.py", # The name of the experiment
+        'expName' : "Doors_heatpain.py", # The name of the experiment
         'subjectID' : userInputBank[0],      # Subject ID
         'DistanceStart' : 50,
         'DistanceLockWaitTime' : 10, # Distance lock wait time.
@@ -86,7 +86,9 @@
         'codeFixation': 143,
         'convExcel': 'tempConv.xlsx',
     }
-
+    # Assign Heat1 to Heat7 dynamically from userInputBank[13] to userInputBank[19]
+    for i in range(7):
+        params[f'Heat{i+1}'] = userInputBank[13 + i]
 
     # Audio library configuration.
     if params['soundMode'] == 'PTB':
@@ -199,7 +201,9 @@
         #         response = my_pathway.program(code.iat[0, 1])
         #         my_pathway.start()
         #         my_pathway.trigger()
-
+    else:
+        # excel in the folder to convert from Celsius temp to binary code for the medoc machine
+        excelTemps = pd.read_excel(params['convExcel'])
     # ====================== #
     # ==== Title Screen ==== #
     # ====================== #

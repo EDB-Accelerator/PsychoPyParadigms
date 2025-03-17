@@ -18,41 +18,61 @@ import shutil
 import os
 
 def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my_pathway):
-    expInfo = {
-        'LHeat': 36.0,
-        'MHeat': 41.0,
-        'HHeat': 46.0,
-    }
+    # expInfo = {
+    #     'LHeat': 36.0,
+    #     'MHeat': 41.0,
+    #     'HHeat': 46.0,
+    # }
 
-    def SetPort(color, size,my_pathway):
+    def SetPort(color, size):
         # SetPortData((color - 1) * 6 ** 2 + (size - 1) * 6 + (block))
+        # print("excelTemps:", excelTemps)
+
         if size == 1:
-            if color == 1:
-                code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
-                # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-            elif color == 2:
-                code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
-                # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-            elif color == 3:
-                code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
-                # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-            # elif color == 4:
-            #     if randBlack[randBlackCount] == 2:
-            #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
-            #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-            #         randBlackCount += 1
-            #     elif randBlack[randBlackCount] == 1:
-            #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
-            #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-            #         randBlackCount += 1
-            #     elif randBlack[randBlackCount] == 0:
-            #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
-            #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-            #         randBlackCount += 1
-            if params['HeatSupport']:
-                response = my_pathway.program(code.iat[0, 1])
-                my_pathway.start()
-                my_pathway.trigger()
+            heat_key = f"Heat{color}"  # Dynamically construct the heat level key
+
+            if heat_key in params:
+                code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(params[heat_key]))]
+
+                if params['HeatSupport']:
+                    response = my_pathway.program(code.iat[0, 1])
+                    my_pathway.start()
+                    my_pathway.trigger()
+                    print(f"Heat Level: {params[heat_key]}")
+                    print("Matching Code:")
+                    print(code)
+                else:
+                    print(f"Heat Level: {params[heat_key]}")
+                    print("Matching Code:")
+                    print(code)
+
+        # if params['HeatSupport']:
+        #     # if size == 1:
+        #     #     if color == 1:
+        #     #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
+        #     #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #     #     elif color == 2:
+        #     #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
+        #     #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+        #     #     elif color == 3:
+        #     #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
+        #     #     if params['HeatSupport']:
+        #     #         response = my_pathway.program(code.iat[0, 1])
+        #     #         my_pathway.start()
+        #     #         my_pathway.trigger()
+        #
+        #     if size == 1:
+        #         heat_key = f"Heat{color}"  # Dynamically construct the heat level key
+        #
+        #         if heat_key in params:
+        #             code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(params[heat_key]))]
+        #
+        #             if params['HeatSupport']:
+        #                 response = my_pathway.program(code.iat[0, 1])
+        #                 my_pathway.start()
+        #                 my_pathway.trigger()
+        # # else:
+
 
 
     if params['JoyStickSupport']:
@@ -500,15 +520,18 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             # event.waitKeys(maxWait=2)
             # sound1.stop()
         elif Dict["Door_outcome"] == "punishment":
-            SetPort(3, 1, my_pathway)
+            # SetPort(3, 1, my_pathway)
             # from psychopy import core
             # timer = core.Clock()
             # timer.add(.1)
 
-            SetPort(3, 1, my_pathway)
+            # SetPort(3, 1, my_pathway)
             # event.waitKeys(maxWait=10)
             # timer.add(.1)
-            SetPort(3, 1, my_pathway)
+            # SetPort(3, 1, my_pathway)
+            SetPort(int(p),1)
+            SetPort(int(p),1)
+            SetPort(int(p),1)
 
             mixer.init()
             mixer.music.load("./img/sounds/punishment_sound.wav")

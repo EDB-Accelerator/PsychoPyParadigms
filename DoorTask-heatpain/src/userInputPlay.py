@@ -17,4 +17,12 @@ def userInputPlay():
     # userInput.addField('Eyetracker Circle', True)
     userInput.addField('Sound Mode:',choices=['PTB','Others'])
     userInput.addField('Heat Support:', True)
+    userInput.addField('Heat1:', 34.0)
+    userInput.addField('Heat2:', 36.0)
+    userInput.addField('Heat3:', 38.0)
+    userInput.addField('Heat4:', 40.0)
+    userInput.addField('Heat5:', 42.0)
+    userInput.addField('Heat6:', 44.0)
+    userInput.addField('Heat7:', 46.0)
+
     return userInput.show()
