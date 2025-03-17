@@ -18,16 +18,49 @@ import shutil
 import os
 
 def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my_pathway):
+    expInfo = {
+        'LHeat': 36.0,
+        'MHeat': 41.0,
+        'HHeat': 46.0,
+    }
+
+    def SetPort(color, size,my_pathway):
+        # SetPortData((color - 1) * 6 ** 2 + (size - 1) * 6 + (block))
+        if size == 1:
+            if color == 1:
+                code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
+                # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+            elif color == 2:
+                code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
+                # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+            elif color == 3:
+                code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
+                # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+            # elif color == 4:
+            #     if randBlack[randBlackCount] == 2:
+            #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
+            #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+            #         randBlackCount += 1
+            #     elif randBlack[randBlackCount] == 1:
+            #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
+            #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+            #         randBlackCount += 1
+            #     elif randBlack[randBlackCount] == 0:
+            #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
+            #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
+            #         randBlackCount += 1
+            if params['HeatSupport']:
+                response = my_pathway.program(code.iat[0, 1])
+                my_pathway.start()
+                my_pathway.trigger()
+
+
     if params['JoyStickSupport']:
         from JoystickInput import JoystickInput
     else:
         from VirtualJoystickInput import JoystickInput
 
-        expInfo = {
-        'LHeat': 36.0,
-        'MHeat': 41.0,
-        'HHeat': 46.0,
-        }
+
         # Send parallel port event
         # def SetPortData(data):
         #     if params['painSupport'] and params['sendPortEvents']:
@@ -37,35 +70,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         #     else:
         #         if params['painSupport']:
         #             print('Port event: %d' % data)
-        def SetPort(color, size):
-            # SetPortData((color - 1) * 6 ** 2 + (size - 1) * 6 + (block))
-            if size == 1:
-                if color == 1:
-                    code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
-                    # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-                elif color == 2:
-                    code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
-                    # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-                elif color == 3:
-                    code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
-                    # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-                # elif color == 4:
-                #     if randBlack[randBlackCount] == 2:
-                #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['HHeat']))]
-                #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-                #         randBlackCount += 1
-                #     elif randBlack[randBlackCount] == 1:
-                #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['MHeat']))]
-                #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-                #         randBlackCount += 1
-                #     elif randBlack[randBlackCount] == 0:
-                #         code = excelTemps[excelTemps['Temp'].astype(str).str.contains(str(expInfo['LHeat']))]
-                #         # logging.log(level=logging.EXP, msg='set medoc %s' % (code.iat[0, 1]))
-                #         randBlackCount += 1
-            if params['painSupport']:
-                response = my_pathway.program(code.iat[0, 1])
-                my_pathway.start()
-                my_pathway.trigger()
+
 
 
     params["idxTR"] = 0
@@ -88,6 +93,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
             time.sleep(0.001)
 
+    # SetPort(3, 1, my_pathway)
     # Eyetracker start recording
     if params['EyeTrackerSupport']:
 
@@ -221,6 +227,11 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
         else:
             aoiInfo = " r" + str(r) + "p" + str(p) + "; r"
+
+        # SetPort(3, 1, my_pathway)
+        # event.waitKeys(maxWait=3)
+
+        # my_pathway.start()
 
         # changed = True
         while count < 3:  # while presenting stimuli
@@ -400,9 +411,21 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                         color=2
                     else:
                         color=3
+                    # SetPort(3, 1, my_pathway)
+                    # # from psychopy import core
+                    # # timer = core.Clock()
+                    # # timer.add(.1)
+                    #
+                    # SetPort(3, 1, my_pathway)
+                    # # event.waitKeys(maxWait=10)
+                    # # timer.add(.1)
+                    # SetPort(3, 1, my_pathway)
 
-                    SetPort(color, 2)
-                    my_pathway.start()
+                    # timer = core.Clock()
+                    # timer.add(.1)
+
+                    # my_pathway.trigger()
+                    # event.waitKeys(maxWait=10)
 
                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
                                         size=(width * 0.235, height * 0.464))
@@ -477,13 +500,23 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             # event.waitKeys(maxWait=2)
             # sound1.stop()
         elif Dict["Door_outcome"] == "punishment":
+            SetPort(3, 1, my_pathway)
+            # from psychopy import core
+            # timer = core.Clock()
+            # timer.add(.1)
+
+            SetPort(3, 1, my_pathway)
+            # event.waitKeys(maxWait=10)
+            # timer.add(.1)
+            SetPort(3, 1, my_pathway)
+
             mixer.init()
             mixer.music.load("./img/sounds/punishment_sound.wav")
             mixer.music.play()
             event.waitKeys(maxWait=2)
             mixer.music.stop()
-            if params['HeatSupport']:
-                my_pathway.trigger()
+            # if params['HeatSupport']:
+            #     my_pathway.trigger()
             # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)
@@ -496,6 +529,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
 
         # ITI duration
+        event.waitKeys(maxWait=5)
+        # my_pathway.stop()
         if params['EyeTrackerSupport']:
             startTime = time.time()
             width = params["screenSize"][0]
@@ -522,6 +557,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, params, Dict)  # Log the dict result on pandas dataFrame.
+        # my_pathway.stop()
 
     # Eyetracker finish recording
     if params['EyeTrackerSupport']:

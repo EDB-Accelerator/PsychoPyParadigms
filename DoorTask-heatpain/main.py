@@ -35,7 +35,7 @@
     from InstructionPlay import InstructionPlay
     from PracticeGamePlay import PracticeGamePlay
     from DoorGamePlay import DoorGamePlay
-    # from FortuneGamePlay import FortuneGamePlay
+    from FortuneGamePlay import FortuneGamePlay
     from psychopy import parallel
     from psychopy import prefs
     import subprocess as subp
@@ -84,7 +84,7 @@
         'idxTR': 0,
         'idxImg': 0,
         'codeFixation': 143,
-
+        'convExcel': 'tempConv.xlsx',
     }
 
 
@@ -132,13 +132,13 @@
     my_pathway = None
     excelTemps = None
     if params['HeatSupport']:
-        if params['sendPortEvents']:
-            from psychopy import parallel
-
-            port = parallel.ParallelPort(address=params['portAddress'])
-            port.setData(0)  # initialize to all zeros
-        else:
-            print("Parallel port not used.")
+        # if params['sendPortEvents']:
+        #     from psychopy import parallel
+        #
+        #     port = parallel.ParallelPort(address=params['portAddress'])
+        #     port.setData(0)  # initialize to all zeros
+        # else:
+        #     print("Parallel port not used.")
 
         import sys
         sys.path.append('libs')
@@ -294,8 +294,8 @@
     # # ===Fortune Wheel2 ==== #
     # # ====================== #
     # # win.close()
-    # Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
-    # # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
+    # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
     # ====================== #
     # ===== TaskRun2 ======= #
