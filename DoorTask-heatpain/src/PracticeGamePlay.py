@@ -84,7 +84,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
 
     width = params["screenSize"][0]
     height = params["screenSize"][1]
-
+    widthtmp = width if params['Version'] != 3 else width / 3.0
+    heighttmp = height if params['Version'] != 3 else height / 3.0
     # Start Section Display
     img1 = visual.ImageStim(win=win, image="./instruction/practice_start.jpg", units="pix", opacity=1,size=(width, height))
     # waitUserInput(Df,img1, win, params,'glfw')
@@ -99,7 +100,7 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         time.sleep(0.001)
 
     # Read Door Open Chance file provided by Rany.
-    imgList = glob.glob("./img/practice/*_door.jpg")
+    imgList = glob.glob("./img/practice/*_door.jpg" if params['Version']!=3 else "./img/practice3/*_door.jpg")
 
     # Joystick Initialization
     if JoystickInput() == -1:
@@ -147,7 +148,9 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         # Initial screen
         width = params['width_bank'][level]
         height = params['height_bank'][level]
-        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
+        widthtmp = width if params['Version'] != 3 else width / 3.0
+        heighttmp = height if params['Version'] != 3 else height / 3.0
+        img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(widthtmp, heighttmp))
         # img1.draw();
 
         if params['EyeTrackerSupport']:
@@ -199,6 +202,8 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
             get_keypress(Df,params)
             width = params['width_bank'][level]
             height = params['height_bank'][level]
+            widthtmp = width if params['Version'] != 3 else width / 3.0
+            heighttmp = height if params['Version'] != 3 else height / 3.0
 
             # preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
@@ -262,9 +267,9 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                                                                 'Reward (Question mark)'))
             ELstartTime = time.time()
 
-        awardImg = "./img/practice/practice_outcome.jpg"
-        img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
-                                size=(width* 0.235, height* 0.464))
+        awardImg = "./img/practice/practice_outcome.jpg" if params['Version']!=3 else "./img/practice3/practice_outcome.jpg"
+        img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
+                                size=(widthtmp* 0.235, heighttmp* 0.464))
         img1.draw();img2.draw();win.flip()
 
         event.waitKeys(maxWait=2)
@@ -290,7 +295,9 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         else:
             width = params["screenSize"][0]
             height = params["screenSize"][1]
-            img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
+            widthtmp = width if params['Version'] != 3 else width
+            heighttmp = height if params['Version'] != 3 else height
+            img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "./img/doors3/iti.jpg", units="pix", opacity=1, size=(widthtmp, heighttmp))
             img1.draw();win.flip();
             Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
             time.sleep(Dict["ITI_duration"] / 1000)

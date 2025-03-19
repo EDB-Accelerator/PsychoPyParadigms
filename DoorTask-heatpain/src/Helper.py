@@ -25,19 +25,30 @@ def get_keypress(Df,params):
 def ResolutionIntialization(params,size_diff):
     width_bank = []
     height_bank = []
-    width0 = params["screenSize"][0]
-    height0 = params["screenSize"][1]
+    if params['Version']!=3:
+        width0 = params["screenSize"][0]
+        height0 = params["screenSize"][1]
+        size0 = 0.0909
+        size0b = 0.1
+        size_diff2 = 1
+    else:
+        width0 = params["screenSize"][0]
+        height0 = params["screenSize"][1]
+        # size_diff = size_diff * 2.5
+        size0=10
+        size0b = 1
+        size_diff2 = 2.5
     # size_diff = 1/100
     if params['resolutionMode'] == False:
         for level in range(0,101):
-            width = width0 * (0.0909 + level * size_diff)
-            height = height0 * (0.0909 + level * size_diff)
+            width = width0 * (size0 + level * size_diff)
+            height = height0 * (size0 + level * size_diff)
             width_bank.append(width)
             height_bank.append(height)
     else:
         for level in range(0,101):
-            width = width0 * (0.1 + pow(level,1.7) * size_diff*0.05)
-            height = height0 * (0.1 + pow(level,1.7) * size_diff*0.05)
+            width = width0 * (size0b + pow(level,1.7) * size_diff*0.05*size_diff2)
+            height = height0 * (size0b + pow(level,1.7) * size_diff*0.05*size_diff2)
             width_bank.append(width)
             height_bank.append(height)
     params['width_bank'] = width_bank

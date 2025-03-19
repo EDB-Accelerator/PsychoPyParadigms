@@ -5,7 +5,7 @@ def userInputPlay():
     userInput = gui.Dlg(title="DOORS Task Information")
     userInput.addField('Subject Number:',)
     userInput.addField('Session:',1)
-    userInput.addField('Version:', choices=[1, 2])
+    userInput.addField('Version:', 3,choices=[1, 2,3])
     userInput.addField('# of Practice Trials:', 5)
     userInput.addField('# of TaskRun1:', 49)
     userInput.addField('# of TaskRun2:', 49)

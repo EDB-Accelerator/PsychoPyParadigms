@@ -324,8 +324,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     # 'Reward Bar (Green bar)' + str(r)))
                     aoiTimeStart = aoiTimeEnd
 
-            width = params['width_bank'][level]
-            height = params['height_bank'][level]
+            width = params['width_bank'][level] if params['Version']!=3 else params['width_bank'][level]
+            height = params['height_bank'][level] if params['Version']!=3 else params['height_bank'][level]
             # preInput = joyUserInput
             Dict["Distance_max"] = max(Dict["Distance_max"], level)
             Dict["Distance_min"] = min(Dict["Distance_min"], level)
@@ -420,6 +420,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             Dict["Door_opened"] = "opened"
 
             # if random.random() < 0.5:
+            widthtmp = width if params['Version'] != 3 else width / 3.0
+            heighttmp = height if params['Version'] != 3 else height / 3.0
             if rewardVSpunishment == "punishment":
                 Dict["Door_outcome"] = "punishment"
                 awardImg = "./img/outcomes/" + p + "_punishment.jpg"
@@ -447,8 +449,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     # my_pathway.trigger()
                     # event.waitKeys(maxWait=10)
 
-                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
-                                        size=(width * 0.235, height * 0.464))
+                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
+                                        size=(widthtmp * 0.235, heighttmp * 0.464))
                 message = visual.TextStim(win, text="-" + p, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();
@@ -460,8 +462,11 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             else:
                 Dict["Door_outcome"] = "reward"
                 awardImg = "./img/outcomes/" + r + "_reward.jpg"
-                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -height * 0.028],
-                                        size=(width * 0.235, height * 0.464))
+                # widthtmp = width if params['Version']!=3 else width/3.5
+                # heighttmp = height if params['Version'] != 3 else height / 3.5
+
+                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
+                                        size=(widthtmp * 0.235, heighttmp * 0.464))
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
                 message.pos = (0, 50)
                 img1.draw();
@@ -568,7 +573,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         else:
             width = params["screenSize"][0]
             height = params["screenSize"][1]
-            img1 = visual.ImageStim(win=win, image="./img/iti.jpg", units="pix", opacity=1, size=(width, height))
+            img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "./img/doors3/iti.jpg", units="pix", opacity=1, size=(width, height))
             img1.draw();
             win.flip();
             Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000

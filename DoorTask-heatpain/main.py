@@ -118,8 +118,9 @@
     # Global Exit
     event.globalKeys.add(key='q', func=os._exit, func_args=[1], func_kwargs=None)
 
-    if userInputBank[3]!= 1:
-        params['imageDir'] = './img/doors2/'
+    # if userInputBank[3]!= 1:
+    #     params['imageDir'] = './img/doors2/'
+    params['imageDir'] = f"./img/doors{params['Version']}/"
 
     ## Setup Psychopy Window.
     win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
@@ -298,8 +299,7 @@
     # # ===Fortune Wheel2 ==== #
     # # ====================== #
     # # win.close()
-    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
-    # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+     # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
     # ====================== #
     # ===== TaskRun2 ======= #
