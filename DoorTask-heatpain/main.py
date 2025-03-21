@@ -269,6 +269,12 @@
     win.mouseVisible = True
 
     # ====================== #
+    # ===Fortune Wheel1 ==== #
+    # ====================== #
+    # win.close()
+    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
+
+    # ====================== #
     # ===== TaskRun1 ======= #
     # ====================== #
     win.mouseVisible = False
@@ -299,7 +305,7 @@
     # # ===Fortune Wheel2 ==== #
     # # ====================== #
     # # win.close()
-     # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
 
     # ====================== #
     # ===== TaskRun2 ======= #
@@ -322,6 +328,14 @@
     img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
     waitUserInput(Df,img1, win, params,'pyglet')
     win.flip();
+
+    # ====================== #
+    # ===Fortune Wheel3 ==== #
+    # ====================== #
+    # win.close()
+    Df, win = FortuneGamePlay(Df, win, params, "Fortune Wheel 3", 16)
+    # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
+
 
     # ====================== #
     # ===== TaskRun3 ======= #
