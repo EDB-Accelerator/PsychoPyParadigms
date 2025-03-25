@@ -266,7 +266,7 @@
     SectionName = "Practice"
 
     Df,DfTR,win = PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName)
-    win.mouseVisible = True
+    win.mouseVisible = False
 
     # ====================== #
     # ===Fortune Wheel1 ==== #

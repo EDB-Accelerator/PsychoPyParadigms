@@ -176,6 +176,11 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv', header=None)).values)
     imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
+    tmp = []
+    for img in imgList:
+        if "iti" in img: continue
+        tmp.append(img)
+    imgList = tmp
     totalCoin = 0
 
     if JoystickInput() == -1:
@@ -211,7 +216,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         if i % 49 == 0:
             random.shuffle(imgList)
         imgFile = imgList[i % 49]
-
+        print(imgFile)
         if platform.system() == 'Windows':
             p, r = re.findall(r'\d+', imgFile.split('\\')[-1])
         else:
