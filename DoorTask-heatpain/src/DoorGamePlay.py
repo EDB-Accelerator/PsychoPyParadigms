@@ -17,7 +17,7 @@ from psychopy.iohub import launchHubServer
 import shutil
 import os
 
-def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my_pathway):
+def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my_pathway,imgList):
     # expInfo = {
     #     'LHeat': 36.0,
     #     'MHeat': 41.0,
@@ -79,19 +79,6 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         from JoystickInput import JoystickInput
     else:
         from VirtualJoystickInput import JoystickInput
-
-
-        # Send parallel port event
-        # def SetPortData(data):
-        #     if params['painSupport'] and params['sendPortEvents']:
-        #         # logging.log(level=logging.EXP, msg='set port %s to %d' % (format(params['portAddress'], '#04x'), data))
-        #         port.setData(data)
-        #         print(data)
-        #     else:
-        #         if params['painSupport']:
-        #             print('Port event: %d' % data)
-
-
 
     params["idxTR"] = 0
 
@@ -175,12 +162,15 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
 
     # Read Door Open Chance file provided by Rany.
     doorOpenChanceMap = np.squeeze((pd.read_csv('./input/doorOpenChance.csv', header=None)).values)
-    imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
-    tmp = []
-    for img in imgList:
-        if "iti" in img: continue
-        tmp.append(img)
-    imgList = tmp
+    # imgList = glob.glob(params['imageDir'] + params['imageSuffix'])
+    # imgList = glob.glob(imgFolder + params['imageSuffix'])
+    # tmp = []
+    # for img in imgList:
+    #     if "iti" in img: continue
+    #     tmp.append(img)
+    # imgList = tmp
+    # imgList=
+
     totalCoin = 0
 
     if JoystickInput() == -1:
@@ -215,8 +205,9 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         # randN = random.randint(0, len(imgList) - 1)
         if i % 49 == 0:
             random.shuffle(imgList)
-        imgFile = imgList[i % 49]
-        print(imgFile)
+        # imgFile = imgList[i % 49]
+        imgFile = imgList.pop()
+        # print(imgFile)
         if platform.system() == 'Windows':
             p, r = re.findall(r'\d+', imgFile.split('\\')[-1])
         else:
@@ -399,7 +390,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             ELstartTime = time.time()
 
         # Door Anticipation time
-        Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
+        # Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
+        Dict["Door_anticipation_time"] = random.uniform(1, 3) * 1000
         time.sleep(Dict["Door_anticipation_time"] / 1000)
 
         if params['EyeTrackerSupport']:
@@ -578,7 +570,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         else:
             width = params["screenSize"][0]
             height = params["screenSize"][1]
-            img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "./img/doors3/iti.jpg", units="pix", opacity=1, size=(width, height))
+            img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "img/img_03312025/iti.jpg", units="pix", opacity=1, size=(width, height))
             img1.draw();
             win.flip();
             Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
@@ -605,4 +597,4 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         io.quit()
         trackerIO.close()
     win.mouseVisible = True
-    return Df, DfTR, win
+    return Df, DfTR, win,imgList

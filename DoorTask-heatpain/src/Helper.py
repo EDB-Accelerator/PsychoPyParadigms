@@ -30,7 +30,7 @@ def ResolutionIntialization(params,size_diff):
         height0 = params["screenSize"][1]
         size0 = 0.0909
         size0b = 0.1
-        size_diff2 = 1
+        size_diff2 = 1*0.8
     else:
         width0 = params["screenSize"][0]
         height0 = params["screenSize"][1]
