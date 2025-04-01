@@ -59,13 +59,15 @@ params = {
     'numTaskRun1': userInputBank[4],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
     'numTaskRun3': userInputBank[6],  # The number of Trials in TaskRun2.
-    'JoyStickSupport' : True if userInputBank[10]<=2 else False, # Check if joystick option is checked or not.
-    'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
-    'EyeTrackerSupport': userInputBank[8],
-    'FullScreen': userInputBank[9],
-    'sensitivity': userInputBank[10],
-    'soundMode' : userInputBank[11],
-    'HeatSupport': userInputBank[12],
+    'JoyStickSupport' : True if userInputBank[8]<=2 else False, # Check if joystick option is checked or not.
+    # 'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
+    # 'EyeTrackerSupport': userInputBank[8],
+    'triggerSupport': True,  # Check if joystick option is checked or not.
+    'EyeTrackerSupport': False,
+    'FullScreen': userInputBank[7],
+    'sensitivity': userInputBank[8],
+    'soundMode' : userInputBank[9],
+    'HeatSupport': userInputBank[10],
     # 'eyeTrackCircle': userInputBank[11],
     'eyeTrackCircle': True,
     'portAddress': int("0xE050", 16), # Port Address
@@ -88,7 +90,7 @@ params = {
 }
 # Assign Heat1 to Heat7 dynamically from userInputBank[13] to userInputBank[19]
 for i in range(7):
-    params[f'Heat{i+1}'] = userInputBank[13 + i]
+    params[f'Heat{i+1}'] = userInputBank[11 + i]
 
 # Audio library configuration.
 if params['soundMode'] == 'PTB':
