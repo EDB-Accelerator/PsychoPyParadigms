@@ -104,6 +104,10 @@ else:
 timeLabel = datetime.datetime.now().strftime("%m%d%Y_%H%M%S")
 params['outFile'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
           str(params['Version']) + '_' +  timeLabel + ".csv"
+params['outFile_tmp'] = params['outFolder'] + '/' + str(params['subjectID']) + '_' + str(params['Session']) + '_' + \
+          str(params['Version']) + '_' +  timeLabel + "_aborted.csv"
+
+
 
 prefs.general['fullscr'] = params['FullScreen']
 
@@ -373,8 +377,13 @@ win.mouseVisible = True
 Df = Questionplay(Df, win, params, "Question")
 
 Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
-if params['EyeTrackerSupport']:
-    DfTR.to_csv(params['outFileTrackerLog'], sep=',', encoding='utf-8', index=False)
+import os
+file_path = params['outFile_tmp']
+if os.path.exists(file_path):
+    os.remove(file_path)
+    print(f"Temp Deleted: {file_path}")
+else:
+    print(f"File does not exist: {file_path}")
 
 # waitUserSpace(Df, params)
 message = visual.TextStim(win,

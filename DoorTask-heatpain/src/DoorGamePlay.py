@@ -582,6 +582,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, params, Dict)  # Log the dict result on pandas dataFrame.
+        Df.to_csv(params['outFile_tmp'], sep=',', encoding='utf-8', index=False)
+
         # my_pathway.stop()
 
     # Eyetracker finish recording
