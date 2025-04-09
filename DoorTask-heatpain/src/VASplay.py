@@ -26,7 +26,7 @@ def VASplay(Df, win, params, SectionName):
     # VAS (Anxiety)
     startTime = time.time()
     Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win, "How anxious do you feel right now?",
-                                                       ['Not anxious', 'Very anxious'])
+                                                       ['Calm', 'Anxious'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
     Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
@@ -56,4 +56,14 @@ def VASplay(Df, win, params, SectionName):
                                                        "Think about your mood right now. \nHow would you describe it?",
                                                        ['Worst mood ever', 'Best mood ever'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
+
+    # VAS (Annoy)
+    Dict["VAS_type"] = "Annoy"
+    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    startTime = time.time()
+    Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df, params, win,
+                                                   "How annoyed do you feel right now?",
+                                                   ['Not at all', 'Very much'])
+    Dict["VAS_RT"] = (time.time() - startTime) * 1000
+
     return tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
