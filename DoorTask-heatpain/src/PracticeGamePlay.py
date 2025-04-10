@@ -8,8 +8,9 @@ from ELIdxRecord import ELIdxRecord
 
 from WaitEyeGazed import WaitEyeGazed
 from EyeTrackerCalibration import EyeTrackerCalibration
-from psychopy.iohub import launchHubServer
-import pylink,time
+# from psychopy.iohub import launchHubServer
+# import pylink
+import time
 
 # Debuging
 # PracticeGamePlay(Df, win, params, params['numPractice'], port, "Practice")
@@ -26,58 +27,58 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
         from VirtualJoystickInput import JoystickInput
     # Eyetracker start recording
     params["idxTR"] = 0
-    if params['EyeTrackerSupport']:
+    # if params['EyeTrackerSupport']:
+    #
+    #     message = visual.TextStim(win,
+    #                               text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
+    #                               units='norm', wrapWidth=2)
+    #     message.draw();
+    #     win.flip();
+    #     waitUserSpace(Df, params)
+    #
+    #     iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
+    #                         {'name': 'tracker',
+    #                          'model_name': 'EYELINK 1000 DESKTOP',
+    #                          'runtime_settings': {'sampling_rate': 500,
+    #                                               'track_eyes': 'LEFT'}
+    #                          }
+    #                     }
+    #     # Start new ioHub server.
+    #     import psychopy.iohub.client
+    #
+    #     try:
+    #         io = launchHubServer(**iohub_config)
+    #     except:
+    #         q = psychopy.iohub.client.ioHubConnection.getActiveConnection().quit()
+    #         io = launchHubServer(**iohub_config)
+    #
+    #     # Get the eye tracker device.
+    #     tracker = io.devices.tracker
+    #
+    #     tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
+    #
+    #     # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
+    #     # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
+    #     tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
 
-        message = visual.TextStim(win,
-                                  text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
-                                  units='norm', wrapWidth=2)
-        message.draw();
-        win.flip();
-        waitUserSpace(Df, params)
-
-        iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
-                            {'name': 'tracker',
-                             'model_name': 'EYELINK 1000 DESKTOP',
-                             'runtime_settings': {'sampling_rate': 500,
-                                                  'track_eyes': 'LEFT'}
-                             }
-                        }
-        # Start new ioHub server.
-        import psychopy.iohub.client
-
-        try:
-            io = launchHubServer(**iohub_config)
-        except:
-            q = psychopy.iohub.client.ioHubConnection.getActiveConnection().quit()
-            io = launchHubServer(**iohub_config)
-
-        # Get the eye tracker device.
-        tracker = io.devices.tracker
-
-        tracker.sendCommand("screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
-
-        # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
-        # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
-        tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
-
-        # Eyetracker Calibration.
-        c = 'c'
-        while c != 'space':
-            tracker = EyeTrackerCalibration(tracker)
-            win.close()
-            win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
-            message = visual.TextStim(win,
-                                      text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
-                                      units='norm', wrapWidth=2)
-            message.draw();
-            win.flip();
-            c = waitUserSpaceAndC(Df, params)
-        win.close()
-
-        # Eyetracker start recording
-        tracker.setRecordingState(True)
-        ELstartTime = time.time()
-
+        # # Eyetracker Calibration.
+        # c = 'c'
+        # while c != 'space':
+        #     tracker = EyeTrackerCalibration(tracker)
+        #     win.close()
+        #     win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
+        #     message = visual.TextStim(win,
+        #                               text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
+        #                               units='norm', wrapWidth=2)
+        #     message.draw();
+        #     win.flip();
+        #     c = waitUserSpaceAndC(Df, params)
+        # win.close()
+        #
+        # # Eyetracker start recording
+        # tracker.setRecordingState(True)
+        # ELstartTime = time.time()
+        #
     win.close()
     win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
     win.mouseVisible = False

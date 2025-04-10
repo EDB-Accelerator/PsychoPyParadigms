@@ -62,7 +62,7 @@ params = {
     'JoyStickSupport' : True if userInputBank[8]<=2 else False, # Check if joystick option is checked or not.
     # 'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
     # 'EyeTrackerSupport': userInputBank[8],
-    'triggerSupport': True,  # Check if joystick option is checked or not.
+    'triggerSupport': False,  # Check if joystick option is checked or not.
     'EyeTrackerSupport': False,
     'FullScreen': userInputBank[7],
     'sensitivity': userInputBank[8],
@@ -265,12 +265,6 @@ Df = InstructionPlay(Df,win,params)
 # ========================================== #
 ResolutionIntialization(params,size_diff=1/65)
 
-# ========================================== #
-# ==== Eyetracker Initialization =========== #
-# ========================================== #
-tracker = ""
-# if params['EyeTrackerSupport']:
-
 # ====================== #
 # ===== Practice ======= #
 # ====================== #
@@ -287,7 +281,10 @@ win.mouseVisible = False
 # ===Fortune Wheel1 ==== #
 # ====================== #
 # win.close()
-Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
+
+import platform
+if platform.system() == 'Windows':
+    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
 
 # ====================== #
 # ===== TaskRun1 ======= #
@@ -320,7 +317,9 @@ win.flip();
 # # ===Fortune Wheel2 ==== #
 # # ====================== #
 # # win.close()
-Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
+
+if platform.system() == 'Windows':
+    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
 
 # ====================== #
 # ===== TaskRun2 ======= #
@@ -348,7 +347,8 @@ win.flip();
 # ===Fortune Wheel3 ==== #
 # ====================== #
 # win.close()
-Df, win = FortuneGamePlay(Df, win, params, "Fortune Wheel 3", 16)
+if platform.system() == 'Windows':
+    Df, win = FortuneGamePlay(Df, win, params, "Fortune Wheel 3", 16)
 # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 

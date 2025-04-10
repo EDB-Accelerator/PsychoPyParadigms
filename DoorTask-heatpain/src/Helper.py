@@ -233,40 +233,129 @@ def Questionplay(Df, win, params, SectionName):
 # iterNum = params['numTaskRun1']
 
 
-def tableWrite(df, params,dict):
-    # Move data in Dict into Df.
-    # Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
-    # Move data in Dict into Df.
+# def tableWrite(df, params,dict):
+#     # Move data in Dict into Df.
+#     # Df = Df.append(pd.Series(dtype=float), ignore_index=True)  # Insert Empty Rows
+#     # Move data in Dict into Df.
+#     for key in params['Header']:
+#         if key not in dict.keys():
+#             dict[key] = ""
+#     df = df.append(dict,ignore_index=True)
+#     df.to_csv(params['outFile'], mode='a', sep=',', encoding='utf-8', index=False, header=False)
+#
+#     # for key in Dict:
+#     #     Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
+#     return df
+
+
+import platform
+import pandas as pd
+
+def tableWrite(df, params, dict):
+    # Ensure all expected columns exist
     for key in params['Header']:
         if key not in dict.keys():
             dict[key] = ""
-    df = df.append(dict,ignore_index=True)
+
+    os_type = platform.system()
+    if os_type == 'Darwin':  # macOS: use concat (append is removed)
+        df = pd.concat([df, pd.DataFrame([dict])], ignore_index=True)
+    else:  # Windows/Linux: use original append
+        df = df.append(dict, ignore_index=True)
+
+    # Append to output file
     df.to_csv(params['outFile'], mode='a', sep=',', encoding='utf-8', index=False, header=False)
 
-    # for key in Dict:
-    #     Df[key].loc[len(Df) - 1] = Dict[key]  # FYI, len(Df)-1: means the last row of pandas dataframe.
     return df
 
 
-def displayVAS(Df,params,win, text, labels):
-    scale = visual.RatingScale(win,
-                               labels=labels,  # End points
-                               scale=None,  # Suppress default
-                               # markerStart=50,
-                               low=0, high=100, tickHeight=0, precision=1, size = 2,textSize = 0.6,
-                               acceptText='Continue', showValue=False, showAccept=True,markerColor="Yellow")  # markerstart=50
-    myItem = visual.TextStim(win, text=text, height=.12, units='norm',pos=[0,0.3], wrapWidth=2)
+# def displayVAS(Df,params,win, text, labels):
+#     scale = visual.RatingScale(win,
+#                                labels=labels,  # End points
+#                                scale=None,  # Suppress default
+#                                # markerStart=50,
+#                                low=0, high=100, tickHeight=0, precision=1, size = 2,textSize = 0.6,
+#                                acceptText='Continue', showValue=False, showAccept=True,markerColor="Yellow")  # markerstart=50
+#     myItem = visual.TextStim(win, text=text, height=.12, units='norm',pos=[0,0.3], wrapWidth=2)
+#
+#     # Show scale and measure the elapsed wall-clock time.
+#     startTime = time.time()
+#     while scale.noResponse:
+#         scale.draw()
+#         myItem.draw()
+#         win.flip()
+#         get_keypress(Df,params)
+#     endTime = time.time()
+#     win.flip()
+#     return scale.getRating(), endTime - startTime
 
-    # Show scale and measure the elapsed wall-clock time.
-    startTime = time.time()
-    while scale.noResponse:
-        scale.draw()
-        myItem.draw()
+
+def displayVAS(Df, params, win, text, labels):
+    import platform
+    os_type = platform.system()
+
+    if os_type == 'Darwin':  # macOS: use Slider
+        question_stim = visual.TextStim(win, text=text, height=.12, units='norm', pos=[0, 0.3], wrapWidth=2)
+
+        slider = visual.Slider(
+            win=win,
+            ticks=[0, 100],
+            labels=labels,
+            granularity=1,
+            style='rating',
+            size=(1.5, 0.1),
+            pos=(0, -0.2),
+            labelHeight=0.06,
+            color='White',
+            fillColor='Yellow',
+            borderColor='White'
+        )
+
+        startTime = time.time()
+        rating = None
+
+        while rating is None:
+            question_stim.draw()
+            slider.draw()
+            win.flip()
+            get_keypress(Df, params)
+
+            rating = slider.getRating()
+            if 'escape' in event.getKeys():
+                core.quit()
+
+        endTime = time.time()
         win.flip()
-        get_keypress(Df,params)
-    endTime = time.time()
-    win.flip()
-    return scale.getRating(), endTime - startTime
+        return rating, endTime - startTime
+
+    else:  # Windows: use original RatingScale
+        scale = visual.RatingScale(
+            win,
+            labels=labels,  # End points
+            scale=None,  # Suppress default text
+            low=0,
+            high=100,
+            tickHeight=0,
+            precision=1,
+            size=2,
+            textSize=0.6,
+            acceptText='Continue',
+            showAccept=True,
+            markerColor="Yellow"
+        )
+
+        myItem = visual.TextStim(win, text=text, height=.12, units='norm', pos=[0, 0.3], wrapWidth=2)
+
+        startTime = time.time()
+        while scale.noResponse:
+            scale.draw()
+            myItem.draw()
+            win.flip()
+            get_keypress(Df, params)
+
+        endTime = time.time()
+        win.flip()
+        return scale.getRating(), endTime - startTime
 
 def fadeInOutImage(win, image, duration, size):
     for i in range(60):
