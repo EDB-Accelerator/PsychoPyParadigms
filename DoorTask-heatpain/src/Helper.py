@@ -341,8 +341,17 @@ def displayVAS(Df, params, win, text, labels):
             textSize=0.6,
             acceptText='Continue',
             showAccept=True,
-            markerColor="Yellow"
+            markerColor="Yellow",
+            showValue=False
         )
+
+        #     scale = visual.RatingScale(win,
+        #                                labels=labels,  # End points
+        #                                scale=None,  # Suppress default
+        #                                # markerStart=50,
+        #                                low=0, high=100, tickHeight=0, precision=1, size = 2,textSize = 0.6,
+        #                                acceptText='Continue', showValue=False, showAccept=True,markerColor="Yellow")  # markerstart=50
+        #     myItem = visual.TextStim(win, text=text, height=.12, units='norm',pos=[0,0.3], wrapWidth=2)
 
         myItem = visual.TextStim(win, text=text, height=.12, units='norm', pos=[0, 0.3], wrapWidth=2)
 

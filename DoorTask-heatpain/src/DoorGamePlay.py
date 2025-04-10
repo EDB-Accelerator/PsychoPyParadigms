@@ -16,7 +16,7 @@ from ELIdxRecord import ELIdxRecord
 # from psychopy.iohub import launchHubServer
 import shutil
 import os
-
+from psychopy import core
 def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my_pathway,imgList):
     # expInfo = {
     #     'LHeat': 36.0,
@@ -515,7 +515,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             mixer.init()
             mixer.music.load("./img/sounds/reward_sound.wav")
             mixer.music.play()
-            event.waitKeys(maxWait=2)
+            # event.waitKeys(maxWait=2)
+            core.wait(2.0)  # Simple blocking pause
             mixer.music.stop()
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             # sound1.play()
@@ -538,7 +539,9 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             mixer.init()
             mixer.music.load("./img/sounds/punishment_sound.wav")
             mixer.music.play()
-            event.waitKeys(maxWait=2)
+            # event.waitKeys(maxWait=2)
+
+            core.wait(2.0)  # Simple blocking pause
             mixer.music.stop()
             # if params['HeatSupport']:
             #     my_pathway.trigger()
@@ -547,14 +550,16 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             # event.waitKeys(maxWait=2)
             # sound1.stop()
         else:
-            event.waitKeys(maxWait=2)
+            # event.waitKeys(maxWait=2)
+            core.wait(2.0)  # Simple blocking pause
 
         if params['EyeTrackerSupport']:
             tracker.sendMessage('TRIAL_RESULT 0')
             tracker.sendMessage('TRIALID %d' % params["idxTR"])
 
         # ITI duration
-        event.waitKeys(maxWait=5)
+        # event.waitKeys(maxWait=5)
+        core.wait(5.0)  # Simple blocking pause
         # my_pathway.stop()
         if params['EyeTrackerSupport']:
             startTime = time.time()

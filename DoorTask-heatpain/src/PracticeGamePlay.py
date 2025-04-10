@@ -273,39 +273,41 @@ def PracticeGamePlay(Df, DfTR,win, params, iterNum, port,SectionName):
                                 size=(widthtmp* 0.235, heighttmp* 0.464))
         img1.draw();img2.draw();win.flip()
 
-        event.waitKeys(maxWait=2)
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.","","")
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            ELstartTime = time.time()
+        # event.waitKeys(maxWait=2)
+        from psychopy import core
+        core.wait(2.0)
+        # if params['EyeTrackerSupport']:
+        #     tracker.sendMessage('TRIAL_RESULT 0')
+        #     DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "Reward screen displayed.","","")
+        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
+        #     ELstartTime = time.time()
 
         # ITI duration
-        if params['EyeTrackerSupport']:
-            startTime = time.time()
-            width = params["screenSize"][0]
-            height = params["screenSize"][1]
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-            1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
-            'fixation treasure'))
+        # if params['EyeTrackerSupport']:
+        #     startTime = time.time()
+        #     width = params["screenSize"][0]
+        #     height = params["screenSize"][1]
+        #     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width/2, height/2))
+        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+        #     1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
+        #     'fixation treasure'))
+        #
+        #     WaitEyeGazed(win, params, tracker,'eyeTrackCircle')
+        #     Dict["ITI_duration"] = time.time() - startTime
+        #
+        # else:
+        width = params["screenSize"][0]
+        height = params["screenSize"][1]
+        widthtmp = width if params['Version'] != 3 else width
+        heighttmp = height if params['Version'] != 3 else height
+        img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "./img/doors3/iti.jpg", units="pix", opacity=1, size=(widthtmp, heighttmp))
+        img1.draw();win.flip();
+        Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
+        time.sleep(Dict["ITI_duration"] / 1000)
 
-            WaitEyeGazed(win, params, tracker,'eyeTrackCircle')
-            Dict["ITI_duration"] = time.time() - startTime
-
-        else:
-            width = params["screenSize"][0]
-            height = params["screenSize"][1]
-            widthtmp = width if params['Version'] != 3 else width
-            heighttmp = height if params['Version'] != 3 else height
-            img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "./img/doors3/iti.jpg", units="pix", opacity=1, size=(widthtmp, heighttmp))
-            img1.draw();win.flip();
-            Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
-            time.sleep(Dict["ITI_duration"] / 1000)
-
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
+        # if params['EyeTrackerSupport']:
+        #     tracker.sendMessage('TRIAL_RESULT 0')
+        #     DfTR = ELIdxRecord(DfTR, params,SectionName,time.time()-ELstartTime,i, "ITI screen displayed.","","")
 
         Df = tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
