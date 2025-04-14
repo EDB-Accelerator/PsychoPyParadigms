@@ -18,6 +18,7 @@ import shutil
 import os
 from psychopy import core
 def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my_pathway,imgList):
+    debugClock = core.Clock()
     # expInfo = {
     #     'LHeat': 36.0,
     #     'MHeat': 41.0,
@@ -177,18 +178,18 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         print("There is no available Joystick.")
         exit()
 
-    if params['EyeTrackerSupport']:
-        DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, "",
-                           "After Calibration Before Door Practice Game", "", "")
-        tracker.sendMessage('TRIAL_RESULT 0')
+    # if params['EyeTrackerSupport']:
+    #     DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, "",
+    #                        "After Calibration Before Door Practice Game", "", "")
+    #     tracker.sendMessage('TRIAL_RESULT 0')
 
     aoiTimeStart = time.time() * 1000
     for i in range(iterNum):
-
+        debugClock.reset()
         # EDF labeling (start)
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            ELstartTime = time.time()
+        # if params['EyeTrackerSupport']:
+        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
+        #     ELstartTime = time.time()
 
         params['subTrialCounter'] += 1
         Dict = {
@@ -203,8 +204,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
 
         # Pick up random image.
         # randN = random.randint(0, len(imgList) - 1)
-        if i % 49 == 0:
-            random.shuffle(imgList)
+        # if i % 49 == 0:
+        #     random.shuffle(imgList)
         # imgFile = imgList[i % 49]
         imgFile = imgList.pop()
         # print(imgFile)
@@ -223,6 +224,18 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         height = params['height_bank'][level]
         img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
         img1.draw();
+        if 'debug' in params['subjectID']:
+            level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.0, 0.0), units='norm', color='red',
+                                         height=0.05, alignText='right')
+            timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.1, 0.0), units='norm',
+                                         color='red', height=0.04, alignText='right')
+            status_text = visual.TextStim(win, text=f"door game play", pos=(0, 0.2), units='norm', color='red',
+                                         height=0.05, alignText='right')
+            level_text.text = f"Level: {level}"
+            timer_text.text =f"{debugClock.getTime():.2f}s"
+            timer_text.draw()
+            level_text.draw()
+            status_text.draw()
         win.flip();
 
         startTime = time.time()
@@ -243,6 +256,16 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
         else:
             aoiInfo = " r" + str(r) + "p" + str(p) + "; r"
+
+        if 'debug' in params['subjectID']:
+            # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
+            #                              height=0.05, alignText='right')
+            # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
+            #                              color='red', height=0.04, alignText='right')
+            level_text.draw()
+            timer_text.text = f"{debugClock.getTime():.2f}s"
+            timer_text.draw()
+
 
         # SetPort(3, 1, my_pathway)
         # event.waitKeys(maxWait=3)
@@ -282,44 +305,6 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             else:
                 changed = False
 
-            if params['EyeTrackerSupport']:
-
-                positionTmp = position
-                position = tracker.getPosition()
-                if position is None:
-                    position = positionTmp
-
-                aoiTimeEnd = time.time() * 1000
-                # Door
-                if changed == True:
-                    tracker.sendMessage(
-                        '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                        1, 512 - width * 105 / 1024,
-                                                                        390 - height * 160 / 768,
-                                                                        512 + width * 105 / 1024,
-                                                                        390 + height * 200 / 768,
-                                                                        'DOOR' + aoiInfo))
-                    # Reward
-                    tracker.sendMessage(
-                        '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                        2, 512 - width * 220 / 1024,
-                                                                        390 - height * 155 / 768,
-                                                                        512 - width * 130 / 1024,
-                                                                        390 + height * 200 / 768,
-                                                                        # 'Punishment Bar (Red bar)' + str(p)))
-                                                                        'Punishment Bar (Red bar) ' + str(p) + aoiInfo))
-
-                    # Punishment bar
-                    tracker.sendMessage(
-                        '!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                        3, 512 + width * 220 / 1024,
-                                                                        390 - height * 155 / 768,
-                                                                        512 + width * 130 / 1024,
-                                                                        390 + height * 200 / 768,
-                                                                        'Reward Bar (Green bar) ' + str(r) + aoiInfo))
-                    # 'Reward Bar (Green bar)' + str(r)))
-                    aoiTimeStart = aoiTimeEnd
-
             width = params['width_bank'][level] if params['Version']!=3 else params['width_bank'][level]
             height = params['height_bank'][level] if params['Version']!=3 else params['height_bank'][level]
             # preInput = joyUserInput
@@ -328,91 +313,132 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
 
             img1.size = (width, height)
             img1.draw();
+
+            if 'debug' in params['subjectID']:
+                # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
+                #                              height=0.05, alignText='right')
+                # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
+                #                              color='red', height=0.04, alignText='right')
+                level_text.text = f"Level: {level}"
+                timer_text.text = f"{debugClock.getTime():.2f}s"
+                timer_text.draw()
+                level_text.draw()
+                status_text.text=f"door game play. up to {params['DistanceLockWaitTime']}sec."
+                status_text.draw()
+
             win.flip()
             get_keypress(Df, params)
 
         triggerGo(port, params, r, p, 2)  # Trigger: Joystick lock (start anticipation)
         Dict["DistanceFromDoor_SubTrial"] = level
 
-        if params['EyeTrackerSupport']:
-            # Define last dynami AI before ending trial
-            aoiTimeEnd = time.time() * 1000
-            tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                                1, 512 - width * 105 / 1024,
-                                                                                390 - height * 160 / 768,
-                                                                                512 + width * 105 / 1024,
-                                                                                390 + height * 200 / 768,
-                                                                                'DOOR' + aoiInfo))
-            # Reward
-            tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                                2, 512 - width * 220 / 1024,
-                                                                                390 - height * 155 / 768,
-                                                                                512 - width * 130 / 1024,
-                                                                                390 + height * 200 / 768,
-                                                                                # 'Punishment Bar (Red bar)' + str(p)))
-                                                                                'Punishment Bar (Red bar) ' + str(
-                                                                                    p) + aoiInfo))
-
-            # Punishment bar
-            tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
-                                                                                3, 512 + width * 220 / 1024,
-                                                                                390 - height * 155 / 768,
-                                                                                512 + width * 130 / 1024,
-                                                                                390 + height * 200 / 768,
-                                                                                'Reward Bar (Green bar) ' + str(
-                                                                                    r) + aoiInfo))
-            tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
-                               "Playing Door Game (Before lock).", r, p)
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024 / 2, 768 / 2, width, height))
-            # Door
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
-                                                                          390 - height * 160 / 768,
-                                                                          512 + width * 105 / 1024,
-                                                                          390 + height * 200 / 768,
-                                                                          'DOOR' + aoiInfo))
-            # Reward
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (2, 512 - width * 220 / 1024,
-                                                                          390 - height * 155 / 768,
-                                                                          512 - width * 130 / 1024,
-                                                                          390 + height * 200 / 768,
-                                                                          'Punishment Bar (Red bar) ' + str(
-                                                                              p) + aoiInfo))
-
-            # Punishment bar
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, 512 + width * 220 / 1024,
-                                                                          390 - height * 155 / 768,
-                                                                          512 + width * 130 / 1024,
-                                                                          390 + height * 200 / 768,
-                                                                          'Reward Bar (Green bar) ' + str(r) + aoiInfo))
-
-            ELstartTime = time.time()
+        # if params['EyeTrackerSupport']:
+        #     # Define last dynami AI before ending trial
+        #     aoiTimeEnd = time.time() * 1000
+        #     tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+        #                                                                         1, 512 - width * 105 / 1024,
+        #                                                                         390 - height * 160 / 768,
+        #                                                                         512 + width * 105 / 1024,
+        #                                                                         390 + height * 200 / 768,
+        #                                                                         'DOOR' + aoiInfo))
+        #     # Reward
+        #     tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+        #                                                                         2, 512 - width * 220 / 1024,
+        #                                                                         390 - height * 155 / 768,
+        #                                                                         512 - width * 130 / 1024,
+        #                                                                         390 + height * 200 / 768,
+        #                                                                         # 'Punishment Bar (Red bar)' + str(p)))
+        #                                                                         'Punishment Bar (Red bar) ' + str(
+        #                                                                             p) + aoiInfo))
+        #
+        #     # Punishment bar
+        #     tracker.sendMessage('!V IAREA %d %d RECTANGLE %d %d %d %d %d %s' % (int(aoiTimeEnd - aoiTimeStart), 0,
+        #                                                                         3, 512 + width * 220 / 1024,
+        #                                                                         390 - height * 155 / 768,
+        #                                                                         512 + width * 130 / 1024,
+        #                                                                         390 + height * 200 / 768,
+        #                                                                         'Reward Bar (Green bar) ' + str(
+        #                                                                             r) + aoiInfo))
+        #     tracker.sendMessage('TRIAL_RESULT 0')
+        #     DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+        #                        "Playing Door Game (Before lock).", r, p)
+        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
+        #     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (imgFile, 1024 / 2, 768 / 2, width, height))
+        #     # Door
+        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
+        #                                                                   390 - height * 160 / 768,
+        #                                                                   512 + width * 105 / 1024,
+        #                                                                   390 + height * 200 / 768,
+        #                                                                   'DOOR' + aoiInfo))
+        #     # Reward
+        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (2, 512 - width * 220 / 1024,
+        #                                                                   390 - height * 155 / 768,
+        #                                                                   512 - width * 130 / 1024,
+        #                                                                   390 + height * 200 / 768,
+        #                                                                   'Punishment Bar (Red bar) ' + str(
+        #                                                                       p) + aoiInfo))
+        #
+        #     # Punishment bar
+        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (3, 512 + width * 220 / 1024,
+        #                                                                   390 - height * 155 / 768,
+        #                                                                   512 + width * 130 / 1024,
+        #                                                                   390 + height * 200 / 768,
+        #                                                                   'Reward Bar (Green bar) ' + str(r) + aoiInfo))
+        #
+        #     ELstartTime = time.time()
 
         # Door Anticipation time
         # Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
-        Dict["Door_anticipation_time"] = random.uniform(1, 3) * 1000
-        time.sleep(Dict["Door_anticipation_time"] / 1000)
+        # Dict["Door_anticipation_time"] = random.uniform(1, 3) * 1000
+        # time.sleep(Dict["Door_anticipation_time"] / 1000)
+        Dict["Door_anticipation_time"] = random.uniform(1, 3)
+        wait_duration =  Dict["Door_anticipation_time"]
+        debugClock.reset()
+        timer = core.Clock()
+        while timer.getTime() < wait_duration:
+            if 'debug' in params['subjectID']:
+                timer_text.text=f"{debugClock.getTime():.2f}s"
+                img1.draw();
+                level_text.draw()
+                timer_text.draw()
+                status_text.text=f"door anticipation time ({Dict['Door_anticipation_time']} sec)"
+                status_text.draw()
 
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
-                               "After lock: Door Anticipation Time.", r, p)
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
-            ELstartTime = time.time()
+            win.flip()
+
+
+
+        # if params['EyeTrackerSupport']:
+        #     tracker.sendMessage('TRIAL_RESULT 0')
+        #     DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+        #                        "After lock: Door Anticipation Time.", r, p)
+        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
+        #     ELstartTime = time.time()
 
         Dict["Door_outcome"] = ""
         Dict["Door_opened"] = ""
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
             img1.draw();
+            if 'debug' in params['subjectID']:
+                # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
+                #                              height=0.05, alignText='right')
+                # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
+                #                              color='red', height=0.04, alignText='right')
+                level_text.text = f"Level: {level}"
+                timer_text.text = f"{debugClock.getTime():.2f}s"
+                timer_text.draw()
+                level_text.draw()
+                status_text.text=f"result:closed (2 sec)"
+                status_text.draw()
+
             win.flip()
             triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
 
-            if params['EyeTrackerSupport']:
-                DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
-                                   "Reward screen (Door not opened) displayed.", r, p)
-                ELstartTime = time.time()
+            # if params['EyeTrackerSupport']:
+            #     DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+            #                        "Reward screen (Door not opened) displayed.", r, p)
+            #     ELstartTime = time.time()
         else:
             Dict["Door_opened"] = "opened"
 
@@ -452,6 +478,17 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                 message.pos = (0, 50)
                 img1.draw();
                 img2.draw();
+                if 'debug' in params['subjectID']:
+                    # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
+                    #                              height=0.05, alignText='right')
+                    # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
+                    #                              color='red', height=0.04, alignText='right')
+                    level_text.text = f"Level: {level}"
+                    timer_text.text = f"{debugClock.getTime():.2f}s"
+                    timer_text.draw()
+                    level_text.draw()
+                    status_text.text = f"result:punishment (4 sec)"
+                    status_text.draw()
                 message.draw();
                 win.flip()
                 triggerGo(port, params, r, p, 4)  # Door outcome: punishment
@@ -468,55 +505,80 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                 message.pos = (0, 50)
                 img1.draw();
                 img2.draw();
+                if 'debug' in params['subjectID']:
+                    # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
+                    #                              height=0.05, alignText='right')
+                    # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
+                    #                              color='red', height=0.04, alignText='right')
+                    level_text.text = f"Level: {level}"
+                    timer_text.text = f"{debugClock.getTime():.2f}s"
+                    timer_text.draw()
+                    level_text.draw()
+                    status_text.text = f"result:reward (2 sec)"
+                    status_text.draw()
                 win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
                 totalCoin += int(r)
-            if params['EyeTrackerSupport']:
-                if Dict["Door_outcome"] == "reward":
-                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
-                                       "Reward screen (score:" + str(r) + ") displayed.", r, p)
-                else:
-                    DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
-                                       "Punishment screen (score:" + str(p) + ") displayed.", r, p)
+            # if params['EyeTrackerSupport']:
+            #     if Dict["Door_outcome"] == "reward":
+            #         DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+            #                            "Reward screen (score:" + str(r) + ") displayed.", r, p)
+            #     else:
+            #         DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i,
+            #                            "Punishment screen (score:" + str(p) + ") displayed.", r, p)
+            #
+            #     ELstartTime = time.time()
 
-                ELstartTime = time.time()
-
-        if params['EyeTrackerSupport']:
-            if Dict["Door_outcome"] == "reward":
-                resultReward = "reward (" + str(r) + ")" + aoiInfo
-            elif Dict["Door_outcome"] == "punishment":
-                resultReward = "punishment (" + str(p) + ")" + aoiInfo
-            else:
-                resultReward = "Door closed" + aoiInfo
-
-            if not os.path.exists('img/outscreenshot'):
-                os.makedirs('img/outscreenshot')
-
-            if not os.path.exists('output/img/outscreenshot'):
-                os.makedirs('output/img/outscreenshot')
-
-            imgScreenShot = './img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_' + Dict[
-                "Door_outcome"] + '_' + str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
-            imgScreenShot2 = './output/img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_' + \
-                             Dict["Door_outcome"] + '_' + str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
-
-            win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
-            win.saveMovieFrames(imgScreenShot)
-            shutil.copyfile(imgScreenShot, imgScreenShot2)
-
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
-            imgScreenShot, 1024 / 2, 768 / 2, params["screenSize"][0], params["screenSize"][1]))
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
-                                                                          390 - height * 160 / 768,
-                                                                          512 + width * 105 / 1024,
-                                                                          390 + height * 200 / 768,
-                                                                          resultReward))
+        # if params['EyeTrackerSupport']:
+        #     if Dict["Door_outcome"] == "reward":
+        #         resultReward = "reward (" + str(r) + ")" + aoiInfo
+        #     elif Dict["Door_outcome"] == "punishment":
+        #         resultReward = "punishment (" + str(p) + ")" + aoiInfo
+        #     else:
+        #         resultReward = "Door closed" + aoiInfo
+        #
+        #     if not os.path.exists('img/outscreenshot'):
+        #         os.makedirs('img/outscreenshot')
+        #
+        #     if not os.path.exists('output/img/outscreenshot'):
+        #         os.makedirs('output/img/outscreenshot')
+        #
+        #     imgScreenShot = './img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_' + Dict[
+        #         "Door_outcome"] + '_' + str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+        #     imgScreenShot2 = './output/img/outscreenshot/ver' + str(Dict['Version']) + '_' + Dict["Door_opened"] + '_' + \
+        #                      Dict["Door_outcome"] + '_' + str(p) + '_' + str(r) + '_' + str(level) + '.jpg'
+        #
+        #     win.getMovieFrame()  # Defaults to front buffer, I.e. what's on screen now.
+        #     win.saveMovieFrames(imgScreenShot)
+        #     shutil.copyfile(imgScreenShot, imgScreenShot2)
+        #
+        #     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d %d %d' % (
+        #     imgScreenShot, 1024 / 2, 768 / 2, params["screenSize"][0], params["screenSize"][1]))
+        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (1, 512 - width * 105 / 1024,
+        #                                                                   390 - height * 160 / 768,
+        #                                                                   512 + width * 105 / 1024,
+        #                                                                   390 + height * 200 / 768,
+        #                                                                   resultReward))
         if Dict["Door_outcome"] == "reward":
             mixer.init()
             mixer.music.load("./img/sounds/reward_sound.wav")
             mixer.music.play()
             # event.waitKeys(maxWait=2)
-            core.wait(2.0)  # Simple blocking pause
+            # core.wait(2.0)  # Simple blocking pause
+            wait_duration = 2.0
+            debugClock.reset()
+            timer = core.Clock()
+            while timer.getTime() < wait_duration:
+                if 'debug' in params['subjectID']:
+                    timer_text.text=f"{debugClock.getTime():.2f}s"
+                    img1.draw();
+                    img2.draw();
+                    level_text.draw()
+                    timer_text.draw()
+                    status_text.text = f"result:reward (2 sec)"
+                    status_text.draw()
+                win.flip()
+
             mixer.music.stop()
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             # sound1.play()
@@ -541,7 +603,22 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             mixer.music.play()
             # event.waitKeys(maxWait=2)
 
-            core.wait(2.0)  # Simple blocking pause
+            # core.wait(4.0)  # Simple blocking pause
+            wait_duration = 4.0
+            debugClock.reset()
+            timer = core.Clock()
+            while timer.getTime() < wait_duration:
+                if 'debug' in params['subjectID']:
+                    timer_text.text=f"{debugClock.getTime():.2f}s"
+                    img1.draw();
+                    img2.draw();
+                    level_text.draw()
+                    timer_text.draw()
+                    status_text.text = f"result:punishment (4 sec)"
+                    status_text.draw()
+                win.flip()
+
+
             mixer.music.stop()
             # if params['HeatSupport']:
             #     my_pathway.trigger()
@@ -551,39 +628,76 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             # sound1.stop()
         else:
             # event.waitKeys(maxWait=2)
-            core.wait(2.0)  # Simple blocking pause
+            # core.wait(2.0)  # Simple blocking pause
+            wait_duration = 2.0
+            debugClock.reset()
+            timer = core.Clock()
+            while timer.getTime() < wait_duration:
+                if 'debug' in params['subjectID']:
+                    timer_text.text=f"{debugClock.getTime():.2f}s"
+                    img1.draw();
+                    # img2.draw();
+                    level_text.draw()
+                    timer_text.draw()
+                    status_text.text = f"result:closed (2 sec)"
+                    status_text.draw()
+                win.flip()
 
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIAL_RESULT 0')
-            tracker.sendMessage('TRIALID %d' % params["idxTR"])
+        # if params['EyeTrackerSupport']:
+        #     tracker.sendMessage('TRIAL_RESULT 0')
+        #     tracker.sendMessage('TRIALID %d' % params["idxTR"])
 
         # ITI duration
         # event.waitKeys(maxWait=5)
-        core.wait(5.0)  # Simple blocking pause
+        # core.wait(5.0)  # Simple blocking pause
         # my_pathway.stop()
-        if params['EyeTrackerSupport']:
-            startTime = time.time()
-            width = params["screenSize"][0]
-            height = params["screenSize"][1]
-            tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width / 2, height / 2))
-            tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
-                1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
-                'fixation treasure' + aoiInfo))
-            WaitEyeGazed(win, params, tracker, False)
-            Dict["ITI_duration"] = time.time() - startTime
+        # if params['EyeTrackerSupport']:
+        #     startTime = time.time()
+        #     width = params["screenSize"][0]
+        #     height = params["screenSize"][1]
+        #     tracker.sendMessage('!V IMGLOAD CENTER %s %d %d' % ("./img/ITI_fixation.jpg", width / 2, height / 2))
+        #     tracker.sendMessage('!V IAREA RECTANGLE %d %d %d %d %d %s' % (
+        #         1, int(335 * width / 1024), int(217 * height / 768), int(689 * width / 1024), int(561 * height / 768),
+        #         'fixation treasure' + aoiInfo))
+        #     WaitEyeGazed(win, params, tracker, False)
+        #     Dict["ITI_duration"] = time.time() - startTime
 
-        else:
-            width = params["screenSize"][0]
-            height = params["screenSize"][1]
-            img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "img/img_03312025/iti.jpg", units="pix", opacity=1, size=(width, height))
-            img1.draw();
-            win.flip();
-            Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
-            time.sleep(Dict["ITI_duration"] / 1000)
+        # else:
+        width = params["screenSize"][0]
+        height = params["screenSize"][1]
+        img1 = visual.ImageStim(win=win, image="./img/iti.jpg" if params['Version']!=3 else "img/img_03312025/iti.jpg", units="pix", opacity=1, size=(width, height))
+        img1.draw();
+        if 'debug' in params['subjectID']:
+            # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
+            #                              height=0.05, alignText='right')
+            # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
+            #                              color='red', height=0.04, alignText='right')
+            level_text.text = f"Level: {level}"
+            timer_text.text = f"{debugClock.getTime():.2f}s"
+            timer_text.draw()
+            status_text.text = f"ITI (25 sec)"
+            status_text.draw()
+            level_text.draw()
+        win.flip();
+        # Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
+        Dict["ITI_duration"] = 25
+        # time.sleep(Dict["ITI_duration"] / 1000)
+        # core.wait(Dict["ITI_duration"])
+        wait_duration = Dict["ITI_duration"]
+        debugClock.reset()
+        timer = core.Clock()
+        while timer.getTime() < wait_duration:
+            if 'debug' in params['subjectID']:
+                timer_text.text=f"{debugClock.getTime():.2f}s"
+                img1.draw();
+                status_text.text = f"ITI (25 sec)"
+                status_text.draw()
+                timer_text.draw()
+            win.flip()
 
-        if params['EyeTrackerSupport']:
-            tracker.sendMessage('TRIAL_RESULT 0')
-            DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "ITI screen displayed.", "", "")
+        # if params['EyeTrackerSupport']:
+        #     tracker.sendMessage('TRIAL_RESULT 0')
+        #     DfTR = ELIdxRecord(DfTR, params, SectionName, time.time() - ELstartTime, i, "ITI screen displayed.", "", "")
 
         Dict["Total_coins"] = totalCoin
         Df = tableWrite(Df, params, Dict)  # Log the dict result on pandas dataFrame.
@@ -592,16 +706,16 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         # my_pathway.stop()
 
     # Eyetracker finish recording
-    if params['EyeTrackerSupport']:
-        # Eyetracker stop recording
-        tracker.setRecordingState(False)
-
-        # open a connection to the tracker and download the result file.
-        trackerIO = pylink.EyeLink('100.1.1.1')
-        trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
-
-        # Stop the ioHub Server
-        io.quit()
-        trackerIO.close()
+    # if params['EyeTrackerSupport']:
+    #     # Eyetracker stop recording
+    #     tracker.setRecordingState(False)
+    #
+    #     # open a connection to the tracker and download the result file.
+    #     trackerIO = pylink.EyeLink('100.1.1.1')
+    #     trackerIO.receiveDataFile("et_data.EDF", params[SectionName])
+    #
+    #     # Stop the ioHub Server
+    #     io.quit()
+    #     trackerIO.close()
     win.mouseVisible = True
     return Df, DfTR, win,imgList
