@@ -213,6 +213,14 @@ def Questionplay(Df, win, params, SectionName):
                                                ["I didn't do well","I did very well"])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
 
+    # # Question (Charge)
+    # Dict["Q_type"] = "Charge"
+    # Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    # startTime = time.time()
+    # Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win,"How much were you in charge of what happened in the game?",
+    #                                            ["Not at all","Very much"])
+    # Dict["Q_RT"] = (time.time() - startTime) * 1000
+
     # Log the dict result on pandas dataFrame.
     Df = tableWrite(Df, params,Dict)
 

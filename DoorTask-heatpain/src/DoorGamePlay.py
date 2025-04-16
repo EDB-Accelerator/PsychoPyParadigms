@@ -404,7 +404,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                 status_text.text=f"door anticipation time ({Dict['Door_anticipation_time']} sec)"
                 status_text.draw()
 
-            win.flip()
+                win.flip()
 
 
 
@@ -432,7 +432,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                 status_text.text=f"result:closed (2 sec)"
                 status_text.draw()
 
-            win.flip()
+                win.flip()
             triggerGo(port, params, r, p, 5)  # Door outcome: it didn’t open
 
             # if params['EyeTrackerSupport']:
@@ -514,7 +514,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     timer_text.text = f"{debugClock.getTime():.2f}s"
                     timer_text.draw()
                     level_text.draw()
-                    status_text.text = f"result:reward (2 sec)"
+                    status_text.text = f"result:reward (4 sec)"
                     status_text.draw()
                 win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
@@ -565,7 +565,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             mixer.music.play()
             # event.waitKeys(maxWait=2)
             # core.wait(2.0)  # Simple blocking pause
-            wait_duration = 2.0
+            wait_duration = 4.0
             debugClock.reset()
             timer = core.Clock()
             while timer.getTime() < wait_duration:
@@ -575,9 +575,9 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     img2.draw();
                     level_text.draw()
                     timer_text.draw()
-                    status_text.text = f"result:reward (2 sec)"
+                    status_text.text = f"result:reward (4 sec)"
                     status_text.draw()
-                win.flip()
+                    win.flip()
 
             mixer.music.stop()
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
@@ -616,7 +616,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     timer_text.draw()
                     status_text.text = f"result:punishment (4 sec)"
                     status_text.draw()
-                win.flip()
+                    win.flip()
 
 
             mixer.music.stop()
@@ -629,7 +629,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         else:
             # event.waitKeys(maxWait=2)
             # core.wait(2.0)  # Simple blocking pause
-            wait_duration = 2.0
+            wait_duration = 4.0
             debugClock.reset()
             timer = core.Clock()
             while timer.getTime() < wait_duration:
@@ -641,7 +641,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     timer_text.draw()
                     status_text.text = f"result:closed (2 sec)"
                     status_text.draw()
-                win.flip()
+                    win.flip()
 
         # if params['EyeTrackerSupport']:
         #     tracker.sendMessage('TRIAL_RESULT 0')
@@ -693,7 +693,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                 status_text.text = f"ITI (25 sec)"
                 status_text.draw()
                 timer_text.draw()
-            win.flip()
+                win.flip()
 
         # if params['EyeTrackerSupport']:
         #     tracker.sendMessage('TRIAL_RESULT 0')

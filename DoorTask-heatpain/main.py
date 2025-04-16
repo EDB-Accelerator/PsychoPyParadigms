@@ -318,8 +318,8 @@ win.flip();
 # # ====================== #
 # # win.close()
 
-if platform.system() == 'Windows':
-    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
+# if platform.system() == 'Windows':
+#     Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 2",16)
 
 # ====================== #
 # ===== TaskRun2 ======= #
@@ -347,8 +347,8 @@ win.flip();
 # ===Fortune Wheel3 ==== #
 # ====================== #
 # win.close()
-if platform.system() == 'Windows':
-    Df, win = FortuneGamePlay(Df, win, params, "Fortune Wheel 3", 16)
+# if platform.system() == 'Windows':
+#     Df, win = FortuneGamePlay(Df, win, params, "Fortune Wheel 3", 16)
 # win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",winType='pyglet')
 
 

@@ -71,6 +71,7 @@ def QuestionPlay(Df, win, params, SectionName):
                                                ["I didn't do well","I did very well"])
     Dict["Q_RT"] = (time.time() - startTime) * 1000
 
+
     # Log the dict result on pandas dataFrame.
     tableWrite(Df, params,Dict)
 

@@ -66,4 +66,13 @@ def VASplay(Df, win, params, SectionName):
                                                    ['Not at all', 'Very much'])
     Dict["VAS_RT"] = (time.time() - startTime) * 1000
 
+    # Question (Charge)
+    if SectionName != "VAS pre":
+        Dict["VAS_type"] = "Charge"
+        Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+        startTime = time.time()
+        Dict["VAS_score"], Dict["VAS_RT"] = displayVAS(Df,params,win,"How much were you in charge of what happened in the game?",
+                                                   ["Not at all","Very much"])
+        Dict["VAS_RT"] = (time.time() - startTime) * 1000
+
     return tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
