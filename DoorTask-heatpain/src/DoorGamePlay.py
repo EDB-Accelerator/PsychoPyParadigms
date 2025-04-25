@@ -429,7 +429,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                 timer_text.text = f"{debugClock.getTime():.2f}s"
                 timer_text.draw()
                 level_text.draw()
-                status_text.text=f"result:closed (2 sec)"
+                status_text.text=f"result:closed (4 sec)"
                 status_text.draw()
 
                 win.flip()
@@ -639,7 +639,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     # img2.draw();
                     level_text.draw()
                     timer_text.draw()
-                    status_text.text = f"result:closed (2 sec)"
+                    status_text.text = f"result:closed (4 sec)"
                     status_text.draw()
                     win.flip()
 
