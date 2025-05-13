@@ -52,9 +52,9 @@ def VASplay(Df, win, params, SectionName):
          "How would you describe your MOOD right now?",
          ['Worst ever', 'Best ever']),
 
-        ("Control",
-         "How much CONTROL did you feel over what happened in the game?",
-         ['Not at all', 'Extremely']),
+        # ("Control",
+        #  "How much CONTROL did you feel over what happened in the game?",
+        #  ['Not at all', 'Extremely']),
     ]
 
     # --- 2. Shuffle in-place (one line) -----------------------------------------
