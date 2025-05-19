@@ -87,19 +87,19 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
     height = params["screenSize"][1]
     params['subTrialCounter'] = 0
 
-    if SectionName == "TaskRun1":
-        img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,
-                                size=(width, height))
-        img1.draw()
-        win.flip()
-
-        # Wait for User input.
-        while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
-            time.sleep(0.001)
-            img1.draw();
-            win.flip()
-        while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
-            time.sleep(0.001)
+    # if SectionName == "TaskRun1":
+    #     img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,
+    #                             size=(width, height))
+    #     img1.draw()
+    #     win.flip()
+    #
+    #     # Wait for User input.
+    #     while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
+    #         time.sleep(0.001)
+    #         img1.draw();
+    #         win.flip()
+    #     while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
+    #         time.sleep(0.001)
     win.mouseVisible = False
 
     width = params["screenSize"][0]
@@ -364,6 +364,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         Dict["Door_opened"] = ""
         if random.random() > doorOpenChanceMap[level]:
             Dict["Door_opened"] = "closed"
+            rewardVSpunishment = "closed"
             img1.draw();
             if 'debug' in params['subjectID']:
                 # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
@@ -374,7 +375,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                 timer_text.text = f"{debugClock.getTime():.2f}s"
                 timer_text.draw()
                 level_text.draw()
-                status_text.text=f"result:closed (4 sec)"
+                status_text.text=f"result:closed ({params['RewardScreenTime']} sec)"
                 status_text.draw()
 
                 win.flip()
@@ -458,7 +459,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     timer_text.text = f"{debugClock.getTime():.2f}s"
                     timer_text.draw()
                     level_text.draw()
-                    status_text.text = f"result:reward and punishment (4 sec)"
+                    status_text.text = f"result:reward and punishment ({params['RewardScreenTime']} sec)"
                     status_text.draw()
                 win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
@@ -503,15 +504,23 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         #                                                                   512 + width * 105 / 1024,
         #                                                                   390 + height * 200 / 768,
         #                                                                   resultReward))
-        if Dict["Door_outcome"] == "reward":
+        # if Dict["Door_outcome"] == "reward":
+        if rewardVSpunishment == "reward":
             # mixer.init()
             # mixer.music.load("./img/sounds/reward_sound.wav")
             # mixer.music.play()
             # event.waitKeys(maxWait=2)
             # core.wait(2.0)  # Simple blocking pause
+
+            SetPort(int(p),1)
+            SetPort(int(p),1)
+            SetPort(int(p),1)
+
             wait_duration = params['RewardScreenTime']
             debugClock.reset()
             timer = core.Clock()
+            img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
+                                    size=(widthtmp * 0.235, heighttmp * 0.464))
             while timer.getTime() < wait_duration:
                 if 'debug' in params['subjectID']:
                     timer_text.text=f"{debugClock.getTime():.2f}s"
@@ -528,48 +537,48 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             # sound1.play()
             # event.waitKeys(maxWait=2)
             # sound1.stop()
-        elif Dict["Door_outcome"] == "punishment":
-            # SetPort(3, 1, my_pathway)
-            # from psychopy import core
-            # timer = core.Clock()
-            # timer.add(.1)
-
-            # SetPort(3, 1, my_pathway)
-            # event.waitKeys(maxWait=10)
-            # timer.add(.1)
-            # SetPort(3, 1, my_pathway)
-            SetPort(int(p),1)
-            SetPort(int(p),1)
-            SetPort(int(p),1)
-
-            mixer.init()
-            mixer.music.load("./img/sounds/punishment_sound.wav")
-            mixer.music.play()
-            # event.waitKeys(maxWait=2)
-
-            # core.wait(4.0)  # Simple blocking pause
-            wait_duration = 6.5
-            debugClock.reset()
-            timer = core.Clock()
-            while timer.getTime() < wait_duration:
-                if 'debug' in params['subjectID']:
-                    timer_text.text=f"{debugClock.getTime():.2f}s"
-                    img1.draw();
-                    img2.draw();
-                    level_text.draw()
-                    timer_text.draw()
-                    status_text.text = f"result:punishment (4 sec)"
-                    status_text.draw()
-                    win.flip()
-
-
-            mixer.music.stop()
-            # if params['HeatSupport']:
-            #     my_pathway.trigger()
-            # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
-            # sound1.play()
-            # event.waitKeys(maxWait=2)
-            # sound1.stop()
+        # elif Dict["Door_outcome"] == "punishment":
+        #     # SetPort(3, 1, my_pathway)
+        #     # from psychopy import core
+        #     # timer = core.Clock()
+        #     # timer.add(.1)
+        #
+        #     # SetPort(3, 1, my_pathway)
+        #     # event.waitKeys(maxWait=10)
+        #     # timer.add(.1)
+        #     # SetPort(3, 1, my_pathway)
+        #     SetPort(int(p),1)
+        #     SetPort(int(p),1)
+        #     SetPort(int(p),1)
+        #
+        #     mixer.init()
+        #     mixer.music.load("./img/sounds/punishment_sound.wav")
+        #     mixer.music.play()
+        #     # event.waitKeys(maxWait=2)
+        #
+        #     # core.wait(4.0)  # Simple blocking pause
+        #     wait_duration = 6.5
+        #     debugClock.reset()
+        #     timer = core.Clock()
+        #     while timer.getTime() < wait_duration:
+        #         if 'debug' in params['subjectID']:
+        #             timer_text.text=f"{debugClock.getTime():.2f}s"
+        #             img1.draw();
+        #             img2.draw();
+        #             level_text.draw()
+        #             timer_text.draw()
+        #             status_text.text = f"result:punishment ({wait_duration} sec)"
+        #             status_text.draw()
+        #             win.flip()
+        #
+        #
+        #     mixer.music.stop()
+        #     # if params['HeatSupport']:
+        #     #     my_pathway.trigger()
+        #     # sound1 = sound.Sound("./img/sounds/punishment_sound.wav")
+        #     # sound1.play()
+        #     # event.waitKeys(maxWait=2)
+        #     # sound1.stop()
         else:
             # event.waitKeys(maxWait=2)
             # core.wait(2.0)  # Simple blocking pause
@@ -583,7 +592,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     # img2.draw();
                     level_text.draw()
                     timer_text.draw()
-                    status_text.text = f"result:closed (4 sec)"
+                    status_text.text = f"result:closed ({wait_duration} sec)"
                     status_text.draw()
                     win.flip()
 

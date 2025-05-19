@@ -69,7 +69,7 @@ params = {
     'soundMode' : userInputBank[9],
     'HeatSupport': userInputBank[10],
     # 'eyeTrackCircle': userInputBank[11],
-    'RewardScreenTime': userInputBank[11],
+    'RewardScreenTime': userInputBank[18],
     'eyeTrackCircle': True,
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimuli (default value)
