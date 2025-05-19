@@ -35,12 +35,12 @@ def InstructionPlay(Df, win, params):
         c = ['R']
         while (c[0].upper() == "R"):
             # core.wait(1 / 120)
-            for i in range(1, 17):
-                imgFile = "./instruction/Slide" + str(i) + ".JPG"
+            for i in range(1, 14):
+                imgFile = "./instruction/Slide" + str(i) + ".jpeg"
                 img1 = visual.ImageStim(win=win, image=imgFile, units="pix", opacity=1, size=(width, height))
                 img1.draw();
                 win.flip();
-                if i == 16:
+                if i == 13:
                     c = event.waitKeys()
                 else:
                     waitUserSpace(Df,params)

@@ -100,62 +100,6 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             win.flip()
         while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
             time.sleep(0.001)
-
-    # SetPort(3, 1, my_pathway)
-    # Eyetracker start recording
-    # if params['EyeTrackerSupport']:
-    #
-    #     message = visual.TextStim(win,
-    #                               text="Eyetracker Calibration will start.  \n\nPress the spacebar when you are ready.",
-    #                               units='norm', wrapWidth=2)
-    #     message.draw();
-    #     win.flip();
-    #     waitUserSpace(Df, params)
-    #
-    #     iohub_config = {'eyetracker.hw.sr_research.eyelink.EyeTracker':
-    #                         {'name': 'tracker',
-    #                          'model_name': 'EYELINK 1000 DESKTOP',
-    #                          'runtime_settings': {'sampling_rate': 500,
-    #                                               'track_eyes': 'LEFT'}
-    #                          }
-    #                     }
-    #     # Start new ioHub server.
-    #     import psychopy.iohub.client
-    #
-    #     try:
-    #         io = launchHubServer(**iohub_config)
-    #     except:
-    #         q = psychopy.iohub.client.ioHubConnection.getActiveConnection().quit()
-    #         io = launchHubServer(**iohub_config)
-    #     # Get the eye tracker device.
-    #     tracker = io.devices.tracker
-    #     tracker.sendCommand(
-    #         "screen_pixel_coords = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
-    #
-    #     # save screen resolution in EDF data, so Data Viewer can correctly load experimental graphics
-    #     # see Data Viewer User Manual, Section 7: Protocol for EyeLink Data to Viewer Integration
-    #     tracker.sendMessage("DISPLAY_COORDS = 0 0 %d %d" % (params['screenSize'][0] - 1, params['screenSize'][1] - 1))
-    #
-    #     # Eyetracker Calibration.
-    #     c = 'c'
-    #     while c != 'space':
-    #         tracker = EyeTrackerCalibration(tracker)
-    #         win.close()
-    #         win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
-    #         message = visual.TextStim(win,
-    #                                   text="Calibration is completed.  Press the spacebar when you are ready to keep playing.\n Press 'c' to do calibration again.",
-    #                                   units='norm', wrapWidth=2)
-    #         message.draw();
-    #         win.flip();
-    #         c = waitUserSpaceAndC(Df, params)
-    #     win.close()
-    #
-    #     # Eyetracker start recording
-    #     tracker.setRecordingState(True)
-    #     ELstartTime = time.time()
-    #
-    # win.close()
-    # win = visual.Window(params['screenSize'], monitor="testMonitor", color="black", winType='pyglet')
     win.mouseVisible = False
 
     width = params["screenSize"][0]
@@ -251,11 +195,12 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         count = 0
         joy = JoystickInput()
         position = (0, 0)
-        rewardVSpunishment = "punishment" if random.random() < 0.5 else "reward"
-        if rewardVSpunishment == "punishment":
-            aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
-        else:
-            aoiInfo = " r" + str(r) + "p" + str(p) + "; r"
+        # rewardVSpunishment = "punishment" if random.random() < 0.5 else "reward"
+        rewardVSpunishment = "reward"
+        # if rewardVSpunishment == "punishment":
+        #     aoiInfo = " r" + str(r) + "p" + str(p) + "; p"
+        # else:
+        #     aoiInfo = " r" + str(r) + "p" + str(p) + "; r"
 
         if 'debug' in params['subjectID']:
             # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
@@ -445,60 +390,59 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             # if random.random() < 0.5:
             widthtmp = width if params['Version'] != 3 else width / 3.0
             heighttmp = height if params['Version'] != 3 else height / 3.0
-            if rewardVSpunishment == "punishment":
-                Dict["Door_outcome"] = "punishment"
-                awardImg = "./img/outcomes/" + p + "_punishment.jpg"
-
-                if params['HeatSupport']:
-                    if int(p)<=2:
-                        color=1
-                    elif 3<int(p)<=5:
-                        color=2
-                    else:
-                        color=3
-                    # SetPort(3, 1, my_pathway)
-                    # # from psychopy import core
-                    # # timer = core.Clock()
-                    # # timer.add(.1)
-                    #
-                    # SetPort(3, 1, my_pathway)
-                    # # event.waitKeys(maxWait=10)
-                    # # timer.add(.1)
-                    # SetPort(3, 1, my_pathway)
-
-                    # timer = core.Clock()
-                    # timer.add(.1)
-
-                    # my_pathway.trigger()
-                    # event.waitKeys(maxWait=10)
-
-                img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
-                                        size=(widthtmp * 0.235, heighttmp * 0.464))
-                message = visual.TextStim(win, text="-" + p, wrapWidth=2)
-                message.pos = (0, 50)
-                img1.draw();
-                img2.draw();
-                if 'debug' in params['subjectID']:
-                    # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
-                    #                              height=0.05, alignText='right')
-                    # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
-                    #                              color='red', height=0.04, alignText='right')
-                    level_text.text = f"Level: {level}"
-                    timer_text.text = f"{debugClock.getTime():.2f}s"
-                    timer_text.draw()
-                    level_text.draw()
-                    status_text.text = f"result:punishment (4 sec)"
-                    status_text.draw()
-                message.draw();
-                win.flip()
-                triggerGo(port, params, r, p, 4)  # Door outcome: punishment
-                totalCoin -= int(p)
-            else:
-                Dict["Door_outcome"] = "reward"
-                awardImg = "./img/outcomes/" + r + "_reward.jpg"
-                # widthtmp = width if params['Version']!=3 else width/3.5
-                # heighttmp = height if params['Version'] != 3 else height / 3.5
-
+            # if rewardVSpunishment == "punishment":
+            #     Dict["Door_outcome"] = "punishment"
+            #     awardImg = "./img/outcomes/" + p + "_punishment.jpg"
+            #
+            #     if params['HeatSupport']:
+            #         if int(p)<=2:
+            #             color=1
+            #         elif 3<int(p)<=5:
+            #             color=2
+            #         else:
+            #             color=3
+            #         # SetPort(3, 1, my_pathway)
+            #         # # from psychopy import core
+            #         # # timer = core.Clock()
+            #         # # timer.add(.1)
+            #         #
+            #         # SetPort(3, 1, my_pathway)
+            #         # # event.waitKeys(maxWait=10)
+            #         # # timer.add(.1)
+            #         # SetPort(3, 1, my_pathway)
+            #
+            #         # timer = core.Clock()
+            #         # timer.add(.1)
+            #
+            #         # my_pathway.trigger()
+            #         # event.waitKeys(maxWait=10)
+            #
+            #     img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
+            #                             size=(widthtmp * 0.235, heighttmp * 0.464))
+            #     message = visual.TextStim(win, text="-" + p, wrapWidth=2)
+            #     message.pos = (0, 50)
+            #     img1.draw();
+            #     img2.draw();
+            #     if 'debug' in params['subjectID']:
+            #         # level_text = visual.TextStim(win, text=f"Level: {level}", pos=(0.9, 0.9), units='norm', color='red',
+            #         #                              height=0.05, alignText='right')
+            #         # timer_text = visual.TextStim(win, text=f"{debugClock.getTime():.2f}s", pos=(0.9, 0.8), units='norm',
+            #         #                              color='red', height=0.04, alignText='right')
+            #         level_text.text = f"Level: {level}"
+            #         timer_text.text = f"{debugClock.getTime():.2f}s"
+            #         timer_text.draw()
+            #         level_text.draw()
+            #         status_text.text = f"result:punishment (4 sec)"
+            #         status_text.draw()
+            #     message.draw();
+            #     win.flip()
+            #     triggerGo(port, params, r, p, 4)  # Door outcome: punishment
+            #     totalCoin -= int(p)
+            if rewardVSpunishment == "reward":
+                Dict["Door_outcome"] = "reward and punishment"
+                # awardImg = "./img/outcomes/" + r + "_reward.jpg"
+                awardImg = f"./img/outcomes/combined/outcome_p{p}_r{r}.jpeg"
+                # "/Users/jimmy/github/PsychoPyParadigms/DoorTask-heatpain/img/outcomes/combined/outcome_p1_r1.jpeg"
                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
                                         size=(widthtmp * 0.235, heighttmp * 0.464))
                 message = visual.TextStim(win, text="+" + r, wrapWidth=2)
@@ -514,7 +458,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     timer_text.text = f"{debugClock.getTime():.2f}s"
                     timer_text.draw()
                     level_text.draw()
-                    status_text.text = f"result:reward (4 sec)"
+                    status_text.text = f"result:reward and punishment (4 sec)"
                     status_text.draw()
                 win.flip()
                 triggerGo(port, params, r, p, 3)  # Door outcome: reward
@@ -560,12 +504,12 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         #                                                                   390 + height * 200 / 768,
         #                                                                   resultReward))
         if Dict["Door_outcome"] == "reward":
-            mixer.init()
-            mixer.music.load("./img/sounds/reward_sound.wav")
-            mixer.music.play()
+            # mixer.init()
+            # mixer.music.load("./img/sounds/reward_sound.wav")
+            # mixer.music.play()
             # event.waitKeys(maxWait=2)
             # core.wait(2.0)  # Simple blocking pause
-            wait_duration = 4.0
+            wait_duration = params['RewardScreenTime']
             debugClock.reset()
             timer = core.Clock()
             while timer.getTime() < wait_duration:
@@ -575,11 +519,11 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     img2.draw();
                     level_text.draw()
                     timer_text.draw()
-                    status_text.text = f"result:reward (4 sec)"
+                    status_text.text = f"result:reward ({wait_duration} sec)"
                     status_text.draw()
                     win.flip()
 
-            mixer.music.stop()
+            # mixer.music.stop()
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
             # sound1.play()
             # event.waitKeys(maxWait=2)
@@ -604,7 +548,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             # event.waitKeys(maxWait=2)
 
             # core.wait(4.0)  # Simple blocking pause
-            wait_duration = 4.0
+            wait_duration = 6.5
             debugClock.reset()
             timer = core.Clock()
             while timer.getTime() < wait_duration:
@@ -629,7 +573,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         else:
             # event.waitKeys(maxWait=2)
             # core.wait(2.0)  # Simple blocking pause
-            wait_duration = 4.0
+            wait_duration = 6.5
             debugClock.reset()
             timer = core.Clock()
             while timer.getTime() < wait_duration:
@@ -675,22 +619,23 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             level_text.text = f"Level: {level}"
             timer_text.text = f"{debugClock.getTime():.2f}s"
             timer_text.draw()
-            status_text.text = f"ITI (25 sec)"
+            status_text.text = f"ITI (22 sec)"
             status_text.draw()
             level_text.draw()
         win.flip();
         # Dict["ITI_duration"] = random.uniform(1.5, 3.5) * 1000
-        Dict["ITI_duration"] = 25
+        Dict["ITI_duration"] = 22
         # time.sleep(Dict["ITI_duration"] / 1000)
         # core.wait(Dict["ITI_duration"])
         wait_duration = Dict["ITI_duration"]
         debugClock.reset()
         timer = core.Clock()
+        triggerGo(port, params, None, None, None, manual_number=250)
         while timer.getTime() < wait_duration:
             if 'debug' in params['subjectID']:
                 timer_text.text=f"{debugClock.getTime():.2f}s"
                 img1.draw();
-                status_text.text = f"ITI (25 sec)"
+                status_text.text = f"ITI (22 sec)"
                 status_text.draw()
                 timer_text.draw()
                 win.flip()

@@ -24,5 +24,8 @@ def userInputPlay():
     userInput.addField('Heat5:', 42.0)
     userInput.addField('Heat6:', 44.0)
     userInput.addField('Heat7:', 46.0)
+    userInput.addField("Reward Screen Time:", 6.5)
+
+    # userInput.addField('Trigger Support:', True)
 
     return userInput.show()

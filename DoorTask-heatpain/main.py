@@ -35,7 +35,7 @@ from VASplay import VASplay
 from InstructionPlay import InstructionPlay
 from PracticeGamePlay import PracticeGamePlay
 from DoorGamePlay import DoorGamePlay
-from FortuneGamePlay import FortuneGamePlay
+# from FortuneGamePlay import FortuneGamePlay
 from psychopy import parallel
 from psychopy import prefs
 import subprocess as subp
@@ -62,13 +62,14 @@ params = {
     'JoyStickSupport' : True if userInputBank[8]<=2 else False, # Check if joystick option is checked or not.
     # 'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
     # 'EyeTrackerSupport': userInputBank[8],
-    'triggerSupport': False,  # Check if joystick option is checked or not.
+    'triggerSupport': True,  # Check if joystick option is checked or not.
     'EyeTrackerSupport': False,
     'FullScreen': userInputBank[7],
     'sensitivity': userInputBank[8],
     'soundMode' : userInputBank[9],
     'HeatSupport': userInputBank[10],
     # 'eyeTrackCircle': userInputBank[11],
+    'RewardScreenTime': userInputBank[11],
     'eyeTrackCircle': True,
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimuli (default value)
@@ -123,10 +124,35 @@ win = visual.Window(params['screenSize'], monitor="testMonitor",color="black",wi
 img = visual.ImageStim(win=win, image="./img/ITI_fixation.jpg", units="pix", opacity=1, size=(params[ 'screenSize'][0], params['screenSize'][1]))
 
 # # Trigger Initialization
-port = 0
-if params['triggerSupport']:
-    port = parallel.ParallelPort(address=params['portAddress'])
-    port.setData(0) # initialize to all zeroscv
+# ── robust parallel-port wrapper ───────────────────────────────────────────
+import sys
+
+def _make_sim_port():
+    """Return a stand-in object that just prints trigger values."""
+    class _SimPort:
+        def setData(self, value: int):
+            print(f"[SIM] trigger value sent: {value}")
+    return _SimPort()
+
+try:
+    # 1) Try to create the real port (import will work even on macOS)
+    from psychopy import parallel                   # pip install psychopy
+    _candidate = parallel.ParallelPort(address=params['portAddress'])
+
+    try:                                            # 2) Probe the port
+        _candidate.setData(0)                       # raises on macOS
+        port = _candidate
+        print("Parallel port detected – hardware triggers active.")
+    except NotImplementedError:
+        # PsychoPy’s stub object: fall back to simulation
+        raise RuntimeError("Parallel ports aren't supported on this OS")
+
+except Exception as err:
+    # Any failure (import, init, probe) lands here
+    print(f"⚠️  Parallel port unavailable ({err}) – simulation triggers active.")
+    port = _make_sim_port()
+port.setData(0)
+
 # Heatpain Initialization
 my_pathway = None
 excelTemps = None
@@ -283,8 +309,8 @@ win.mouseVisible = False
 # win.close()
 
 import platform
-if platform.system() == 'Windows':
-    Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
+# if platform.system() == 'Windows':
+#     Df,win = FortuneGamePlay(Df, win,params,"Fortune Wheel 1",18)
 
 # ====================== #
 # ===== TaskRun1 ======= #

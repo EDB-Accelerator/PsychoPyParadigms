@@ -54,10 +54,15 @@ def ResolutionIntialization(params,size_diff):
     params['width_bank'] = width_bank
     params['height_bank'] = height_bank
 
-def triggerGo(port,params,r,p,e):
+def triggerGo(port,params,r,p,e,manual_number=None):
     if params['triggerSupport']:
-        s = (e - 1) * 7 ** 2 + (int(p) - 1) * 7 + (int(r) - 1)
-        port.setData(s)
+        if manual_number==None:
+            print(f"r:{r},p:{p},e:{e}")
+            s = (e - 1) * 7 ** 2 + (int(p) - 1) * 7 + (int(r) - 1)
+            port.setData(s)
+        else:
+            print("ITI")
+            port.setData(manual_number)
 
 def waitAnyKeys():
     # Wait for user types a space key.
