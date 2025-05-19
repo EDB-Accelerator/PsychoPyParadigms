@@ -87,19 +87,19 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
     height = params["screenSize"][1]
     params['subTrialCounter'] = 0
 
-    # if SectionName == "TaskRun1":
-    #     img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,
-    #                             size=(width, height))
-    #     img1.draw()
-    #     win.flip()
-    #
-    #     # Wait for User input.
-    #     while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
-    #         time.sleep(0.001)
-    #         img1.draw();
-    #         win.flip()
-    #     while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
-    #         time.sleep(0.001)
+    if SectionName == "TaskRun1":
+        img1 = visual.ImageStim(win=win, image="./instruction/start_main_game.jpg", units="pix", opacity=1,
+                                size=(width, height))
+        img1.draw()
+        win.flip()
+
+        # Wait for User input.
+        while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
+            time.sleep(0.001)
+            img1.draw();
+            win.flip()
+        while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
+            time.sleep(0.001)
     win.mouseVisible = False
 
     width = params["screenSize"][0]
