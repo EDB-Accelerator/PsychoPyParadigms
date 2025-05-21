@@ -20,48 +20,48 @@ def QuestionPlay(Df, win, params, SectionName):
     height = params["screenSize"][1]
 
     # Question (Won)
-    Dict["Q_type"] = "Won"
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you won?",
-                                                       ['Won very few', 'Won very many'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    # Dict["Q_type"] = "Won"
+    # startTime = time.time()
+    # Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you won?",
+    #                                                    ['Won very few', 'Won very many'])
+    # Dict["Q_RT"] = (time.time() - startTime) * 1000
+    # tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # Question (Lost)
-    Dict["Q_type"] = "Lost"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you lost?",
-                                                       ['Lost very few', 'Lost very many'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    # Dict["Q_type"] = "Lost"
+    # Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    # startTime = time.time()
+    # Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How many coins do you think you lost?",
+    #                                                    ['Lost very few', 'Lost very many'])
+    # Dict["Q_RT"] = (time.time() - startTime) * 1000
+    # tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # Question (Monster versus Coin)
-    Dict["Q_type"] = "Before"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before the door opened, what did you think you would see?",
-                                                       ['Monster', 'Coins'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
-
-    # Question (Monster)
-    Dict["Q_type"] = "Monster"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How often did you see the monster when the door opened?",
-                                                       ['Never', 'All the time'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    # Dict["Q_type"] = "Before"
+    # Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    # startTime = time.time()
+    # Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "Before the door opened, what did you think you would see?",
+    #                                                    ['Monster', 'Coins'])
+    # Dict["Q_RT"] = (time.time() - startTime) * 1000
+    # tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    #
+    # # Question (Monster)
+    # Dict["Q_type"] = "Monster"
+    # Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    # startTime = time.time()
+    # Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win, "How often did you see the monster when the door opened?",
+    #                                                    ['Never', 'All the time'])
+    # Dict["Q_RT"] = (time.time() - startTime) * 1000
+    # tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # Question (Coins)
-    Dict["Q_type"] = "Coins"
-    Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
-    startTime = time.time()
-    Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win,"How often did you win coins when the door opened?",
-                                                       ['Never', 'All the time'])
-    Dict["Q_RT"] = (time.time() - startTime) * 1000
-    tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
+    # Dict["Q_type"] = "Coins"
+    # Dict["SessionStartDateTime"] = datetime.datetime.now().strftime("%m/%d/%y %H:%M:%S")
+    # startTime = time.time()
+    # Dict["Q_score"], Dict["Q_RT"] = displayVAS(Df,params,win,"How often did you win coins when the door opened?",
+    #                                                    ['Never', 'All the time'])
+    # Dict["Q_RT"] = (time.time() - startTime) * 1000
+    # tableWrite(Df, params,Dict)  # Log the dict result on pandas dataFrame.
 
     # Question (Performance)
     Dict["Q_type"] = "Performance"
