@@ -69,7 +69,10 @@ params = {
     'soundMode' : userInputBank[9],
     'HeatSupport': userInputBank[10],
     # 'eyeTrackCircle': userInputBank[11],
-    'RewardScreenTime': userInputBank[18],
+    'PunishmentScreenTime': userInputBank[18],
+    'RewardScreenTime': userInputBank[19],
+    'AnticipationRangeStart': userInputBank[20],
+    'AnticipationRangeEnd': userInputBank[21],
     'eyeTrackCircle': True,
     'portAddress': int("0xE050", 16), # Port Address
     'imageDir': './img/doors1/',    # directory containing DOOR image stimuli (default value)
@@ -247,8 +250,8 @@ params['HeaderTR'] = ["Index", "subjectID", "Session", "Version", "Section", "Su
 
 # Getting Image List
 import glob
-imgList = glob.glob("img/img_03312025/task_visual_7X7/*.jpg")
-imgList += glob.glob("img/img_03312025/task_visual_5X7/*.jpg")
+imgList = glob.glob("img/img_05212025/updated_task_visuals_7X7/*.jpg")
+imgList += glob.glob("img/img_05212025/updated_task_visuals_5X5/*.jpg")
 import random
 random.shuffle(imgList)
 # print("1st block")
@@ -336,8 +339,10 @@ win.mouseVisible = False
 # message.draw();
 win.mouseVisible = False
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
+# waitUserInput(Df,img1, win, params,'pyglet')
+img1.draw()
 win.flip();
+waitUserSpace(Df, params)
 
 # # ====================== #
 # # ===Fortune Wheel2 ==== #
@@ -366,8 +371,10 @@ win.mouseVisible = False
 # ======== Text Slide ========= #
 # ====================== #
 img1 = visual.ImageStim(win=win,image="./img/after_VAS2.jpg",units="pix",size=params['screenSize'],opacity=1) #
-waitUserInput(Df,img1, win, params,'pyglet')
+# waitUserInput(Df,img1, win, params,'pyglet')
+img1.draw()
 win.flip();
+waitUserSpace(Df, params)
 
 # ====================== #
 # ===Fortune Wheel3 ==== #

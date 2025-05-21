@@ -94,12 +94,13 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         win.flip()
 
         # Wait for User input.
-        while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
-            time.sleep(0.001)
-            img1.draw();
-            win.flip()
-        while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
-            time.sleep(0.001)
+        waitUserSpace(Df, params)
+        # while (JoystickInput())['buttons_text'] == ' ':  # while presenting stimuli
+        #     time.sleep(0.001)
+        #     img1.draw();
+        #     win.flip()
+        # while (JoystickInput())['buttons_text'] != ' ':  # while presenting stimuli
+        #     time.sleep(0.001)
     win.mouseVisible = False
 
     width = params["screenSize"][0]
@@ -336,7 +337,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         # Dict["Door_anticipation_time"] = random.uniform(2, 4) * 1000
         # Dict["Door_anticipation_time"] = random.uniform(1, 3) * 1000
         # time.sleep(Dict["Door_anticipation_time"] / 1000)
-        Dict["Door_anticipation_time"] = random.uniform(1, 3)
+        Dict["Door_anticipation_time"] = random.uniform(params['AnticipationRangeStart'], params['AnticipationRangeEnd'])
         wait_duration =  Dict["Door_anticipation_time"]
         debugClock.reset()
         timer = core.Clock()
@@ -441,8 +442,9 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             #     totalCoin -= int(p)
             if rewardVSpunishment == "reward":
                 Dict["Door_outcome"] = "reward and punishment"
+                awardImg = f"./img/outcomes/{p}_punishment.jpg"
                 # awardImg = "./img/outcomes/" + r + "_reward.jpg"
-                awardImg = f"./img/outcomes/combined/outcome_p{p}_r{r}.jpeg"
+                # awardImg = f"./img/outcomes/combined/outcome_p{p}_r{r}.jpeg"
                 # "/Users/jimmy/github/PsychoPyParadigms/DoorTask-heatpain/img/outcomes/combined/outcome_p1_r1.jpeg"
                 img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
                                         size=(widthtmp * 0.235, heighttmp * 0.464))
@@ -462,7 +464,6 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     status_text.text = f"result:reward and punishment ({params['RewardScreenTime']} sec)"
                     status_text.draw()
                 win.flip()
-                triggerGo(port, params, r, p, 3)  # Door outcome: reward
                 totalCoin += int(r)
             # if params['EyeTrackerSupport']:
             #     if Dict["Door_outcome"] == "reward":
@@ -515,8 +516,8 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             SetPort(int(p),1)
             SetPort(int(p),1)
             SetPort(int(p),1)
-
-            wait_duration = params['RewardScreenTime']
+            triggerGo(port, params, r, p, 4)  # punishment
+            wait_duration = params['PunishmentScreenTime']
             debugClock.reset()
             timer = core.Clock()
             img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
@@ -528,9 +529,29 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
                     img2.draw();
                     level_text.draw()
                     timer_text.draw()
-                    status_text.text = f"result:reward ({wait_duration} sec)"
+                    status_text.text = f"punishment ({wait_duration} sec)"
                     status_text.draw()
                     win.flip()
+
+            triggerGo(port, params, r, p, 3)  # reward
+            wait_duration = params['RewardScreenTime']
+            debugClock.reset()
+            timer = core.Clock()
+            awardImg = f"./img/outcomes/{r}_reward.jpg"
+            img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
+                                    size=(widthtmp * 0.235, heighttmp * 0.464))
+            while timer.getTime() < wait_duration:
+                if 'debug' in params['subjectID']:
+                    timer_text.text=f"{debugClock.getTime():.2f}s"
+                    img1.draw();
+                    img2.draw();
+                    level_text.draw()
+                    timer_text.draw()
+                    status_text.text = f"reward ({wait_duration} sec)"
+                    status_text.draw()
+                    win.flip()
+
+
 
             # mixer.music.stop()
             # sound1 = sound.Sound("./img/sounds/reward_sound.wav")
@@ -658,7 +679,7 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
         Df.to_csv(params['outFile_tmp'], sep=',', encoding='utf-8', index=False)
 
         # my_pathway.stop()
-
+    triggerGo(port, params, None, None, None, manual_number=0)
     # Eyetracker finish recording
     # if params['EyeTrackerSupport']:
     #     # Eyetracker stop recording
