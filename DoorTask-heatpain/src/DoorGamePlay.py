@@ -523,33 +523,35 @@ def DoorGamePlay(Df, DfTR, win, params, iterNum, port, SectionName,excelTemps,my
             img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
                                     size=(widthtmp * 0.235, heighttmp * 0.464))
             while timer.getTime() < wait_duration:
+                img1.draw();
+                img2.draw();
                 if 'debug' in params['subjectID']:
                     timer_text.text=f"{debugClock.getTime():.2f}s"
-                    img1.draw();
-                    img2.draw();
+
                     level_text.draw()
                     timer_text.draw()
                     status_text.text = f"punishment ({wait_duration} sec)"
                     status_text.draw()
-                    win.flip()
+                win.flip()
 
             triggerGo(port, params, r, p, 3)  # reward
             wait_duration = params['RewardScreenTime']
             debugClock.reset()
             timer = core.Clock()
             awardImg = f"./img/outcomes/{r}_reward.jpg"
-            img2 = visual.ImageStim(win=win, image=awardImg, units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
+            img2 = visual.ImageStim(win=win, image=f"./img/outcomes/{r}_reward.jpg", units="pix", opacity=1, pos=[0, -heighttmp * 0.028],
                                     size=(widthtmp * 0.235, heighttmp * 0.464))
             while timer.getTime() < wait_duration:
+                img1.draw();
+                img2.draw();
                 if 'debug' in params['subjectID']:
                     timer_text.text=f"{debugClock.getTime():.2f}s"
-                    img1.draw();
-                    img2.draw();
+
                     level_text.draw()
                     timer_text.draw()
                     status_text.text = f"reward ({wait_duration} sec)"
                     status_text.draw()
-                    win.flip()
+                win.flip()
 
 
 

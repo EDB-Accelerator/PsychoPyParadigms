@@ -59,7 +59,7 @@ params = {
     'numTaskRun1': userInputBank[4],  # The number of Trials in TaskRun1.
     'numTaskRun2': userInputBank[5],  # The number of Trials in TaskRun2.
     'numTaskRun3': userInputBank[6],  # The number of Trials in TaskRun2.
-    'JoyStickSupport' : True if userInputBank[8]<=2 else False, # Check if joystick option is checked or not.
+    'JoyStickSupport' : True if userInputBank[8]<=3 else False, # Check if joystick option is checked or not.
     # 'triggerSupport': userInputBank[7],  # Check if joystick option is checked or not.
     # 'EyeTrackerSupport': userInputBank[8],
     'triggerSupport': True,  # Check if joystick option is checked or not.
@@ -406,8 +406,8 @@ win.mouseVisible = False
 # ====================== #
 # ======== Question ========= #
 # ====================== #
-win.mouseVisible = True
-Df = Questionplay(Df, win, params, "Question")
+# win.mouseVisible = True
+# Df = Questionplay(Df, win, params, "Question")
 
 Df.to_csv(params['outFile'], sep=',', encoding='utf-8', index=False)
 import os

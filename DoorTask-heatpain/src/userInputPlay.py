@@ -13,7 +13,7 @@ def userInputPlay():
     # userInput.addField('Trigger Support:', True)
     # userInput.addField('Eyetracker Support:', choices=[False])
     userInput.addField('Full Screen', True)
-    userInput.addField('Joystick Sensitivity (0: very sensitive, 1: normal, 2: less sensitive, 3: No joystick support', 2, choices=[0,1,2,3])
+    userInput.addField('Joystick Sensitivity (0: very sensitive, 1: normal, 2: less sensitive, 3: least sensitive, 4: No joystick support', 3, choices=[0,1,2,3,4])
     # userInput.addField('Eyetracker Circle', True)
     userInput.addField('Sound Mode:',choices=['PTB','Others'])
     userInput.addField('Heat Support:', True)
